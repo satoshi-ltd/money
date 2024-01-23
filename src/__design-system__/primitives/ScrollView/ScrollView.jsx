@@ -13,7 +13,7 @@ const ScrollView = React.forwardRef(({ height, horizontal = false, snap = 0, wid
           decelerationRate: 'fast',
           pagingEnabled: true,
           scrollEventThrottle: 10,
-          snapInterval: snap,
+          snapToInterval: snap,
         }
       : {})}
     onScroll={onScroll}
