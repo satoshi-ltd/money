@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
-import { ExportData } from './ExportData';
 import { changeBaseCurrency, getLatestRates } from './helpers';
+import { Backup } from './Settings.Backup';
 import { style } from './Settings.style';
-import { Action, Card, Screen, Text } from '../../../__design-system__';
+import { Action, Card, Screen, Text, View } from '../../../__design-system__';
 import { Heading, SliderCurrencies } from '../../../components';
 import { useStore } from '../../../contexts';
 import { L10N } from '../../../modules';
@@ -30,24 +30,30 @@ const Settings = () => {
   };
 
   return (
-    <Screen>
-      <Card>
-        <ExportData />
+    <Screen gap>
+      <Card style={style.offset}>
+        <Text bold subtitle>
+          Statistics
+        </Text>
       </Card>
 
-      <Heading value={L10N.CHOOSE_CURRENCY}>
-        <Action caption disabled={busy} small onPress={handleUpdateRates}>
-          {L10N.SYNC_RATES_CTA}
-        </Action>
-      </Heading>
+      <Backup style={style.offset} />
 
-      <SliderCurrencies selected={baseCurrency} onChange={handleChangeCurrency} style={style.slider} />
+      <View>
+        <Heading value={L10N.CHOOSE_CURRENCY}>
+          <Action caption disabled={busy} small onPress={handleUpdateRates}>
+            {L10N.SYNC_RATES_CTA}
+          </Action>
+        </Heading>
 
-      <Text color="contentLight" caption style={[style.hint, style.offset]}>
-        {!busy
-          ? `${L10N.SYNC_RATES_SENTENCE} ${lastRatesUpdate.toString().split(' ').slice(0, 5).join(' ')}`
-          : L10N.WAIT}
-      </Text>
+        <SliderCurrencies selected={baseCurrency} onChange={handleChangeCurrency} style={style.slider} />
+
+        <Text color="contentLight" caption style={[style.hint, style.offset]}>
+          {!busy
+            ? `${L10N.SYNC_RATES_SENTENCE} ${lastRatesUpdate.toString().split(' ').slice(0, 5).join(' ')}`
+            : L10N.WAIT}
+        </Text>
+      </View>
     </Screen>
   );
 };

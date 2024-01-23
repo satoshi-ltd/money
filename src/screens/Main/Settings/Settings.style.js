@@ -7,5 +7,6 @@ export const style = StyleSheet.create({
 
   offset: {
     marginHorizontal: '$spaceM',
+    width: 'auto',
   },
 });
