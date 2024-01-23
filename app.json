@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "môney",
+    "slug": "satoshi-ltd-money",
+    "description": "Your private finance ledger running on your own blockchain",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFEFE"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.satoshi-ltd.money"
+    },
+
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFEFE"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ee58e4b4-c62c-4e7f-a084-eb6af92f8f85"
+      }
+    },
+    "updates": { "useClassicUpdates": true }
+  }
+}
