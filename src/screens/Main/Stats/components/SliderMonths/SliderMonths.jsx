@@ -1,28 +1,30 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import { useWindowDimensions } from 'react-native';
+import StyleSheet from 'react-native-extended-stylesheet';
 
 import { getLastMonths } from './modules';
 import { style } from './SliderMonths.style';
 import { ScrollView } from '../../../../../__design-system__';
-import { Option, OPTION_SIZE } from '../../../../../components';
+import { Option } from '../../../../../components';
 import { C, L10N } from '../../../../../modules';
 
 const { STATS_MONTHS_LIMIT } = C;
 
-const SliderMonths = ({ index, onChange, ...others }) => {
+const SliderMonths = ({ index, onChange }) => {
   const scrollViewRef = useRef(null);
   const { width } = useWindowDimensions();
 
   useEffect(() => {
-    scrollViewRef.current?.scrollTo({ x: (index - 1) * OPTION_SIZE });
+    scrollViewRef.current?.scrollTo({ x: (index - 1) * optionSnap });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index]);
 
   const months = getLastMonths(STATS_MONTHS_LIMIT);
+  const optionSnap = StyleSheet.value('$optionSnap');
 
   return (
-    <ScrollView horizontal ref={scrollViewRef} snap={OPTION_SIZE} width={width} style={[style.slider, others.style]}>
+    <ScrollView horizontal ref={scrollViewRef} snap={optionSnap} width={width} style={style.scrollView}>
       {months.map(({ month, year }, i) => (
         <Option
           key={`${month}-${year}`}
@@ -30,12 +32,7 @@ const SliderMonths = ({ index, onChange, ...others }) => {
           highlight={index === i}
           legend={year.toString()}
           onPress={() => onChange({ index: i, month, year })}
-          style={[
-            //
-            style.option,
-            i === 0 && style.firstCard,
-            i === months.length - 1 && style.lastCard,
-          ]}
+          style={[style.option, i === 0 && style.firstOption, i === months.length - 1 && style.lastOption]}
         />
       ))}
     </ScrollView>

@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './Dashboard.style';
 import { queryLastTxs, querySearchTxs, queryVaults } from './helpers';
 import { Action, Input, Screen, ScrollView } from '../../../__design-system__';
-import { CardAccount, CARD_SIZE, GroupTransactions, Heading, Summary } from '../../../components';
+import { CardAccount, GroupTransactions, Heading, Summary } from '../../../components';
 import { useStore } from '../../../contexts';
 import { getProgressionPercentage, L10N } from '../../../modules';
 
@@ -34,13 +35,13 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
     <Screen>
       <Summary {...overall} currency={baseCurrency} detail />
 
-      <Heading value={L10N.ACOUNTS}>
+      <Heading value={L10N.ACCOUNTS}>
         <Action caption onPress={() => navigate('account', { create: true })}>{`${L10N.NEW} ${L10N.ACCOUNT}`}</Action>
       </Heading>
 
       {sortedVaults.length > 0 && (
         <>
-          <ScrollView horizontal snap={CARD_SIZE} style={style.scrollView}>
+          <ScrollView horizontal snap={StyleSheet.value('$cardAccountSnap')} style={[style.scrollView]}>
             {sortedVaults.map((vault, index) => {
               const {
                 currentBalance,
@@ -58,7 +59,11 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
                   currency={currency}
                   operator
                   percentage={getProgressionPercentage(currentBalance, progressionCurrency)}
-                  style={index === 0 ? style.firstCard : style.card}
+                  style={[
+                    style.card,
+                    index === 0 && style.firstCard,
+                    index === sortedVaults.length - 1 && style.lastCard,
+                  ]}
                   title={title}
                   onPress={() => navigate('transactions', { vault })}
                 />

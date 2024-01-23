@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './Accounts.style';
 import { filter, query } from './modules';
 import { Card, Pressable, Screen, ScrollView, Text, View } from '../../../__design-system__';
-import { CardAccount, CARD_SIZE, Heading, PriceFriendly } from '../../../components';
+import { CardAccount, Heading, PriceFriendly } from '../../../components';
 import { useStore } from '../../../contexts';
 import { getCurrencySymbol, L10N } from '../../../modules';
 
@@ -22,7 +23,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
   return (
     <Screen>
       <Heading value={L10N.CURRENCIES} />
-      <ScrollView horizontal snap={CARD_SIZE} style={style.slider}>
+      <ScrollView horizontal snap={StyleSheet.value('$cardAccountSnap')} style={style.scrollView}>
         {currencies.map(({ base, currency, ...item }, index) => (
           <CardAccount
             {...item}
@@ -34,7 +35,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
             secondary
             showExchange
             title={L10N.CURRENCY_NAME[currency] || currency}
-            style={index === 0 ? style.firstCard : style.card}
+            style={[style.card, index === 0 && style.firstCard, index === currencies.length - 1 && style.lastCard]}
             onPress={() => setSelected(currency !== selected ? currency : undefined)}
           />
         ))}

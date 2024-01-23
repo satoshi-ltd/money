@@ -1,22 +1,22 @@
 import StyleSheet from 'react-native-extended-stylesheet';
 
 export const style = StyleSheet.create({
-  slider: {
+  scrollView: {
     marginLeft: '$spaceM * -1',
     marginRight: '$spaceM * -1',
     marginBottom: '$spaceM',
   },
 
-  card: {
-    marginLeft: '$spaceS',
+  option: {
+    marginLeft: '$cardGap',
   },
 
-  firstCard: {
-    marginLeft: '$spaceM',
+  firstOption: {
+    marginLeft: '$offset',
   },
 
-  lastCard: {
-    marginRight: '$spaceM',
+  lastOption: {
+    marginRight: '$offset',
   },
 
   inputCurrency: {

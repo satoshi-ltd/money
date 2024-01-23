@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import { useWindowDimensions } from 'react-native';
+import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './FormTransaction.style';
 import { ScrollView } from '../../../__design-system__';
-import { Input, InputCurrency, Option, OPTION_SIZE } from '../../../components';
+import { Input, InputCurrency, Option } from '../../../components';
 import { getIcon, L10N } from '../../../modules';
 import { queryCategories } from '../helpers';
 
@@ -15,7 +16,7 @@ const FormTransaction = ({ form = {}, onChange, type, vault = {} }) => {
   useEffect(() => {
     const index = categories.findIndex(({ key }) => key === form.category);
     setTimeout(() => {
-      scrollViewRef.current?.scrollTo({ x: (index - 1) * OPTION_SIZE });
+      scrollViewRef.current?.scrollTo({ x: (index - 1) * optionSnap });
     }, 0);
   }, [form]);
 
@@ -29,10 +30,11 @@ const FormTransaction = ({ form = {}, onChange, type, vault = {} }) => {
   };
 
   const categories = queryCategories({ type });
+  const optionSnap = StyleSheet.value('$optionSnap');
 
   return (
     <>
-      <ScrollView horizontal ref={scrollViewRef} snap={OPTION_SIZE} style={style.slider} width={width}>
+      <ScrollView horizontal ref={scrollViewRef} snap={optionSnap} style={style.scrollView} width={width}>
         {categories.map((item, index) => (
           <Option
             key={item.key}
@@ -40,7 +42,11 @@ const FormTransaction = ({ form = {}, onChange, type, vault = {} }) => {
             icon={getIcon({ type, category: item.key })}
             legend={item.caption}
             onPress={() => handleField('category', item.key)}
-            style={[style.card, index === 0 && style.firstCard, index === categories.length - 1 && style.lastCard]}
+            style={[
+              style.option,
+              index === 0 && style.firstOption,
+              index === categories.length - 1 && style.lastOption,
+            ]}
           />
         ))}
       </ScrollView>

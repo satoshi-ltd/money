@@ -13,16 +13,25 @@ export const MoneyTheme = {
   // $colorContent: '#fff',
   // $colorContentLight: '#999',
 
-  //
+  // --
+  $offset: '$spaceM',
 
-  /* ICON */
+  // -- <Icon> -----------------------------------------------------------------
   $iconFamily: 'shield-icons',
   $iconGlyphs: require('../../assets/fonts/Shield-Icons.json'),
   $iconSize: 24,
 
-  /* INPUT */
-  $inputHeight: '$spaceM * 4.5',
+  // == Components =============================================================
+  $cardGap: '$spaceS',
+  // -- <CardAccount> ----------------------------------------------------------
+  $cardAccountSize: '$spaceM * 10',
+  $cardAccountSnap: '$cardAccountSize + $cardGap',
+  // -- <Option> ---------------------------------------------------------------
+  $optionSize: '$spaceM * 5',
+  $optionSnap: '$optionSize + $cardGap',
 
+  // -- <Input> ----------------------------------------------------------------
+  $inputHeight: '$spaceM * 4.5',
   $fontInput: 'font-bold',
   $fontInputStyle: 'normal',
   $fontInputVariant: ['normal'],
@@ -38,6 +47,7 @@ export const MoneyTheme = {
   $inputSize: 56,
   $inputSizeSmall: 40,
   $inputSizeLarge: 72,
-
   $inputFont: 'font-default',
+
+  // -- <InputCurrency> --------------------------------------------------------
 };

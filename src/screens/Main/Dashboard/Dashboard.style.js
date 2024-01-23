@@ -7,11 +7,15 @@ export const style = StyleSheet.create({
   },
 
   card: {
-    marginLeft: '$spaceS',
+    marginLeft: '$cardGap',
   },
 
   firstCard: {
     marginLeft: '$spaceM',
+  },
+
+  lastCard: {
+    marginRight: '$spaceM',
   },
 
   inputSearch: {

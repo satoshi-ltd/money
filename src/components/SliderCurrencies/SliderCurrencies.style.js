@@ -2,14 +2,14 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 export const style = StyleSheet.create({
   option: {
-    marginLeft: '$spaceS',
+    marginLeft: '$cardGap',
   },
 
   firstOption: {
-    marginLeft: '$spaceM',
+    marginLeft: '$offset',
   },
 
   lastOption: {
-    marginRight: '$spaceM',
+    marginRight: '$offset',
   },
 });

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { CARD_SIZE, style } from './CardAccount.style';
+import { style } from './CardAccount.style';
 import { Card, Pressable, Text, View } from '../../__design-system__';
 import { useStore } from '../../contexts';
 import { getCurrencySymbol, exchange } from '../../modules';
@@ -84,4 +84,4 @@ CardAccount.propTypes = {
   onPress: PropTypes.func.isRequired,
 };
 
-export { CardAccount, CARD_SIZE };
+export { CardAccount };

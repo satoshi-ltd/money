@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './FormTransfer.style';
 import { Icon, Pressable, ScrollView, Text } from '../../../__design-system__';
-import { InputCurrency, Option, OPTION_SIZE } from '../../../components';
+import { InputCurrency, Option } from '../../../components';
 import { useStore } from '../../../contexts';
 import { currencyDecimals, ICON } from '../../../modules';
 import { getVault, queryAvailableVaults } from '../helpers';
@@ -51,6 +52,8 @@ const FormTransaction = ({ form = {}, onChange, vault = {} }) => {
     });
   };
 
+  const optionSnap = StyleSheet.value('$optionSnap');
+
   return (
     <>
       <InputCurrency
@@ -69,7 +72,7 @@ const FormTransaction = ({ form = {}, onChange, vault = {} }) => {
         </Pressable>
       )}
       {selectVault ? (
-        <ScrollView horizontal snap={OPTION_SIZE} style={style.slider}>
+        <ScrollView horizontal snap={optionSnap} style={style.scrollView}>
           {availableVaults.map(({ currency, hash, title }, index) => (
             <Option
               currency={currency}
@@ -81,9 +84,9 @@ const FormTransaction = ({ form = {}, onChange, vault = {} }) => {
                 setSelectVault(false);
               }}
               style={[
-                style.card,
-                index === 0 && style.firstCard,
-                index === availableVaults.length - 1 && style.lastCard,
+                style.option,
+                index === 0 && style.firstOption,
+                index === availableVaults.length - 1 && style.lastOption,
               ]}
             />
           ))}
