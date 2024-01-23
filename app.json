@@ -2,6 +2,7 @@
   "expo": {
     "name": "môney",
     "slug": "satoshi-ltd-money",
+    "owner": "satoshi-ltd",
     "description": "Your private finance ledger running on your own blockchain",
     "version": "1.0.0",
     "orientation": "portrait",
