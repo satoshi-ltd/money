@@ -18,6 +18,7 @@ const FormTransaction = ({ form = {}, onChange, type, vault = {} }) => {
     setTimeout(() => {
       scrollViewRef.current?.scrollTo({ x: (index - 1) * optionSnap });
     }, 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form]);
 
   const handleField = (field, fieldValue) => {

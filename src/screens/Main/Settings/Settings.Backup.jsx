@@ -3,7 +3,6 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import React from 'react';
 
-import { style } from './Settings.style';
 import { Button, Card, View, Text } from '../../../__design-system__';
 import { useStore } from '../../../contexts';
 

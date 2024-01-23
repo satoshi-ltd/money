@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export class AsyncStorageAdapter {
   constructor({ defaults = {}, filename = 'store' } = {}) {
-    // eslint-disable-next-line no-async-promise-executor
+    // eslint-disable-next-line no-async-promise-executor, no-undef
     return new Promise(async (resolve) => {
       this.key = filename;
 

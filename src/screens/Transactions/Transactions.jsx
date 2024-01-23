@@ -5,7 +5,7 @@ import { useWindowDimensions } from 'react-native';
 import { ButtonSummary } from './components';
 import { query } from './modules';
 import { style } from './Transactions.style';
-import { Icon, Screen, ScrollView, Pressable, Text, View } from '../../__design-system__';
+import { Icon, Screen, ScrollView, Pressable, View } from '../../__design-system__';
 import { Banner, GroupTransactions, Heading, Summary } from '../../components';
 import { useStore } from '../../contexts';
 import { C, ICON, L10N } from '../../modules';

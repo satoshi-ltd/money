@@ -16,6 +16,7 @@ export const apiCall = async ({ endpoint = ENDPOINT, headers, method = GET, serv
   const controller = new AbortController();
   setTimeout(() => controller.abort(), POST_METHODS.includes(method) ? TIMEOUT.POST : TIMEOUT.GET);
 
+  // eslint-disable-next-line no-undef
   return new Promise((resolve, reject) => {
     fetch(`${endpoint}/${service}`, {
       headers: { ...HEADERS, ...headers },
