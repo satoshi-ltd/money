@@ -15,23 +15,33 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.satoshi-ltd.money"
+      "bundleIdentifier": "com.satoshi-ltd.money",
+      "buildNumber": "2",
+      "usesIcloudStorage": true
     },
-
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFEFE"
-      }
+      },
+      "package": "com.satoshi-ltd.money",
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "plugins": [
+      [
+        "expo-document-picker",
+        {
+          "iCloudContainerEnvironment": "Production"
+        }
+      ]
+    ],
     "extra": {
       "eas": {
-        "projectId": "ee58e4b4-c62c-4e7f-a084-eb6af92f8f85"
+        "projectId": "b660421b-8423-40bd-b924-11109faac99c"
       }
-    },
-    "updates": { "useClassicUpdates": true }
+    }
   }
 }

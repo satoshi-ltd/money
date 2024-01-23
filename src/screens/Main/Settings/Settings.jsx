@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 
+import { ExportData } from './ExportData';
 import { changeBaseCurrency, getLatestRates } from './helpers';
 import { style } from './Settings.style';
-import { Action, Card, Screen, Text, View } from '../../../__design-system__';
+import { Action, Card, Screen, Text } from '../../../__design-system__';
 import { Heading, SliderCurrencies } from '../../../components';
 import { useStore } from '../../../contexts';
 import { L10N } from '../../../modules';
@@ -31,10 +32,7 @@ const Settings = () => {
   return (
     <Screen>
       <Card>
-        <Text>
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. At dicta aut, aspernatur accusantium dolor nisi. Non
-          a, unde provident maxime reiciendis quia possimus iusto vel nam repellat facere odit? Praesentium.
-        </Text>
+        <ExportData />
       </Card>
 
       <Heading value={L10N.CHOOSE_CURRENCY}>

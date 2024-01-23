@@ -43,6 +43,24 @@ const StoreProvider = ({ children }) => {
     return vault;
   };
 
+  const importBackup = async ({ accounts, settings, txs }) => {
+    const { store } = state;
+
+    await store.wipe('accounts');
+    await store.wipe('settings');
+    await store.wipe('txs');
+    await store.get('accounts').save(accounts);
+    await store.get('settings').save(settings);
+    await store.get('txs').save(txs);
+
+    setState({
+      ...state,
+      settings,
+      vaults: accounts,
+      txs,
+    });
+  };
+
   const updateRates = async (rates, baseCurrency = state.settings.baseCurrency) => {
     const nextRates = { ...state.rates, ...rates };
     const nextSettings = { ...state.settings, baseCurrency, lastRatesUpdate: new Date() };
@@ -89,6 +107,7 @@ const StoreProvider = ({ children }) => {
         ...consolidate(state),
         addTx,
         addVault,
+        importBackup,
         updateRates,
         updateSettings,
         updateTx,
