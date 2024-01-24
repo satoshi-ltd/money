@@ -6,6 +6,7 @@ const ScrollView = React.forwardRef(({ height, horizontal = false, snap = 0, wid
   <NativeScrollView
     {...others}
     {...{ height, horizontal, ref, width }}
+    keyboardShouldPersistTaps="always"
     showsHorizontalScrollIndicator={false}
     showsVerticalScrollIndicator={false}
     {...(snap > 0
