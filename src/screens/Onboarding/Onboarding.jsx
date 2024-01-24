@@ -8,6 +8,7 @@ import { SLIDES } from './Onboarding.constants';
 import { style } from './Onboarding.style';
 import { Button, Pagination, ScrollView, Text, View } from '../../__design-system__';
 import { useStore } from '../../contexts';
+import { requestNotificationPermission } from '../../modules';
 
 const Onboarding = ({ navigation: { navigate } }) => {
   const scrollViewRef = useRef(null);
@@ -22,10 +23,11 @@ const Onboarding = ({ navigation: { navigate } }) => {
     setCurrentIndex(index);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     // currentIndex === SLIDES.length - 1
     if (lastSlide) {
       updateSettings({ onboarded: true });
+      await requestNotificationPermission();
       navigate('session');
     } else if (scrollViewRef.current) {
       scrollViewRef.current.scrollTo({ x: width * (currentIndex + 1), animated: true });

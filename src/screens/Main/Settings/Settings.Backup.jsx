@@ -5,6 +5,7 @@ import React from 'react';
 
 import { Button, Card, View, Text } from '../../../__design-system__';
 import { useStore } from '../../../contexts';
+import { setNextNotification } from '../../../modules';
 
 const Backup = ({ ...others }) => {
   const { vaults: accounts, importBackup, settings, txs } = useStore();
@@ -18,6 +19,8 @@ const Backup = ({ ...others }) => {
       const fileUri = FileSystem.documentDirectory + fileName;
       await FileSystem.writeAsStringAsync(fileUri, JSON.stringify({ accounts, settings, txs }));
       await Sharing.shareAsync(fileUri);
+
+      await setNextNotification();
     } catch (error) {
       alert(`Something went wrong: ${JSON.stringify(error)}`);
     }
