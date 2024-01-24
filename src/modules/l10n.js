@@ -13,7 +13,6 @@ export const L10N = {
   CATEGORIES: [
     {
       // Expenses
-      0: 'Wipe',
       1: 'Food & Drinks',
       3: 'Travel',
       4: 'Debt',
@@ -30,7 +29,6 @@ export const L10N = {
     },
     {
       // Incomes
-      0: 'Wipe',
       1: 'Salary',
       2: 'Investment',
       3: 'Pasives',
@@ -76,6 +74,7 @@ export const L10N = {
   DASHBOARD: 'Dashboard',
   DAY: 'day',
   DAY_NAMES: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  DELETE: 'Delete',
   DESTINATION: 'To',
   DEVELOPER_SETTINGS: 'Developer settings',
 
@@ -179,7 +178,6 @@ export const L10N = {
   WELCOME_TITLE: 'Take back control of your money.',
   WELCOME_CAPTION: 'Your private finance accounting running on your own device.',
 
-  WIPE: 'Wipe',
   WITHOUT_TXS: 'No transactions',
 
   YESTERDAY: 'Yesterday',

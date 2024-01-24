@@ -43,6 +43,14 @@ const StoreProvider = ({ children }) => {
     return vault;
   };
 
+  const deleteTx = async ({ hash }) => {
+    const { store } = state;
+
+    await store.get('txs').remove({ hash });
+    setState({ ...state, txs: await store.get('txs').value });
+  };
+
+  // ! TODO: Should be in an standalone service
   const importBackup = async ({ accounts, settings, txs }) => {
     const { store } = state;
 
@@ -107,6 +115,7 @@ const StoreProvider = ({ children }) => {
         ...consolidate(state),
         addTx,
         addVault,
+        deleteTx,
         importBackup,
         updateRates,
         updateSettings,

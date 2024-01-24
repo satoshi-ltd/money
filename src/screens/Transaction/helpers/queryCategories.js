@@ -1,7 +1,7 @@
 import { C, L10N } from '../../../modules';
 
-const { INTERNAL_TRANSFER, WIPE } = C;
-const INTERNAL_KEYS = [INTERNAL_TRANSFER.toString(), WIPE.toString()];
+const { INTERNAL_TRANSFER } = C;
+const INTERNAL_KEYS = [INTERNAL_TRANSFER.toString()];
 
 export const queryCategories = ({ type }) =>
   Object.keys(L10N.CATEGORIES[type] || {})

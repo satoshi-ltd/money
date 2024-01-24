@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
 import { style } from './Clone.style';
-import { cloneTx } from './helpers';
 import { Button, Modal, Text, View } from '../../__design-system__';
 import { useStore } from '../../contexts';
 import { C, L10N } from '../../modules';
@@ -20,9 +19,8 @@ const INITIAL_STATE = { form: {}, valid: false };
 const Clone = ({ route: { params = {} } = {}, navigation: { goBack } = {} }) => {
   const store = useStore();
 
-  const { updateTx, vaults } = store;
+  const { addTx, deleteTx, updateTx, vaults } = store;
 
-  const [busy, setBusy] = useState(false);
   const [dataSource, setDataSource] = useState({});
   const [state, setState] = useState(INITIAL_STATE);
 
@@ -33,14 +31,14 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack } = {} }) => 
     setState({ form: { category, title, value }, valid: false });
   }, [params]);
 
-  const handleSubmit = async ({ edit = false, wipe = false } = {}) => {
-    setBusy(true);
-    if (edit) {
-      await updateTx({ hash: dataSource.hash, ...state.form });
-    } else {
-      await cloneTx({ dataSource, store, wipe });
-    }
-    setBusy(false);
+  const handleSubmit = async ({ remove, clone, edit }) => {
+    // eslint-disable-next-line no-unused-vars
+    const { hash, timestamp, ...tx } = dataSource;
+
+    if (edit) await updateTx({ hash: dataSource.hash, ...state.form });
+    else if (clone) await addTx({ ...tx });
+    else if (remove) await deleteTx({ hash });
+
     goBack();
   };
 
@@ -61,21 +59,19 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack } = {} }) => 
       )}
 
       <View row style={style.buttons}>
-        <Button disabled={busy} flex outlined onPress={() => handleSubmit({ wipe: true })}>
-          {L10N.WIPE}
+        <Button flex outlined onPress={() => handleSubmit({ remove: true })}>
+          {L10N.DELETE}
         </Button>
-        <Button disabled={busy} flex outlined onPress={() => handleSubmit()}>
+        <Button flex outlined onPress={() => handleSubmit({ clone: true })}>
           {L10N.CLONE}
         </Button>
-        <Button disabled={busy || !state.valid} flex onPress={() => handleSubmit({ edit: true })}>
+        <Button disabled={!state.valid} flex onPress={() => handleSubmit({ edit: true })}>
           {L10N.SAVE}
         </Button>
       </View>
     </Modal>
   );
 };
-
-Clone.displayName = 'Clone';
 
 Clone.propTypes = {
   route: PropTypes.any,

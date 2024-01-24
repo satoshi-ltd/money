@@ -100,6 +100,4 @@ export const C = {
   },
 
   VERSION: PKG.version,
-
-  WIPE: 0,
 };
