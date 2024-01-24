@@ -5,7 +5,7 @@ import { View as NativeView } from 'react-native';
 import { style } from './View.style';
 
 const View = React.forwardRef(
-  ({ align, children, flex, gap = false, row = false, spaceBetween = false, wide = false, ...others }, ref) => (
+  ({ align, children, flex, gap = false, offset = false, row = false, spaceBetween = false, ...others }, ref) => (
     <NativeView
       {...others}
       ref={ref}
@@ -14,9 +14,9 @@ const View = React.forwardRef(
         style[align],
         flex && style.flex,
         gap && style.gap,
+        offset && style.offset,
         row && style.row,
         spaceBetween && style.spaceBetween,
-        wide && style.wide,
         others.style,
       ]}
     >
@@ -33,9 +33,9 @@ View.propTypes = {
   displayName: PropTypes.string,
   flex: PropTypes.bool,
   gap: PropTypes.bool,
+  offset: PropTypes.bool,
   row: PropTypes.bool,
   spaceBetween: PropTypes.bool,
-  wide: PropTypes.bool,
 };
 
 export { View };

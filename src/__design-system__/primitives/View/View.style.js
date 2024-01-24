@@ -25,6 +25,10 @@ export const style = StyleSheet.create({
     flex: 1,
   },
 
+  offset: {
+    margin: '$viewOffset',
+  },
+
   right: {
     alignContent: 'flex-end',
     alignItems: 'flex-end',
@@ -39,9 +43,5 @@ export const style = StyleSheet.create({
 
   spaceBetween: {
     justifyContent: 'space-between',
-  },
-
-  wide: {
-    flex: 1,
   },
 });

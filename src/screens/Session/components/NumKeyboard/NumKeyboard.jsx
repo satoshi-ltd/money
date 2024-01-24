@@ -17,7 +17,7 @@ const LETTERS = {
 };
 
 const NumKeyboard = ({ onPress }) => (
-  <View style={style.container} wide>
+  <View flex style={style.container}>
     {KEYS.map((key, index) => (
       <Pressable key={index} onPress={typeof key === 'number' ? () => onPress(key) : undefined} style={style.pressable}>
         <View style={style.key}>

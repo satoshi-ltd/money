@@ -7,7 +7,7 @@ import { Pressable, Text } from '../../primitives';
 const Action = ({ children, color = 'accent', disabled, onPress = () => {}, ...others }) => {
   return (
     <Pressable onPress={!disabled ? onPress : undefined} style={style.action}>
-      <Text align="center" bold {...others} color={disabled ? 'disabled' : color}>
+      <Text align="center" bold {...others} color={disabled ? 'disabled' : color} style={style.text}>
         {children}
       </Text>
     </Pressable>

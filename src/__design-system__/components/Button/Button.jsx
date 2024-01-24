@@ -26,7 +26,12 @@ const Button = ({
       others.style,
     ]}
   >
-    <Text bold caption={small} color={disabled ? 'disabled' : secondary || outlined ? 'content' : 'base'}>
+    <Text
+      bold
+      caption={small}
+      color={disabled ? 'disabled' : secondary || outlined ? 'content' : 'base'}
+      style={style.text}
+    >
       {children}
     </Text>
   </Pressable>

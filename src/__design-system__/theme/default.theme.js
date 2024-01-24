@@ -1,8 +1,6 @@
-// import { colorOpacity } from '../common/colorOpacity';
+import { opacity } from './modules/opacity';
 
 export const DefaultTheme = {
-  $pressableColor: 'rgba(0, 0, 0, 0.1)',
-
   // -- palette ----------------------------------------------------------------
   // $colorAccent: '#FBD90C',
   $colorAccent: '#FDCE44',
@@ -62,16 +60,25 @@ export const DefaultTheme = {
   // -- valid
   $inputBackgroundColorValid: '$inputBackgroundColorFocus',
   $inputBorderColorValid: '$colorAccent',
-
+  // -- <View> -----------------------------------------------------------------
+  $viewGap: '$spaceM',
+  $viewOffset: '$spaceM',
   // -- <?> --------------------------------------------------------------------
 
   // == <components> ===========================================================
+  // -- <Action> ---------------------------------------------------------------
+  $actionFontFamily: 'font-bold',
+  $actionFontWeight: '$fontWeightDefault',
   // -- <Button> ---------------------------------------------------------------
+  $buttonFontFamily: 'font-bold',
+  $buttonFontWeight: '$fontWeightDefault',
   $buttonColorPrimary: '$colorContent',
   $buttonColorSecondary: '$colorAccent',
   $buttonHeight: '$spaceXL + $spaceL',
   $buttonSmallHeight: '$spaceXL',
   $buttonRadius: '$spaceS',
+  // -- <Modal> ----------------------------------------------------------------
+  $modalOverflowBackgroundColor: '$colorBase',
 
   // -- <Pagination> -----------------------------------------------------------
   $paginationSize: '$spaceS',

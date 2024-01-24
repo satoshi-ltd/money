@@ -5,4 +5,9 @@ export const style = StyleSheet.create({
     borderRadius: '$borderRadius',
     paddingVertical: '$spaceS',
   },
+
+  text: {
+    fontFamily: '$buttonFontFamily',
+    buttonFontWeight: '$buttonFontFamily',
+  },
 });

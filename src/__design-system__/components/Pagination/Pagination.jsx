@@ -8,7 +8,7 @@ const Pagination = ({ currentIndex, length = 0, ...others }) =>
   length > 0 ? (
     <View row style={[style.pagination, others.style]}>
       {Array.from({ length }).map((_, index) => (
-        <View key={index} wide style={[style.dot, index === currentIndex && style.dotActive]} />
+        <View key={index} flex style={[style.dot, index === currentIndex && style.dotActive]} />
       ))}
     </View>
   ) : null;

@@ -39,4 +39,9 @@ export const style = StyleSheet.create({
     maxHeight: '$buttonSmallHeight',
     paddingHorizontal: '$buttonSmallHeight / 2',
   },
+
+  text: {
+    fontFamily: '$buttonFontFamily',
+    buttonFontWeight: '$buttonFontFamily',
+  },
 });

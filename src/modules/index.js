@@ -1,4 +1,3 @@
-export * from './colorOpacity';
 export * from './constants';
 export * from './currencyDecimals';
 export * from './exchange';
