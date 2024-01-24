@@ -9,7 +9,7 @@ export const L10N = {
   BALANCE: 'Balance',
   BLOCKCHAIN_STATE: 'Blockchain state',
 
-  CANCEL: 'CANCEL',
+  CANCEL: 'Cancel',
   CATEGORIES: [
     {
       // Expenses
@@ -46,6 +46,9 @@ export const L10N = {
   CLONE_CAPTION: 'To make your life easier you can clone this transaction with a simple touch of the button.',
   CLOSE: 'Close',
   CONCEPT: 'Concept',
+  CONFIRM_DELETION: 'Confirm deletion',
+  CONFIRM_DELETION_CAPTION:
+    'Are you sure you want to permanently delete this transaction? This action cannot be undone.',
   CONTINUE: 'Continue',
   CREATE: 'Create',
   CURRENCY: 'Currency',

@@ -10,3 +10,4 @@ export * from './Transactions';
 export * from './Account';
 export * from './Transaction';
 export * from './Clone';
+export * from './Confirm';

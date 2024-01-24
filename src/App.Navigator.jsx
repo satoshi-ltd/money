@@ -12,6 +12,7 @@ import {
   Account,
   Accounts,
   Clone,
+  Confirm,
   Dashboard,
   Onboarding,
   Session,
@@ -109,6 +110,7 @@ export const Navigator = () => {
         <Stack.Screen name="transaction" component={Transaction} options={{ ...OPTIONS.MODAL }} />
         <Stack.Screen name="clone" component={Clone} options={OPTIONS.MODAL} />
         <Stack.Screen name="account" component={Account} options={{ ...OPTIONS.MODAL }} />
+        <Stack.Screen name="confirm" component={Confirm} options={{ ...OPTIONS.MODAL }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

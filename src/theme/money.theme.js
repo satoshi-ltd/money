@@ -1,5 +1,4 @@
 import { DefaultTheme } from '../__design-system__/theme';
-// import { colorOpacity } from '../common/colorOpacity';
 
 const FONT_L = 21; // subtitle 22
 const LINE_HEIGHT = 1.33;

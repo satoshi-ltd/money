@@ -16,7 +16,7 @@ const {
 
 const INITIAL_STATE = { form: {}, valid: false };
 
-const Clone = ({ route: { params = {} } = {}, navigation: { goBack } = {} }) => {
+const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } = {} }) => {
   const store = useStore();
 
   const { addTx, deleteTx, updateTx, vaults } = store;
@@ -37,9 +37,19 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack } = {} }) => 
 
     if (edit) await updateTx({ hash: dataSource.hash, ...state.form });
     else if (clone) await addTx({ ...tx });
-    else if (remove) await deleteTx({ hash });
+    else if (remove) {
+      navigate('confirm', {
+        caption: L10N.CONFIRM_DELETION_CAPTION,
+        title: L10N.CONFIRM_DELETION,
+        onCancel: () => goBack(),
+        onAccept: async () => {
+          await deleteTx({ hash });
+          goBack();
+        },
+      });
+    }
 
-    goBack();
+    if (!remove) goBack();
   };
 
   const { vault, title = '', type = EXPENSE } = dataSource;
@@ -71,11 +81,6 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack } = {} }) => 
       </View>
     </Modal>
   );
-};
-
-Clone.propTypes = {
-  route: PropTypes.any,
-  navigation: PropTypes.any,
 };
 
 export { Clone };

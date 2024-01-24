@@ -25,5 +25,6 @@ export const style = StyleSheet.create({
   content: {
     paddingHorizontal: '$spaceM',
     paddingBottom: '$spaceM',
+    paddingTop: '$spaceS',
   },
 });
