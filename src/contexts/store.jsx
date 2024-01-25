@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { createContext, useContext, useLayoutEffect, useState } from 'react';
+import StyleSheet from 'react-native-extended-stylesheet';
 
 import { consolidate, parseTx, parseVault } from './modules';
 import { DEFAULTS, FILENAME } from './store.constants';
 import { StorageService } from '../services';
+import { DarkTheme, LightTheme } from '../theme';
 
 const StoreContext = createContext(`context:store`);
 
@@ -13,6 +15,9 @@ const StoreProvider = ({ children }) => {
   useLayoutEffect(() => {
     (async () => {
       const store = await new StorageService({ defaults: DEFAULTS, filename: FILENAME });
+
+      const { theme = 'light' } = await store.get('settings').value;
+      StyleSheet.build(theme === 'light' ? LightTheme : DarkTheme);
 
       setState({
         store,

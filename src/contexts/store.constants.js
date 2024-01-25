@@ -10,6 +10,7 @@ const DEFAULTS = {
     maskAmount: false,
     onboarded: false,
     pin: undefined,
+    theme: 'light',
   },
   rates: {},
   accounts: [],
