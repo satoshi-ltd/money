@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
 import { changeBaseCurrency, getLatestRates } from './helpers';
@@ -8,7 +9,7 @@ import { Heading, SliderCurrencies } from '../../../components';
 import { useStore } from '../../../contexts';
 import { L10N } from '../../../modules';
 
-const Settings = () => {
+const Settings = ({ navigation = {} }) => {
   const store = useStore();
 
   const {
@@ -37,7 +38,7 @@ const Settings = () => {
         </Text>
       </Card>
 
-      <Backup style={style.offset} />
+      <Backup navigation={navigation} style={style.offset} />
 
       <View>
         <Heading value={L10N.CHOOSE_CURRENCY}>
@@ -59,5 +60,9 @@ const Settings = () => {
 };
 
 Settings.displayName = 'Settings';
+
+Settings.propTypes = {
+  navigation: PropTypes.any,
+};
 
 export { Settings };
