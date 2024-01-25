@@ -11,7 +11,7 @@ import { useStore } from '../../contexts';
 import { requestNotificationPermission } from '../../modules';
 
 const Onboarding = ({ navigation: { navigate } }) => {
-  const scrollViewRef = useRef(null);
+  const scrollview = useRef(null);
   const { updateSettings } = useStore();
   const { width } = useWindowDimensions();
 
@@ -29,8 +29,8 @@ const Onboarding = ({ navigation: { navigate } }) => {
       updateSettings({ onboarded: true });
       await requestNotificationPermission();
       navigate('session');
-    } else if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({ x: width * (currentIndex + 1), animated: true });
+    } else if (scrollview.current) {
+      scrollview.current.scrollTo({ x: width * (currentIndex + 1), animated: true });
     }
   };
 
@@ -40,7 +40,7 @@ const Onboarding = ({ navigation: { navigate } }) => {
 
   return (
     <SafeAreaView style={style.screen}>
-      <ScrollView horizontal ref={scrollViewRef} snap={width} onScroll={handleScroll}>
+      <ScrollView horizontal ref={scrollview} snap={width} onScroll={handleScroll}>
         {SLIDES.map(({ image, message, title }, index) => (
           <View key={index} style={[style.slide, { width }]}>
             <Image

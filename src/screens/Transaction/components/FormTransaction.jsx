@@ -10,13 +10,13 @@ import { getIcon, L10N } from '../../../modules';
 import { queryCategories } from '../helpers';
 
 const FormTransaction = ({ form = {}, onChange, type, vault = {} }) => {
-  const scrollViewRef = useRef(null);
+  const scrollview = useRef(null);
   const { width } = useWindowDimensions();
 
   useEffect(() => {
     const index = categories.findIndex(({ key }) => key === form.category);
     setTimeout(() => {
-      scrollViewRef.current?.scrollTo({ x: (index - 1) * optionSnap });
+      scrollview.current?.scrollTo({ x: (index - 1) * optionSnap, animated: true });
     }, 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form]);
@@ -35,7 +35,7 @@ const FormTransaction = ({ form = {}, onChange, type, vault = {} }) => {
 
   return (
     <>
-      <ScrollView horizontal ref={scrollViewRef} snap={optionSnap} style={style.scrollView} width={width}>
+      <ScrollView horizontal ref={scrollview} snap={optionSnap} style={style.scrollView} width={width}>
         {categories.map((item, index) => (
           <Option
             key={item.key}

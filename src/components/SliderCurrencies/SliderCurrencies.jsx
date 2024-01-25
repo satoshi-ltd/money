@@ -10,12 +10,12 @@ import { useStore } from '../../contexts';
 import { Option } from '../Option';
 
 const SliderCurrencies = ({ selected, onChange, ...others }) => {
-  const scrollViewRef = useRef(null);
+  const scrollview = useRef(null);
   const store = useStore();
   const { width } = useWindowDimensions();
 
   useEffect(() => {
-    scrollViewRef.current?.scrollTo({ x: (index - 1) * optionSnap });
+    scrollview.current?.scrollTo({ x: (index - 1) * optionSnap, animated: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected]);
 
@@ -24,7 +24,7 @@ const SliderCurrencies = ({ selected, onChange, ...others }) => {
   const optionSnap = StyleSheet.value('$optionSnap');
 
   return (
-    <ScrollView {...others} horizontal ref={scrollViewRef} snap={optionSnap} width={width}>
+    <ScrollView {...others} horizontal ref={scrollview} snap={optionSnap} width={width}>
       {currencies.map((currency, index) => (
         <Option
           key={index}

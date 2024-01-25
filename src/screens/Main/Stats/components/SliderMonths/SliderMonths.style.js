@@ -10,10 +10,10 @@ export const style = StyleSheet.create({
   },
 
   firstOption: {
-    marginLeft: '$offset',
+    marginLeft: '$viewOffset',
   },
 
   lastOption: {
-    marginRight: '$offset',
+    marginRight: '$viewOffset',
   },
 });

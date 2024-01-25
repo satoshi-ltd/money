@@ -12,11 +12,11 @@ import { C, L10N } from '../../../../../modules';
 const { STATS_MONTHS_LIMIT } = C;
 
 const SliderMonths = ({ index, onChange }) => {
-  const scrollViewRef = useRef(null);
+  const scrollview = useRef(null);
   const { width } = useWindowDimensions();
 
   useEffect(() => {
-    scrollViewRef.current?.scrollTo({ x: (index - 1) * optionSnap });
+    scrollview.current?.scrollTo({ x: (index - 1) * optionSnap, animated: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index]);
 
@@ -24,11 +24,11 @@ const SliderMonths = ({ index, onChange }) => {
   const optionSnap = StyleSheet.value('$optionSnap');
 
   return (
-    <ScrollView horizontal ref={scrollViewRef} snap={optionSnap} width={width} style={style.scrollView}>
+    <ScrollView horizontal ref={scrollview} snap={optionSnap} width={width} style={style.scrollView}>
       {months.map(({ month, year }, i) => (
         <Option
           key={`${month}-${year}`}
-          caption={L10N.MONTHS[month].substr(0, 3).toUpperCase()}
+          caption={L10N.MONTHS[month].substring(0, 3).toUpperCase()}
           highlight={index === i}
           legend={year.toString()}
           onPress={() => onChange({ index: i, month, year })}
