@@ -25,21 +25,21 @@ export const style = StyleSheet.create({
   },
 
   inputVault: {
+    alignItems: 'center',
     backgroundColor: '$colorBase',
     borderColor: '$colorBorder',
-    borderStyle: '$borderStyle',
-    borderLeftWidth: '$borderWidth',
-    borderRightWidth: '$borderWidth',
+    borderStyle: '$inputBorderStyle',
+    borderLeftWidth: '$inputBorderWidth',
+    borderRightWidth: '$inputBorderWidth',
     display: 'flex',
     gap: '$spaceXS',
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'center',
     padding: '$spaceS',
     width: '100%',
   },
 
-  inputTitle: {
+  inputDestination: {
     marginTop: '$borderWidth * -1',
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,

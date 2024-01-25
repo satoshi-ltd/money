@@ -6,7 +6,7 @@ import { style } from './FormTransfer.style';
 import { Icon, Pressable, ScrollView, Text } from '../../../__design-system__';
 import { InputCurrency, Option } from '../../../components';
 import { useStore } from '../../../contexts';
-import { currencyDecimals, ICON } from '../../../modules';
+import { currencyDecimals, ICON, L10N } from '../../../modules';
 import { getVault, queryAvailableVaults } from '../helpers';
 
 const FormTransaction = ({ form = {}, onChange, vault = {} }) => {
@@ -57,6 +57,7 @@ const FormTransaction = ({ form = {}, onChange, vault = {} }) => {
   return (
     <>
       <InputCurrency
+        showCurrency
         value={form.value}
         vault={vault}
         onChange={(value) => handleField('value', value)}
@@ -64,10 +65,10 @@ const FormTransaction = ({ form = {}, onChange, vault = {} }) => {
       />
 
       {!selectVault && (
-        <Pressable style={style.inputVault} onPress={() => setSelectVault(true)}>
-          <Icon color="contentLight" name={ICON.OTHERS} />
-          <Text color="contentLight" detail>
-            $Change destination
+        <Pressable onPress={() => setSelectVault(true)} style={style.inputVault}>
+          <Icon body color="contentLight" name={ICON.OTHERS} />
+          <Text caption color="contentLight">
+            {L10N.CHANGE_DESTINATION}
           </Text>
         </Pressable>
       )}
@@ -94,10 +95,11 @@ const FormTransaction = ({ form = {}, onChange, vault = {} }) => {
       ) : (
         <InputCurrency
           currency={form.to ? form.to.currency : baseCurrency}
+          showCurrency
           value={form.to ? form.exchange : undefined}
           vault={getVault(form.destination, vaults)}
           onChange={(value) => handleField('exchange', value)}
-          style={style.inputTitle}
+          style={style.inputDestination}
         />
       )}
     </>
