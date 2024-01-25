@@ -5,7 +5,7 @@ import { Image } from 'react-native';
 import { style } from './Banner.style';
 import { Text, View } from '../../__design-system__';
 
-const DEFAULT_BANNER = require('../../../assets/images/notfound.png');
+const DEFAULT_BANNER = require('../../../assets/images/not-found.png');
 
 const Banner = ({ align = 'center', caption, image = DEFAULT_BANNER, title, ...others }) => (
   <View style={[style.banner, style[align], others.style]}>

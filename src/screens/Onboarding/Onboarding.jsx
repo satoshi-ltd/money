@@ -4,7 +4,7 @@ import { SafeAreaView, useWindowDimensions } from 'react-native';
 import { Image } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
-import { SLIDES } from './Onboarding.constants';
+import { IMAGE_SIZE, SLIDES } from './Onboarding.constants';
 import { style } from './Onboarding.style';
 import { Button, Pagination, ScrollView, Text, View } from '../../__design-system__';
 import { useStore } from '../../contexts';
@@ -46,7 +46,7 @@ const Onboarding = ({ navigation: { navigate } }) => {
             <Image
               resizeMode="contain"
               source={image}
-              style={[style.image, { height: slideSize * 1.2, width: slideSize }]}
+              style={[style.image, slideSize <= IMAGE_SIZE ? { height: slideSize * 1.2, width: slideSize } : undefined]}
             />
             <Text bold title>
               {title}

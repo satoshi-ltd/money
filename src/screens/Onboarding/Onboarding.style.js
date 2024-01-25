@@ -1,5 +1,7 @@
 import StyleSheet from 'react-native-extended-stylesheet';
 
+import { IMAGE_SIZE } from './Onboarding.constants';
+
 export const style = StyleSheet.create({
   screen: {
     height: '100%',
@@ -18,7 +20,9 @@ export const style = StyleSheet.create({
   },
 
   image: {
+    height: IMAGE_SIZE * 1.2,
     marginBottom: '$spaceM',
+    width: IMAGE_SIZE,
   },
 
   footer: {
