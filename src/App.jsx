@@ -4,9 +4,9 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 import { Navigator } from './App.Navigator';
 import { StoreProvider } from './contexts';
-import { MoneyTheme } from './theme/money.theme';
+import { LightTheme } from './theme';
 
-StyleSheet.build(MoneyTheme);
+StyleSheet.build(LightTheme);
 
 export const App = () => {
   const [ready] = useFonts({

@@ -1,19 +1,22 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import StyleSheet from 'react-native-extended-stylesheet';
 
 import { changeBaseCurrency, getLatestRates } from './helpers';
 import { Backup } from './Settings.Backup';
 import { style } from './Settings.style';
-import { Action, Card, Screen, Text, View } from '../../../__design-system__';
+import { Action, Button, Card, Screen, Text, View } from '../../../__design-system__';
 import { Heading, SliderCurrencies } from '../../../components';
 import { useStore } from '../../../contexts';
 import { L10N } from '../../../modules';
+import { DarkTheme, LightTheme } from '../../../theme';
 
 const Settings = ({ navigation = {} }) => {
   const store = useStore();
 
   const {
-    settings: { baseCurrency, lastRatesUpdate = '' },
+    updateSettings,
+    settings: { baseCurrency, lastRatesUpdate = '', theme },
   } = store;
 
   const [busy, setBusy] = useState(false);
@@ -30,6 +33,11 @@ const Settings = ({ navigation = {} }) => {
     setBusy(false);
   };
 
+  const toggleTheme = () => {
+    StyleSheet.build(StyleSheet.value('$theme') === 'light' ? DarkTheme : LightTheme);
+    updateSettings({ theme: StyleSheet.value('$theme') });
+  };
+
   return (
     <Screen gap>
       <Card style={style.offset}>
@@ -38,6 +46,14 @@ const Settings = ({ navigation = {} }) => {
         </Text>
       </Card>
 
+      <Card style={style.offset}>
+        <View row spaceBetween>
+          <Text bold>Dark Mode</Text>
+          <Button small onPress={toggleTheme}>
+            {theme === 'dark' ? 'Deactivate' : 'Activate'}
+          </Button>
+        </View>
+      </Card>
       <Backup navigation={navigation} style={style.offset} />
 
       <View>

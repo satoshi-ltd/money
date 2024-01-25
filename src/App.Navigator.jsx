@@ -2,7 +2,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useEffect } from 'react';
+import StyleSheet from 'react-native-extended-stylesheet';
 
 import { Icon, Text } from './__design-system__';
 import { useStore } from './contexts';
@@ -21,6 +22,7 @@ import {
   Transaction,
   Transactions,
 } from './screens';
+import { DarkTheme, LightTheme } from './theme';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -92,11 +94,15 @@ const Tabs = () => (
 );
 
 export const Navigator = () => {
-  const { settings: { onboarded = true, pin } = {} } = useStore();
+  const { settings: { onboarded = true, pin, theme = 'light' } = {} } = useStore();
+
+  useEffect(() => {
+    StyleSheet.build(StyleSheet.value('$theme') === 'light' ? LightTheme : DarkTheme);
+  }, []);
 
   return (
     <NavigationContainer theme={getNavigationTheme()}>
-      <StatusBar style="dark" translucent />
+      <StatusBar style={theme === 'dark' ? 'light' : 'dark'} translucent />
 
       <Stack.Navigator
         initialRouteName={onboarded ? (C.IS_DEV && pin ? 'main' : 'session') : 'onboarding'}

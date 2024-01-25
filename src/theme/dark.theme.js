@@ -1,13 +1,15 @@
+// import { MoneyTheme } from './money.theme';
 import { DefaultTheme } from '../__design-system__/theme';
 
-export const MoneyTheme = {
+export const DarkTheme = {
+  $theme: 'dark',
+
   ...DefaultTheme,
 
-  // $colorAccent: '#ff5c5c',
-  // $colorBase: '#000',
-  // $colorBorder: '#222',
-  // $colorContent: '#fff',
-  // $colorContentLight: '#999',
+  $colorBase: '#000000',
+  $colorBorder: '#222222',
+  $colorContent: '#ffffff',
+  $colorContentLight: '#999999',
 
   // -- <Icon> -----------------------------------------------------------------
   $iconFamily: 'shield-icons',
