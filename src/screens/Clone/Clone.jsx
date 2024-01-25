@@ -41,7 +41,6 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
       navigate('confirm', {
         caption: L10N.CONFIRM_DELETION_CAPTION,
         title: L10N.CONFIRM_DELETION,
-        onCancel: () => goBack(),
         onAccept: async () => {
           await deleteTx({ hash });
           goBack();
@@ -81,6 +80,11 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
       </View>
     </Modal>
   );
+};
+
+Clone.propTypes = {
+  route: PropTypes.any,
+  navigation: PropTypes.any,
 };
 
 export { Clone };
