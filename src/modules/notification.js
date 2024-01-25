@@ -1,4 +1,7 @@
 import * as Notifications from 'expo-notifications';
+import { Platform } from 'react-native';
+
+const IS_WEB = Platform.OS === 'web';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -11,6 +14,7 @@ Notifications.setNotificationHandler({
 const SECONDS_PER_WEEK = 7 * 24 * 60 * 60;
 
 export const setNextNotification = async () => {
+  if (IS_WEB) return;
   const { status } = await Notifications.getPermissionsAsync();
   if (status === 'granted') {
     await Notifications.cancelAllScheduledNotificationsAsync();
@@ -29,6 +33,7 @@ export const setNextNotification = async () => {
 };
 
 export const requestNotificationPermission = async () => {
+  if (IS_WEB) return;
   const { status } = await Notifications.requestPermissionsAsync();
 
   if (status === 'granted') {
