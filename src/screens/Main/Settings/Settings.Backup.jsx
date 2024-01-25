@@ -3,15 +3,15 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Platform } from 'react-native';
 
 import { Button, Card, View, Text } from '../../../__design-system__';
 import { useStore } from '../../../contexts';
-import { setNextNotification } from '../../../modules';
+import { C, L10N, setNextNotification } from '../../../modules';
+
+const { IS_WEB } = C;
 
 const Backup = ({ navigation: { navigate } = {}, ...others }) => {
   const { vaults: accounts, importBackup, settings, txs } = useStore();
-  const IS_WEB = Platform.OS === 'web';
 
   const handleExport = async () => {
     try {
@@ -57,10 +57,11 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
 
         if (jsonData.settings && jsonData.accounts && jsonData.txs) {
           navigate('confirm', {
-            caption: `Are you sure you want to import the selected JSON file? This will update your current financial data with the information from the file. The import contains ${jsonData.accounts.length} accounts and ${jsonData.txs.length} transactions. Please ensure that the file is correct and up-to-date. This action cannot be undone.`,
-            title: 'Confirm Import',
+            caption: L10N.CONFIRM_IMPORT_CAPTION(jsonData),
+            title: L10N.CONFIRM_IMPORT,
             onAccept: async () => {
               await importBackup(jsonData);
+              navigate('dashboard');
               alert('Imported successfully.');
             },
           });
@@ -75,7 +76,7 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
     <Card gap {...others}>
       <View>
         <Text bold subtitle>
-          Import / Export
+          {`${L10N.IMPORT} / ${L10N.EXPORT}`}
         </Text>
         <Text caption color="contentLight">
           Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minima alias natus quia tempora praesentium qui
@@ -85,10 +86,10 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
 
       <View gap row>
         <Button flex outlined onPress={handleExport}>
-          Export
+          {L10N.EXPORT}
         </Button>
         <Button flex onPress={handleImport}>
-          Import
+          {L10N.IMPORT}
         </Button>
       </View>
     </Card>
