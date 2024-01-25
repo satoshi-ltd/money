@@ -32,7 +32,7 @@ const PriceFriendly = ({
     ...others,
     bold,
     children: symbol,
-    style: style.symbol,
+    style: [style.symbol, others.style],
   };
 
   const formatedValue = format({
@@ -40,6 +40,7 @@ const PriceFriendly = ({
     mask: maskedAmount,
     numberOfLines: 1,
     value: Math.abs(value),
+    style: [others.style],
   });
 
   return (

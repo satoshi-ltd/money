@@ -2,10 +2,10 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { Keyboard, TextInput } from 'react-native';
 
-import { style } from './Input.style';
+import { style } from './InputText.style';
 import { Text, View } from '../../__design-system__';
 
-const Input = ({ keyboard = 'default', label, value = '', onChange, ...others }) => {
+const InputText = ({ keyboard = 'default', label, value = '', onChange, ...others }) => {
   const [focus, setFocus] = useState(false);
 
   const handleChange = (next = '') => {
@@ -36,11 +36,11 @@ const Input = ({ keyboard = 'default', label, value = '', onChange, ...others })
   );
 };
 
-Input.propTypes = {
+InputText.propTypes = {
   keyboard: PropTypes.string,
   label: PropTypes.string.isRequired,
   value: PropTypes.string,
   onChange: PropTypes.func,
 };
 
-export { Input };
+export { InputText };

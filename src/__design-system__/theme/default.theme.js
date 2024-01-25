@@ -1,5 +1,3 @@
-import { opacity } from './modules/opacity';
-
 export const DefaultTheme = {
   // -- palette ----------------------------------------------------------------
   // $colorAccent: '#FBD90C',
@@ -43,8 +41,10 @@ export const DefaultTheme = {
   // -- <Input> ----------------------------------------------------------------
   $inputBackgroundColor: '$colorBorder',
   $inputBorderColor: '$inputBackgroundColor',
+  $inputBorderRadius: '$borderRadius',
   $inputBorderStyle: '$borderStyle',
   $inputBorderWidth: '$borderWidth',
+  $inputColor: '$colorContent',
   $inputFontFamily: 'font-bold',
   $inputFontWeight: '$fontWeightDefault',
   $inputFontSize: '$fontSizeBody',

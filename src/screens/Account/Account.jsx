@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 // import { Form } from './Account.Form';
 import { style } from './Account.style';
 import { Button, Modal, Text, View } from '../../__design-system__';
-import { Input, InputCurrency, SliderCurrencies } from '../../components';
+import { InputCurrency, InputText, SliderCurrencies } from '../../components';
 import { useStore } from '../../contexts';
 import { L10N } from '../../modules';
 
@@ -75,7 +75,7 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
         style={style.inputCurrency}
       />
 
-      <Input
+      <InputText
         label={L10N.NAME}
         value={form.title}
         onChange={(value) => handleChange('title', value)}

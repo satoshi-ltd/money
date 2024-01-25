@@ -8,10 +8,6 @@ export const style = StyleSheet.create({
     borderStyle: '$inputBorderStyle',
     borderWidth: '$inputBorderWidth',
     minHeight: '$inputTextHeight',
-    paddingLeft: '$inputPaddingHorizontaL',
-    paddingRight: '$inputPaddingHorizontaL',
-    paddingBottom: '$inputPaddingVertical',
-    paddingTop: '$inputPaddingVertical',
   },
 
   focus: {
@@ -25,26 +21,16 @@ export const style = StyleSheet.create({
     fontSize: '$inputTextFontSize',
     fontWeight: '$inputFontWeight',
     height: '$inputTextHeight',
-    opacity: 0,
-    position: 'absolute',
-    right: 0,
-    textAlign: 'right',
-    top: 0,
-    left: 0,
-    zIndex: 1,
+    paddingLeft: '$inputPaddingHorizontaL',
+    paddingRight: '$inputPaddingHorizontaL',
+    paddingBottom: '$inputPaddingVertical',
+    paddingTop: '$inputPaddingVertical + $spaceM',
     ...Platform.select({ web: { outlineWidth: 0 } }),
   },
 
-  value: {
-    color: '$inputColor',
-  },
-
-  amounts: {
-    alignItems: 'flex-end',
-    flex: 1,
-  },
-
-  currentBalance: {
-    gap: '$spaceXXS',
+  label: {
+    position: 'absolute',
+    left: '$inputPaddingHorizontaL',
+    top: '$inputPaddingVertical - $spaceXS',
   },
 });

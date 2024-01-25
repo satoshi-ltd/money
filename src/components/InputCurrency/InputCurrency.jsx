@@ -12,6 +12,7 @@ import { PriceFriendly } from '../PriceFriendly';
 
 const InputCurrency = ({
   label = '',
+  showCurrency = false,
   onChange,
   vault: { currency, currentBalance, hash: vaultHash, title } = {},
   ...others
@@ -34,18 +35,18 @@ const InputCurrency = ({
   };
 
   return (
-    <View style={[style.container, focus && style.focus, others.style]}>
-      {vaultHash && <CurrencyLogo color="border" currency={currency} />}
+    <View gap row style={[style.container, focus && style.focus, others.style]}>
+      {showCurrency && <CurrencyLogo color="border" currency={currency} />}
       <View>
         <Text bold={!!vaultHash} caption={!vaultHash}>
           {title || label}
         </Text>
         {vaultHash && (
-          <View style={style.currentBalance}>
+          <View row style={style.currentBalance}>
             <Text color="contentLight" caption>
               {L10N.BALANCE}
             </Text>
-            <PriceFriendly caption color="contentLight" currency={currency} maskAmount={false} value={currentBalance} />
+            <PriceFriendly caption color="contentLight" currency={currency} value={currentBalance} />
           </View>
         )}
       </View>
@@ -57,13 +58,13 @@ const InputCurrency = ({
           maskAmount={false}
           subtitle
           value={others.value ? parseFloat(others.value, 10) : undefined}
+          style={style.value}
         />
         {exchange && (
           <PriceFriendly
+            caption
             color="contentLight"
             currency={baseCurrency}
-            caption
-            maskAmount={false}
             value={parseFloat(others.value || 0, 10) / exchange}
           />
         )}
@@ -89,6 +90,7 @@ const InputCurrency = ({
 
 InputCurrency.propTypes = {
   label: PropTypes.string,
+  showCurrency: PropTypes.bool,
   vault: PropTypes.shape({}),
   onChange: PropTypes.func.isRequired,
 };

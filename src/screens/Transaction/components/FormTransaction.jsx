@@ -5,7 +5,7 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './FormTransaction.style';
 import { ScrollView } from '../../../__design-system__';
-import { Input, InputCurrency, Option } from '../../../components';
+import { InputCurrency, InputText, Option } from '../../../components';
 import { getIcon, L10N } from '../../../modules';
 import { queryCategories } from '../helpers';
 
@@ -60,7 +60,7 @@ const FormTransaction = ({ form = {}, onChange, type, vault = {} }) => {
         style={style.inputCurrency}
       />
 
-      <Input
+      <InputText
         label={L10N.CONCEPT}
         value={form.title}
         onChange={(value) => handleField('title', value)}
