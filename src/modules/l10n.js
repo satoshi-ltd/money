@@ -1,13 +1,8 @@
 export const L10N = {
   ACCEPT: 'Accept',
-  ACTIVE: 'Active',
   ACTIVITY: 'Analytics',
-  ADD: 'Add',
-  AMOUNT: 'Amount',
-  AUTHENTICATE: 'Authenticate',
 
   BALANCE: 'Balance',
-  BLOCKCHAIN_STATE: 'Blockchain state',
 
   CANCEL: 'Cancel',
   CATEGORIES: [
@@ -37,21 +32,16 @@ export const L10N = {
       99: 'Swap',
     },
   ],
-  CATEGORY: 'Category',
-  CHANGE: 'Change',
   CHANGE_DESTINATION: 'Change destination',
-  CHOOSE_TRANSACTION_TYPE: 'Choose type of transaction',
   CHOOSE_CURRENCY: 'Base currency',
-  CLEAR: 'Clear',
   CLONE: 'Clone',
-  CLONE_CAPTION: 'To make your life easier you can clone this transaction with a simple touch of the button.',
   CLOSE: 'Close',
   CONCEPT: 'Concept',
   CONFIRM_DELETION: 'Confirm deletion',
-  CONFIRM_DELETION_CAPTION:
-    'Are you sure you want to permanently delete this transaction? This action cannot be undone.',
-  CONTINUE: 'Continue',
-  CREATE: 'Create',
+  CONFIRM_DELETION_CAPTION: 'Confirm permanent deletion of this transaction? This action is irreversible.',
+  CONFIRM_IMPORT: 'Confirm import',
+  CONFIRM_IMPORT_CAPTION: ({ accounts = [], txs = [] }) =>
+    `Ready to import the JSON file? It'll update your finances with ${accounts.length} accounts and ${txs.length} transactions. Just make sure the file is good to go—this action can't be undone!"`,
   CURRENCY: 'Currency',
   CURRENCY_NAME: {
     AUD: 'Australian Dollar',
@@ -75,36 +65,25 @@ export const L10N = {
   },
   CURRENCIES: 'Currencies',
 
-  DASHBOARD: 'Dashboard',
-  DAY: 'day',
   DAY_NAMES: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
   DELETE: 'Delete',
-  DESTINATION: 'To',
-  DEVELOPER_SETTINGS: 'Developer settings',
 
-  ENTER_PIN: 'Enter your pin',
-  ENTER_PIN_OR_FINGERPRINT: 'Enter your pin or fingerprint',
   ERROR_SERVICE_RATES: 'Something was wrong trying to get updated currencies rates. Check that you are online.',
   EXPENSE: 'Expense',
   EXPENSES: 'Expenses',
+  EXPORT: 'Export',
 
   FIRST_ACCOUNT: 'Your first account',
   FIRST_ACCOUNT_CAPTION:
     'Choose the currency you use the most. Later you can create more accounts with different currencies.',
-  FORKED_CORRECTLY: 'All transactions have been successfully transferred to this device.',
-  FROM: 'From',
 
-  GET: 'Get',
-  GET_STARTED: 'Get started',
-
-  IMPORT: 'IMPORT',
+  IMPORT: 'Import',
   INCOME: 'Income',
   INCOMES: 'Incomes',
   INITIAL_BALANCE: 'Initial balance',
   INVESTMENTS: 'Investments',
 
   LAST_TRANSACTIONS: 'Recent activity',
-  LATER: 'Later',
 
   MONTHS: [
     'January',
@@ -125,64 +104,25 @@ export const L10N = {
   NEW: 'New',
   NO_TRANSACTIONS: "You don't have any transaction.",
 
-  ONBOARDING_COMPLETED_TITLE: 'Ready to go!',
-  ONBOARDING_COMPLETED_CAPTION: 'Your device has been initialized successfully & is ready for use.',
-
-  OFFLINE: 'OFFLINE',
-  OTHERS: 'Others',
   OVERALL_BALANCE: 'Overall Balance',
 
   PIN: 'Your PIN code',
   PIN_CHOOSE: 'Choose PIN code',
-  PROGRESSION: 'Progression',
-
-  QR_READER: 'Camera',
 
   SAVE: 'Save',
   SEARCH: 'Search',
-  SEE_ALL: 'See All',
   SETTINGS: 'Settings',
-  SETTING_1_TITLE: 'Hide amounts',
-  SETTING_1_CAPTION: 'Switch visibility just touching it',
-  STATS: 'Stats',
-  STATS_CAPTION: 'In this summary you can see a breakdown of your operations in the selected category.',
-  SYNC: 'Sync',
-  SYNCING: 'Syncing...',
   SYNC_RATES_SENTENCE: 'Last update on',
   SYNC_RATES_CTA: 'Update Rates',
-  SYNC_CAPTION: 'It seems like you were offline for a while, you can sync your blockchain now.',
-  SYNC_NOW: 'Sync Now',
-  SYNC_BUSY: 'Please wait a bit meanwhile all your transactions get sync.',
-  SYNC_DONE: 'All your transactions have been synced.',
   SWAP: 'Swap',
 
-  TAP_TO_UPDATE: 'Tap to update',
   TODAY: 'Today',
   TRANSACTION: ['Expense', 'Income', 'Swap'],
   TRANSACTIONS: 'Transactions',
-  TRANSFER: 'Transfer',
   TRANSFERS: 'Transfers',
-  TRANSFER_TXS: 'Transfer transactions',
-  TRANSFER_TXS_CAPTION: 'Transfer all your data from this device to a new one just reading this QR in the new device.',
-  TRANSFER_TXS_CAMERA: 'Read the QR code from the device you want get all its transactions and accounts.',
-  TRANSFER_TXS_IMPORT:
-    // eslint-disable-next-line max-len
-    'You are about to import all transactions and accounts from another device. Keep in mind that all your data will be deleted.',
-  TRANSFER_CAPTION: 'Transfer any amount to another of your accounts.',
-  TYPE: 'Type',
 
   ACCOUNT: 'Account',
   ACCOUNTS: 'Accounts',
-  ACCOUNT_CAPTION:
-    'You can create as many accounts as you want. You can continue using your base currency or choose any other.',
-  VISIBILITY: 'Visibility',
 
   WAIT: 'Syncing...',
-  WARNING: 'Warning',
-  WELCOME_TITLE: 'Take back control of your money.',
-  WELCOME_CAPTION: 'Your private finance accounting running on your own device.',
-
-  WITHOUT_TXS: 'No transactions',
-
-  YESTERDAY: 'Yesterday',
 };
