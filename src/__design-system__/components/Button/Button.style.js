@@ -20,7 +20,7 @@ export const style = StyleSheet.create({
   },
 
   outlined: {
-    backgroundColor: '$colorBase',
+    backgroundColor: 'transparent',
     borderColor: '$colorContent',
     borderStyle: '$borderStyle',
     borderWidth: '$borderWidth',
@@ -42,6 +42,6 @@ export const style = StyleSheet.create({
 
   text: {
     fontFamily: '$buttonFontFamily',
-    buttonFontWeight: '$buttonFontFamily',
+    fontWeight: '$buttonFontWeight',
   },
 });

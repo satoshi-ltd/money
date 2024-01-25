@@ -38,4 +38,4 @@ const style = StyleSheet.create({
 });
 
 export const getSize = ({ title, subtitle, caption, tiny }) =>
-  title ? style.title : subtitle ? style.subtitle : caption ? style.caption : tiny ? style.tiny : style.body;
+  title ? style.title : subtitle ? style.subtitle : caption ? style.caption : tiny ? style.tiny : style.subtitle;

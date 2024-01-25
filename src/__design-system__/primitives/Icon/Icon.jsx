@@ -7,11 +7,11 @@ import { getSize } from './modules';
 import { getColor } from '../Text/modules';
 
 const Icon = ({
-  color,
+  color = 'content',
   name,
   // -- size
   title,
-  subtitle = true,
+  subtitle,
   caption,
   tiny,
   ...others

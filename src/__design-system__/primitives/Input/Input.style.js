@@ -5,10 +5,10 @@ export const style = StyleSheet.create({
   input: {
     backgroundColor: '$inputBackgroundColor',
     borderColor: '$inputBorderColor',
-    borderRadius: '$borderRadius',
+    borderRadius: '$inputBorderRadius',
     borderStyle: '$inputBorderStyle',
     borderWidth: '$inputBorderWidth',
-    color: '$colorContent',
+    color: '$inputColor',
     fontFamily: '$inputFontFamily',
     fontSize: '$inputFontSize',
     fontWeight: '$inputFontWeight',

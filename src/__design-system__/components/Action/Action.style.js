@@ -8,6 +8,6 @@ export const style = StyleSheet.create({
 
   text: {
     fontFamily: '$buttonFontFamily',
-    buttonFontWeight: '$buttonFontFamily',
+    fontWeight: '$buttonFontWeight',
   },
 });
