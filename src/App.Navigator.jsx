@@ -29,30 +29,10 @@ const Tab = createBottomTabNavigator();
 const headerTitle = (props) => <Text bold {...props} subtitle />;
 
 const OPTIONS = {
-  MODAL: {
-    cardOverlayEnabled: true,
-    gestureEnabled: true,
-    // headerShown: true,
-    // presentation: 'modal',
-    presentation: 'transparentModal',
-  },
-
-  SCREEN: {
-    headerShown: false,
-    // headerLeft: () => <Text>Atras</Text>,
-    headerTitle,
-    headerShadowVisible: false, // applied here
-  },
-
-  TAB: {
-    headerShown: true,
-    tabBarLabel: '',
-    // tabBarIcon: ({ color, size }) => (
-    //   // Agrega aquí el icono para la pestaña
-    //   // Ejemplo: <Icon name="your-icon" color={color} size={size} />
-    // ),
-    headerTitle,
-  },
+  MODAL: { cardOverlayEnabled: true, gestureEnabled: true, presentation: 'transparentModal' },
+  MODAL_FULLSCREEN: { cardOverlayEnabled: true, gestureEnabled: true, headerShown: true, presentation: 'modal' },
+  SCREEN: { headerShadowVisible: false, headerShown: false, headerTitle },
+  TAB: { headerShown: true, headerTitle, tabBarShowLabel: false },
 };
 
 const Tabs = () => (
