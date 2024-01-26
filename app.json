@@ -3,6 +3,7 @@
     "name": "môney",
     "slug": "satoshi-ltd-money",
     "owner": "satoshi-ltd",
+    "scheme": "money",
     "description": "Your private finance ledger running on your own blockchain",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -17,7 +18,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.satoshi-ltd.money",
-      "buildNumber": "4",
+      "buildNumber": "5",
       "usesIcloudStorage": true
     },
     "android": {
@@ -26,7 +27,7 @@
         "backgroundColor": "#FFFEFE"
       },
       "package": "com.satoshi-ltd.money",
-      "versionCode": 4
+      "versionCode": 5
     },
     "web": {
       "favicon": "./assets/favicon.png"
