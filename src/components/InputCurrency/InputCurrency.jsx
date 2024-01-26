@@ -10,6 +10,8 @@ import { L10N } from '../../modules';
 import { CurrencyLogo } from '../CurrencyLogo';
 import { PriceFriendly } from '../PriceFriendly';
 
+const isNumber = /^[0-9]+([,.][0-9]+)?$|^[0-9]+([,.][0-9]+)?[.,]$/;
+
 const InputCurrency = ({
   label = '',
   showCurrency = false,
@@ -30,8 +32,8 @@ const InputCurrency = ({
   }, [baseCurrency, currency, rates]);
 
   const handleChange = (value = '') => {
-    if (isNaN(value) || value.length === 0) return onChange(undefined);
-    onChange(value);
+    if (!isNumber.test(value) || value.length === 0) return onChange(undefined);
+    onChange(value.replace(',', '.'));
   };
 
   return (
@@ -58,7 +60,7 @@ const InputCurrency = ({
           maskAmount={false}
           subtitle
           value={others.value ? parseFloat(others.value, 10) : undefined}
-          style={style.value}
+          style={[style.value, style.hide]}
         />
         {exchange && (
           <PriceFriendly
@@ -81,8 +83,8 @@ const InputCurrency = ({
         onChangeText={handleChange}
         onFocus={() => setFocus(true)}
         onSubmitEditing={Keyboard.dismiss}
-        style={style.input}
         value={others.value ? others.value.toString() : ''}
+        style={style.input}
       />
     </View>
   );

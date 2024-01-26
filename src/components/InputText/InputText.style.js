@@ -21,8 +21,8 @@ export const style = StyleSheet.create({
     fontSize: '$inputTextFontSize',
     fontWeight: '$inputFontWeight',
     height: '$inputTextHeight',
-    paddingLeft: '$inputPaddingHorizontaL',
-    paddingRight: '$inputPaddingHorizontaL',
+    paddingLeft: '$inputPaddingHorizontal',
+    paddingRight: '$inputPaddingHorizontal',
     paddingBottom: '$inputPaddingVertical',
     paddingTop: '$inputPaddingVertical + $spaceM',
     ...Platform.select({ web: { outlineWidth: 0 } }),
@@ -30,7 +30,7 @@ export const style = StyleSheet.create({
 
   label: {
     position: 'absolute',
-    left: '$inputPaddingHorizontaL',
+    left: '$inputPaddingHorizontal',
     top: '$inputPaddingVertical - $spaceXS',
   },
 });

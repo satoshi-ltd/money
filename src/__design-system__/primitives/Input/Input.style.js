@@ -12,8 +12,8 @@ export const style = StyleSheet.create({
     fontFamily: '$inputFontFamily',
     fontSize: '$inputFontSize',
     fontWeight: '$inputFontWeight',
-    paddingLeft: '$inputPaddingHorizontaL',
-    paddingRight: '$inputPaddingHorizontaL',
+    paddingLeft: '$inputPaddingHorizontal',
+    paddingRight: '$inputPaddingHorizontal',
     paddingBottom: '$inputPaddingVertical',
     paddingTop: '$inputPaddingVertical',
     ...Platform.select({

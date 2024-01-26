@@ -8,8 +8,8 @@ export const style = StyleSheet.create({
     borderStyle: '$inputBorderStyle',
     borderWidth: '$inputBorderWidth',
     minHeight: '$inputTextHeight',
-    paddingLeft: '$inputPaddingHorizontaL',
-    paddingRight: '$inputPaddingHorizontaL',
+    paddingLeft: '$inputPaddingHorizontal',
+    paddingRight: '$inputPaddingHorizontal',
     paddingBottom: '$inputPaddingVertical',
     paddingTop: '$inputPaddingVertical',
   },
@@ -20,23 +20,29 @@ export const style = StyleSheet.create({
   },
 
   input: {
+    bottom: 0,
     color: '$inputColor',
     fontFamily: '$inputFontFamily',
     fontSize: '$inputTextFontSize',
     fontWeight: '$inputFontWeight',
-    height: '$inputTextHeight',
-    opacity: 0,
+    left: 0,
+    opacity: 1,
+    paddingBottom: '$inputPaddingVertical + $inputBorderWidth',
+    paddingRight: '$inputPaddingHorizontal',
     position: 'absolute',
     right: 0,
     textAlign: 'right',
     top: 0,
-    left: 0,
     zIndex: 1,
     ...Platform.select({ web: { outlineWidth: 0 } }),
   },
 
   value: {
     color: '$inputColor',
+  },
+
+  hide: {
+    opacity: 0,
   },
 
   amounts: {
