@@ -10,9 +10,9 @@ StyleSheet.build(LightTheme);
 
 export const App = () => {
   const [ready] = useFonts({
-    'font-default': require('../assets/fonts/Roobert-400.ttf'),
-    // 'font-default': require('../assets/fonts/Rebond-Grotesque-600.ttf'),
-    'font-bold': require('../assets/fonts/Rebond-Grotesque-700.ttf'),
+    'font-default': require('../assets/fonts/VisbyCF-Medium.otf'),
+    'font-bold': require('../assets/fonts/VisbyCF-Bold.otf'),
+
     'shield-icons': require('../assets/fonts/Shield-Icons.ttf'),
   });
 

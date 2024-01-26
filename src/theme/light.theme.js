@@ -5,6 +5,10 @@ export const LightTheme = {
 
   ...DefaultTheme,
 
+  // -- typography -------------------------------------------------------------
+  $fontWeightDefault: 500,
+  $fontWeightBold: 700,
+
   // -- <Icon> -----------------------------------------------------------------
   $iconFamily: 'shield-icons',
   $iconGlyphs: require('../../assets/fonts/Shield-Icons.json'),
