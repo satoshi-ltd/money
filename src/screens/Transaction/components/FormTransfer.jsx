@@ -34,7 +34,7 @@ const FormTransaction = ({ form = {}, onChange, vault = {} }) => {
     const to = getVault(next.destination, vaults);
     let { exchange = 0, value = 0 } = next;
 
-    if (next.destination && exchange === form.exchange) {
+    if (next.destination && (exchange === form.exchange || !exchange)) {
       const keys = Object.keys(rates);
       const lastRates = rates[keys[keys.length - 1]];
 
@@ -48,7 +48,7 @@ const FormTransaction = ({ form = {}, onChange, vault = {} }) => {
 
     onChange({
       form: { ...next, from, to, exchange },
-      valid: next.value > 0 && next.destination !== undefined && next.exchange > 0,
+      valid: next.value > 0 && next.destination !== undefined && exchange > 0,
     });
   };
 
