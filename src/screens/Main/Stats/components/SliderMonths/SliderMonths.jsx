@@ -6,7 +6,7 @@ import StyleSheet from 'react-native-extended-stylesheet';
 import { getLastMonths } from './modules';
 import { style } from './SliderMonths.style';
 import { ScrollView } from '../../../../../__design-system__';
-import { Option } from '../../../../../components';
+import { CardOption } from '../../../../../components';
 import { C, L10N } from '../../../../../modules';
 
 const { STATS_MONTHS_LIMIT } = C;
@@ -26,7 +26,7 @@ const SliderMonths = ({ index, onChange }) => {
   return (
     <ScrollView horizontal ref={scrollview} snap={optionSnap} width={width} style={style.scrollView}>
       {months.map(({ month, year }, i) => (
-        <Option
+        <CardOption
           key={`${month}-${year}`}
           caption={L10N.MONTHS[month].substring(0, 3).toUpperCase()}
           highlight={index === i}

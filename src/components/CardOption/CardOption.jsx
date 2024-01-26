@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { style } from './Option.style';
+import { style } from './CardOption.style';
 import { Card, Icon, Pressable, Text } from '../../__design-system__';
 import { CurrencyLogo } from '../CurrencyLogo';
 
-const Option = ({
+const CardOption = ({
   caption,
   color = 'border',
   children,
@@ -45,7 +45,7 @@ const Option = ({
   );
 };
 
-Option.propTypes = {
+CardOption.propTypes = {
   caption: PropTypes.string,
   color: PropTypes.string,
   children: PropTypes.node,
@@ -57,4 +57,4 @@ Option.propTypes = {
   onPress: PropTypes.func,
 };
 
-export { Option };
+export { CardOption };

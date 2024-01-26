@@ -4,7 +4,7 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './FormTransfer.style';
 import { Icon, Pressable, ScrollView, Text } from '../../../__design-system__';
-import { InputCurrency, Option } from '../../../components';
+import { CardOption, InputCurrency } from '../../../components';
 import { useStore } from '../../../contexts';
 import { currencyDecimals, ICON, L10N } from '../../../modules';
 import { getVault, queryAvailableVaults } from '../helpers';
@@ -75,7 +75,7 @@ const FormTransaction = ({ form = {}, onChange, vault = {} }) => {
       {selectVault ? (
         <ScrollView horizontal snap={optionSnap} style={style.scrollView}>
           {availableVaults.map(({ currency, hash, title }, index) => (
-            <Option
+            <CardOption
               currency={currency}
               highlight={hash === form.destination}
               key={hash}

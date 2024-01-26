@@ -7,7 +7,7 @@ import { queryCurrencies } from './helpers';
 import { style } from './SliderCurrencies.style';
 import { ScrollView } from '../../__design-system__';
 import { useStore } from '../../contexts';
-import { Option } from '../Option';
+import { CardOption } from '../CardOption';
 
 const SliderCurrencies = ({ selected, onChange, ...others }) => {
   const scrollview = useRef(null);
@@ -26,7 +26,7 @@ const SliderCurrencies = ({ selected, onChange, ...others }) => {
   return (
     <ScrollView {...others} horizontal ref={scrollview} snap={optionSnap} width={width}>
       {currencies.map((currency, index) => (
-        <Option
+        <CardOption
           key={index}
           currency={currency}
           highlight={selected === currency}

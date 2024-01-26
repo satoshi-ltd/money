@@ -5,7 +5,7 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './FormTransaction.style';
 import { ScrollView } from '../../../__design-system__';
-import { InputCurrency, InputText, Option } from '../../../components';
+import { CardOption, InputCurrency, InputText } from '../../../components';
 import { getIcon, L10N } from '../../../modules';
 import { queryCategories } from '../helpers';
 
@@ -37,7 +37,7 @@ const FormTransaction = ({ form = {}, onChange, type, vault = {} }) => {
     <>
       <ScrollView horizontal ref={scrollview} snap={optionSnap} style={style.scrollView} width={width}>
         {categories.map((item, index) => (
-          <Option
+          <CardOption
             key={item.key}
             highlight={form.category === item.key}
             icon={getIcon({ type, category: item.key })}
