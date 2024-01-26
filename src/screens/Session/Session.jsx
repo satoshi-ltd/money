@@ -1,18 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { Image } from 'react-native';
 import { SafeAreaView } from 'react-native';
 
 import { NumKeyboard } from './components';
 import { style } from './Session.style';
 import { Text, View } from '../../__design-system__';
+import { Logo } from '../../components';
 import { useStore } from '../../contexts';
 import { C, L10N } from '../../modules';
 import { ServiceRates } from '../../services';
 
 const { VERSION } = C;
-
-const LOGO = require('../../../assets/images/logo.png');
 
 const Session = ({ navigation: { navigate } = {} }) => {
   const { settings = {}, updateRates, updateSettings, vaults = [] } = useStore();
@@ -48,7 +46,7 @@ const Session = ({ navigation: { navigate } = {} }) => {
   return (
     <SafeAreaView style={style.safeAreaView}>
       <View style={style.content}>
-        <Image resizeMode="contain" source={LOGO} style={style.image} />
+        <Logo />
         <Text detail>{signup ? L10N.PIN_CHOOSE : L10N.PIN}</Text>
         <View style={style.pinCode}>
           {['•', '•', '•', '•'].map((letter, index) => (

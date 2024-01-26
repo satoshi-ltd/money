@@ -11,12 +11,6 @@ export const style = StyleSheet.create({
     gap: '$spaceM',
   },
 
-  image: {
-    height: '$spaceXL * 1.5',
-    marginBottom: '$spaceM',
-    width: '$spaceXL * 4',
-  },
-
   pinCode: {
     flexDirection: 'row',
     marginBottom: '$spaceL',
