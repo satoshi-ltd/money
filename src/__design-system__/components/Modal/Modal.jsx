@@ -30,7 +30,7 @@ const Modal = ({ onClose, ...others }) => {
           keyboardVerticalOffset={windowHeight - layoutHeight}
         >
           <ScrollView>
-            <View {...others} style={style.content} />
+            <View {...others} style={[style.content, others.style]} />
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -38,7 +38,7 @@ const Modal = ({ onClose, ...others }) => {
   ) : (
     <SafeAreaView>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <View {...others} style={style.view} />
+        <View {...others} style={[style.view, others.style]} />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
