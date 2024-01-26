@@ -18,6 +18,7 @@ import {
   Session,
   Settings,
   Stats,
+  Subscription,
   Transaction,
   Transactions,
 } from './screens';
@@ -107,10 +108,11 @@ export const Navigator = () => {
         <Stack.Screen name="main" component={Tabs} />
         <Stack.Screen name="transactions" component={Transactions} options={{ headerShown: true }} />
 
+        <Stack.Screen name="account" component={Account} options={{ ...OPTIONS.MODAL }} />
         <Stack.Screen name="transaction" component={Transaction} options={{ ...OPTIONS.MODAL }} />
         <Stack.Screen name="clone" component={Clone} options={OPTIONS.MODAL} />
-        <Stack.Screen name="account" component={Account} options={{ ...OPTIONS.MODAL }} />
         <Stack.Screen name="confirm" component={Confirm} options={{ ...OPTIONS.MODAL }} />
+        <Stack.Screen name="subscription" component={Subscription} options={{ ...OPTIONS.MODAL }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

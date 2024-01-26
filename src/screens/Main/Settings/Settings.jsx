@@ -50,10 +50,11 @@ const Settings = ({ navigation = {} }) => {
         <View row spaceBetween>
           <Text bold>Dark Mode</Text>
           <Button small onPress={toggleTheme}>
-            {theme === 'dark' ? 'Deactivate' : 'Activate'}
+            {theme === 'dark' ? L10N.DISABLE : L10N.ENABLE}
           </Button>
         </View>
       </Card>
+
       <Backup navigation={navigation} style={style.offset} />
 
       <View>

@@ -5,6 +5,7 @@ export * from './Main/Dashboard';
 export * from './Main/Stats';
 export * from './Main/Accounts';
 export * from './Main/Settings';
+export * from './Subscription';
 export * from './Transactions';
 // -- presentation=modal
 export * from './Account';

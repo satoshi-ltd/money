@@ -67,7 +67,9 @@ export const L10N = {
 
   DAY_NAMES: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
   DELETE: 'Delete',
+  DISABLE: 'Disable',
 
+  ENABLE: 'Enable',
   ERROR_SERVICE_RATES: 'Something was wrong trying to get updated currencies rates. Check that you are online.',
   EXPENSE: 'Expense',
   EXPENSES: 'Expenses',

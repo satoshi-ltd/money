@@ -38,6 +38,10 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
     }
   };
 
+  const handleSubscription = () => {
+    navigate('subscription');
+  };
+
   const handleImport = async () => {
     try {
       const { cancelled, assets: [file = {}] = [] } = await DocumentPicker.getDocumentAsync({
@@ -75,9 +79,7 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
   return (
     <Card gap {...others}>
       <View>
-        <Text bold subtitle>
-          {`${L10N.IMPORT} / ${L10N.EXPORT}`}
-        </Text>
+        <Text bold>{`${L10N.IMPORT} / ${L10N.EXPORT}`}</Text>
         <Text caption color="contentLight">
           Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minima alias natus quia tempora praesentium qui
           omnis.
@@ -88,7 +90,7 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
         <Button flex outlined onPress={handleExport}>
           {L10N.EXPORT}
         </Button>
-        <Button flex onPress={handleImport}>
+        <Button flex onPress={handleSubscription}>
           {L10N.IMPORT}
         </Button>
       </View>
