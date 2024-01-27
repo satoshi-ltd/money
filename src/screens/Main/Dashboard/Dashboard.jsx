@@ -1,5 +1,6 @@
+import { useFocusEffect } from '@react-navigation/native';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './Dashboard.style';
@@ -15,6 +16,14 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
   const [lastTxs, setLastTxs] = useState([]);
   const [search, setSearch] = useState(false);
   const [query, setQuery] = useState();
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!vaults.length) navigate('account', { firstAccount: true });
+      return () => {};
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [vaults.length]),
+  );
 
   useEffect(() => {
     const nextTxs = queryLastTxs({ txs, vaults });
