@@ -30,6 +30,8 @@ const Transactions = ({ route: { params: { vault: { hash } } = {} } = {}, naviga
     scrollview.current.scrollTo({ y: 0, animated: false });
 
     const vault = vaults.find((item) => item.hash === hash);
+    if (!vault) return;
+
     setDataSource(vault);
     setTxs(query(vault.txs));
     setScrollQuery(false);

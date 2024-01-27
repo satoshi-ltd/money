@@ -76,8 +76,7 @@ export const L10N = {
   EXPORT: 'Export',
 
   FIRST_ACCOUNT: 'Your first account',
-  FIRST_ACCOUNT_CAPTION:
-    'Choose the currency you use the most. Later you can create more accounts with different currencies.',
+  FIRST_ACCOUNT_CAPTION: 'Choose your main currency. Add more accounts later, each supporting different currencies.',
 
   IMPORT: 'Import',
   INCOME: 'Income',

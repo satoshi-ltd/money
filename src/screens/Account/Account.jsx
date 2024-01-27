@@ -1,22 +1,24 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
-// import { Form } from './Account.Form';
 import { style } from './Account.style';
 import { Button, Modal, Text, View } from '../../__design-system__';
 import { InputCurrency, InputText, SliderCurrencies } from '../../components';
 import { useStore } from '../../contexts';
 import { L10N } from '../../modules';
+// ! TODO: Should put in a helper
+import { changeBaseCurrency } from '../Main/Settings/helpers';
 
 const INITIAL_STATE = { balance: 0, currency: undefined, title: undefined };
 
 const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate } = {} }) => {
-  const { addVault, updateVault, vaults = [] } = useStore();
+  const { addVault, updateVault, ...store } = useStore();
 
   const [busy, setBusy] = useState(false);
   const [form, setForm] = useState(INITIAL_STATE);
 
   const editMode = form.hash !== undefined;
+  const { firstAccount } = params;
 
   useEffect(() => {
     const { hash, balance, currency, title } = params;
@@ -38,6 +40,7 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
     const method = editMode ? updateVault : addVault;
 
     const vault = await method(form);
+    if (firstAccount) changeBaseCurrency({ currency: form.currency, L10N, store });
     if (vault) {
       goBack();
       if (!editMode) navigate('transactions', { vault });
@@ -46,15 +49,13 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
     setBusy(false);
   };
 
-  const isFirstAccount = vaults.length === 0;
-
   return (
-    <Modal onClose={goBack}>
+    <Modal onClose={firstAccount ? undefined : goBack}>
       <View style={style.title}>
         <Text bold subtitle>
-          {isFirstAccount ? L10N.FIRST_ACCOUNT : editMode ? L10N.SETTINGS : `${L10N.NEW} ${L10N.ACCOUNT}`}
+          {firstAccount ? L10N.FIRST_ACCOUNT : editMode ? L10N.SETTINGS : `${L10N.NEW} ${L10N.ACCOUNT}`}
         </Text>
-        {isFirstAccount && (
+        {firstAccount && (
           <Text caption color="contentLight">
             {L10N.FIRST_ACCOUNT_CAPTION}
           </Text>
@@ -83,9 +84,11 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
       />
 
       <View row style={style.buttons}>
-        <Button disabled={busy} flex outlined onPress={goBack}>
-          {L10N.CLOSE}
-        </Button>
+        {!firstAccount && (
+          <Button disabled={busy} flex outlined onPress={goBack}>
+            {L10N.CLOSE}
+          </Button>
+        )}
         <Button disabled={busy || !form.currency || !form.title} flex onPress={handleSubmit}>
           {L10N.SAVE}
         </Button>
