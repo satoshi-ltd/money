@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Keyboard, TextInput } from 'react-native';
+import StyleSheet from 'react-native-extended-stylesheet';
 
 import { getLastRates } from './helpers';
 import { style } from './InputCurrency.style';
@@ -79,11 +80,13 @@ const InputCurrency = ({
         blurOnSubmit
         editable
         keyboardType="numeric"
+        placeholder={!focus ? '...' : undefined}
+        placeholderTextColor={StyleSheet.value('$inputPlaceholderColor')}
+        value={others.value ? others.value.toString() : ''}
         onBlur={() => setFocus(false)}
         onChangeText={handleChange}
         onFocus={() => setFocus(true)}
         onSubmitEditing={Keyboard.dismiss}
-        value={others.value ? others.value.toString() : ''}
         style={style.input}
       />
     </View>
