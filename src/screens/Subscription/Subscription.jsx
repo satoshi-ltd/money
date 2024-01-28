@@ -9,7 +9,7 @@ import { Logo } from '../../components';
 import { useStore } from '../../contexts';
 
 const Subscription = ({ navigation: { goBack, navigate } = {} }) => {
-  const { subscription } = useStore();
+  const { subscription, updateSubscription } = useStore();
 
   const [products, setProducts] = useState([]);
   const [plan, setPlan] = useState(subscription);
@@ -53,7 +53,8 @@ const Subscription = ({ navigation: { goBack, navigate } = {} }) => {
 
   //     for (const result of results || []) {
   //       if (result.productId === 'upgrade' && result.acknowledged) {
-  //         // set premium in the store
+  //         // TODO what we save in the store?
+  //         updateSubscription({ premium: true });
   //         await InAppPurchases.disconnectAsync();
   //         return true;
   //       }
@@ -85,7 +86,8 @@ const Subscription = ({ navigation: { goBack, navigate } = {} }) => {
           switch (result.responseCode) {
             case InAppPurchases.IAPResponseCode.OK:
             case InAppPurchases.IAPResponseCode.DEFERRED:
-              // set premium in the store
+              // TODO what we save in the store?
+              updateSubscription({ premium: true });
               await InAppPurchases.finishTransactionAsync(result.results[0], false);
               await InAppPurchases.disconnectAsync();
               return resolve(true);
