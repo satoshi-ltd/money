@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 export const style = StyleSheet.create({
@@ -6,11 +7,6 @@ export const style = StyleSheet.create({
   },
 
   scrollView: {
-    // flex: 1,
-  },
-
-  view: {
-    // gap: '$spaceL',
-    // padding: '$spaceM',
+    ...Platform.select({ web: { flex: 1 } }),
   },
 });

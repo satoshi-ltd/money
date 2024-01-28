@@ -19,9 +19,9 @@ const Screen = ({ modal = false, refreshScroll = true, ...others }) => {
 
   return (
     <SafeAreaView style={style.safeAreaView}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'position' : 'height'} style={style.scrollView}>
         <ScrollView ref={scrollview} style={style.scrollView}>
-          <View {...others} style={[modal ? style.modal : undefined, others.style]} />
+          <View {...others} />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
