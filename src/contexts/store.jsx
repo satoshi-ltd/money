@@ -56,7 +56,7 @@ const StoreProvider = ({ children }) => {
   };
 
   // ! TODO: Should be in an standalone service
-  const importBackup = async ({ accounts, settings, txs }) => {
+  const importBackup = async ({ accounts = [], settings = {}, txs = [] } = {}) => {
     const { store } = state;
 
     await store.wipe('accounts');

@@ -37,7 +37,7 @@ const Settings = ({ navigation = {} }) => {
 
   const handleResetData = async () => {
     await store.importBackup();
-    navigation.navigate('onboarding');
+    navigation.navigate('session');
   };
 
   const toggleTheme = () => {

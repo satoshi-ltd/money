@@ -24,7 +24,7 @@ const Onboarding = ({ navigation: { navigate } }) => {
 
   const handleNext = async () => {
     if (lastSlide) {
-      updateSettings({ onboarded: true });
+      await updateSettings({ onboarded: true });
       navigate('session');
     } else if (scrollview.current) {
       scrollview.current.scrollTo({ x: width * (currentIndex + 1), animated: true });
