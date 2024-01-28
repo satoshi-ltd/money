@@ -12,7 +12,7 @@ export const parseTx = ({
   hash: hash || UUID({ entity: 'tx', category, timestamp, title, type, value, vault }),
   category,
   timestamp,
-  title,
+  title: title.trim(),
   type,
   value: parseFloat(value, 10),
   vault,

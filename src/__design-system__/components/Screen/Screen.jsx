@@ -6,7 +6,7 @@ import { KeyboardAvoidingView, Platform, SafeAreaView } from 'react-native';
 import { style } from './Screen.style';
 import { ScrollView, View } from '../../primitives';
 
-const Screen = ({ modal = false, refreshScroll = true, ...others }) => {
+const Screen = ({ refreshScroll = true, ...others }) => {
   const scrollview = useRef(null);
 
   useFocusEffect(
@@ -32,7 +32,6 @@ Screen.displayName = 'Screen';
 
 Screen.propTypes = {
   children: PropTypes.node,
-  modal: PropTypes.bool,
   refreshScroll: PropTypes.bool,
 };
 
