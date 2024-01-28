@@ -8,8 +8,10 @@ import { style } from './Settings.style';
 import { Action, Button, Card, Screen, Text, View } from '../../../__design-system__';
 import { Heading, SliderCurrencies } from '../../../components';
 import { useStore } from '../../../contexts';
-import { L10N } from '../../../modules';
+import { C, L10N } from '../../../modules';
 import { DarkTheme, LightTheme } from '../../../theme';
+
+const { IS_DEV } = C;
 
 const Settings = ({ navigation = {} }) => {
   const store = useStore();
@@ -33,6 +35,11 @@ const Settings = ({ navigation = {} }) => {
     setBusy(false);
   };
 
+  const handleResetData = async () => {
+    await store.importBackup();
+    navigation.navigate('onboarding');
+  };
+
   const toggleTheme = () => {
     StyleSheet.build(StyleSheet.value('$theme') === 'light' ? DarkTheme : LightTheme);
     updateSettings({ theme: StyleSheet.value('$theme') });
@@ -40,6 +47,13 @@ const Settings = ({ navigation = {} }) => {
 
   return (
     <Screen gap>
+      {IS_DEV && (
+        <Card style={style.offset}>
+          <Text bold>Developer Mode</Text>
+          <Button onPress={handleResetData}>Reset all data</Button>
+        </Card>
+      )}
+
       <Card style={style.offset}>
         <View row spaceBetween>
           <Text bold>Dark Mode</Text>
