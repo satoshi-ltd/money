@@ -3,7 +3,13 @@ import { exchange, getMonthDiff } from '../../modules';
 
 const KEYS = ['expenses', 'incomes', 'progression', 'today'];
 
-export const consolidate = ({ rates = {}, settings = {}, txs = [], vaults: storeVaults = [] } = {}) => {
+export const consolidate = ({
+  rates = {},
+  settings = {},
+  subscription = {},
+  txs = [],
+  vaults: storeVaults = [],
+} = {}) => {
   const { baseCurrency } = settings;
   let vaults = [];
 
@@ -64,6 +70,7 @@ export const consolidate = ({ rates = {}, settings = {}, txs = [], vaults: store
     overall: { balance, chartBalance, currentBalance, currentMonth },
     rates,
     settings,
+    subscription,
     txs,
     vaults,
   };

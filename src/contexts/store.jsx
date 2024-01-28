@@ -92,6 +92,12 @@ const StoreProvider = ({ children }) => {
     setState({ ...state, settings: nextSettings });
   };
 
+  const updateSubscription = async (subscription) => {
+    await state.store.get('subscription').save(subscription);
+
+    setState({ ...state, subscription });
+  };
+
   const updateTx = async ({ hash, ...data } = {}) => {
     const { store } = state;
     const tx = await store.get('txs').findOne({ hash });
@@ -128,6 +134,7 @@ const StoreProvider = ({ children }) => {
         updateSettings,
         updateTx,
         updateVault,
+        updateSubscription,
       }}
     >
       {state.store ? children : undefined}
