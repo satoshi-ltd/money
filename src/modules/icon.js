@@ -107,9 +107,9 @@ export const ICON = {
   REVOLUT: 'alpha-r-box-outline',
   // family
   BENJI: 'baby',
+  CHANA: 'face-woman',
   EKI: 'google-street-view',
   YURI: 'face-woman',
-  CHANA: 'face-woman',
   //
   UNKNOWN: 'block-helper',
   TRASH: 'trash-can-outline',
