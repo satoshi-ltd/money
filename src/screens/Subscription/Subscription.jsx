@@ -1,4 +1,3 @@
-import Constants from 'expo-constants';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
@@ -7,112 +6,46 @@ import { style } from './Subscription.style';
 import { Action, Button, Card, Pressable, Modal, Text, View } from '../../__design-system__';
 import { Logo } from '../../components';
 import { useStore } from '../../contexts';
+import { PurchaseService } from '../../services';
 
 const Subscription = ({ navigation: { goBack, navigate } = {} }) => {
   const { subscription, updateSubscription } = useStore();
 
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState(PLANS);
   const [plan, setPlan] = useState(subscription);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      console.log('YEAH1');
-      if (Constants.appOwnership === 'expo') return;
-      console.log('YEAH2');
-
-      const InAppPurchases = require('expo-in-app-purchases');
-      console.log('YEAH3');
-
-      try {
-        await InAppPurchases.connectAsync();
-
-        const { responseCode, results } = await InAppPurchases.getProductsAsync(['monthly', 'yearly', 'lifetime']);
-        console.log('responseCode', responseCode);
-        console.log('results', results);
-        if (responseCode === InAppPurchases.IAPResponseCode.OK) {
-          setProducts(results);
-        }
-        await InAppPurchases.disconnectAsync();
-      } catch (err) {
-        console.warn('Error al obtener los productos: ', err);
-      }
-    };
-
-    fetchProducts();
+    PurchaseService.getProducts()
+      .then((results) => {
+        if (results) setProducts(results);
+      })
+      .catch((error) => alert(error));
   }, []);
-
-  // const restoreUpgrade = async () => {
-  //   if (Constants.appOwnership === 'expo') return false;
-
-  //   const InAppPurchases = await import('expo-in-app-purchases');
-
-  //   try {
-  //     await InAppPurchases.connectAsync();
-
-  //     const { results } = await InAppPurchases.getPurchaseHistoryAsync();
-
-  //     for (const result of results || []) {
-  //       if (result.productId === 'upgrade' && result.acknowledged) {
-  //         // TODO what we save in the store?
-  //         updateSubscription({ premium: true });
-  //         await InAppPurchases.disconnectAsync();
-  //         return true;
-  //       }
-  //     }
-  //     await InAppPurchases.disconnectAsync();
-  //     return false;
-  //   } catch (err) {
-  //     await InAppPurchases.disconnectAsync();
-  //     console.warn('Error al realizar la compra: ', err);
-  //   }
-  // };
-
-  const handlePurchase = async (productId) => {
-    if (Constants.appOwnership === 'expo') return;
-
-    // const InAppPurchases = await import('expo-in-app-purchases');
-    const InAppPurchases = require('expo-in-app-purchases');
-
-    try {
-      await InAppPurchases.connectAsync();
-
-      await InAppPurchases.getProductsAsync([productId]);
-
-      await InAppPurchases.purchaseItemAsync(productId);
-
-      // eslint-disable-next-line no-undef
-      return await new Promise((resolve, reject) => {
-        InAppPurchases.setPurchaseListener(async (result) => {
-          switch (result.responseCode) {
-            case InAppPurchases.IAPResponseCode.OK:
-            case InAppPurchases.IAPResponseCode.DEFERRED:
-              // TODO what we save in the store?
-              updateSubscription({ premium: true });
-              await InAppPurchases.finishTransactionAsync(result.results[0], false);
-              await InAppPurchases.disconnectAsync();
-              return resolve(true);
-            case InAppPurchases.IAPResponseCode.USER_CANCELED:
-              await InAppPurchases.disconnectAsync();
-              return resolve(false);
-            case InAppPurchases.IAPResponseCode.ERROR:
-              await InAppPurchases.disconnectAsync();
-              return reject(new Error('IAP Error: ' + result.errorCode));
-          }
-        });
-      });
-    } catch (err) {
-      await InAppPurchases.disconnectAsync();
-      console.warn('Error al realizar la compra: ', err);
-    }
-  };
 
   const handleChange = (id) => {
     setPlan(id);
   };
 
-  const handleRestore = () => {};
+  const handleRestore = () => {
+    PurchaseService.restore()
+      .then((activeSubscription) => {
+        if (activeSubscription) {
+          updateSubscription(activeSubscription);
+          goBack();
+        }
+      })
+      .catch((error) => alert(error));
+  };
+
   const handleStart = () => {
-    handlePurchase('lifetime');
+    PurchaseService.buy(plan)
+      .then((newSubscription) => {
+        if (newSubscription) {
+          updateSubscription(newSubscription);
+          goBack();
+        }
+      })
+      .catch((error) => alert(error));
   };
 
   const handleTermsAndConditions = () => {
@@ -126,21 +59,19 @@ const Subscription = ({ navigation: { goBack, navigate } = {} }) => {
         <Text align="center">No restrictions on accounts and transactions, plus a robust import/export feature.</Text>
       </View>
 
-      <Text>{JSON.stringify(products)}</Text>
-
       <View style={style.options}>
         <Text align="center" bold subtitle>
           Choose your plan
         </Text>
 
-        {PLANS.map(({ id, currency, price, caption, detail }) => (
-          <Pressable key={id} onPress={() => handleChange(id)}>
-            <Card outlined style={id === plan ? style.optionHighlight : undefined}>
+        {products.map(({ productId, price, title, description }) => (
+          <Pressable key={productId} onPress={() => handleChange(productId)}>
+            <Card outlined style={productId === plan ? style.optionHighlight : undefined}>
               <View />
-              <Text bold color={id === plan ? 'base' : undefined}>{`${currency} ${price} / ${caption}`}</Text>
-              {detail && (
-                <Text color={id === plan ? 'base' : undefined} tiny>
-                  {detail}
+              <Text bold color={productId === plan ? 'base' : undefined}>{`${price} / ${title}`}</Text>
+              {productId === 'lifetime' && (
+                <Text color={productId === plan ? 'base' : undefined} tiny>
+                  {description}
                 </Text>
               )}
             </Card>
@@ -181,3 +112,19 @@ Subscription.propTypes = {
 };
 
 export { Subscription };
+
+// const a = {
+//   results: [
+//     {
+//       originalOrderId: '',
+//       acknowledged: false,
+//       productId: 'monthly',
+//       transactionReceiprt: 'MUCHISIMO TEXTO',
+//       purchaseState: 1,
+//       orderId: '2000000510857950',
+//       originalPurchaseTime: 0,
+//       purchaseTime: 1706455338000,
+//     },
+//   ],
+//   responseCode: 0,
+// };
