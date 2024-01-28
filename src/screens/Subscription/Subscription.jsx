@@ -1,5 +1,6 @@
+import Constants from 'expo-constants';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { PLANS } from './Subscription.constants';
 import { style } from './Subscription.style';
@@ -10,15 +11,107 @@ import { useStore } from '../../contexts';
 const Subscription = ({ navigation: { goBack, navigate } = {} }) => {
   const { subscription } = useStore();
 
+  const [products, setProducts] = useState([]);
   const [plan, setPlan] = useState(subscription);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      console.log('YEAH1');
+      if (Constants.appOwnership === 'expo') return;
+      console.log('YEAH2');
+
+      const InAppPurchases = require('expo-in-app-purchases');
+      console.log('YEAH3');
+
+      try {
+        await InAppPurchases.connectAsync();
+
+        const { responseCode, results } = await InAppPurchases.getProductsAsync(['monthly', 'yearly', 'lifetime']);
+        console.log('responseCode', responseCode);
+        console.log('results', results);
+        if (responseCode === InAppPurchases.IAPResponseCode.OK) {
+          setProducts(results);
+        }
+        await InAppPurchases.disconnectAsync();
+      } catch (err) {
+        console.warn('Error al obtener los productos: ', err);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  // const restoreUpgrade = async () => {
+  //   if (Constants.appOwnership === 'expo') return false;
+
+  //   const InAppPurchases = await import('expo-in-app-purchases');
+
+  //   try {
+  //     await InAppPurchases.connectAsync();
+
+  //     const { results } = await InAppPurchases.getPurchaseHistoryAsync();
+
+  //     for (const result of results || []) {
+  //       if (result.productId === 'upgrade' && result.acknowledged) {
+  //         // set premium in the store
+  //         await InAppPurchases.disconnectAsync();
+  //         return true;
+  //       }
+  //     }
+  //     await InAppPurchases.disconnectAsync();
+  //     return false;
+  //   } catch (err) {
+  //     await InAppPurchases.disconnectAsync();
+  //     console.warn('Error al realizar la compra: ', err);
+  //   }
+  // };
+
+  const handlePurchase = async (productId) => {
+    if (Constants.appOwnership === 'expo') return;
+
+    // const InAppPurchases = await import('expo-in-app-purchases');
+    const InAppPurchases = require('expo-in-app-purchases');
+
+    try {
+      await InAppPurchases.connectAsync();
+
+      await InAppPurchases.getProductsAsync([productId]);
+
+      await InAppPurchases.purchaseItemAsync(productId);
+
+      // eslint-disable-next-line no-undef
+      return await new Promise((resolve, reject) => {
+        InAppPurchases.setPurchaseListener(async (result) => {
+          switch (result.responseCode) {
+            case InAppPurchases.IAPResponseCode.OK:
+            case InAppPurchases.IAPResponseCode.DEFERRED:
+              // set premium in the store
+              await InAppPurchases.finishTransactionAsync(result.results[0], false);
+              await InAppPurchases.disconnectAsync();
+              return resolve(true);
+            case InAppPurchases.IAPResponseCode.USER_CANCELED:
+              await InAppPurchases.disconnectAsync();
+              return resolve(false);
+            case InAppPurchases.IAPResponseCode.ERROR:
+              await InAppPurchases.disconnectAsync();
+              return reject(new Error('IAP Error: ' + result.errorCode));
+          }
+        });
+      });
+    } catch (err) {
+      await InAppPurchases.disconnectAsync();
+      console.warn('Error al realizar la compra: ', err);
+    }
+  };
 
   const handleChange = (id) => {
     setPlan(id);
   };
 
   const handleRestore = () => {};
-
-  const handleStart = () => {};
+  const handleStart = () => {
+    handlePurchase('lifetime');
+  };
 
   const handleTermsAndConditions = () => {
     navigate('terms');
@@ -30,6 +123,8 @@ const Subscription = ({ navigation: { goBack, navigate } = {} }) => {
         <Logo />
         <Text align="center">No restrictions on accounts and transactions, plus a robust import/export feature.</Text>
       </View>
+
+      <Text>{JSON.stringify(products)}</Text>
 
       <View style={style.options}>
         <Text align="center" bold subtitle>
