@@ -1,4 +1,3 @@
-/* eslint-disable no-async-promise-executor */
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import * as Notifications from 'expo-notifications';
@@ -12,6 +11,7 @@ const SECONDS_PER_WEEK = 60 * 60 * 24 * 7;
 
 export const BackupService = {
   export: async ({ accounts = [], settings = {}, txs = [] } = {}) =>
+    // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
       try {
         const fileName = `money-${new Date().toISOString()}.json`;
@@ -40,6 +40,7 @@ export const BackupService = {
     }),
 
   import: async () =>
+    // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
       try {
         const { cancelled, assets: [file = {}] = [] } = await DocumentPicker.getDocumentAsync({
@@ -70,7 +71,7 @@ export const BackupService = {
     }),
 
   scheduleNotification: async () => {
-    // if (IS_WEB) return;
+    if (IS_WEB) return;
 
     const { status } = await Notifications.getPermissionsAsync();
     if (status === 'granted') {

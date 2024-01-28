@@ -1,5 +1,5 @@
 /* eslint-disable no-async-promise-executor */
-import { AsyncStorageAdapter } from './adapters';
+import { AsyncStorageAdapter } from './modules';
 
 // eslint-disable-next-line no-undef
 const state = new WeakMap();

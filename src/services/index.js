@@ -1,3 +1,3 @@
 export * from './BackupService';
-export * from './Rates';
-export * from './Storage';
+export * from './RatesService';
+export * from './StorageService';
