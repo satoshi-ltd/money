@@ -12,7 +12,7 @@ import { changeBaseCurrency } from '../Main/Settings/helpers';
 const INITIAL_STATE = { balance: 0, currency: undefined, title: undefined };
 
 const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate } = {} }) => {
-  const { addVault, updateVault, ...store } = useStore();
+  const { addVault, settings: { baseCurrency } = {}, updateVault, ...store } = useStore();
 
   const [busy, setBusy] = useState(false);
   const [form, setForm] = useState(INITIAL_STATE);
@@ -21,10 +21,10 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
   const { firstAccount } = params;
 
   useEffect(() => {
-    const { hash, balance, currency, title } = params;
+    const { hash, balance, currency = baseCurrency, title } = params;
 
     setForm({ hash, balance, currency, title, valid: true });
-  }, [params]);
+  }, [baseCurrency, params]);
 
   const handleChange = (field, value) => {
     const next = { ...form, [field]: value };
