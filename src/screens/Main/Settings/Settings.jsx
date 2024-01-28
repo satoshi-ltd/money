@@ -41,12 +41,6 @@ const Settings = ({ navigation = {} }) => {
   return (
     <Screen gap>
       <Card style={style.offset}>
-        <Text bold subtitle>
-          Statistics
-        </Text>
-      </Card>
-
-      <Card style={style.offset}>
         <View row spaceBetween>
           <Text bold>Dark Mode</Text>
           <Button small onPress={toggleTheme}>

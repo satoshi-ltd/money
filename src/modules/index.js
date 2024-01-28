@@ -11,5 +11,4 @@ export * from './icon';
 export * from './isInternalTransfer';
 export * from './isNonAccountingTx';
 export * from './l10n';
-export * from './notification';
 export * from './verboseTime';

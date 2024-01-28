@@ -8,7 +8,7 @@ import { Text, View } from '../../__design-system__';
 import { Logo } from '../../components';
 import { useStore } from '../../contexts';
 import { C, L10N } from '../../modules';
-import { ServiceRates } from '../../services';
+import { BackupService, ServiceRates } from '../../services';
 
 const { VERSION } = C;
 
@@ -39,6 +39,7 @@ const Session = ({ navigation: { navigate } = {} }) => {
 
   const handleSubmit = async () => {
     if (signup) await updateSettings({ pin });
+    await BackupService.scheduleNotification();
 
     navigate('main', { firstVault: vaults.length === 0 });
   };

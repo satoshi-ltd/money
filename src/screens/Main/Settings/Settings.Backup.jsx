@@ -1,41 +1,19 @@
-import * as DocumentPicker from 'expo-document-picker';
-import * as FileSystem from 'expo-file-system';
-import * as Sharing from 'expo-sharing';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { Button, Card, View, Text } from '../../../__design-system__';
 import { useStore } from '../../../contexts';
-import { C, L10N, setNextNotification } from '../../../modules';
+import { L10N } from '../../../modules';
+import { BackupService } from '../../../services';
 
-const { IS_WEB } = C;
+// ! TODO: Use L10N
 
 const Backup = ({ navigation: { navigate } = {}, ...others }) => {
   const { vaults: accounts, importBackup, settings, txs } = useStore();
 
   const handleExport = async () => {
-    try {
-      const fileName = `money-${new Date().toISOString()}.json`;
-      const data = JSON.stringify({ accounts, settings, txs });
-
-      if (IS_WEB) {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
-        a.download = fileName;
-        return a.click();
-      }
-
-      const isSharingAvailable = await Sharing.isAvailableAsync();
-      if (!isSharingAvailable) return alert('Can not share');
-
-      const fileUri = FileSystem.documentDirectory + fileName;
-      await FileSystem.writeAsStringAsync(fileUri, data);
-      await Sharing.shareAsync(fileUri);
-
-      await setNextNotification();
-    } catch (error) {
-      alert(`Something went wrong: ${JSON.stringify(error)}`);
-    }
+    const exported = await BackupService.export({ accounts, settings, txs });
+    if (exported) alert('Export successful! Your data has been saved.');
   };
 
   const handleSubscription = () => {
@@ -43,36 +21,17 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
   };
 
   const handleImport = async () => {
-    try {
-      const { cancelled, assets: [file = {}] = [] } = await DocumentPicker.getDocumentAsync({
-        multiple: false,
-        type: 'application/json',
+    const backup = await BackupService.import().catch((error) => alert(error));
+    if (backup) {
+      navigate('confirm', {
+        caption: L10N.CONFIRM_IMPORT_CAPTION(backup),
+        title: L10N.CONFIRM_IMPORT,
+        onAccept: async () => {
+          await importBackup(backup);
+          navigate('dashboard');
+          alert('Imported successfully.');
+        },
       });
-
-      if (!cancelled && file.uri) {
-        let jsonData = {};
-
-        if (IS_WEB) {
-          jsonData = await fetch(file.uri).then((res) => res.json());
-        } else {
-          const fileData = await FileSystem.readAsStringAsync(file.uri);
-          jsonData = JSON.parse(fileData);
-        }
-
-        if (jsonData.settings && jsonData.accounts && jsonData.txs) {
-          navigate('confirm', {
-            caption: L10N.CONFIRM_IMPORT_CAPTION(jsonData),
-            title: L10N.CONFIRM_IMPORT,
-            onAccept: async () => {
-              await importBackup(jsonData);
-              navigate('dashboard');
-              alert('Imported successfully.');
-            },
-          });
-        }
-      }
-    } catch (error) {
-      alert(`Something went wrong: ${JSON.stringify(error)}`);
     }
   };
 
@@ -90,7 +49,7 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
         <Button flex outlined onPress={handleExport}>
           {L10N.EXPORT}
         </Button>
-        <Button flex onPress={handleSubscription}>
+        <Button flex onPress={handleImport}>
           {L10N.IMPORT}
         </Button>
       </View>

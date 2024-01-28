@@ -111,6 +111,9 @@ export const L10N = {
   PIN_CHOOSE: 'Choose PIN code',
 
   SAVE: 'Save',
+  SCHEDULE_BACKUP: 'Time to Secure Your Finances!',
+  SCHEDULE_BACKUP_CAPTION:
+    "Don't forget to perform your weekly backup. Keep your financial information safe and up-to-date. It's quick and easy. Do it now!",
   SEARCH: 'Search',
   SETTINGS: 'Settings',
   SYNC_RATES_SENTENCE: 'Last update on',
