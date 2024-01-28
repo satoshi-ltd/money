@@ -43,10 +43,11 @@ export const BackupService = {
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
       try {
-        const { cancelled, assets: [file = {}] = [] } = await DocumentPicker.getDocumentAsync({
+        const { cancelled, assets = [] } = await DocumentPicker.getDocumentAsync({
           multiple: false,
           type: 'application/json',
         });
+        const file = assets && assets[0] ? assets[0] : {};
 
         if (!cancelled && file.uri) {
           let jsonData = {};
