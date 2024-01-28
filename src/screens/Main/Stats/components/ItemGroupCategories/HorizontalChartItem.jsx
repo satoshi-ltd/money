@@ -26,14 +26,7 @@ const HorizontalChartItem = ({ currency, detail, highlight, icon, title, value, 
       <Text bold={!detail} color={detail ? 'contentLight' : undefined} caption={detail} style={style.title}>
         {title}
       </Text>
-      <PriceFriendly
-        bold={!detail}
-        color={detail ? 'contentLight' : undefined}
-        caption
-        currency={currency}
-        fixed={0}
-        value={value}
-      />
+      <PriceFriendly bold={!detail} color={'contentLight'} caption currency={currency} fixed={0} value={value} />
     </View>
   </>
 );

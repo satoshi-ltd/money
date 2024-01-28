@@ -68,6 +68,7 @@ const Stats = () => {
       <Chart
         {...useMemo(() => calcScales(chart.incomes), [chart.incomes])}
         {...chartProps}
+        color="accent"
         title={`${L10N.INCOMES} & ${L10N.EXPENSES}`}
         values={chart.incomes}
       />

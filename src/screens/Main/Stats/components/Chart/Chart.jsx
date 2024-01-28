@@ -7,15 +7,7 @@ import { calcHeight } from './helpers';
 import { Text, View } from '../../../../../__design-system__';
 import { PriceFriendly } from '../../../../../components';
 
-const Chart = ({
-  captions,
-  color = 'contentLight',
-  highlight,
-  inverted,
-  values = [],
-  style: styleContainer,
-  ...others
-}) => {
+const Chart = ({ captions, color = 'content', highlight, inverted, values = [], style: styleContainer, ...others }) => {
   const { currency, max, min, med: avg } = others;
   let firstValueIndex = values.findIndex((value) => value !== 0);
   if (firstValueIndex === -1) firstValueIndex = undefined;
@@ -55,13 +47,9 @@ const Chart = ({
                 style={[
                   style.bar,
                   inverted && style.barInverted,
-                  style[color],
-                  value !== 0 && {
-                    height: `${calcHeight(value, { min, max })}%`,
-                  },
-                  {
-                    opacity: highlight !== index ? 0.5 : 1,
-                  },
+                  color === 'accent' || highlight === index ? style[color] : undefined,
+                  color === 'accent' && { opacity: highlight !== index ? 0.33 : 1 },
+                  value !== 0 && { height: `${calcHeight(value, { min, max })}%` },
                 ]}
               />
             </View>
@@ -76,7 +64,7 @@ const Chart = ({
           {captions.map((caption, index) => (
             <Text
               bold={highlight === index}
-              color={highlight === index ? 'accent' : 'contentLight'}
+              color={highlight === index ? 'content' : 'contentLight'}
               key={`${caption}-${index}`}
               tiny
             >

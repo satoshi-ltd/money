@@ -8,6 +8,7 @@ export default ({ MONTHS }) => {
 
   return new Array(STATS_MONTHS_LIMIT).fill('').map((caption, index) => {
     const date = new Date(originDate.getFullYear(), originDate.getMonth() + index + 1, 1, 0, 0);
+
     return MONTHS[date.getMonth()];
   });
 };

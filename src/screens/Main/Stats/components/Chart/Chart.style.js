@@ -43,13 +43,11 @@ export const style = StyleSheet.create({
   captions: {
     borderColor: '$colorBorder',
     borderTopWidth: 1,
-
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingTop: '$spaceXXS',
-    paddingLeft: '$spaceS',
-    paddingRight: '$spaceS',
-    zIndex: 0,
+    paddingLeft: '$spaceXS',
+    paddingRight: '$spaceXS',
   },
 
   column: {
@@ -108,11 +106,12 @@ export const style = StyleSheet.create({
     margin: '$borderWidth',
   },
 
+  // colors
   accent: {
     backgroundColor: '$colorAccent',
   },
 
-  lighten: {
-    backgroundColor: '$colorContentLight',
+  content: {
+    backgroundColor: '$colorContent',
   },
 });
