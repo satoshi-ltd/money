@@ -109,6 +109,7 @@ export const ICON = {
   BENJI: 'baby',
   EKI: 'google-street-view',
   YURI: 'face-woman',
+  CHANA: 'face-woman',
   //
   UNKNOWN: 'block-helper',
   TRASH: 'trash-can-outline',
