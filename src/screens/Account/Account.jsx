@@ -5,14 +5,15 @@ import { style } from './Account.style';
 import { Button, Modal, Text, View } from '../../__design-system__';
 import { InputCurrency, InputText, SliderCurrencies } from '../../components';
 import { useStore } from '../../contexts';
-import { L10N } from '../../modules';
-// ! TODO: Should put in a helper
-import { changeBaseCurrency } from '../Main/Settings/helpers';
+import { C, L10N } from '../../modules';
+import { ServiceRates } from '../../services';
+
+const { CURRENCY } = C;
 
 const INITIAL_STATE = { balance: 0, currency: undefined, title: undefined };
 
 const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate } = {} }) => {
-  const { addVault, settings: { baseCurrency } = {}, updateVault, ...store } = useStore();
+  const { addVault, settings: { baseCurrency } = {}, updateRates, updateVault } = useStore();
 
   const [busy, setBusy] = useState(false);
   const [form, setForm] = useState(INITIAL_STATE);
@@ -40,7 +41,10 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
     const method = editMode ? updateVault : addVault;
 
     const vault = await method(form);
-    if (firstAccount) changeBaseCurrency({ currency: form.currency, L10N, store });
+    if (firstAccount && form.currency !== CURRENCY) {
+      const rates = await ServiceRates.get({ baseCurrency: form.currency, latest: false }).catch(() => {});
+      if (rates) await updateRates(rates, form.currency);
+    }
     if (vault) {
       goBack();
       if (!editMode) navigate('transactions', { vault });

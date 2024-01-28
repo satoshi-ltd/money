@@ -1,6 +1,5 @@
-import { useFocusEffect } from '@react-navigation/native';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './Dashboard.style';
@@ -17,19 +16,15 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
   const [search, setSearch] = useState(false);
   const [query, setQuery] = useState();
 
-  useFocusEffect(
-    useCallback(() => {
-      if (!vaults.length) navigate('account', { firstAccount: true });
-      return () => {};
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [vaults.length]),
-  );
+  useEffect(() => {
+    if (!vaults.length) navigate('account', { firstAccount: true });
+  }, []);
 
   useEffect(() => {
     const nextTxs = queryLastTxs({ txs, vaults });
     if (JSON.stringify(nextTxs) !== JSON.stringify(lastTxs)) setLastTxs(nextTxs);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [txs]);
+  }, [txs, vaults]);
 
   const handleSearch = () => {
     setSearch(() => {
@@ -48,39 +43,31 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
         <Action caption onPress={() => navigate('account', { create: true })}>{`${L10N.NEW} ${L10N.ACCOUNT}`}</Action>
       </Heading>
 
-      {sortedVaults.length > 0 && (
-        <>
-          <ScrollView horizontal snap={StyleSheet.value('$cardAccountSnap')} style={[style.scrollView]}>
-            {sortedVaults.map((vault, index) => {
-              const {
-                currentBalance,
-                currency,
-                currentMonth: { progressionCurrency },
-                hash,
-                title,
-              } = vault;
+      <ScrollView horizontal snap={StyleSheet.value('$cardAccountSnap')} style={[style.scrollView]}>
+        {sortedVaults.map((vault, index) => {
+          const {
+            currentBalance,
+            currency,
+            currentMonth: { progressionCurrency },
+            hash,
+            title,
+          } = vault;
 
-              return (
-                <CardAccount
-                  {...vault.others}
-                  key={hash}
-                  balance={currentBalance}
-                  currency={currency}
-                  operator
-                  percentage={getProgressionPercentage(currentBalance, progressionCurrency)}
-                  style={[
-                    style.card,
-                    index === 0 && style.firstCard,
-                    index === sortedVaults.length - 1 && style.lastCard,
-                  ]}
-                  title={title}
-                  onPress={() => navigate('transactions', { vault })}
-                />
-              );
-            })}
-          </ScrollView>
-        </>
-      )}
+          return (
+            <CardAccount
+              {...vault.others}
+              key={hash}
+              balance={currentBalance}
+              currency={currency}
+              operator
+              percentage={getProgressionPercentage(currentBalance, progressionCurrency)}
+              style={[style.card, index === 0 && style.firstCard, index === sortedVaults.length - 1 && style.lastCard]}
+              title={title}
+              onPress={() => navigate('transactions', { vault })}
+            />
+          );
+        })}
+      </ScrollView>
 
       {lastTxs.length > 0 && (
         <>
