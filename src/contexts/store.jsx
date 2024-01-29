@@ -22,6 +22,7 @@ const StoreProvider = ({ children }) => {
       setState({
         store,
         settings: await store.get('settings')?.value,
+        subscription: await store.get('subscription')?.value,
         rates: await store.get('rates')?.value,
         vaults: await store.get('accounts')?.value,
         txs: await store.get('txs')?.value,
@@ -132,9 +133,9 @@ const StoreProvider = ({ children }) => {
         importBackup,
         updateRates,
         updateSettings,
+        updateSubscription,
         updateTx,
         updateVault,
-        updateSubscription,
       }}
     >
       {state.store ? children : undefined}
