@@ -28,14 +28,6 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
       .catch((error) => alert(error));
   };
 
-  const handleCheckSubscription = () => {
-    PurchaseService.checkSubscription(subscription)
-      .then((results) => {
-        if (results) alert(JSON.stringify(results));
-      })
-      .catch((error) => alert(error));
-  };
-
   const handleImport = async () => {
     const backup = await BackupService.import().catch((error) => alert(error));
     if (backup) {
@@ -68,21 +60,6 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
         <Button flex onPress={handleImport}>
           {L10N.IMPORT}
         </Button>
-      </View>
-
-      <View gap row>
-        <Text caption color="contentLight">
-          Test purchases
-        </Text>
-        {subscription.orderId ? (
-          <Button flex onPress={handleCheckSubscription}>
-            Check Subscription
-          </Button>
-        ) : (
-          <Button flex onPress={handleSubscription}>
-            Subscription
-          </Button>
-        )}
       </View>
     </Card>
   );
