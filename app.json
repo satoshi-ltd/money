@@ -18,7 +18,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.satoshi-ltd.money",
-      "buildNumber": "7",
+      "buildNumber": "11",
       "usesIcloudStorage": true
     },
     "android": {
@@ -27,7 +27,7 @@
         "backgroundColor": "#FFFEFE"
       },
       "package": "com.satoshi-ltd.money",
-      "versionCode": 7
+      "versionCode": 11
     },
     "web": {
       "favicon": "./assets/favicon.png"

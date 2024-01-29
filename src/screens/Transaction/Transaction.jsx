@@ -7,6 +7,7 @@ import { style } from './Transaction.style';
 import { Button, Modal, Text, View } from '../../__design-system__';
 import { useStore } from '../../contexts';
 import { C, L10N } from '../../modules';
+import { PurchaseService } from '../../services';
 
 const {
   TIMEOUT,
@@ -19,6 +20,7 @@ const INITIAL_STATE = { form: {}, valid: false };
 
 const Transaction = ({ route: { params = {} } = {}, navigation: { goBack } = {} }) => {
   const store = useStore();
+  const { subscription, updateSubscription } = store;
 
   const [busy, setBusy] = useState(false);
   const [dataSource, setDataSource] = useState({});
@@ -38,6 +40,12 @@ const Transaction = ({ route: { params = {} } = {}, navigation: { goBack } = {} 
       const value = await method({ props: dataSource, state, store });
       if (value) goBack();
       setBusy(false);
+      // TODO check only 24h latter
+      if (subscription?.productId) {
+        PurchaseService.checkSubscription(subscription).then((activeSubscription) => {
+          if (!activeSubscription) updateSubscription({});
+        });
+      }
     }, TIMEOUT.BUSY);
   };
 

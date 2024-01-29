@@ -1,26 +1,17 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
-import { PLANS } from './Subscription.constants';
 import { style } from './Subscription.style';
 import { Action, Button, Card, Pressable, Modal, Text, View } from '../../__design-system__';
 import { Logo } from '../../components';
 import { useStore } from '../../contexts';
 import { PurchaseService } from '../../services';
 
-const Subscription = ({ navigation: { goBack, navigate } = {} }) => {
+const Subscription = ({ route: { params: { plans = {} } = {} } = {}, navigation: { goBack, navigate } = {} }) => {
   const { subscription, updateSubscription } = useStore();
 
-  const [products, setProducts] = useState(PLANS);
-  const [plan, setPlan] = useState(subscription);
-
-  useEffect(() => {
-    PurchaseService.getProducts()
-      .then((results) => {
-        if (results) setProducts(results);
-      })
-      .catch((error) => alert(error));
-  }, []);
+  const [busy, setBusy] = useState(false);
+  const [plan, setPlan] = useState(subscription.productId);
 
   const handleChange = (id) => {
     setPlan(id);
@@ -38,11 +29,13 @@ const Subscription = ({ navigation: { goBack, navigate } = {} }) => {
   };
 
   const handleStart = () => {
+    setBusy(true);
     PurchaseService.buy(plan)
       .then((newSubscription) => {
         if (newSubscription) {
           updateSubscription(newSubscription);
           goBack();
+          setBusy(false);
         }
       })
       .catch((error) => alert(error));
@@ -64,7 +57,7 @@ const Subscription = ({ navigation: { goBack, navigate } = {} }) => {
           Choose your plan
         </Text>
 
-        {products.map(({ productId, price, title, description }) => (
+        {plans.map(({ productId, price, title, description }) => (
           <Pressable key={productId} onPress={() => handleChange(productId)}>
             <Card outlined style={productId === plan ? style.optionHighlight : undefined}>
               <View />
@@ -83,7 +76,9 @@ const Subscription = ({ navigation: { goBack, navigate } = {} }) => {
         <Action color="content" onPress={handleRestore}>
           Restore Purchases
         </Action>
-        <Button onPress={handleStart}>Start free 7 day trial</Button>
+        <Button busy={busy} onPress={handleStart}>
+          Start free 7 day trial
+        </Button>
         <Button outlined onPress={goBack}>
           No thanks
         </Button>
@@ -112,19 +107,3 @@ Subscription.propTypes = {
 };
 
 export { Subscription };
-
-// const a = {
-//   results: [
-//     {
-//       originalOrderId: '',
-//       acknowledged: false,
-//       productId: 'monthly',
-//       transactionReceiprt: 'MUCHISIMO TEXTO',
-//       purchaseState: 1,
-//       orderId: '2000000510857950',
-//       originalPurchaseTime: 0,
-//       purchaseTime: 1706455338000,
-//     },
-//   ],
-//   responseCode: 0,
-// };

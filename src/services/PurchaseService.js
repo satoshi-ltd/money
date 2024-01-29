@@ -1,5 +1,9 @@
 import Constants from 'expo-constants';
 
+import { C } from '../modules';
+
+const { PRODUCTION, SANDBOX } = C.APPLE;
+
 export const PurchaseService = {
   getProducts: async () =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
@@ -13,7 +17,11 @@ export const PurchaseService = {
 
         const { responseCode, results } = await InAppPurchases.getProductsAsync(['monthly', 'yearly', 'lifetime']);
         if (responseCode === InAppPurchases.IAPResponseCode.OK) {
-          resolve(results);
+          resolve(
+            results.sort((a, b) => {
+              return a.priceAmountMicros - b.priceAmountMicros;
+            }),
+          );
         } else {
           reject('Products not found');
         }
@@ -42,15 +50,16 @@ export const PurchaseService = {
             case InAppPurchases.IAPResponseCode.OK:
             case InAppPurchases.IAPResponseCode.DEFERRED:
               await InAppPurchases.finishTransactionAsync(result.results[0], false);
-              await InAppPurchases.disconnectAsync();
-              return resolve(result.results[0]);
+              resolve(result.results[0]);
+              break;
             case InAppPurchases.IAPResponseCode.USER_CANCELED:
-              await InAppPurchases.disconnectAsync();
-              return resolve(false);
+              resolve(false);
+              break;
             case InAppPurchases.IAPResponseCode.ERROR:
-              await InAppPurchases.disconnectAsync();
-              return reject(new Error('IAP Error: ' + result.errorCode));
+              reject(new Error('IAP Error: ' + result.errorCode));
+              break;
           }
+          await InAppPurchases.disconnectAsync();
         });
       } catch (error) {
         reject(`Something went wrong: ${JSON.stringify(error)}`);
@@ -69,7 +78,6 @@ export const PurchaseService = {
         const { responseCode, results } = await InAppPurchases.getPurchaseHistoryAsync();
         alert(`result ${JSON.stringify(results)}`);
         if (responseCode === InAppPurchases.IAPResponseCode.OK) {
-          // TODO creo que tenemos que mirar si es monthly que el purchaseTime sea menos de un mes y en year menos de un año
           const activeSubscription = results.find(
             ({ acknowledged, purchaseState }) =>
               acknowledged &&
@@ -87,24 +95,39 @@ export const PurchaseService = {
         await InAppPurchases.disconnectAsync();
       }
     }),
-  checkSubscription: async (subscription) =>
+  checkSubscription: async (subscription, sandbox = false) =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
-      fetch(`https://buy.itunes.apple.com/verifyReceipt`, {
+      if (subscription.productId === 'lifetime') return resolve(true);
+      // TODO add password to env
+      fetch(!sandbox ? PRODUCTION : SANDBOX, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
           'X-Requested-With': 'XMLHttpRequest',
         },
         method: 'POST',
-        body: JSON.stringify({ receipt_data: subscription.transactionReceipt }),
+        body: JSON.stringify({
+          'receipt-data': subscription.transactionReceipt,
+          password: 'c2d2415c988446cb9af3a28d35d47e19',
+          'exclude-old-transactions': true,
+        }),
       })
         .then(async (response) => {
           const json = await response.json();
 
-          if (response.status >= 400) reject({ code: response.status, message: json.message });
-          else alert(JSON.stringify(json));
-          resolve(json);
+          if (json.status === 21007) {
+            return PurchaseService.checkSubscription(subscription, true);
+          }
+          if (json.status !== 0) {
+            return resolve(false);
+          }
+
+          const latestExpirationDate = json.latest_receipt_info
+            .map((info) => new Date(info.expires_date_ms))
+            .reduce((latest, current) => (current > latest ? current : latest), new Date(0));
+
+          resolve(latestExpirationDate > new Date());
         })
         .catch(({ message = 'Something wrong happened. Try again.', response } = {}) => {
           reject({

@@ -8,6 +8,11 @@ const MS_IN_DAY = 1000 * 24 * 60 * 60;
 const MS_IN_WEEK = MS_IN_DAY * 7;
 
 export const C = {
+  APPLE: {
+    PRODUCTION: 'https://buy.itunes.apple.com/verifyReceipt',
+    SANDBOX: 'https://sandbox.itunes.apple.com/verifyReceipt',
+  },
+
   BUSY_PRESS_MS: 2500,
 
   CURRENCY: 'USD',

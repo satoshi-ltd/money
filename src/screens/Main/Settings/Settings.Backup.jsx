@@ -1,15 +1,17 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Button, Card, View, Text } from '../../../__design-system__';
 import { useStore } from '../../../contexts';
 import { L10N } from '../../../modules';
-import { BackupService } from '../../../services';
+import { BackupService, PurchaseService } from '../../../services';
 
 // ! TODO: Use L10N
 
 const Backup = ({ navigation: { navigate } = {}, ...others }) => {
-  const { vaults: accounts, importBackup, settings, txs } = useStore();
+  const { vaults: accounts, importBackup, settings, subscription, txs } = useStore();
+
+  const [busy, setBusy] = useState(false);
 
   const handleExport = async () => {
     const exported = await BackupService.export({ accounts, settings, txs });
@@ -17,7 +19,21 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
   };
 
   const handleSubscription = () => {
-    navigate('subscription');
+    setBusy(true);
+    PurchaseService.getProducts()
+      .then((plans) => {
+        navigate('subscription', { plans });
+        setBusy(false);
+      })
+      .catch((error) => alert(error));
+  };
+
+  const handleCheckSubscription = () => {
+    PurchaseService.checkSubscription(subscription)
+      .then((results) => {
+        if (results) alert(JSON.stringify(results));
+      })
+      .catch((error) => alert(error));
   };
 
   const handleImport = async () => {
@@ -46,12 +62,27 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
       </View>
 
       <View gap row>
-        <Button flex outlined onPress={handleExport}>
+        <Button busy={busy} flex outlined onPress={subscription?.productId ? handleExport : handleSubscription}>
           {L10N.EXPORT}
         </Button>
         <Button flex onPress={handleImport}>
           {L10N.IMPORT}
         </Button>
+      </View>
+
+      <View gap row>
+        <Text caption color="contentLight">
+          Test purchases
+        </Text>
+        {subscription.orderId ? (
+          <Button flex onPress={handleCheckSubscription}>
+            Check Subscription
+          </Button>
+        ) : (
+          <Button flex onPress={handleSubscription}>
+            Subscription
+          </Button>
+        )}
       </View>
     </Card>
   );
