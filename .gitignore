@@ -2,3 +2,4 @@ node_modules/
 .eslintcache
 .expo
 .DS_Store
+.env

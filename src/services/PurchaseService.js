@@ -109,7 +109,7 @@ export const PurchaseService = {
         method: 'POST',
         body: JSON.stringify({
           'receipt-data': subscription.transactionReceipt,
-          password: 'c2d2415c988446cb9af3a28d35d47e19',
+          password: process.env.EXPO_PUBLIC_APPLE_SHARED_SECRET,
           'exclude-old-transactions': true,
         }),
       })
