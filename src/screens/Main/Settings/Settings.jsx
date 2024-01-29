@@ -67,7 +67,7 @@ const Settings = ({ navigation = {} }) => {
 
       <View>
         <Heading value={L10N.CHOOSE_CURRENCY}>
-          <Action caption disabled={busy} small onPress={handleUpdateRates}>
+          <Action activity={busy} caption disabled={busy} onPress={handleUpdateRates}>
             {L10N.SYNC_RATES_CTA}
           </Action>
         </Heading>

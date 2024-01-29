@@ -7,7 +7,7 @@ import { style } from './Button.style';
 import { Pressable, Text } from '../../primitives';
 
 const Button = ({
-  activity = true,
+  activity = false,
   children,
   disabled,
   flex = false,
