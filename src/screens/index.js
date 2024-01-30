@@ -12,3 +12,4 @@ export * from './Account';
 export * from './Transaction';
 export * from './Clone';
 export * from './Confirm';
+export * from './TermsAndConditions';

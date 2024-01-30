@@ -1,8 +1,10 @@
 import StyleSheet from 'react-native-extended-stylesheet';
 
 export const style = StyleSheet.create({
-  screen: {
+  modal: {
     gap: '$spaceXL',
+    paddingHorizontal: '$spaceL',
+    paddingTop: '$spaceL',
   },
 
   buttons: {
@@ -15,5 +17,11 @@ export const style = StyleSheet.create({
 
   optionHighlight: {
     backgroundColor: '$colorContent',
+  },
+
+  pressableTerms: {
+    height: '$fontSizeTiny * 1',
+    lineHeight: '$fontSizeTiny * 1',
+    paddingTop: '$spaceXS / 2',
   },
 });

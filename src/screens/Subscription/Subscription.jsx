@@ -7,7 +7,7 @@ import { Action, Button, Card, Pressable, Modal, Text, View } from '../../__desi
 import { Logo } from '../../components';
 import { useStore } from '../../contexts';
 
-const Subscription = ({ navigation: { goBack } = {} }) => {
+const Subscription = ({ navigation: { goBack, navigate } = {} }) => {
   const { subscription } = useStore();
 
   const [plan, setPlan] = useState(subscription);
@@ -17,10 +17,15 @@ const Subscription = ({ navigation: { goBack } = {} }) => {
   };
 
   const handleRestore = () => {};
+
   const handleStart = () => {};
 
+  const handleTermsAndConditions = () => {
+    navigate('terms');
+  };
+
   return (
-    <Modal offset onClose={goBack} style={style.screen}>
+    <Modal onClose={goBack} style={style.modal}>
       <View align="center">
         <Logo />
         <Text align="center">No restrictions on accounts and transactions, plus a robust import/export feature.</Text>
@@ -60,9 +65,11 @@ const Subscription = ({ navigation: { goBack } = {} }) => {
         By tapping "Start free 7 day trial", you will not be charged for the next 7 days, your subscription will
         auto-renew for the same price and package length until you cancel via App Store Settings. and you agree to our
         {` `}
-        <Text bold tiny>
-          Terms
-        </Text>
+        <Pressable onPress={() => handleTermsAndConditions()}>
+          <Text bold tiny style={style.pressableTerms}>
+            Terms
+          </Text>
+        </Pressable>
         .
       </Text>
     </Modal>
