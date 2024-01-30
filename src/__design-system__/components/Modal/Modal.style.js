@@ -15,6 +15,11 @@ export const style = StyleSheet.create({
     borderTopWidth: 1,
   },
 
+  fullscreen: {
+    borderTopWidth: 0,
+    flex: 1,
+  },
+
   pressableClose: {
     alignItems: 'center',
     paddingTop: '$spaceS',

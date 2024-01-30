@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, SafeAreaView, useWindowDimensions } from 'react-native';
 
 import { style } from './Modal.style';
-import { Icon, Pressable, ScrollView, View } from '../../primitives';
+import { Icon, Pressable, View } from '../../primitives';
 
 const presentation = 'transparentModal';
 
-const Modal = ({ onClose, ...others }) => {
+const Modal = ({ fullscreen = false, onClose, ...others }) => {
   const { height: windowHeight } = useWindowDimensions();
 
   const [layoutHeight, setLayoutHeight] = useState(0);
@@ -18,7 +18,7 @@ const Modal = ({ onClose, ...others }) => {
         onLayout={({ nativeEvent: { layout = {} } = {} }) => {
           if (layout.height) setLayoutHeight(layout.height);
         }}
-        style={style.safeAreaView}
+        style={[style.safeAreaView, fullscreen && style.fullscreen]}
       >
         {onClose && (
           <Pressable onPress={onClose} style={style.pressableClose}>
@@ -29,16 +29,14 @@ const Modal = ({ onClose, ...others }) => {
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           keyboardVerticalOffset={windowHeight - layoutHeight}
         >
-          <ScrollView>
-            <View {...others} style={[style.content, onClose && style.contentModal, others.style]} />
-          </ScrollView>
+          <View {...others} style={[style.content, onClose && style.contentModal, others.style]} />
         </KeyboardAvoidingView>
       </SafeAreaView>
     </View>
   ) : (
     <SafeAreaView>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <View {...others} style={[style.view, others.style]} />
+        <View {...others} style={[style.content, others.style]} />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -48,6 +46,7 @@ Modal.displayName = 'Modal';
 
 Modal.propTypes = {
   children: PropTypes.node,
+  fullscreen: PropTypes.bool,
   gap: PropTypes.bool,
   onClose: PropTypes.func,
 };
