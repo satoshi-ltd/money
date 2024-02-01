@@ -8,7 +8,7 @@ export const PurchaseService = {
   getProducts: async () =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
-      if (Constants.appOwnership === 'expo') return resolve();
+      if (Constants.appOwnership === 'expo') return resolve([]);
 
       const InAppPurchases = require('expo-in-app-purchases');
 
@@ -34,7 +34,7 @@ export const PurchaseService = {
   buy: async (productId) =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
-      if (Constants.appOwnership === 'expo') return resolve();
+      if (Constants.appOwnership === 'expo') return resolve({ productId: 'lifetime' });
 
       const InAppPurchases = require('expo-in-app-purchases');
 
