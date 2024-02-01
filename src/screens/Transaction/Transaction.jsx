@@ -15,12 +15,13 @@ const {
     TYPE: { TRANSFER },
   },
 } = C;
+const ONE_DAY = 24 * 60 * 60 * 1000;
 
 const INITIAL_STATE = { form: {}, valid: false };
 
 const Transaction = ({ route: { params = {} } = {}, navigation: { goBack } = {} }) => {
   const store = useStore();
-  const { subscription, updateSubscription } = store;
+  const { subscription, txs = [], updateSubscription } = store;
 
   const [busy, setBusy] = useState(false);
   const [dataSource, setDataSource] = useState({});
@@ -40,11 +41,16 @@ const Transaction = ({ route: { params = {} } = {}, navigation: { goBack } = {} 
       const value = await method({ props: dataSource, state, store });
       if (value) goBack();
       setBusy(false);
-      // TODO check only 24h latter
-      if (subscription?.productId) {
-        PurchaseService.checkSubscription(subscription).then((activeSubscription) => {
-          if (!activeSubscription) updateSubscription({});
-        });
+
+      if (subscription?.productId && txs.length) {
+        const lastTxDate = txs[txs.length - 1].timestamp;
+        if (Date.now() - lastTxDate > ONE_DAY) {
+          PurchaseService.checkSubscription(subscription).then((activeSubscription) => {
+            if (!activeSubscription) {
+              updateSubscription({});
+            }
+          });
+        }
       }
     }, TIMEOUT.BUSY);
   };
