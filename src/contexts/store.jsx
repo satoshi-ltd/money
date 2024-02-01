@@ -94,6 +94,7 @@ const StoreProvider = ({ children }) => {
   };
 
   const updateSubscription = async (subscription) => {
+    await state.store.wipe('subscription');
     await state.store.get('subscription').save(subscription);
 
     setState({ ...state, subscription });

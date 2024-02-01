@@ -116,6 +116,7 @@ export const getIcon = ({ type, category, title } = {}) => {
     if (contains(['eki'])) return ICON.EKI;
     if (contains(['benji'])) return ICON.BENJI;
     if (contains(['youri', 'you', 'yuri'])) return ICON.YURI;
+    if (contains(['chana'])) return ICON.CHANA;
   }
 
   return CATEGORY_ICON[type][category] || ICON.UNKNOWN;

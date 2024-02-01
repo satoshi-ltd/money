@@ -76,7 +76,6 @@ export const PurchaseService = {
         await InAppPurchases.connectAsync();
 
         const { responseCode, results } = await InAppPurchases.getPurchaseHistoryAsync();
-        alert(`result ${JSON.stringify(results)}`);
         if (responseCode === InAppPurchases.IAPResponseCode.OK) {
           const activeSubscription = results.find(
             ({ acknowledged, purchaseState }) =>
@@ -99,7 +98,7 @@ export const PurchaseService = {
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
       if (subscription.productId === 'lifetime') return resolve(true);
-      // TODO add password to env
+
       fetch(!sandbox ? PRODUCTION : SANDBOX, {
         headers: {
           Accept: 'application/json',

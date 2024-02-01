@@ -41,8 +41,7 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@babel/plugin-transform-regenerator": "^7.20.5",
-    "@soyjavi/eslint": "^0.1.9",
-    "expo-dev-client": "~2.4.12"
+    "@soyjavi/eslint": "^0.1.9"
   },
   "jest": {
     "preset": "jest-expo",
