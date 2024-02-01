@@ -10,7 +10,7 @@ import { PurchaseService } from '../../services';
 const Subscription = ({ route: { params: { plans = {} } = {} } = {}, navigation: { goBack, navigate } = {} }) => {
   const { subscription, updateSubscription } = useStore();
 
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState(null);
   const [plan, setPlan] = useState(subscription.productId);
 
   const handleChange = (id) => {
@@ -18,24 +18,27 @@ const Subscription = ({ route: { params: { plans = {} } = {} } = {}, navigation:
   };
 
   const handleRestore = () => {
+    setBusy('restore');
     PurchaseService.restore()
       .then((activeSubscription) => {
         if (activeSubscription) {
           updateSubscription(activeSubscription);
+          alert('Purchase restored.');
           goBack();
+          setBusy(null);
         }
       })
       .catch((error) => alert(error));
   };
 
   const handleStart = () => {
-    setBusy(true);
+    setBusy('purchase');
     PurchaseService.buy(plan)
       .then((newSubscription) => {
         if (newSubscription) {
           updateSubscription(newSubscription);
           goBack();
-          setBusy(false);
+          setBusy(null);
         }
       })
       .catch((error) => alert(error));
@@ -73,11 +76,11 @@ const Subscription = ({ route: { params: { plans = {} } = {} } = {}, navigation:
       </View>
 
       <View style={style.buttons}>
-        <Action color="content" onPress={handleRestore}>
+        <Action activity={busy === 'restore'} color="content" onPress={handleRestore}>
           Restore Purchases
         </Action>
-        <Button busy={busy} onPress={handleStart}>
-          Start free 7 day trial
+        <Button activity={busy === 'purchase'} onPress={handleStart}>
+          {plan === 'lifetime' ? 'Purchase' : 'Start free 7 day trial'}
         </Button>
         <Button outlined onPress={goBack}>
           No thanks

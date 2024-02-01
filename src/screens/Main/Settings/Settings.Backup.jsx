@@ -11,19 +11,19 @@ import { BackupService, PurchaseService } from '../../../services';
 const Backup = ({ navigation: { navigate } = {}, ...others }) => {
   const { vaults: accounts, importBackup, settings, subscription, txs } = useStore();
 
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState(null);
 
   const handleExport = async () => {
     const exported = await BackupService.export({ accounts, settings, txs });
     if (exported) alert('Export successful! Your data has been saved.');
   };
 
-  const handleSubscription = () => {
-    setBusy(true);
+  const handleSubscription = (busyState) => {
+    setBusy(busyState);
     PurchaseService.getProducts()
       .then((plans) => {
         navigate('subscription', { plans });
-        setBusy(false);
+        setBusy(null);
       })
       .catch((error) => alert(error));
   };
@@ -54,10 +54,19 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
       </View>
 
       <View gap row>
-        <Button busy={busy} flex outlined onPress={subscription?.productId ? handleExport : handleSubscription}>
+        <Button
+          activity={busy === 'export'}
+          flex
+          outlined
+          onPress={subscription?.productId ? handleExport : () => handleSubscription('export')}
+        >
           {L10N.EXPORT}
         </Button>
-        <Button flex onPress={handleImport}>
+        <Button
+          activity={busy === 'import'}
+          flex
+          onPress={subscription?.productId ? handleImport : () => handleSubscription('import')}
+        >
           {L10N.IMPORT}
         </Button>
       </View>
