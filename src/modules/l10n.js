@@ -42,7 +42,6 @@ export const L10N = {
   CONFIRM_IMPORT: 'Confirm import',
   CONFIRM_IMPORT_CAPTION: ({ accounts = [], txs = [] }) =>
     `Ready to import the JSON file? It'll update your finances with ${accounts.length} accounts and ${txs.length} transactions. Just make sure the file is good to go—this action can't be undone!"`,
-  CURRENCY: 'Currency',
   CURRENCY_NAME: {
     AUD: 'Australian Dollar',
     BTC: 'Bitcoin',
@@ -65,7 +64,6 @@ export const L10N = {
   },
   CURRENCIES: 'Currencies',
 
-  DAY_NAMES: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
   DELETE: 'Delete',
   DISABLE: 'Disable',
 
