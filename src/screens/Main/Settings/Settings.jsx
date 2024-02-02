@@ -56,7 +56,7 @@ const Settings = ({ navigation = {} }) => {
 
       <Card style={style.offset}>
         <View row spaceBetween>
-          <Text bold>Dark Mode</Text>
+          <Text bold>{L10N.DARK_MODE}</Text>
           <Button small onPress={toggleTheme}>
             {theme === 'dark' ? L10N.DISABLE : L10N.ENABLE}
           </Button>

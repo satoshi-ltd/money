@@ -25,7 +25,7 @@ export const BackupService = {
         }
 
         const isSharingAvailable = await Sharing.isAvailableAsync();
-        if (!isSharingAvailable) return reject("Unable to export as you don't have sharing permissions.");
+        if (!isSharingAvailable) return reject(L10N.ERROR_EXPORT);
 
         const fileUri = FileSystem.documentDirectory + fileName;
         await FileSystem.writeAsStringAsync(fileUri, data);
@@ -35,7 +35,7 @@ export const BackupService = {
 
         BackupService.scheduleNotification();
       } catch (error) {
-        reject(`Something went wrong: ${JSON.stringify(error)}`);
+        reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);
       }
     }),
 
@@ -61,13 +61,12 @@ export const BackupService = {
 
           const { accounts = [], settings = {}, txs = [] } = jsonData;
 
-          if (!accounts.length || !Object.keys(settings).length)
-            return reject('The file format is not supported. Please choose a compatible file type.');
+          if (!accounts.length || !Object.keys(settings).length) return reject(L10N.ERROR_IMPORT);
 
           resolve({ accounts, settings, txs });
         }
       } catch (error) {
-        reject(`Something went wrong: ${JSON.stringify(error)}`);
+        reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);
       }
     }),
 

@@ -22,6 +22,7 @@ const StoreProvider = ({ children }) => {
       setState({
         store,
         settings: await store.get('settings')?.value,
+        subscription: await store.get('subscription')?.value,
         rates: await store.get('rates')?.value,
         vaults: await store.get('accounts')?.value,
         txs: await store.get('txs')?.value,
@@ -92,6 +93,13 @@ const StoreProvider = ({ children }) => {
     setState({ ...state, settings: nextSettings });
   };
 
+  const updateSubscription = async (subscription) => {
+    await state.store.wipe('subscription');
+    await state.store.get('subscription').save(subscription);
+
+    setState({ ...state, subscription });
+  };
+
   const updateTx = async ({ hash, ...data } = {}) => {
     const { store } = state;
     const tx = await store.get('txs').findOne({ hash });
@@ -126,6 +134,7 @@ const StoreProvider = ({ children }) => {
         importBackup,
         updateRates,
         updateSettings,
+        updateSubscription,
         updateTx,
         updateVault,
       }}

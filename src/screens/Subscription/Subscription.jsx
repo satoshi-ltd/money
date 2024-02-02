@@ -1,24 +1,49 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
-import { PLANS } from './Subscription.constants';
 import { style } from './Subscription.style';
 import { Action, Button, Card, Pressable, Modal, Text, View } from '../../__design-system__';
 import { Logo } from '../../components';
 import { useStore } from '../../contexts';
+import { L10N } from '../../modules';
+import { PurchaseService } from '../../services';
 
-const Subscription = ({ navigation: { goBack, navigate } = {} }) => {
-  const { subscription } = useStore();
+const Subscription = ({ route: { params: { plans = {} } = {} } = {}, navigation: { goBack, navigate } = {} }) => {
+  const { subscription, updateSubscription } = useStore();
 
-  const [plan, setPlan] = useState(subscription);
+  const [busy, setBusy] = useState(null);
+  const [plan, setPlan] = useState(subscription.productId);
 
   const handleChange = (id) => {
     setPlan(id);
   };
 
-  const handleRestore = () => {};
+  const handleRestore = () => {
+    setBusy('restore');
+    PurchaseService.restore()
+      .then((activeSubscription) => {
+        if (activeSubscription) {
+          updateSubscription(activeSubscription);
+          alert(L10N.PURCHASE_RESTORED);
+          goBack();
+          setBusy(null);
+        }
+      })
+      .catch((error) => alert(error));
+  };
 
-  const handleStart = () => {};
+  const handleStart = () => {
+    setBusy('purchase');
+    PurchaseService.buy(plan)
+      .then((newSubscription) => {
+        if (newSubscription) {
+          updateSubscription(newSubscription);
+          goBack();
+          setBusy(null);
+        }
+      })
+      .catch((error) => alert(error));
+  };
 
   const handleTermsAndConditions = () => {
     navigate('terms');
@@ -28,22 +53,22 @@ const Subscription = ({ navigation: { goBack, navigate } = {} }) => {
     <Modal onClose={goBack} style={style.modal}>
       <View align="center">
         <Logo />
-        <Text align="center">No restrictions on accounts and transactions, plus a robust import/export feature.</Text>
+        <Text align="center">{L10N.SUBSCRIPTION_CAPTION}</Text>
       </View>
 
       <View style={style.options}>
         <Text align="center" bold subtitle>
-          Choose your plan
+          {L10N.CHOOSE_PLAN}
         </Text>
 
-        {PLANS.map(({ id, currency, price, caption, detail }) => (
-          <Pressable key={id} onPress={() => handleChange(id)}>
-            <Card outlined style={id === plan ? style.optionHighlight : undefined}>
+        {plans.map(({ productId, price, title, description }) => (
+          <Pressable key={productId} onPress={() => handleChange(productId)}>
+            <Card outlined style={productId === plan ? style.optionHighlight : undefined}>
               <View />
-              <Text bold color={id === plan ? 'base' : undefined}>{`${currency} ${price} / ${caption}`}</Text>
-              {detail && (
-                <Text color={id === plan ? 'base' : undefined} tiny>
-                  {detail}
+              <Text bold color={productId === plan ? 'base' : undefined}>{`${price} / ${title}`}</Text>
+              {productId === 'lifetime' && (
+                <Text color={productId === plan ? 'base' : undefined} tiny>
+                  {description}
                 </Text>
               )}
             </Card>
@@ -52,22 +77,23 @@ const Subscription = ({ navigation: { goBack, navigate } = {} }) => {
       </View>
 
       <View style={style.buttons}>
-        <Action color="content" onPress={handleRestore}>
-          Restore Purchases
+        <Action activity={busy === 'restore'} color="content" onPress={handleRestore}>
+          {L10N.RESTORE_PURCHASE}
         </Action>
-        <Button onPress={handleStart}>Start free 7 day trial</Button>
+        <Button activity={busy === 'purchase'} onPress={handleStart}>
+          {plan === 'lifetime' ? L10N.PURCHASE : L10N.START_TRIAL}
+        </Button>
         <Button outlined onPress={goBack}>
-          No thanks
+          {L10N.SUBSCRIPTION_CLOSE}
         </Button>
       </View>
 
       <Text tiny>
-        By tapping "Start free 7 day trial", you will not be charged for the next 7 days, your subscription will
-        auto-renew for the same price and package length until you cancel via App Store Settings. and you agree to our
+        {L10N.SUBSCRIPTION_TERMS_CAPTION}
         {` `}
         <Pressable onPress={() => handleTermsAndConditions()}>
           <Text bold tiny style={style.pressableTerms}>
-            Terms
+            {L10N.SUBSCRIPTION_TERMS}
           </Text>
         </Pressable>
         .

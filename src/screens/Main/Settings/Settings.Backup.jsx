@@ -1,23 +1,29 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Button, Card, View, Text } from '../../../__design-system__';
 import { useStore } from '../../../contexts';
 import { L10N } from '../../../modules';
-import { BackupService } from '../../../services';
-
-// ! TODO: Use L10N
+import { BackupService, PurchaseService } from '../../../services';
 
 const Backup = ({ navigation: { navigate } = {}, ...others }) => {
-  const { vaults: accounts, importBackup, settings, txs } = useStore();
+  const { vaults: accounts, importBackup, settings, subscription, txs } = useStore();
+
+  const [busy, setBusy] = useState(null);
 
   const handleExport = async () => {
     const exported = await BackupService.export({ accounts, settings, txs });
-    if (exported) alert('Export successful! Your data has been saved.');
+    if (exported) alert(L10N.CONFIRM_EXPORT_SUCCESS);
   };
 
-  const handleSubscription = () => {
-    navigate('subscription');
+  const handleSubscription = (busyState) => {
+    setBusy(busyState);
+    PurchaseService.getProducts()
+      .then((plans) => {
+        navigate('subscription', { plans });
+        setBusy(null);
+      })
+      .catch((error) => alert(error));
   };
 
   const handleImport = async () => {
@@ -29,7 +35,7 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
         onAccept: async () => {
           await importBackup(backup);
           navigate('dashboard');
-          alert('Imported successfully.');
+          alert(L10N.CONFIRM_IMPORT_SUCCESS);
         },
       });
     }
@@ -38,18 +44,26 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
   return (
     <Card gap {...others}>
       <View>
-        <Text bold>{`${L10N.IMPORT} / ${L10N.EXPORT}`}</Text>
+        <Text bold>{`${L10N.EXPORT} / ${L10N.IMPORT}`}</Text>
         <Text caption color="contentLight">
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minima alias natus quia tempora praesentium qui
-          omnis.
+          {L10N.BACKUP_CAPTION}
         </Text>
       </View>
 
       <View gap row>
-        <Button flex outlined onPress={handleExport}>
+        <Button
+          activity={busy === 'export'}
+          flex
+          outlined
+          onPress={subscription?.productId ? handleExport : () => handleSubscription('export')}
+        >
           {L10N.EXPORT}
         </Button>
-        <Button flex onPress={handleImport}>
+        <Button
+          activity={busy === 'import'}
+          flex
+          onPress={subscription?.productId ? handleImport : () => handleSubscription('import')}
+        >
           {L10N.IMPORT}
         </Button>
       </View>

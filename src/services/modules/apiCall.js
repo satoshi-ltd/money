@@ -1,4 +1,4 @@
-import { C } from '../../modules';
+import { C, L10N } from '../../modules';
 
 const { ENDPOINT, TIMEOUT } = C;
 
@@ -30,7 +30,7 @@ export const apiCall = async ({ endpoint = ENDPOINT, headers, method = GET, serv
         if (response.status >= 400) reject({ code: response.status, message: json.message });
         else resolve(json);
       })
-      .catch(({ message = 'Something wrong happened. Try again.', response } = {}) => {
+      .catch(({ message = L10N.ERROR_TRY_AGAIN, response } = {}) => {
         reject({
           code: response ? response.status : 500,
           message,

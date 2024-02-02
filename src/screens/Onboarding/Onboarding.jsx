@@ -8,6 +8,7 @@ import { IMAGE_SIZE, SLIDES } from './Onboarding.constants';
 import { style } from './Onboarding.style';
 import { Button, Pagination, ScrollView, Text, View } from '../../__design-system__';
 import { useStore } from '../../contexts';
+import { L10N } from '../../modules';
 
 const Onboarding = ({ navigation: { navigate } }) => {
   const scrollview = useRef(null);
@@ -57,7 +58,7 @@ const Onboarding = ({ navigation: { navigate } }) => {
         <Pagination currentIndex={currentIndex} length={SLIDES.length} />
 
         <Button onPress={handleNext} style={style.button}>
-          {lastSlide ? 'Start' : 'Next'}
+          {lastSlide ? L10N.START : L10N.NEXT}
         </Button>
       </View>
     </SafeAreaView>
