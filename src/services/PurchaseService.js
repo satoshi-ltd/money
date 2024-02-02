@@ -1,6 +1,6 @@
 import Constants from 'expo-constants';
 
-import { C } from '../modules';
+import { C, L10N } from '../modules';
 
 const { PRODUCTION, SANDBOX } = C.APPLE;
 
@@ -23,10 +23,10 @@ export const PurchaseService = {
             }),
           );
         } else {
-          reject('Products not found');
+          reject(L10N.ERROR_PRODUCTS);
         }
       } catch (error) {
-        reject(`Something went wrong: ${JSON.stringify(error)}`);
+        reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);
       } finally {
         await InAppPurchases.disconnectAsync();
       }
@@ -62,7 +62,7 @@ export const PurchaseService = {
           await InAppPurchases.disconnectAsync();
         });
       } catch (error) {
-        reject(`Something went wrong: ${JSON.stringify(error)}`);
+        reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);
       }
     }),
   restore: async () =>
@@ -86,10 +86,10 @@ export const PurchaseService = {
           );
           resolve(activeSubscription);
         } else {
-          reject('Restore failed');
+          reject(L10N.ERROR_RESTORE);
         }
       } catch (error) {
-        reject(`Something went wrong: ${JSON.stringify(error)}`);
+        reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);
       } finally {
         await InAppPurchases.disconnectAsync();
       }
@@ -128,7 +128,7 @@ export const PurchaseService = {
 
           resolve(latestExpirationDate > new Date());
         })
-        .catch(({ message = 'Something wrong happened. Try again.', response } = {}) => {
+        .catch(({ message = L10N.ERROR_TRY_AGAIN, response } = {}) => {
           reject({
             code: response ? response.status : 500,
             message,

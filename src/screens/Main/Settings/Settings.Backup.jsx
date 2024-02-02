@@ -6,8 +6,6 @@ import { useStore } from '../../../contexts';
 import { L10N } from '../../../modules';
 import { BackupService, PurchaseService } from '../../../services';
 
-// ! TODO: Use L10N
-
 const Backup = ({ navigation: { navigate } = {}, ...others }) => {
   const { vaults: accounts, importBackup, settings, subscription, txs } = useStore();
 
@@ -15,7 +13,7 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
 
   const handleExport = async () => {
     const exported = await BackupService.export({ accounts, settings, txs });
-    if (exported) alert('Export successful! Your data has been saved.');
+    if (exported) alert(L10N.CONFIRM_EXPORT_SUCCESS);
   };
 
   const handleSubscription = (busyState) => {
@@ -37,7 +35,7 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
         onAccept: async () => {
           await importBackup(backup);
           navigate('dashboard');
-          alert('Imported successfully.');
+          alert(L10N.CONFIRM_IMPORT_SUCCESS);
         },
       });
     }
@@ -46,10 +44,9 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
   return (
     <Card gap {...others}>
       <View>
-        <Text bold>{`${L10N.IMPORT} / ${L10N.EXPORT}`}</Text>
+        <Text bold>{`${L10N.EXPORT} / ${L10N.IMPORT}`}</Text>
         <Text caption color="contentLight">
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minima alias natus quia tempora praesentium qui
-          omnis.
+          {L10N.BACKUP_CAPTION}
         </Text>
       </View>
 

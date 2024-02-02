@@ -5,6 +5,7 @@ import { style } from './Subscription.style';
 import { Action, Button, Card, Pressable, Modal, Text, View } from '../../__design-system__';
 import { Logo } from '../../components';
 import { useStore } from '../../contexts';
+import { L10N } from '../../modules';
 import { PurchaseService } from '../../services';
 
 const Subscription = ({ route: { params: { plans = {} } = {} } = {}, navigation: { goBack, navigate } = {} }) => {
@@ -23,7 +24,7 @@ const Subscription = ({ route: { params: { plans = {} } = {} } = {}, navigation:
       .then((activeSubscription) => {
         if (activeSubscription) {
           updateSubscription(activeSubscription);
-          alert('Purchase restored.');
+          alert(L10N.PURCHASE_RESTORED);
           goBack();
           setBusy(null);
         }
@@ -52,12 +53,12 @@ const Subscription = ({ route: { params: { plans = {} } = {} } = {}, navigation:
     <Modal onClose={goBack} style={style.modal}>
       <View align="center">
         <Logo />
-        <Text align="center">No restrictions on accounts and transactions, plus a robust import/export feature.</Text>
+        <Text align="center">{L10N.SUBSCRIPTION_CAPTION}</Text>
       </View>
 
       <View style={style.options}>
         <Text align="center" bold subtitle>
-          Choose your plan
+          {L10N.CHOOSE_PLAN}
         </Text>
 
         {plans.map(({ productId, price, title, description }) => (
@@ -77,23 +78,22 @@ const Subscription = ({ route: { params: { plans = {} } = {} } = {}, navigation:
 
       <View style={style.buttons}>
         <Action activity={busy === 'restore'} color="content" onPress={handleRestore}>
-          Restore Purchases
+          {L10N.RESTORE_PURCHASE}
         </Action>
         <Button activity={busy === 'purchase'} onPress={handleStart}>
-          {plan === 'lifetime' ? 'Purchase' : 'Start free 7 day trial'}
+          {plan === 'lifetime' ? L10N.PURCHASE : L10N.START_TRIAL}
         </Button>
         <Button outlined onPress={goBack}>
-          No thanks
+          {L10N.SUBSCRIPTION_CLOSE}
         </Button>
       </View>
 
       <Text tiny>
-        By tapping "Start free 7 day trial", you will not be charged for the next 7 days, your subscription will
-        auto-renew for the same price and package length until you cancel via App Store Settings. and you agree to our
+        {L10N.SUBSCRIPTION_TERMS_CAPTION}
         {` `}
         <Pressable onPress={() => handleTermsAndConditions()}>
           <Text bold tiny style={style.pressableTerms}>
-            Terms
+            {L10N.SUBSCRIPTION_TERMS}
           </Text>
         </Pressable>
         .
