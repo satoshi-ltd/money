@@ -45,7 +45,7 @@ export const C = {
   MS_IN_DAY,
   MS_IN_WEEK,
 
-  STATS_MONTHS_LIMIT: 13,
+  STATS_MONTHS_LIMIT: 12,
   SYMBOL: {
     USD: '$',
     EUR: '€',

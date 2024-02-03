@@ -3,12 +3,12 @@ import StyleSheet from 'react-native-extended-stylesheet';
 import { opacity } from '../../../../../__design-system__/theme/modules';
 
 export const style = StyleSheet.create({
-  $barRadius: '$spaceS / 2',
-  $barSize: '$spaceS',
+  $barSize: '$spaceS * 1.25',
+  $barRadius: '$barSize / 2',
 
   bars: {
-    flexDirection: 'row',
     alignItems: 'flex-end',
+    flexDirection: 'row',
     justifyContent: 'space-between',
     height: '$barSize * 8',
   },
@@ -20,7 +20,6 @@ export const style = StyleSheet.create({
     maxHeight: '100%',
     minHeight: '$barSize',
     width: '$barSize',
-    // zIndex: 2,
   },
 
   border: {
@@ -30,7 +29,6 @@ export const style = StyleSheet.create({
 
   offset: {
     marginHorizontal: '$spaceM',
-    // zIndex: 1,
   },
 
   barInverted: {
@@ -44,10 +42,11 @@ export const style = StyleSheet.create({
     borderColor: '$colorBorder',
     borderTopWidth: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     paddingTop: '$spaceXXS',
-    paddingLeft: '$spaceXS',
-    paddingRight: '$spaceXS',
+  },
+
+  caption: {
+    flex: 1,
   },
 
   column: {
@@ -55,7 +54,6 @@ export const style = StyleSheet.create({
     flex: 1,
     height: '100%',
     justifyContent: 'flex-end',
-    overflow: 'hidden',
   },
 
   columnInverted: {
@@ -78,13 +76,12 @@ export const style = StyleSheet.create({
 
   scaleLine: {
     borderColor: '$colorContentLight',
-    borderStyle: 'dotted',
-    borderWidth: 1,
-    borderRadius: 1,
-    height: 0,
-    width: '100%',
-    top: '50%',
+    borderStyle: 'dashed',
+    borderWidth: 0.5,
+    height: 0.5,
     opacity: 0.5,
+    top: '50%',
+    width: '100%',
   },
 
   scaleLineAccent: {
@@ -98,12 +95,13 @@ export const style = StyleSheet.create({
     alignSelf: 'flex-start',
     borderRadius: '$borderRadius',
     paddingHorizontal: '$spaceXS',
+    paddingVertical: '$spaceXS / 4',
   },
 
   scaleBorder: {
-    borderColor: () => opacity(StyleSheet.value('$colorBase'), 0.75),
-    borderWidth: '$borderWidth',
-    margin: '$borderWidth',
+    borderColor: () => opacity(StyleSheet.value('$colorBase'), 0.66),
+    borderWidth: 1,
+    margin: 1,
   },
 
   // colors
