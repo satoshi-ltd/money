@@ -1,5 +1,5 @@
 export const createTransaction = async ({
-  props: { vault = {}, type },
+  props: { account = {}, type },
   state: {
     form: { category, value, title = '' },
   },
@@ -10,5 +10,6 @@ export const createTransaction = async ({
     title,
     type,
     value: parseFloat(value, 10),
-    vault: vault.hash,
+    // ! TODO: Somehow we have data con `tx.vault` but should be `tx.account`
+    vault: account.hash,
   });

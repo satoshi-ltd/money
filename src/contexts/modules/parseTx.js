@@ -1,5 +1,6 @@
 import { UUID } from './internal';
 
+// ! TODO: Somehow we have data con `tx.vault` but should be `tx.account`
 export const parseTx = ({
   hash,
   category,

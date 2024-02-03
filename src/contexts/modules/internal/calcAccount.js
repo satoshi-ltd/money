@@ -4,13 +4,13 @@ const {
   TX: { TYPE },
 } = C;
 
-export const calcVault = ({ baseCurrency, genesisDate, months = 0, rates = {}, txs = [], vault }) => {
+export const calcAccount = ({ account = {}, baseCurrency, genesisDate, months = 0, rates = {}, txs = [] }) => {
   const now = new Date();
 
   const currentDay = now.getDate();
-  const { balance, currency } = vault;
+  const { balance, currency } = account;
   const exchangeProps = [currency, baseCurrency, rates];
-  let { balance: currentBalance = 0 } = vault;
+  let { balance: currentBalance = 0 } = account;
   let currentMonthTxs = 0;
   let expenses = 0;
   let incomes = 0;
@@ -18,9 +18,10 @@ export const calcVault = ({ baseCurrency, genesisDate, months = 0, rates = {}, t
   let today = 0;
 
   const chartBalance = new Array(months + 1).fill(0);
-  chartBalance[0] = vault.balance > 0 ? vault.balance : 0;
+  chartBalance[0] = account.balance > 0 ? account.balance : 0;
 
-  const dataSource = txs.filter((tx) => tx.vault === vault.hash);
+  // ! TODO: Somehow we have data con `tx.vault` but should be `tx.account`
+  const dataSource = txs.filter((tx) => tx.vault === account.hash);
   dataSource.forEach(({ category, timestamp, type, value = 0 }) => {
     const isExpense = type === TYPE.EXPENSE;
     const date = new Date(timestamp);
@@ -47,7 +48,7 @@ export const calcVault = ({ baseCurrency, genesisDate, months = 0, rates = {}, t
   });
 
   return {
-    ...vault,
+    ...account,
     balance: balance > 0 ? balance : 0,
     chartBalance: chartBalance.map((value, index) =>
       currency !== baseCurrency

@@ -3,7 +3,7 @@ import { C } from '../../modules';
 
 const { CURRENCY } = C;
 
-export const parseVault = ({
+export const parseAccount = ({
   hash,
   balance = 0,
   currency = CURRENCY,

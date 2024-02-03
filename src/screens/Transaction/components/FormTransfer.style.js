@@ -24,7 +24,7 @@ export const style = StyleSheet.create({
     borderBottomRightRadius: 0,
   },
 
-  inputVault: {
+  inputAccount: {
     alignItems: 'center',
     backgroundColor: '$colorBase',
     borderColor: '$colorBorder',

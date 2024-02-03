@@ -2,9 +2,9 @@ import { FORM } from '../../../modules';
 
 const { TRANSFER } = FORM;
 
-export const hydrate = ({ destination, vault }, vaults = []) => {
-  const { currency } = vaults.find(({ hash }) => hash === vault);
-  const { currency: destinationCurrency = currency } = vaults.find(({ hash }) => hash === destination) || {};
+export const hydrate = ({ account, destination } = {}, accounts = []) => {
+  const { currency } = accounts.find(({ hash }) => hash === account);
+  const { currency: destinationCurrency = currency } = accounts.find(({ hash }) => hash === destination) || {};
 
   return {
     ...TRANSFER,

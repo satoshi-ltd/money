@@ -1,4 +1,4 @@
-import { calcVault } from './internal';
+import { calcAccount } from './internal';
 import { exchange, getMonthDiff } from '../../modules';
 
 const KEYS = ['expenses', 'incomes', 'progression', 'today'];
@@ -8,26 +8,26 @@ export const consolidate = ({
   settings = {},
   subscription = {},
   txs = [],
-  vaults: storeVaults = [],
+  accounts: storeAccounts = [],
 } = {}) => {
   const { baseCurrency } = settings;
-  let vaults = [];
+  let accounts = [];
 
-  if (storeVaults.length > 0) {
+  if (storeAccounts.length > 0) {
     const { timestamp: blockTimestamp, data: { timestamp } = {} } =
-      //  storeVaults[0].balance ? storeVaults[0] : storeVaults[1];
-      storeVaults[0].balance !== undefined ? storeVaults[0] : storeVaults[1] || {};
+      //  storeAccounts[0].balance ? storeAccounts[0] : storeAccounts[1];
+      storeAccounts[0].balance !== undefined ? storeAccounts[0] : storeAccounts[1] || {};
     const genesisDate = new Date(timestamp || blockTimestamp);
     const months = getMonthDiff(genesisDate, new Date());
 
-    vaults = storeVaults.map(({ hash, timestamp, data = {}, ...others }) =>
-      calcVault({
+    accounts = storeAccounts.map(({ hash, timestamp, data = {}, ...others }) =>
+      calcAccount({
         baseCurrency,
         genesisDate,
         months,
         rates,
         txs,
-        vault: { hash, timestamp, ...data, ...others },
+        account: { hash, timestamp, ...data, ...others },
       }),
     );
   }
@@ -42,36 +42,36 @@ export const consolidate = ({
   let currentBalance = 0;
   const chartBalance = [];
 
-  vaults.forEach(
+  accounts.forEach(
     ({
-      balance: vaultBalance,
-      chartBalance: vaultChartBalance,
-      currentBalanceBase: vaultCurrentBalanceBase,
+      balance: acountBalance,
+      chartBalance: accountChartBalance,
+      currentBalanceBase: accountCurrentBalanceBase,
       currency,
-      currentMonth: vaultLast30Days,
+      currentMonth: accountLast30Days,
     }) => {
       const sameCurrency = currency === baseCurrency;
       const exchangeProps = [currency, baseCurrency, rates];
 
-      balance += sameCurrency ? vaultBalance : exchange(vaultBalance, ...exchangeProps);
-      currentBalance += vaultCurrentBalanceBase;
+      balance += sameCurrency ? acountBalance : exchange(acountBalance, ...exchangeProps);
+      currentBalance += accountCurrentBalanceBase;
 
       KEYS.forEach((key) => {
-        currentMonth[key] += vaultLast30Days[key];
+        currentMonth[key] += accountLast30Days[key];
       });
 
-      vaultChartBalance.forEach((value, index) => {
-        chartBalance[index] = (chartBalance[index] || 0) + vaultChartBalance[index];
+      accountChartBalance.forEach((value, index) => {
+        chartBalance[index] = (chartBalance[index] || 0) + accountChartBalance[index];
       });
     },
   );
 
   return {
+    accounts,
     overall: { balance, chartBalance, currentBalance, currentMonth },
     rates,
     settings,
     subscription,
     txs,
-    vaults,
   };
 };

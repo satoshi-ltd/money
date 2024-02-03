@@ -9,7 +9,7 @@ import { CardOption, InputCurrency, InputText } from '../../../components';
 import { getIcon, L10N } from '../../../modules';
 import { queryCategories } from '../helpers';
 
-const FormTransaction = ({ form = {}, onChange, type, vault = {} }) => {
+const FormTransaction = ({ account = {}, form = {}, onChange, type }) => {
   const scrollview = useRef(null);
   const { width } = useWindowDimensions();
 
@@ -53,9 +53,9 @@ const FormTransaction = ({ form = {}, onChange, type, vault = {} }) => {
       </ScrollView>
 
       <InputCurrency
-        currency={vault.currency}
+        account={account}
+        currency={account.currency}
         value={form.value}
-        vault={vault}
         onChange={(value) => handleField('value', value)}
         style={style.inputCurrency}
       />
@@ -71,9 +71,9 @@ const FormTransaction = ({ form = {}, onChange, type, vault = {} }) => {
 };
 
 FormTransaction.propTypes = {
+  account: PropTypes.shape({}).isRequired,
   form: PropTypes.shape({}).isRequired,
   type: PropTypes.number,
-  vault: PropTypes.shape({}).isRequired,
   onChange: PropTypes.func.isRequired,
 };
 

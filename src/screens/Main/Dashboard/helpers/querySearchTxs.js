@@ -1,6 +1,6 @@
 import { L10N, groupTxsByDate } from '../../../../modules';
 
-export const querySearchTxs = ({ query, txs = [], vaults = [] }) =>
+export const querySearchTxs = ({ accounts = [], query, txs = [] }) =>
   query
     ? groupTxsByDate(
         txs
@@ -18,7 +18,9 @@ export const querySearchTxs = ({ query, txs = [], vaults = [] }) =>
           })
           .slice(0, 16)
           .map((tx = {}) => {
-            const { currency } = vaults.find(({ hash }) => hash === tx.vault) || {};
+            // ! TODO: Somehow we have data con `tx.vault` but should be `tx.account`
+            const { currency } = accounts.find(({ hash }) => hash === tx.vault) || {};
+
             return { ...tx, currency };
           }),
       )

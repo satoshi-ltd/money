@@ -8,7 +8,7 @@ const {
 } = C;
 
 export const createTransfer = async ({
-  props: { vault = {} },
+  props: { account = {} },
   state: {
     form: { from, to, exchange, value },
   },
@@ -19,7 +19,8 @@ export const createTransfer = async ({
     title: to.title,
     type: EXPENSE,
     value: parseFloat(value, 10),
-    vault: vault.hash,
+    // ! TODO: Somehow we have data con `tx.vault` but should be `tx.account`
+    vault: account.hash,
   });
 
   if (block) {
@@ -28,6 +29,7 @@ export const createTransfer = async ({
       title: from.title,
       type: INCOME,
       value: parseFloat(exchange, 10),
+      // ! TODO: Somehow we have data con `tx.vault` but should be `tx.account`
       vault: to.hash,
     });
   }

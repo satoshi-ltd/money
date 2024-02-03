@@ -19,7 +19,7 @@ const INITIAL_STATE = { form: {}, valid: false };
 const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } = {} }) => {
   const store = useStore();
 
-  const { addTx, deleteTx, updateTx, vaults } = store;
+  const { addTx, deleteTx, updateTx, accounts } = store;
 
   const [dataSource, setDataSource] = useState({});
   const [state, setState] = useState(INITIAL_STATE);
@@ -51,8 +51,9 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
     if (!remove) goBack();
   };
 
+  // ! TODO: Somehow we have data con `tx.vault` but should be `tx.account`
   const { vault, title = '', type = EXPENSE } = dataSource;
-  const vaultInfo = vaults.find(({ hash }) => hash === vault);
+  const accountInfo = accounts.find(({ hash }) => hash === vault);
 
   return (
     <Modal title="Clone" onClose={goBack}>
@@ -64,7 +65,7 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
       </Text>
 
       {state.form?.category !== undefined && (
-        <FormTransaction {...state} debounce={200} vault={vaultInfo} type={dataSource?.type} onChange={setState} />
+        <FormTransaction {...state} account={accountInfo} debounce={200} type={dataSource?.type} onChange={setState} />
       )}
 
       <View row style={style.buttons}>

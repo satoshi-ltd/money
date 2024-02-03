@@ -1,5 +1,5 @@
-export const queryVaults = ({ query, vaults = [] }) =>
-  vaults
+export const queryAccounts = ({ accounts = [], query }) =>
+  accounts
     .filter((tx = {}) => {
       const title = tx.title ? tx.title.toLowerCase() : undefined;
       return !query || (title && title.includes(query));
