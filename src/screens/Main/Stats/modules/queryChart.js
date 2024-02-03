@@ -40,8 +40,7 @@ export default ({
     // .filter((tx) => !isNonAccountingTx(tx))
     .forEach((tx) => {
       const { timestamp, type, value } = tx;
-      // ! TODO: Somehow we have data con `tx.vault` but should be `tx.account`
-      const currency = accountsCurrency[tx.vault];
+      const currency = accountsCurrency[tx.account];
 
       const valueExchange = exchange(value, currency, baseCurrency, rates, timestamp);
       const monthIndex = getMonthDiff(originDate, parseDate(timestamp)) - 1;

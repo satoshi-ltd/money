@@ -33,20 +33,21 @@ const StoreProvider = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // * -- This method is only for us -----------------------------------------------------------------------------------
   const rebuildTxs = async (store = {}) => {
     const txs = (await store.get('txs')?.value) || [];
-    const [{ vault }] = txs;
+    const [{ vault } = {}] = txs;
 
     if (vault) {
-      const next = txs.map(({ vault: account, ...others } = {}) => ({ ...others, account }));
-      console.log(next);
+      const nextTxs = txs.map(({ vault: account, ...others } = {}) => ({ ...others, account }));
 
       await store.wipe('txs');
-      await store.get('txs').save(next);
+      await store.get('txs').save(nextTxs);
 
       alert('Database rebuilt correctly.');
     }
   };
+  // * -----------------------------------------------------------------------------------------------------------------
 
   const addTx = async (data = {}) => {
     const { store } = state;

@@ -6,10 +6,9 @@ export const createTransaction = async ({
   store: { addTx },
 }) =>
   addTx({
+    account: account.hash,
     category: parseInt(category, 10),
     title,
     type,
     value: parseFloat(value, 10),
-    // ! TODO: Somehow we have data con `tx.vault` but should be `tx.account`
-    vault: account.hash,
   });

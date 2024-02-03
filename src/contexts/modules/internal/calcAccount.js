@@ -20,8 +20,7 @@ export const calcAccount = ({ account = {}, baseCurrency, genesisDate, months = 
   const chartBalance = new Array(months + 1).fill(0);
   chartBalance[0] = account.balance > 0 ? account.balance : 0;
 
-  // ! TODO: Somehow we have data con `tx.vault` but should be `tx.account`
-  const dataSource = txs.filter((tx) => tx.vault === account.hash);
+  const dataSource = txs.filter((tx) => tx.account === account.hash);
   dataSource.forEach(({ category, timestamp, type, value = 0 }) => {
     const isExpense = type === TYPE.EXPENSE;
     const date = new Date(timestamp);

@@ -7,8 +7,7 @@ export const queryLastTxs = ({ accounts = [], txs = [] }) =>
       .slice(-32)
       .reverse()
       .map((tx = {}) => {
-        // ! TODO: Somehow we have data con `tx.vault` but should be `tx.account`
-        const { currency = CURRENCY } = accounts.find(({ hash }) => hash === tx.vault) || {};
+        const { currency = CURRENCY } = accounts.find(({ hash }) => hash === tx.account) || {};
 
         return { ...tx, currency };
       }),

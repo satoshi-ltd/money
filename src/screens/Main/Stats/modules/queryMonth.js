@@ -26,8 +26,7 @@ export default (
       const dYear = date.getFullYear();
 
       if (month === dMonth && year === dYear) {
-        // ! TODO: Somehow we have data con `tx.vault` but should be `tx.account`
-        const { currency } = accounts.find(({ hash }) => hash === tx.vault) || {};
+        const { currency } = accounts.find(({ hash }) => hash === tx.account) || {};
 
         const valueExchange = exchange(value, currency, baseCurrency, rates, timestamp);
 

@@ -18,8 +18,7 @@ export const querySearchTxs = ({ accounts = [], query, txs = [] }) =>
           })
           .slice(0, 16)
           .map((tx = {}) => {
-            // ! TODO: Somehow we have data con `tx.vault` but should be `tx.account`
-            const { currency } = accounts.find(({ hash }) => hash === tx.vault) || {};
+            const { currency } = accounts.find(({ hash }) => hash === tx.account) || {};
 
             return { ...tx, currency };
           }),

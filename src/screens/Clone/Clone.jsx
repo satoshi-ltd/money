@@ -51,9 +51,8 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
     if (!remove) goBack();
   };
 
-  // ! TODO: Somehow we have data con `tx.vault` but should be `tx.account`
-  const { vault, title = '', type = EXPENSE } = dataSource;
-  const accountInfo = accounts.find(({ hash }) => hash === vault);
+  const { account, title = '', type = EXPENSE } = dataSource;
+  const accountInfo = accounts.find(({ hash }) => hash === account);
 
   return (
     <Modal title="Clone" onClose={goBack}>
