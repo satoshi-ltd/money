@@ -1,5 +1,3 @@
-import { C } from './constants';
-
 export const L10N = {
   ACCEPT: 'Accept',
   ACTIVITY: 'Analytics',

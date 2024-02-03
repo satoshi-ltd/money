@@ -18,6 +18,7 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
 
   useEffect(() => {
     if (!accounts.length) navigate('account', { firstAccount: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
