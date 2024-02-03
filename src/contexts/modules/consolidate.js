@@ -22,12 +22,12 @@ export const consolidate = ({
 
     accounts = storeAccounts.map(({ hash, timestamp, data = {}, ...others }) =>
       calcAccount({
+        account: { hash, timestamp, ...data, ...others },
         baseCurrency,
         genesisDate,
         months,
         rates,
         txs,
-        account: { hash, timestamp, ...data, ...others },
       }),
     );
   }

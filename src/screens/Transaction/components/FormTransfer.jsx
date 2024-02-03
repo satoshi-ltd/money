@@ -96,10 +96,10 @@ const FormTransaction = ({ account = {}, form = {}, onChange }) => {
         <InputCurrency
           account={getAccount(form.destination, accounts)}
           currency={form.to ? form.to.currency : baseCurrency}
-          showCurrency
-          value={form.to ? form.exchange : undefined}
           onChange={(value) => handleField('exchange', value)}
+          showCurrency
           style={style.inputDestination}
+          value={form.to ? form.exchange : undefined}
         />
       )}
     </>

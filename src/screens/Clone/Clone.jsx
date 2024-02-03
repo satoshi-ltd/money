@@ -19,7 +19,7 @@ const INITIAL_STATE = { form: {}, valid: false };
 const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } = {} }) => {
   const store = useStore();
 
-  const { addTx, deleteTx, updateTx, accounts } = store;
+  const { accounts, addTx, deleteTx, updateTx } = store;
 
   const [dataSource, setDataSource] = useState({});
   const [state, setState] = useState(INITIAL_STATE);

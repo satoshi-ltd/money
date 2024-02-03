@@ -22,10 +22,10 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
   }, []);
 
   useEffect(() => {
-    const nextTxs = queryLastTxs({ txs, accounts });
+    const nextTxs = queryLastTxs({ accounts, txs });
     if (JSON.stringify(nextTxs) !== JSON.stringify(lastTxs)) setLastTxs(nextTxs);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [txs, accounts]);
+  }, [accounts, txs]);
 
   const handleSearch = () => {
     setSearch(() => {
@@ -34,7 +34,7 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
     });
   };
 
-  const sortedAccounts = queryAccounts({ query: undefined, accounts });
+  const sortedAccounts = queryAccounts({ accounts, query: undefined });
 
   return (
     <Screen>
@@ -85,7 +85,7 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
             <Input placeholder={`${L10N.SEARCH}...`} value={query} onChange={setQuery} style={style.inputSearch} />
           )}
 
-          {(querySearchTxs({ L10N, query, txs, accounts }) || lastTxs).map((item) => (
+          {(querySearchTxs({ accounts, query, txs }) || lastTxs).map((item) => (
             <GroupTransactions {...item} key={`${item.timestamp}`} currency={baseCurrency} />
           ))}
         </>
