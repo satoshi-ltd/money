@@ -16,9 +16,9 @@ const {
   },
 } = C;
 
-const Transactions = ({ route: { params: { vault: { hash } } = {} } = {}, navigation = {} }) => {
+const Transactions = ({ route: { params: { account: { hash } } = {} } = {}, navigation = {} }) => {
   const scrollview = useRef(null);
-  const { settings: { baseCurrency } = {}, vaults = [] } = useStore();
+  const { accounts = [], settings: { baseCurrency } = {} } = useStore();
 
   const { height } = useWindowDimensions();
 
@@ -29,15 +29,15 @@ const Transactions = ({ route: { params: { vault: { hash } } = {} } = {}, naviga
   useEffect(() => {
     scrollview.current.scrollTo({ y: 0, animated: false });
 
-    const vault = vaults.find((item) => item.hash === hash);
-    if (!vault) return;
+    const account = accounts.find((item) => item.hash === hash);
+    if (!account) return;
 
-    setDataSource(vault);
-    setTxs(query(vault.txs));
+    setDataSource(account);
+    setTxs(query(account.txs));
     setScrollQuery(false);
 
     navigation.setOptions({
-      title: vault.title,
+      title: account.title,
       headerLeft: () => (
         <Pressable onPress={() => navigation.goBack()}>
           <Icon name="chevron-left" title />
@@ -45,7 +45,7 @@ const Transactions = ({ route: { params: { vault: { hash } } = {} } = {}, naviga
       ),
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hash, vaults]);
+  }, [hash, accounts]);
 
   const handleEdit = () => {
     navigation.navigate('account', dataSource);
@@ -59,7 +59,7 @@ const Transactions = ({ route: { params: { vault: { hash } } = {} } = {}, naviga
   };
 
   const handleTransaction = (type) => {
-    navigation.navigate('transaction', { type, vault: dataSource });
+    navigation.navigate('transaction', { account: dataSource, type });
   };
 
   const { currency = baseCurrency, ...rest } = dataSource;
@@ -71,7 +71,7 @@ const Transactions = ({ route: { params: { vault: { hash } } = {} } = {}, naviga
           <View style={style.buttons}>
             <ButtonSummary icon={ICON.INCOME} text={L10N.INCOME} onPress={() => handleTransaction(INCOME)} />
             <ButtonSummary icon={ICON.EXPENSE} text={L10N.EXPENSE} onPress={() => handleTransaction(EXPENSE)} />
-            {vaults.length > 1 && (
+            {accounts.length > 1 && (
               <ButtonSummary icon={ICON.SWAP} text={L10N.SWAP} onPress={() => handleTransaction(TRANSFER)} />
             )}
             <ButtonSummary icon={ICON.SETTINGS} text={L10N.SETTINGS} onPress={handleEdit} />

@@ -1,5 +1,5 @@
-export const getCurrency = (vaultHash, vaults = []) => {
-  const { currency } = vaults.find(({ hash }) => hash === vaultHash) || {};
+export const getCurrency = (accountHash, accounts = []) => {
+  const { currency } = accounts.find(({ hash }) => hash === accountHash) || {};
 
   return currency;
 };

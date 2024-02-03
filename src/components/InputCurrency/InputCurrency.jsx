@@ -14,10 +14,10 @@ import { PriceFriendly } from '../PriceFriendly';
 const isNumber = /^[0-9]+([,.][0-9]+)?$|^[0-9]+([,.][0-9]+)?[.,]$/;
 
 const InputCurrency = ({
+  account: { currency, currentBalance, hash: accountHash, title } = {},
   label = '',
   showCurrency = false,
   onChange,
-  vault: { currency, currentBalance, hash: vaultHash, title } = {},
   ...others
 }) => {
   const { settings: { baseCurrency } = {}, rates } = useStore();
@@ -41,10 +41,10 @@ const InputCurrency = ({
     <View gap row style={[style.container, focus && style.focus, others.style]}>
       {showCurrency && <CurrencyLogo color="border" currency={currency} />}
       <View>
-        <Text bold={!!vaultHash} caption={!vaultHash}>
+        <Text bold={!!accountHash} caption={!accountHash}>
           {title || label}
         </Text>
-        {vaultHash && (
+        {accountHash && (
           <View row style={style.currentBalance}>
             <Text color="contentLight" caption>
               {L10N.BALANCE}
@@ -94,9 +94,9 @@ const InputCurrency = ({
 };
 
 InputCurrency.propTypes = {
+  account: PropTypes.shape({}),
   label: PropTypes.string,
   showCurrency: PropTypes.bool,
-  vault: PropTypes.shape({}),
   onChange: PropTypes.func.isRequired,
 };
 

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { createContext, useContext, useLayoutEffect, useState } from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
 
-import { consolidate, parseTx, parseVault } from './modules';
+import { consolidate, parseTx, parseAccount } from './modules';
 import { DEFAULTS, FILENAME } from './store.constants';
 import { StorageService } from '../services';
 import { DarkTheme, LightTheme } from '../theme';
@@ -19,17 +19,35 @@ const StoreProvider = ({ children }) => {
       const { theme = 'light' } = await store.get('settings').value;
       StyleSheet.build(theme === 'light' ? LightTheme : DarkTheme);
 
+      await rebuildTxs(store);
+
       setState({
         store,
+        accounts: await store.get('accounts')?.value,
         settings: await store.get('settings')?.value,
         subscription: await store.get('subscription')?.value,
         rates: await store.get('rates')?.value,
-        vaults: await store.get('accounts')?.value,
         txs: await store.get('txs')?.value,
       });
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // * -- This method is only for us -----------------------------------------------------------------------------------
+  const rebuildTxs = async (store = {}) => {
+    const txs = (await store.get('txs')?.value) || [];
+    const [{ vault } = {}] = txs;
+
+    if (vault) {
+      const nextTxs = txs.map(({ vault: account, ...others } = {}) => ({ ...others, account }));
+
+      await store.wipe('txs');
+      await store.get('txs').save(nextTxs);
+
+      alert('Database rebuilt correctly.');
+    }
+  };
+  // * -----------------------------------------------------------------------------------------------------------------
 
   const addTx = async (data = {}) => {
     const { store } = state;
@@ -41,12 +59,12 @@ const StoreProvider = ({ children }) => {
     return tx;
   };
 
-  const addVault = async (data = {}) => {
+  const addAccount = async (data = {}) => {
     const { store } = state;
-    const vault = await store.get('accounts').save(parseVault(data));
-    if (vault) setState({ ...state, vaults: await store.get('accounts').value });
+    const account = await store.get('accounts').save(parseAccount(data));
+    if (account) setState({ ...state, accounts: await store.get('accounts').value });
 
-    return vault;
+    return account;
   };
 
   const deleteTx = async ({ hash }) => {
@@ -70,7 +88,7 @@ const StoreProvider = ({ children }) => {
     setState({
       ...state,
       settings,
-      vaults: accounts,
+      accounts,
       txs,
     });
   };
@@ -78,12 +96,12 @@ const StoreProvider = ({ children }) => {
   const updateRates = async (rates, baseCurrency = state.settings.baseCurrency) => {
     const nextRates = { ...state.rates, ...rates };
     const nextSettings = { ...state.settings, baseCurrency, lastRatesUpdate: new Date() };
-    const vaults = await state.store.get('accounts').value;
+    const accounts = await state.store.get('accounts').value;
 
     await state.store.get('rates').save(nextRates);
     await state.store.get('settings').save(nextSettings);
 
-    setState({ ...state, vaults, rates: nextRates, settings: nextSettings });
+    setState({ ...state, accounts, rates: nextRates, settings: nextSettings });
   };
 
   const updateSettings = async (value) => {
@@ -111,15 +129,15 @@ const StoreProvider = ({ children }) => {
     return await store.findOne({ hash });
   };
 
-  const updateVault = async ({ hash, ...data } = {}) => {
+  const updateAccount = async ({ hash, ...data } = {}) => {
     const { store } = state;
     store.get('accounts');
 
-    const vault = await store.findOne({ hash });
-    if (!vault) return undefined;
+    const account = await store.findOne({ hash });
+    if (!account) return undefined;
 
-    await store.update({ hash }, parseVault({ ...vault, ...data }));
-    setState({ ...state, vaults: await store.value });
+    await store.update({ hash }, parseAccount({ ...account, ...data }));
+    setState({ ...state, accounts: await store.value });
 
     return await store.findOne({ hash });
   };
@@ -128,15 +146,15 @@ const StoreProvider = ({ children }) => {
     <StoreContext.Provider
       value={{
         ...consolidate(state),
+        addAccount,
         addTx,
-        addVault,
         deleteTx,
         importBackup,
+        updateAccount,
         updateRates,
         updateSettings,
         updateSubscription,
         updateTx,
-        updateVault,
       }}
     >
       {state.store ? children : undefined}

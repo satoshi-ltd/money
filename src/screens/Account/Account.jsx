@@ -13,7 +13,7 @@ const { CURRENCY } = C;
 const INITIAL_STATE = { balance: 0, currency: undefined, title: undefined };
 
 const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate } = {} }) => {
-  const { addVault, settings: { baseCurrency } = {}, updateRates, updateVault } = useStore();
+  const { addAccount, settings: { baseCurrency } = {}, updateRates, updateAccount } = useStore();
 
   const [busy, setBusy] = useState(false);
   const [form, setForm] = useState(INITIAL_STATE);
@@ -38,16 +38,16 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
 
   const handleSubmit = async () => {
     setBusy(true);
-    const method = editMode ? updateVault : addVault;
+    const method = editMode ? updateAccount : addAccount;
 
-    const vault = await method(form);
+    const account = await method(form);
     if (firstAccount && form.currency !== CURRENCY) {
       const rates = await ServiceRates.get({ baseCurrency: form.currency, latest: false }).catch(() => {});
       if (rates) await updateRates(rates, form.currency);
     }
-    if (vault) {
+    if (account) {
       goBack();
-      if (!editMode) navigate('transactions', { vault });
+      if (!editMode) navigate('transactions', { account });
     }
 
     setBusy(false);
@@ -73,9 +73,9 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
       />
 
       <InputCurrency
+        account={{ currency: form.currency }}
         label={L10N.INITIAL_BALANCE}
         value={form.balance}
-        vault={{ currency: form.currency }}
         onChange={(value) => handleChange('balance', value)}
         style={style.inputCurrency}
       />

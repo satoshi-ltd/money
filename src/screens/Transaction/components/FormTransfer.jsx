@@ -7,31 +7,31 @@ import { Icon, Pressable, ScrollView, Text } from '../../../__design-system__';
 import { CardOption, InputCurrency } from '../../../components';
 import { useStore } from '../../../contexts';
 import { currencyDecimals, ICON, L10N } from '../../../modules';
-import { getVault, queryAvailableVaults } from '../helpers';
+import { getAccount, queryAvailableAccounts } from '../helpers';
 
-const FormTransaction = ({ form = {}, onChange, vault = {} }) => {
+const FormTransaction = ({ account = {}, form = {}, onChange }) => {
   const {
+    accounts = [],
     settings: { baseCurrency },
-    vaults,
     rates,
   } = useStore();
 
-  const [selectVault, setSelectVault] = useState(false);
+  const [selectedAccount, setSelectAccount] = useState(false);
 
-  const availableVaults = queryAvailableVaults(vaults, vault);
+  const availableAccounts = queryAvailableAccounts(accounts, account);
 
   useEffect(() => {
     if (form.to === undefined) {
-      const [firstVault = {}] = availableVaults;
-      onChange({ form: { destination: firstVault.hash, to: firstVault } });
+      const [firstAccount = {}] = availableAccounts;
+      onChange({ form: { destination: firstAccount.hash, to: firstAccount } });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form]);
 
   const handleField = (field, fieldValue) => {
     const next = { ...form, [field]: fieldValue };
-    const from = getVault(vault.hash, vaults);
-    const to = getVault(next.destination, vaults);
+    const from = getAccount(account.hash, accounts);
+    const to = getAccount(next.destination, accounts);
     let { exchange = 0, value = 0 } = next;
 
     if (next.destination && (exchange === form.exchange || !exchange)) {
@@ -57,24 +57,24 @@ const FormTransaction = ({ form = {}, onChange, vault = {} }) => {
   return (
     <>
       <InputCurrency
+        account={account}
         showCurrency
         value={form.value}
-        vault={vault}
         onChange={(value) => handleField('value', value)}
-        style={[!selectVault && style.inputCurrency]}
+        style={[!selectedAccount && style.inputCurrency]}
       />
 
-      {!selectVault && (
-        <Pressable onPress={() => setSelectVault(true)} style={style.inputVault}>
+      {!selectedAccount && (
+        <Pressable onPress={() => setSelectAccount(true)} style={style.inputAccount}>
           <Icon body color="contentLight" name={ICON.OTHERS} />
           <Text caption color="contentLight">
             {L10N.CHANGE_DESTINATION}
           </Text>
         </Pressable>
       )}
-      {selectVault ? (
+      {selectedAccount ? (
         <ScrollView horizontal snap={optionSnap} style={style.scrollView}>
-          {availableVaults.map(({ currency, hash, title }, index) => (
+          {availableAccounts.map(({ currency, hash, title }, index) => (
             <CardOption
               currency={currency}
               highlight={hash === form.destination}
@@ -82,24 +82,24 @@ const FormTransaction = ({ form = {}, onChange, vault = {} }) => {
               legend={title}
               onPress={() => {
                 handleField('destination', hash);
-                setSelectVault(false);
+                setSelectAccount(false);
               }}
               style={[
                 style.option,
                 index === 0 && style.firstOption,
-                index === availableVaults.length - 1 && style.lastOption,
+                index === availableAccounts.length - 1 && style.lastOption,
               ]}
             />
           ))}
         </ScrollView>
       ) : (
         <InputCurrency
+          account={getAccount(form.destination, accounts)}
           currency={form.to ? form.to.currency : baseCurrency}
-          showCurrency
-          value={form.to ? form.exchange : undefined}
-          vault={getVault(form.destination, vaults)}
           onChange={(value) => handleField('exchange', value)}
+          showCurrency
           style={style.inputDestination}
+          value={form.to ? form.exchange : undefined}
         />
       )}
     </>
@@ -107,8 +107,8 @@ const FormTransaction = ({ form = {}, onChange, vault = {} }) => {
 };
 
 FormTransaction.propTypes = {
+  account: PropTypes.shape({}).isRequired,
   form: PropTypes.shape({}).isRequired,
-  vault: PropTypes.shape({}).isRequired,
   onChange: PropTypes.func.isRequired,
 };
 

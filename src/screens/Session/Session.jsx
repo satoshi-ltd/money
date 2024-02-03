@@ -13,14 +13,14 @@ import { BackupService, ServiceRates } from '../../services';
 const { VERSION } = C;
 
 const Session = ({ navigation: { navigate } = {} }) => {
-  const { settings = {}, updateRates, updateSettings, vaults = [] } = useStore();
+  const { accounts = [], settings = {}, updateRates, updateSettings } = useStore();
 
   const [pin, setPin] = useState('');
 
   const signup = settings.pin === undefined;
 
   useEffect(() => {
-    vaults.length === 0 && fetchRates();
+    accounts.length === 0 && fetchRates();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -41,7 +41,7 @@ const Session = ({ navigation: { navigate } = {} }) => {
     if (signup) await updateSettings({ pin });
     await BackupService.scheduleNotification();
 
-    navigate('main', { firstVault: vaults.length === 0 });
+    navigate('main', { firstAccount: accounts.length === 0 });
   };
 
   return (

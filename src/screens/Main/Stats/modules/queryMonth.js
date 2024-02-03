@@ -9,7 +9,7 @@ const {
 } = C;
 
 export default (
-  { overall = {}, rates = {}, settings: { baseCurrency } = {}, txs = [], vaults = [] },
+  { accounts = [], overall = {}, rates = {}, settings: { baseCurrency } = {}, txs = [] },
   { month, year },
 ) => {
   const values = { expenses: {}, incomes: {} };
@@ -26,7 +26,7 @@ export default (
       const dYear = date.getFullYear();
 
       if (month === dMonth && year === dYear) {
-        const { currency } = vaults.find(({ hash }) => hash === tx.vault) || {};
+        const { currency } = accounts.find(({ hash }) => hash === tx.account) || {};
 
         const valueExchange = exchange(value, currency, baseCurrency, rates, timestamp);
 
@@ -41,7 +41,7 @@ export default (
       }
     });
 
-  vaults.forEach(({ currency, currentBalance: balance, currentBalanceBase: base }) => {
+  accounts.forEach(({ currency, currentBalance: balance, currentBalanceBase: base }) => {
     let item = currencies[currency] || { balance: 0, base: 0 };
     item = { balance: item.balance + balance, base: item.base + base };
     item.weight = (item.base * 100) / overall.currentBalance;

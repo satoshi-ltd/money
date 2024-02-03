@@ -10,11 +10,11 @@ const {
 } = C;
 
 export default ({
+  accounts = [],
   overall: { chartBalance = [] } = {},
   rates = {},
   settings: { baseCurrency } = {},
   txs = [],
-  vaults = [],
 }) => {
   if (chartBalance.length < STATS_MONTHS_LIMIT) {
     const { length } = chartBalance;
@@ -33,14 +33,14 @@ export default ({
   const now = parseDate();
   const originDate = new Date(now.getFullYear(), now.getMonth() - STATS_MONTHS_LIMIT, 1, 0, 0);
 
-  const vaultsCurrency = {};
-  vaults.forEach(({ currency, hash }) => (vaultsCurrency[hash] = currency));
+  const accountsCurrency = {};
+  accounts.forEach(({ currency, hash }) => (accountsCurrency[hash] = currency));
 
   filterTxs(txs)
     // .filter((tx) => !isNonAccountingTx(tx))
     .forEach((tx) => {
       const { timestamp, type, value } = tx;
-      const currency = vaultsCurrency[tx.vault];
+      const currency = accountsCurrency[tx.account];
 
       const valueExchange = exchange(value, currency, baseCurrency, rates, timestamp);
       const monthIndex = getMonthDiff(originDate, parseDate(timestamp)) - 1;

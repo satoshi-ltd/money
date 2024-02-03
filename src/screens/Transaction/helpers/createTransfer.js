@@ -8,27 +8,27 @@ const {
 } = C;
 
 export const createTransfer = async ({
-  props: { vault = {} },
+  props: { account = {} },
   state: {
     form: { from, to, exchange, value },
   },
   store: { addTx },
 }) => {
   let block = await addTx({
+    account: account.hash,
     category: INTERNAL_TRANSFER,
     title: to.title,
     type: EXPENSE,
     value: parseFloat(value, 10),
-    vault: vault.hash,
   });
 
   if (block) {
     block = await addTx({
+      account: to.hash,
       category: INTERNAL_TRANSFER,
       title: from.title,
       type: INCOME,
       value: parseFloat(exchange, 10),
-      vault: to.hash,
     });
   }
 

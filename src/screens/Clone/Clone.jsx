@@ -19,7 +19,7 @@ const INITIAL_STATE = { form: {}, valid: false };
 const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } = {} }) => {
   const store = useStore();
 
-  const { addTx, deleteTx, updateTx, vaults } = store;
+  const { accounts, addTx, deleteTx, updateTx } = store;
 
   const [dataSource, setDataSource] = useState({});
   const [state, setState] = useState(INITIAL_STATE);
@@ -51,8 +51,8 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
     if (!remove) goBack();
   };
 
-  const { vault, title = '', type = EXPENSE } = dataSource;
-  const vaultInfo = vaults.find(({ hash }) => hash === vault);
+  const { account, title = '', type = EXPENSE } = dataSource;
+  const accountInfo = accounts.find(({ hash }) => hash === account);
 
   return (
     <Modal title="Clone" onClose={goBack}>
@@ -64,7 +64,7 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
       </Text>
 
       {state.form?.category !== undefined && (
-        <FormTransaction {...state} debounce={200} vault={vaultInfo} type={dataSource?.type} onChange={setState} />
+        <FormTransaction {...state} account={accountInfo} debounce={200} type={dataSource?.type} onChange={setState} />
       )}
 
       <View row style={style.buttons}>

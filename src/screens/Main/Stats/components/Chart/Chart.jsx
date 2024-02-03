@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import StyleSheet from 'react-native-extended-stylesheet';
 
 import { ChartHeading } from './Chart.Heading';
 import { style } from './Chart.style';
@@ -25,7 +26,9 @@ const Chart = ({ captions, color = 'content', highlight, inverted, values = [], 
                 { top: inverted ? `${calcHeight(avg, { min, max })}%` : `${100 - calcHeight(avg, { min, max })}%` },
               ]}
             >
-              <View style={style.scaleLine} />
+              <View
+                style={[style.scaleLine, color === 'accent' && { borderColor: StyleSheet.value('$colorAccent') }]}
+              />
               <View style={[style.tag, style.scaleBorder, style[color]]}>
                 <PriceFriendly
                   bold
@@ -63,12 +66,14 @@ const Chart = ({ captions, color = 'content', highlight, inverted, values = [], 
         <View style={[style.offset, style.captions]}>
           {captions.map((caption, index) => (
             <Text
+              align="center"
               bold={highlight === index}
               color={highlight === index ? 'content' : 'contentLight'}
               key={`${caption}-${index}`}
               tiny
+              style={style.caption}
             >
-              {caption.substring(0, 3)}
+              {caption.substring(0, 3).toUpperCase()}
             </Text>
           ))}
         </View>

@@ -11,14 +11,14 @@ import { getCurrencySymbol, L10N } from '../../../modules';
 
 const Accounts = ({ navigation: { navigate } = {} }) => {
   const {
+    accounts = [],
     overall = {},
     settings: { baseCurrency },
-    vaults = [],
   } = useStore();
 
   const [selected, setSelected] = useState();
 
-  const currencies = query(vaults);
+  const currencies = query(accounts);
 
   return (
     <Screen>
@@ -43,15 +43,15 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
 
       <Heading value={L10N.ACCOUNTS} />
       <View>
-        {filter(vaults, selected).map((vault) => {
-          const { currency, currentBalance = 0, title } = vault;
+        {filter(accounts, selected).map((account) => {
+          const { currency, currentBalance = 0, title } = account;
           const hasBalance =
             currentBalance !== undefined && currentBalance !== null && parseFloat(currentBalance.toFixed(2)) > 0;
 
           const isBaseCurrency = currency === baseCurrency;
 
           return (
-            <Pressable key={vault.hash} onPress={() => navigate('transactions', { vault })}>
+            <Pressable key={account.hash} onPress={() => navigate('transactions', { account })}>
               <View row style={[style.item, !hasBalance && style.itemDisabled]}>
                 <Card align="center" color={isBaseCurrency ? 'accent' : undefined} small style={style.cardCurrency}>
                   <Text bold _color={hasBalance ? (isBaseCurrency ? 'accent' : undefined) : 'contentLight'}>

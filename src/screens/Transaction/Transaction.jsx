@@ -29,8 +29,8 @@ const Transaction = ({ route: { params = {} } = {}, navigation: { goBack } = {} 
   const [state, setState] = useState(INITIAL_STATE);
 
   useEffect(() => {
-    const { type, vault } = params;
-    setDataSource({ type, vault });
+    const { account, type } = params;
+    setDataSource({ account, type });
     setState(INITIAL_STATE);
   }, [params]);
 

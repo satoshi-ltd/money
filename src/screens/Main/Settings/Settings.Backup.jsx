@@ -3,11 +3,13 @@ import React, { useState } from 'react';
 
 import { Button, Card, View, Text } from '../../../__design-system__';
 import { useStore } from '../../../contexts';
-import { L10N } from '../../../modules';
+import { C, L10N } from '../../../modules';
 import { BackupService, PurchaseService } from '../../../services';
 
+const { IS_WEB } = C;
+
 const Backup = ({ navigation: { navigate } = {}, ...others }) => {
-  const { vaults: accounts, importBackup, settings, subscription, txs } = useStore();
+  const { accounts = [], importBackup, settings, subscription, txs } = useStore();
 
   const [busy, setBusy] = useState(null);
 
@@ -28,6 +30,7 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
 
   const handleImport = async () => {
     const backup = await BackupService.import().catch((error) => alert(error));
+
     if (backup) {
       navigate('confirm', {
         caption: L10N.CONFIRM_IMPORT_CAPTION(backup),
@@ -55,14 +58,14 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
           activity={busy === 'export'}
           flex
           outlined
-          onPress={subscription?.productId ? handleExport : () => handleSubscription('export')}
+          onPress={IS_WEB || subscription?.productId ? handleExport : () => handleSubscription('export')}
         >
           {L10N.EXPORT}
         </Button>
         <Button
           activity={busy === 'import'}
           flex
-          onPress={subscription?.productId ? handleImport : () => handleSubscription('import')}
+          onPress={IS_WEB || subscription?.productId ? handleImport : () => handleSubscription('import')}
         >
           {L10N.IMPORT}
         </Button>
