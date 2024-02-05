@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, SafeAreaView, useWindowDimensions } from 'react-native';
 
 import { style } from './Modal.style';
+import { C } from '../../../modules';
 import { Icon, Pressable, View } from '../../primitives';
 
 const presentation = 'transparentModal';
@@ -16,7 +17,7 @@ const Modal = ({ fullscreen = false, onClose, ...others }) => {
     <View style={style.overflow}>
       <SafeAreaView
         onLayout={({ nativeEvent: { layout = {} } = {} }) => {
-          if (layout.height) setLayoutHeight(layout.height);
+          if (layout.height && C.IS_IOS) setLayoutHeight(layout.height);
         }}
         style={[style.safeAreaView, fullscreen && style.fullscreen]}
       >

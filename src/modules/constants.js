@@ -38,6 +38,8 @@ export const C = {
   INCOME_AS_INVESTMENT: 2,
   INTERNAL_TRANSFER: 99,
   IS_DEV,
+  IS_ANDROID: Platform.OS === 'android',
+  IS_IOS: Platform.OS === 'ios',
   IS_WEB: Platform.OS === 'web',
 
   LANGUAGE: 'en-EN',
