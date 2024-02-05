@@ -10,7 +10,7 @@ const style = StyleSheet.create({
   cardCurrency: {
     height: '$spaceXXL',
     width: '$spaceXXL',
-    borderRadius: '50%',
+    borderRadius: '$spaceXXL / 2',
   },
 });
 
