@@ -14,8 +14,8 @@ export const DefaultTheme = {
   $colorSuccess: '#ff5c5c',
 
   // -- typography -------------------------------------------------------------
-  $fontWeightDefault: 400,
-  $fontWeightBold: 700,
+  $fontWeightDefault: '400',
+  $fontWeightBold: '700',
   $fontSizeTitle: 28,
   $fontSizeSubtitle: 20,
   $fontSizeBody: 16,

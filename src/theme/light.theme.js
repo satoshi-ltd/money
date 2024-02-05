@@ -6,8 +6,8 @@ export const LightTheme = {
   ...DefaultTheme,
 
   // -- typography -------------------------------------------------------------
-  $fontWeightDefault: 500,
-  $fontWeightBold: 700,
+  $fontWeightDefault: '500',
+  $fontWeightBold: '700',
 
   // -- <Icon> -----------------------------------------------------------------
   $iconFamily: 'shield-icons',
