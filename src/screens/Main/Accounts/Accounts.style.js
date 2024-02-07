@@ -23,10 +23,6 @@ export const style = StyleSheet.create({
     width: '100%',
   },
 
-  itemDisabled: {
-    opacity: 0.5,
-  },
-
   cardCurrency: {
     height: '$spaceXXL + $spaceXS',
     marginRight: '$spaceS',

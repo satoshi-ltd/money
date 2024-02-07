@@ -10,11 +10,7 @@ import { useStore } from '../../../contexts';
 import { getCurrencySymbol, L10N } from '../../../modules';
 
 const Accounts = ({ navigation: { navigate } = {} }) => {
-  const {
-    accounts = [],
-    overall = {},
-    settings: { baseCurrency },
-  } = useStore();
+  const { accounts = [], overall = {} } = useStore();
 
   const [selected, setSelected] = useState();
 
@@ -32,7 +28,6 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
             highlight={currency === selected}
             operator={false}
             percentage={(base * 100) / overall.currentBalance}
-            secondary
             showExchange
             title={L10N.CURRENCY_NAME[currency] || currency}
             style={[style.card, index === 0 && style.firstCard, index === currencies.length - 1 && style.lastCard]}
@@ -48,22 +43,18 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
           const hasBalance =
             currentBalance !== undefined && currentBalance !== null && parseFloat(currentBalance.toFixed(2)) > 0;
 
-          const isBaseCurrency = currency === baseCurrency;
-
           return (
             <Pressable key={account.hash} onPress={() => navigate('transactions', { account })}>
-              <View row style={[style.item, !hasBalance && style.itemDisabled]}>
-                <Card align="center" color={isBaseCurrency ? 'accent' : undefined} small style={style.cardCurrency}>
-                  <Text bold _color={hasBalance ? (isBaseCurrency ? 'accent' : undefined) : 'contentLight'}>
-                    {getCurrencySymbol(currency)}
-                  </Text>
+              <View row style={style.item}>
+                <Card align="center" small outlined={!hasBalance} style={style.cardCurrency}>
+                  <Text bold>{getCurrencySymbol(currency)}</Text>
                 </Card>
 
                 <View>
                   <Text bold numberOfLines={1}>
                     {title}
                   </Text>
-                  <PriceFriendly color="contentLight" currency={currency} caption value={currentBalance} />
+                  <PriceFriendly bold color="contentLight" currency={currency} caption value={currentBalance} />
                 </View>
               </View>
             </Pressable>

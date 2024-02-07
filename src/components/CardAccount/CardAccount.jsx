@@ -12,7 +12,6 @@ const CardAccount = ({
   currency,
   highlight,
   percentage = 0,
-  secondary = false,
   showExchange = false,
   title = '',
   onPress,
@@ -24,12 +23,17 @@ const CardAccount = ({
   } = useStore();
 
   const hasBalance = balance !== null && parseFloat(balance.toFixed(2)) > 0;
-  const cardColor = highlight ? (secondary ? 'accent' : 'content') : !hasBalance ? 'disabled' : undefined;
-  const textColor = highlight ? (secondary ? 'content' : 'base') : undefined;
+  const textColor = highlight ? 'base' : undefined;
 
   return (
     <Pressable onPress={onPress} style={others.style}>
-      <Card {...others} color={cardColor} spaceBetween style={style.card}>
+      <Card
+        {...others}
+        color={highlight ? 'content' : undefined}
+        outlined={!highlight && !hasBalance}
+        spaceBetween
+        style={style.card}
+      >
         {currency && (
           <View>
             <Text bold caption color={textColor} ellipsizeMode numberOfLines={1}>
@@ -50,7 +54,7 @@ const CardAccount = ({
         )}
 
         <View row spaceBetween>
-          <Card color="base" small style={style.cardCurrency}>
+          <Card color={hasBalance ? 'base' : 'border'} small style={style.cardCurrency}>
             <Text align="center" bold color={!highlight ? 'contentLight' : undefined}>
               {getCurrencySymbol(currency)}
             </Text>
@@ -78,7 +82,6 @@ CardAccount.propTypes = {
   currency: PropTypes.string,
   highlight: PropTypes.bool,
   percentage: PropTypes.number,
-  secondary: PropTypes.bool,
   showExchange: PropTypes.bool,
   title: PropTypes.string,
   onPress: PropTypes.func.isRequired,
