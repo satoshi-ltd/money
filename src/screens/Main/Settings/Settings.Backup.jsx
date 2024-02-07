@@ -9,7 +9,7 @@ import { BackupService, PurchaseService } from '../../../services';
 const { IS_WEB } = C;
 
 const Backup = ({ navigation: { navigate } = {}, ...others }) => {
-  const { accounts = [], importBackup, settings, subscription, txs } = useStore();
+  const { accounts = [], importBackup, settings, subscription, txs = [] } = useStore();
 
   const [busy, setBusy] = useState(null);
 
@@ -49,7 +49,7 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
       <View>
         <Text bold>{`${L10N.EXPORT} / ${L10N.IMPORT}`}</Text>
         <Text caption color="contentLight">
-          {L10N.BACKUP_CAPTION}
+          {L10N.BACKUP_CAPTION.replace('{accounts}', accounts.length).replace('{txs}', txs.length)}
         </Text>
       </View>
 

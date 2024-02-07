@@ -3,7 +3,7 @@ export const L10N = {
   ACTIVITY: 'Analytics',
 
   BACKUP_CAPTION:
-    'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minima alias natus quia tempora praesentium qui omnis.',
+    'Take control of your financial data, you own your {accounts} accounts and {txs} transactions. Safeguard your privacy and security while effortlessly managing your info, all with a simple tap.',
   BALANCE: 'Balance',
 
   CANCEL: 'Cancel',
