@@ -2,9 +2,12 @@ export const ICON = {
   // navigation
   BACK: 'arrow-left',
   CLOSE: 'close',
+  // account
+  NEW: 'book-plus-outline',
   // transaction
   INCOME: 'arrow-up-bold-outline',
   EXPENSE: 'arrow-down-bold-outline',
+  SEARCH: 'magnify',
   SWAP: 'transfer',
   // footer
   HOME: 'home-outline',
