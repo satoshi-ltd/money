@@ -7,11 +7,7 @@ export const style = StyleSheet.create({
   },
 
   text: {
-    alignItems: 'center',
-    display: 'flex',
-    flexDirection: 'row',
     fontFamily: '$buttonFontFamily',
     fontWeight: '$buttonFontWeight',
-    gap: '$spaceXS',
   },
 });
