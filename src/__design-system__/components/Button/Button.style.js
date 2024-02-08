@@ -37,11 +37,15 @@ export const style = StyleSheet.create({
   small: {
     minHeight: '$buttonSmallHeight',
     maxHeight: '$buttonSmallHeight',
-    paddingHorizontal: '$buttonSmallHeight / 2',
+    paddingHorizontal: '$buttonSmallHeight / 4',
   },
 
   text: {
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'row',
     fontFamily: '$buttonFontFamily',
     fontWeight: '$buttonFontWeight',
+    gap: '$spaceXS',
   },
 });
