@@ -44,7 +44,6 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
       <Heading value={L10N.ACCOUNTS}>
         <Button small outlined onPress={() => navigate('account', { create: true })}>
           <Icon name={ICON.NEW} />
-          {L10N.NEW}
         </Button>
       </Heading>
 
@@ -82,12 +81,17 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
         <>
           <Heading value={L10N.LAST_TRANSACTIONS}>
             <Button small outlined={!search} onPress={handleSearch}>
-              {!search && <Icon name={ICON.SEARCH} />}
-              {!search ? L10N.SEARCH : L10N.CLOSE}
+              {!search ? <Icon name={ICON.SEARCH} /> : L10N.CLOSE}
             </Button>
           </Heading>
           {search && (
-            <Input placeholder={`${L10N.SEARCH}...`} value={query} onChange={setQuery} style={style.inputSearch} />
+            <Input
+              autoFocus
+              placeholder={`${L10N.SEARCH}...`}
+              value={query}
+              onChange={setQuery}
+              style={style.inputSearch}
+            />
           )}
 
           {(querySearchTxs({ accounts, query, txs }) || lastTxs).map((item) => (
