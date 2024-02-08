@@ -12,7 +12,7 @@ import { BackupService, ServiceRates } from '../../services';
 
 const { VERSION } = C;
 
-const Session = ({ navigation: { navigate } = {} }) => {
+const Session = ({ navigation: { reset } = {} }) => {
   const { accounts = [], settings = {}, updateRates, updateSettings } = useStore();
 
   const [pin, setPin] = useState('');
@@ -41,7 +41,10 @@ const Session = ({ navigation: { navigate } = {} }) => {
     if (signup) await updateSettings({ pin });
     await BackupService.scheduleNotification();
 
-    navigate('main', { firstAccount: accounts.length === 0 });
+    reset({
+      index: 0,
+      routes: [{ name: 'main' }],
+    });
   };
 
   return (
