@@ -67,9 +67,9 @@ const Settings = ({ navigation = {} }) => {
 
       <View>
         <Heading value={L10N.CHOOSE_CURRENCY}>
-          <Action activity={busy} caption disabled={busy} onPress={handleUpdateRates}>
+          <Button activity={busy} small outlined disabled={busy} onPress={handleUpdateRates}>
             {L10N.SYNC_RATES_CTA}
-          </Action>
+          </Button>
         </Heading>
 
         <SliderCurrencies selected={baseCurrency} onChange={handleChangeCurrency} style={style.slider} />

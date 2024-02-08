@@ -4,10 +4,11 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './Dashboard.style';
 import { queryAccounts, queryLastTxs, querySearchTxs } from './helpers';
-import { Action, Input, Screen, ScrollView } from '../../../__design-system__';
+import { Button, Icon, Input, Screen, ScrollView } from '../../../__design-system__';
 import { CardAccount, GroupTransactions, Heading, Summary } from '../../../components';
 import { useStore } from '../../../contexts';
 import { getProgressionPercentage, L10N } from '../../../modules';
+import { ICON } from '../../../modules';
 
 const Dashboard = ({ navigation: { navigate } = {} }) => {
   const { accounts = [], settings: { baseCurrency } = {}, overall = {}, txs = [] } = useStore();
@@ -41,7 +42,10 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
       <Summary {...overall} currency={baseCurrency} detail />
 
       <Heading value={L10N.ACCOUNTS}>
-        <Action caption onPress={() => navigate('account', { create: true })}>{`${L10N.NEW} ${L10N.ACCOUNT}`}</Action>
+        <Button small outlined onPress={() => navigate('account', { create: true })}>
+          <Icon name={ICON.NEW} />
+          {L10N.NEW}
+        </Button>
       </Heading>
 
       <ScrollView horizontal snap={StyleSheet.value('$cardAccountSnap')} style={[style.scrollView]}>
@@ -77,9 +81,10 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
       {lastTxs.length > 0 && (
         <>
           <Heading value={L10N.LAST_TRANSACTIONS}>
-            <Action caption onPress={handleSearch}>
+            <Button small outlined={!search} onPress={handleSearch}>
+              {!search && <Icon name={ICON.SEARCH} />}
               {!search ? L10N.SEARCH : L10N.CLOSE}
-            </Action>
+            </Button>
           </Heading>
           {search && (
             <Input placeholder={`${L10N.SEARCH}...`} value={query} onChange={setQuery} style={style.inputSearch} />
