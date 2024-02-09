@@ -18,7 +18,7 @@ export const ICON = {
   ALERT: 'alert-outline',
   INFO: 'information-outline',
   SUCCESS: 'check-circle-outline',
-  // food & drinks
+  // category / food & drinks
   FOOD: 'silverware-variant',
   COFFEE: 'coffee-outline',
   TEA: 'tea-outline',
@@ -36,18 +36,14 @@ export const ICON = {
   GROCERY: 'cart-outline',
   NUT: 'peanut-outline',
   VEGETABLE: 'seed-outline',
-  // travel
+  // category / travel
   TRAVEL: 'passport',
   CAR: 'car',
-  TAXI: 'taxi',
-  BUS: 'bus',
   AIRPLANE: 'airplane',
   PASSPORT: 'passport',
   MOTORBIKE: 'motorbike',
   BOAT: 'sail-boat',
   TRAIN: 'train',
-  SUBWAY: 'subway-variant',
-  PARKING: 'parking',
   SUITCASE: 'bag-suitcase-outline',
   TICKET: 'ticket-confirmation-outline',
   HOTEL: 'office-building-outline',
@@ -72,8 +68,8 @@ export const ICON = {
   APPLE: 'apple',
   WATCH: 'watch',
   TREE: 'tree-outline',
-  // utilities
-  UTILITIES: 'lightbulb-on-outline',
+  // category / home
+  // HOME: 'lightbulb-on-outline',
   WIFI: 'wifi',
   PHONE: 'cellphone',
   GASOLINE: 'gas-station-outline',
@@ -96,10 +92,29 @@ export const ICON = {
   LAUNDRY: 'local-laundry-service',
   // Transfer
   TRANSFER: 'bank-transfer',
+  // Category: transportation
+  TRANSPORTATION: 'transit-transfer',
+  BUS: 'bus',
+  PARKING: 'parking',
+  SUBWAY: 'subway-variant',
+  TAXI: 'taxi',
+  // Category: education
+  EDUCATION: 'school-outline',
+  BOOK: 'book-open-outline',
+  // Category: insurance
+  INSURANCE: 'file-sign',
   // Others
   OTHERS: 'swap-horizontal-variant',
-  // pasives
-  PASIVE: 'calendar-import',
+  // Category: pasives
+  PASSIVE: 'calendar-import',
+  // Category: retirement
+  RETIREMENT: 'human-cane',
+  // Category: retirement
+  ROYALTIES: 'progress-star',
+  // Category: retirement
+  BONUSES: 'gift-outline',
+  // Category: retirement
+  BUSINESS: 'briefcase-variant-outline',
   // -- customs
   // banks
   KASIKORN: 'alpha-k-box-outline',
@@ -115,5 +130,4 @@ export const ICON = {
   YURI: 'face-woman',
   //
   UNKNOWN: 'block-helper',
-  TRASH: 'trash-can-outline',
 };
