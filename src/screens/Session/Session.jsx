@@ -41,10 +41,7 @@ const Session = ({ navigation: { reset } = {} }) => {
     if (signup) await updateSettings({ pin });
     await BackupService.scheduleNotification();
 
-    reset({
-      index: 0,
-      routes: [{ name: 'main' }],
-    });
+    reset({ index: 0, routes: [{ name: 'main' }] });
   };
 
   return (
