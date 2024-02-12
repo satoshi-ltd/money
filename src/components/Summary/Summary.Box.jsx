@@ -1,8 +1,8 @@
+import { Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { style } from './Summary.style';
-import { Text, View } from '../../__design-system__';
 import { PriceFriendly } from '../PriceFriendly';
 
 const SummaryBox = ({ caption = '', value, ...inherit }) => (

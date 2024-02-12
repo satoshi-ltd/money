@@ -1,3 +1,4 @@
+import { Button, Card, Screen, Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
@@ -5,7 +6,6 @@ import StyleSheet from 'react-native-extended-stylesheet';
 import { changeBaseCurrency, getLatestRates } from './helpers';
 import { Backup } from './Settings.Backup';
 import { style } from './Settings.style';
-import { Action, Button, Card, Screen, Text, View } from '../../../__design-system__';
 import { Heading, SliderCurrencies } from '../../../components';
 import { useStore } from '../../../contexts';
 import { C, L10N } from '../../../modules';

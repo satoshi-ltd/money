@@ -1,10 +1,10 @@
+import { ScrollView } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import { useWindowDimensions } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './FormTransaction.style';
-import { ScrollView } from '../../../__design-system__';
 import { CardOption, InputCurrency, InputText } from '../../../components';
 import { getIcon, L10N } from '../../../modules';
 import { queryCategories } from '../helpers';

@@ -1,10 +1,10 @@
+import { Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { Keyboard, TextInput } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './InputText.style';
-import { Text, View } from '../../__design-system__';
 
 const InputText = ({ keyboard = 'default', label, value = '', onChange, ...others }) => {
   const [focus, setFocus] = useState(false);

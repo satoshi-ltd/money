@@ -1,10 +1,10 @@
+import { Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native';
 
 import { NumKeyboard } from './components';
 import { style } from './Session.style';
-import { Text, View } from '../../__design-system__';
 import { Logo } from '../../components';
 import { useStore } from '../../contexts';
 import { C, L10N } from '../../modules';

@@ -1,8 +1,8 @@
+import { Button, Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { style } from './Dialog.style';
-import { Button, Text, View } from '../../__design-system__';
 
 const Dialog = ({ accept, cancel, text, onAccept, onCancel, title, ...others }) => (
   <View {...others} swipeable onClose={onCancel}>

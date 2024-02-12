@@ -1,8 +1,8 @@
+import { Action, Button, Card, Pressable, Modal, Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
 import { style } from './Subscription.style';
-import { Action, Button, Card, Pressable, Modal, Text, View } from '../../__design-system__';
 import { Logo } from '../../components';
 import { useStore } from '../../contexts';
 import { L10N } from '../../modules';

@@ -1,10 +1,10 @@
+import { Action, Input, Screen, ScrollView } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './Dashboard.style';
 import { queryAccounts, queryLastTxs, querySearchTxs } from './helpers';
-import { Action, Input, Screen, ScrollView } from '../../../__design-system__';
 import { CardAccount, GroupTransactions, Heading, Summary } from '../../../components';
 import { useStore } from '../../../contexts';
 import { getProgressionPercentage, L10N } from '../../../modules';

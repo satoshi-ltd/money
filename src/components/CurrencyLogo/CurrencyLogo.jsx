@@ -1,8 +1,8 @@
+import { Card, Text } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { style } from './CurrencyLogo.style';
-import { Card, Text } from '../../__design-system__';
 import { getCurrencySymbol } from '../../modules';
 
 const CurrencyLogo = ({ color = 'base', currency, highlight, ...others }) => {

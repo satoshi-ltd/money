@@ -1,3 +1,4 @@
+import { ScrollView } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import { useWindowDimensions } from 'react-native';
@@ -5,7 +6,6 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 import { getLastMonths } from './modules';
 import { style } from './SliderMonths.style';
-import { ScrollView } from '../../../../../__design-system__';
 import { CardOption } from '../../../../../components';
 import { C, L10N } from '../../../../../modules';
 

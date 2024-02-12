@@ -1,10 +1,10 @@
+import { Pressable, Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { verboseMonth } from './helpers';
 import { SummaryBox } from './Summary.Box';
 import { style } from './Summary.style';
-import { Pressable, Text, View } from '../../__design-system__';
 import { useStore } from '../../contexts';
 import { C, exchange, getProgressionPercentage, L10N } from '../../modules';
 import { PriceFriendly } from '../PriceFriendly';

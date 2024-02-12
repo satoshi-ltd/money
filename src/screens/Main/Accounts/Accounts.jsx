@@ -1,10 +1,10 @@
+import { Card, Pressable, Screen, ScrollView, Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './Accounts.style';
 import { filter, query } from './modules';
-import { Card, Pressable, Screen, ScrollView, Text, View } from '../../../__design-system__';
 import { CardAccount, Heading, PriceFriendly } from '../../../components';
 import { useStore } from '../../../contexts';
 import { getCurrencySymbol, L10N } from '../../../modules';

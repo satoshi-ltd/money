@@ -1,8 +1,8 @@
+import { Pressable, Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { style } from './NumKeyboard.style';
-import { Pressable, Text, View } from '../../../../__design-system__';
 
 const KEYS = [1, 2, 3, 4, 5, 6, 7, 8, 9, undefined, 0, undefined];
 const LETTERS = {

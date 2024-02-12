@@ -1,8 +1,8 @@
+import { Button, Modal, Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
 import { style } from './Account.style';
-import { Button, Modal, Text, View } from '../../__design-system__';
 import { InputCurrency, InputText, SliderCurrencies } from '../../components';
 import { useStore } from '../../contexts';
 import { C, L10N } from '../../modules';

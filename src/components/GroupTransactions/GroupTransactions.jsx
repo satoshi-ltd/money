@@ -1,9 +1,9 @@
+import { Card, Text } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { style } from './GroupTransaction.style';
 import { Item } from './GroupTransactions.Item';
-import { Card, Text } from '../../__design-system__';
 import { L10N } from '../../modules';
 
 const GroupTransactions = ({ currency, timestamp = new Date(), txs = [] }) => (

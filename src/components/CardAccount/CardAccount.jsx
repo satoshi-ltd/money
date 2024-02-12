@@ -1,8 +1,8 @@
+import { Card, Pressable, Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { style } from './CardAccount.style';
-import { Card, Pressable, Text, View } from '../../__design-system__';
 import { useStore } from '../../contexts';
 import { getCurrencySymbol, exchange } from '../../modules';
 import { PriceFriendly } from '../PriceFriendly';

@@ -1,8 +1,8 @@
+import { Card, Icon, Pressable, Text } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { style } from './CardOption.style';
-import { Card, Icon, Pressable, Text } from '../../__design-system__';
 import { CurrencyLogo } from '../CurrencyLogo';
 
 const CardOption = ({

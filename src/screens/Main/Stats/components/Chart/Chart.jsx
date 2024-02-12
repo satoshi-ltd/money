@@ -1,3 +1,4 @@
+import { Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
@@ -5,7 +6,6 @@ import StyleSheet from 'react-native-extended-stylesheet';
 import { ChartHeading } from './Chart.Heading';
 import { style } from './Chart.style';
 import { calcHeight } from './helpers';
-import { Text, View } from '../../../../../__design-system__';
 import { PriceFriendly } from '../../../../../components';
 
 const Chart = ({ captions, color = 'content', highlight, inverted, values = [], style: styleContainer, ...others }) => {

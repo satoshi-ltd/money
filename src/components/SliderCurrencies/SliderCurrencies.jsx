@@ -1,3 +1,4 @@
+import { ScrollView } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import { useWindowDimensions } from 'react-native';
@@ -5,7 +6,6 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 import { queryCurrencies } from './helpers';
 import { style } from './SliderCurrencies.style';
-import { ScrollView } from '../../__design-system__';
 import { useStore } from '../../contexts';
 import { CardOption } from '../CardOption';
 

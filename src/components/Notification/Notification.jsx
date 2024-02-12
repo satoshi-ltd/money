@@ -1,9 +1,9 @@
+import { Icon, Pressable, Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { SafeAreaView } from 'react-native';
 
 import { style } from './Notification.style';
-import { Icon, Pressable, Text, View } from '../../__design-system__';
 import { ICON } from '../../modules';
 
 // ! TODO: Refactor

@@ -1,9 +1,9 @@
+import { Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { format } from './helpers';
 import { style } from './PriceFriendly.style';
-import { Text, View } from '../../__design-system__';
 import { useStore } from '../../contexts';
 import { C, currencyDecimals } from '../../modules';
 

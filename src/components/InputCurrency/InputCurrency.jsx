@@ -1,3 +1,4 @@
+import { Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Keyboard, TextInput } from 'react-native';
@@ -5,7 +6,6 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 import { getLastRates } from './helpers';
 import { style } from './InputCurrency.style';
-import { Text, View } from '../../__design-system__';
 import { useStore } from '../../contexts';
 import { L10N } from '../../modules';
 import { CurrencyLogo } from '../CurrencyLogo';

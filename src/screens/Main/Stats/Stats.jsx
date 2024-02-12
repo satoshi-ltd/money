@@ -1,9 +1,9 @@
+import { Screen } from '@satoshi-ltd/nano-design';
 import React, { useLayoutEffect, useMemo, useState } from 'react';
 
 import { Chart, ItemGroupCategories, SliderMonths } from './components';
 import { calcScales, orderCaptions, queryMonth, queryChart } from './modules';
 import { style } from './Stats.style';
-import { Screen } from '../../../__design-system__';
 import { useStore } from '../../../contexts';
 import { C, L10N } from '../../../modules';
 

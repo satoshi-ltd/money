@@ -1,9 +1,9 @@
+import { Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Image } from 'react-native';
 
 import { style } from './Banner.style';
-import { Text, View } from '../../__design-system__';
 
 const DEFAULT_BANNER = require('../../../assets/images/not-found.png');
 

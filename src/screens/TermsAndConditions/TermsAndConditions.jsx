@@ -1,8 +1,8 @@
+import { Modal, ScrollView, Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { style } from './TermsAndConditions.style';
-import { Modal, ScrollView, Text, View } from '../../__design-system__';
 import { L10N } from '../../modules';
 
 const TermsAndConditions = ({ navigation: { goBack } = {} } = {}) => {

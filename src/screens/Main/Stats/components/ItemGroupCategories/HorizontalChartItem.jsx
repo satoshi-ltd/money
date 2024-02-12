@@ -1,10 +1,10 @@
+import { Icon, Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Dimensions } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './HorizontalChartItem.style';
-import { Icon, Text, View } from '../../../../../__design-system__';
 import { PriceFriendly } from '../../../../../components';
 
 const screen = Dimensions.get('window');

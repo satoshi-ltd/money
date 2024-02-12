@@ -1,7 +1,7 @@
+import { Button, Card, View, Text } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
-import { Button, Card, View, Text } from '../../../__design-system__';
 import { useStore } from '../../../contexts';
 import { C, L10N } from '../../../modules';
 import { BackupService, PurchaseService } from '../../../services';
