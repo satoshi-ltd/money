@@ -41,7 +41,7 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@babel/plugin-transform-regenerator": "^7.20.5",
-    "@soyjavi/eslint": "^0.1.9"
+    "@satoshi-ltd/eslint": "^0.1"
   },
   "jest": {
     "preset": "jest-expo",
