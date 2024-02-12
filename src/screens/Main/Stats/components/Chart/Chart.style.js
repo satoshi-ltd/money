@@ -1,6 +1,5 @@
+import { opacity } from '@satoshi-ltd/nano-design/build/module/theme/modules';
 import StyleSheet from 'react-native-extended-stylesheet';
-
-import { opacity } from '../../../../../__design-system__/theme/modules';
 
 export const style = StyleSheet.create({
   $barSize: '$spaceS * 1.25',
