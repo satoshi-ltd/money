@@ -1,4 +1,4 @@
-import { DefaultTheme } from '../__design-system__/theme';
+import { DefaultTheme } from '@satoshi-ltd/nano-design/build/module/theme';
 
 export const LightTheme = {
   $theme: 'light',

@@ -1,5 +1,4 @@
-// import { MoneyTheme } from './money.theme';
-import { DefaultTheme } from '../__design-system__/theme';
+import { DefaultTheme } from '@satoshi-ltd/nano-design/build/module/theme';
 
 export const DarkTheme = {
   $theme: 'dark',
