@@ -2299,9 +2299,9 @@
     prettier "^2.2.1"
 
 "@satoshi-ltd/nano-design@^0.1":
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/@satoshi-ltd/nano-design/-/nano-design-0.1.10.tgz#b019bccfeff6a7e5a30d87850b9786c0c9d7f130"
-  integrity sha512-4oSwgmGtkgnEbuWT0oZSCIhn6DOIMDN2byLD/3tw6Yxq8mJyajPE+kPf5OCMdolPCZhbh8hAPiNY7RvOKLH4cw==
+  version "0.1.13"
+  resolved "https://registry.yarnpkg.com/@satoshi-ltd/nano-design/-/nano-design-0.1.13.tgz#97d0fb952594ec66855d5f240182a8316c5837e3"
+  integrity sha512-qfIXT//tWgjJKf0FRiqiK41Y/ai5QjJJFJKRcsGdwWO859TnlI5+dh8IJZ+6Z1rZmvkZDn3vPwW8G+sF61T2ow==
   dependencies:
     expo "^49.0.0"
     jest "^29.2.1"
