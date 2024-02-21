@@ -4,14 +4,12 @@ import React, { useEffect, useRef } from 'react';
 import { useWindowDimensions } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
-import { queryCurrencies } from './helpers';
 import { style } from './SliderCurrencies.style';
-import { useStore } from '../../contexts';
+import { C } from '../../modules';
 import { CardOption } from '../CardOption';
 
 const SliderCurrencies = ({ selected, onChange, ...others }) => {
   const scrollview = useRef(null);
-  const store = useStore();
   const { width } = useWindowDimensions();
 
   useEffect(() => {
@@ -19,7 +17,7 @@ const SliderCurrencies = ({ selected, onChange, ...others }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected]);
 
-  const currencies = queryCurrencies(store);
+  const currencies = Object.keys(C.SYMBOL);
   const index = currencies.findIndex((item) => item === selected);
   const optionSnap = StyleSheet.value('$optionSnap');
 
