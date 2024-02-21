@@ -9,6 +9,5 @@ export * from './getNavigationTheme';
 export * from './groupTxsByDate';
 export * from './icon';
 export * from './isInternalTransfer';
-export * from './isNonAccountingTx';
 export * from './l10n';
 export * from './verboseTime';

@@ -1,4 +1,4 @@
-import { C, exchange, getMonthDiff, isInternalTransfer, isNonAccountingTx } from '../../../modules';
+import { C, exchange, getMonthDiff, isInternalTransfer } from '../../../modules';
 
 const {
   TX: { TYPE },
@@ -31,7 +31,7 @@ export const calcAccount = ({ account = {}, baseCurrency, genesisDate, months = 
 
     // ! @TODO: Should revisit this algo
     if (monthIndex === months) {
-      if (!isInternalTransfer({ category }) && !isNonAccountingTx({ category, type })) {
+      if (!isInternalTransfer({ category })) {
         currentMonthTxs += 1;
         if (isExpense) expenses += value;
         else incomes += value;

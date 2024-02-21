@@ -90,15 +90,6 @@ const Stats = () => {
       )}
 
       <Chart
-        {...useMemo(() => calcScales(chart.investments), [chart.investments])}
-        {...chartProps}
-        captions={captions}
-        style={style.chartMargin}
-        title={L10N.INVESTMENTS}
-        values={chart.investments}
-      />
-
-      <Chart
         {...useMemo(() => calcScales(chart.transfers), [chart.transfers])}
         {...chartProps}
         captions={captions}

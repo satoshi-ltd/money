@@ -1,6 +1,6 @@
 import { filterTxs } from './filterTxs';
 import { parseDate } from './parseDate';
-import { C, exchange, isInternalTransfer, isNonAccountingTx } from '../../../../modules';
+import { C, exchange, isInternalTransfer } from '../../../../modules';
 
 const {
   TX: {
@@ -17,7 +17,7 @@ export default (
   const currencies = {};
 
   filterTxs(txs)
-    .filter((tx) => !isNonAccountingTx(tx) && !isInternalTransfer(tx))
+    .filter((tx) => !isInternalTransfer(tx))
     .forEach((tx) => {
       const { category, timestamp, type, value, title } = tx;
 
