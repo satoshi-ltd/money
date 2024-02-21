@@ -23,10 +23,17 @@ const HorizontalChartItem = ({ currency, detail, highlight, icon, title, value, 
 
     <View style={[style.content, detail && style.detail]}>
       {icon && <Icon name={icon} />}
-      <Text bold={!detail} color={detail ? 'contentLight' : undefined} caption={detail} style={style.title}>
+      <Text bold={!detail} caption={detail} color={detail ? 'contentLight' : undefined} style={style.title}>
         {title}
       </Text>
-      <PriceFriendly bold={!detail} color={'contentLight'} caption currency={currency} fixed={0} value={value} />
+      <PriceFriendly
+        bold={!detail}
+        caption
+        color={detail ? 'contentLight' : undefined}
+        currency={currency}
+        fixed={0}
+        value={value}
+      />
     </View>
   </>
 );
