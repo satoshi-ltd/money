@@ -1,0 +1,56 @@
+{
+  "expo": {
+    "name": "môney",
+    "slug": "satoshi-ltd-money",
+    "owner": "satoshi-ltd",
+    "scheme": "money",
+    "description": "Your private finance ledger running on your own blockchain",
+    "version": "1.0.2",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFEFE"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.satoshi-ltd.money",
+      "buildNumber": "18",
+      "usesIcloudStorage": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFEFE"
+      },
+      "package": "com.satoshiltd.money",
+      "versionCode": 18
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-document-picker",
+        {
+          "iCloudContainerEnvironment": "Production"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#FFFEFE"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "b660421b-8423-40bd-b924-11109faac99c"
+      }
+    }
+  }
+}
