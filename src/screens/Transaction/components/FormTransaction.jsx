@@ -30,13 +30,26 @@ const FormTransaction = ({ account = {}, form = {}, onChange, type }) => {
     });
   };
 
-  const categories = queryCategories({ type });
   const optionSnap = StyleSheet.value('$optionSnap');
+  const categories = queryCategories({ type });
+  const totals = account.txs.reduce(
+    (total, { category }) => ((total[category] = (total[category] || 0) + 1), total),
+    {},
+  );
+
+  let sortedCategories = [...categories]
+    .filter((category) => !!totals[category.key.toString()])
+    .sort((a, b) => totals[b.key.toString()] - totals[a.key.toString()]);
+
+  sortedCategories = [
+    ...sortedCategories,
+    ...categories.filter(({ key }) => !sortedCategories.find((item) => item.key === key)),
+  ];
 
   return (
     <>
       <ScrollView horizontal ref={scrollview} snap={optionSnap} style={style.scrollView} width={width}>
-        {categories.map((item, index) => (
+        {sortedCategories.map((item, index) => (
           <CardOption
             key={item.key}
             highlight={form.category === item.key}
