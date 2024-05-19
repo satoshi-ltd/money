@@ -1,4 +1,3 @@
-import { opacity } from '@satoshi-ltd/nano-design/build/module/theme/modules';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 export const style = StyleSheet.create({
@@ -92,13 +91,13 @@ export const style = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'flex-start',
-    borderRadius: '$borderRadius',
+    borderRadius: '$borderRadius / 2',
     paddingHorizontal: '$spaceXS',
     paddingVertical: '$spaceXS / 4',
   },
 
   scaleBorder: {
-    borderColor: () => opacity(StyleSheet.value('$colorBase'), 0.66),
+    borderColor: '$colorBase',
     borderWidth: 1,
     margin: 1,
   },

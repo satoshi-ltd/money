@@ -43,6 +43,7 @@ const ItemGroupCategories = ({ color, dataSource, type }) => {
             style={[style.touchable, expand && expand !== key && { opacity: 0.25 }]}
           >
             <HorizontalChartItem
+              amount={Object.keys(dataSource[key])?.length}
               currency={baseCurrency}
               highlight={type !== EXPENSE}
               icon={getIcon({ type, category: key })}
