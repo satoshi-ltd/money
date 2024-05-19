@@ -14,10 +14,10 @@ const FormTransaction = ({ account = {}, form = {}, onChange, type }) => {
   const { width } = useWindowDimensions();
 
   useEffect(() => {
-    const index = categories.findIndex(({ key }) => key === form.category);
     setTimeout(() => {
+      const index = sortedCategories.findIndex(({ key }) => key === form.category);
       scrollview.current?.scrollTo({ x: (index - 1) * optionSnap, animated: true });
-    }, 0);
+    }, 10);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form]);
 
