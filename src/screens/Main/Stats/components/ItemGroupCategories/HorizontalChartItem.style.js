@@ -1,12 +1,14 @@
 import StyleSheet from 'react-native-extended-stylesheet';
 
 export const style = StyleSheet.create({
-  container: {
+  bar: {
     backgroundColor: '$colorBorder',
     borderRadius: '$borderRadius',
-    height: '$spaceXXL',
-    marginBottom: '$spaceXXL * -1',
-    minWidth: '$spaceXS',
+    maxHeight: '$spaceXXL + $spaceXS',
+    height: '100%',
+    position: 'absolute',
+    top: 0,
+    minWidth: '$spaceXXL + $spaceXS',
   },
 
   highlight: {
@@ -14,21 +16,23 @@ export const style = StyleSheet.create({
   },
 
   content: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: '$spaceS',
-    height: '$spaceXXL',
-    paddingLeft: '$spaceS',
-    paddingRight: '$spaceXS',
+    paddingLeft: '$spaceXXS',
+    height: '$spaceXXL + $spaceXS',
   },
 
   detail: {
     height: 'auto',
-    marginLeft: '$spaceL',
-    marginVertical: '$spaceXS',
+    marginLeft: '$spaceXXL + $spaceS',
+    marginVertical: '$spaceXXS',
   },
 
-  title: {
-    flex: 1,
+  cardIcon: {
+    height: '$spaceXXL',
+    marginRight: '$spaceS',
+    width: '$spaceXXL',
+  },
+
+  amount: {
+    top: '$spaceXXS * -1',
   },
 });

@@ -40,6 +40,7 @@ export const L10N = {
       99: 'Swap',
     },
   ],
+  CATEGORIES_AMOUNT: (amount) => `${amount} ${amount > 1 ? 'categories' : 'category'}`,
 
   CHANGE_DESTINATION: 'Change destination',
   CHOOSE_CURRENCY: 'Base currency',
