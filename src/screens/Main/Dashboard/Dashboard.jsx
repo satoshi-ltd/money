@@ -1,7 +1,6 @@
-import { Action, Input, Screen, ScrollView } from '@satoshi-ltd/nano-design';
+import { Action, Input, Screen, ScrollView, SectionList } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { SectionList } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './Dashboard.style';
@@ -39,7 +38,7 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
   const sortedAccounts = queryAccounts({ accounts, query: undefined });
 
   return (
-    <Screen disableScroll style={[style.container]}>
+    <Screen disableScroll style={style.container}>
       <Summary {...overall} currency={baseCurrency} detail />
 
       <Heading value={L10N.ACCOUNTS}>
@@ -95,13 +94,12 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
             />
           )}
           <SectionList
-            sections={querySearchTxs({ accounts, query, txs, page }) || lastTxs}
+            dataSource={querySearchTxs({ accounts, query, txs, page }) || lastTxs}
             keyExtractor={(item) => item.timestamp}
+            onEndReached={() => setPage(page + 1)}
             renderItem={({ item }) => <GroupTransactionsItem currency={baseCurrency} {...item} />}
             renderSectionHeader={({ section }) => <GroupTransactions {...section} />}
-            initialNumToRender={20}
-            onEndReached={() => setPage(page + 1)}
-            style={[style.sectionList]}
+            style={style.sectionList}
           />
         </>
       )}

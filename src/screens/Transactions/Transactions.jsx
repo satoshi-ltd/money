@@ -1,7 +1,6 @@
-import { Icon, Pressable, Screen, View } from '@satoshi-ltd/nano-design';
+import { Icon, Pressable, Screen, SectionList, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { SectionList } from 'react-native';
 
 import { ButtonSummary } from './components';
 import { query } from './modules';
@@ -52,7 +51,7 @@ const Transactions = ({ route: { params: { account: { hash } } = {} } = {}, navi
   const { currency = baseCurrency, ...rest } = dataSource;
 
   return (
-    <Screen disableScroll style={{ height: '100%' }}>
+    <Screen disableScroll style={style.container}>
       <Summary {...rest} currency={currency}>
         <View style={style.buttons}>
           <ButtonSummary icon={ICON.INCOME} text={L10N.INCOME} onPress={() => handleTransaction(INCOME)} />
@@ -68,15 +67,11 @@ const Transactions = ({ route: { params: { account: { hash } } = {} } = {}, navi
         <>
           <Heading value={L10N.TRANSACTIONS} />
           <SectionList
-            sections={txs}
+            dataSource={txs}
             keyExtractor={(item) => item.timestamp}
+            onEndReached={() => setPage(page + 1)}
             renderItem={({ item }) => <GroupTransactionsItem currency={baseCurrency} {...item} />}
             renderSectionHeader={({ section }) => <GroupTransactions {...section} />}
-            initialNumToRender={20}
-            onEndReached={() => {
-              console.log('YEAH');
-              setPage(page + 1);
-            }}
           />
         </>
       ) : (
