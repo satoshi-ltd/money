@@ -1,11 +1,12 @@
 import { Action, Input, Screen, ScrollView } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import { SectionList } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './Dashboard.style';
 import { queryAccounts, queryLastTxs, querySearchTxs } from './helpers';
-import { CardAccount, GroupTransactions, Heading, Summary } from '../../../components';
+import { CardAccount, GroupTransactions, GroupTransactionsItem, Heading, Summary } from '../../../components';
 import { useStore } from '../../../contexts';
 import { getProgressionPercentage, L10N } from '../../../modules';
 
@@ -15,6 +16,7 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
   const [lastTxs, setLastTxs] = useState([]);
   const [search, setSearch] = useState(false);
   const [query, setQuery] = useState();
+  const [page, setPage] = useState(2);
 
   useEffect(() => {
     if (!accounts.length) navigate('account', { firstAccount: true });
@@ -22,10 +24,10 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
   }, []);
 
   useEffect(() => {
-    const nextTxs = queryLastTxs({ accounts, txs });
-    if (JSON.stringify(nextTxs) !== JSON.stringify(lastTxs)) setLastTxs(nextTxs);
+    const nextTxs = queryLastTxs({ accounts, page, txs });
+    setLastTxs(nextTxs);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accounts, txs]);
+  }, [JSON.stringify(accounts), JSON.stringify(txs), page]);
 
   const handleSearch = () => {
     setSearch(() => {
@@ -37,7 +39,7 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
   const sortedAccounts = queryAccounts({ accounts, query: undefined });
 
   return (
-    <Screen>
+    <Screen disableScroll style={[style.container]}>
       <Summary {...overall} currency={baseCurrency} detail />
 
       <Heading value={L10N.ACCOUNTS}>
@@ -92,10 +94,15 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
               style={style.inputSearch}
             />
           )}
-
-          {(querySearchTxs({ accounts, query, txs }) || lastTxs).map((item) => (
-            <GroupTransactions {...item} key={`${item.timestamp}`} currency={baseCurrency} />
-          ))}
+          <SectionList
+            sections={querySearchTxs({ accounts, query, txs, page }) || lastTxs}
+            keyExtractor={(item) => item.timestamp}
+            renderItem={({ item }) => <GroupTransactionsItem currency={baseCurrency} {...item} />}
+            renderSectionHeader={({ section }) => <GroupTransactions {...section} />}
+            initialNumToRender={20}
+            onEndReached={() => setPage(page + 1)}
+            style={[style.sectionList]}
+          />
         </>
       )}
     </Screen>

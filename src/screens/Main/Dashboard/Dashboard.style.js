@@ -4,10 +4,15 @@ export const style = StyleSheet.create({
   scrollView: {
     marginBottom: '$spaceXL',
     paddingRight: '$spaceM',
+    maxHeight: '$cardAccountSize',
   },
 
   card: {
     marginLeft: '$cardGap',
+  },
+
+  container: {
+    height: '100%',
   },
 
   firstCard: {
@@ -20,5 +25,9 @@ export const style = StyleSheet.create({
 
   inputSearch: {
     marginHorizontal: '$spaceM',
+  },
+
+  sectionList: {
+    flex: 1,
   },
 });

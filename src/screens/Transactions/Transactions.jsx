@@ -1,12 +1,12 @@
-import { Icon, Screen, ScrollView, Pressable, View } from '@satoshi-ltd/nano-design';
+import { Icon, Pressable, Screen, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef, useState } from 'react';
-import { useWindowDimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { SectionList } from 'react-native';
 
 import { ButtonSummary } from './components';
 import { query } from './modules';
 import { style } from './Transactions.style';
-import { Banner, GroupTransactions, Heading, Summary } from '../../components';
+import { Banner, GroupTransactions, GroupTransactionsItem, Heading, Summary } from '../../components';
 import { useStore } from '../../contexts';
 import { C, ICON, L10N } from '../../modules';
 
@@ -17,24 +17,18 @@ const {
 } = C;
 
 const Transactions = ({ route: { params: { account: { hash } } = {} } = {}, navigation = {} }) => {
-  const scrollview = useRef(null);
   const { accounts = [], settings: { baseCurrency } = {} } = useStore();
 
-  const { height } = useWindowDimensions();
-
   const [dataSource, setDataSource] = useState({});
-  const [scrollQuery, setScrollQuery] = useState(false);
   const [txs, setTxs] = useState([]);
+  const [page, setPage] = useState(2);
 
   useEffect(() => {
-    scrollview.current.scrollTo({ y: 0, animated: false });
-
     const account = accounts.find((item) => item.hash === hash);
     if (!account) return;
 
     setDataSource(account);
-    setTxs(query(account.txs));
-    setScrollQuery(false);
+    setTxs(query(account.txs, page));
 
     navigation.setOptions({
       title: account.title,
@@ -45,17 +39,10 @@ const Transactions = ({ route: { params: { account: { hash } } = {} } = {}, navi
       ),
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hash, accounts]);
+  }, [hash, JSON.stringify(accounts), page]);
 
   const handleEdit = () => {
     navigation.navigate('account', dataSource);
-  };
-
-  const handleScroll = (nextScroll, y) => {
-    if (!scrollQuery && y > height / 2) {
-      setScrollQuery(true);
-      setTxs(query(dataSource.txs, true));
-    }
   };
 
   const handleTransaction = (type) => {
@@ -65,35 +52,41 @@ const Transactions = ({ route: { params: { account: { hash } } = {} } = {}, navi
   const { currency = baseCurrency, ...rest } = dataSource;
 
   return (
-    <Screen>
-      <ScrollView ref={scrollview} onScroll={handleScroll}>
-        <Summary {...rest} currency={currency}>
-          <View style={style.buttons}>
-            <ButtonSummary icon={ICON.INCOME} text={L10N.INCOME} onPress={() => handleTransaction(INCOME)} />
-            <ButtonSummary icon={ICON.EXPENSE} text={L10N.EXPENSE} onPress={() => handleTransaction(EXPENSE)} />
-            {accounts.length > 1 && (
-              <ButtonSummary icon={ICON.SWAP} text={L10N.SWAP} onPress={() => handleTransaction(TRANSFER)} />
-            )}
-            <ButtonSummary icon={ICON.SETTINGS} text={L10N.SETTINGS} onPress={handleEdit} />
-          </View>
-        </Summary>
+    <Screen disableScroll style={{ height: '100%' }}>
+      <Summary {...rest} currency={currency}>
+        <View style={style.buttons}>
+          <ButtonSummary icon={ICON.INCOME} text={L10N.INCOME} onPress={() => handleTransaction(INCOME)} />
+          <ButtonSummary icon={ICON.EXPENSE} text={L10N.EXPENSE} onPress={() => handleTransaction(EXPENSE)} />
+          {accounts.length > 1 && (
+            <ButtonSummary icon={ICON.SWAP} text={L10N.SWAP} onPress={() => handleTransaction(TRANSFER)} />
+          )}
+          <ButtonSummary icon={ICON.SETTINGS} text={L10N.SETTINGS} onPress={handleEdit} />
+        </View>
+      </Summary>
 
-        {txs.length > 0 ? (
-          <>
-            <Heading value={L10N.TRANSACTIONS} />
-            {txs.map((item) => (
-              <GroupTransactions key={item.timestamp} {...item} currency={currency} />
-            ))}
-          </>
-        ) : (
-          <Banner
-            align="center"
-            // ! TODO: Setup image
-            // image={}
-            title={L10N.NO_TRANSACTIONS}
+      {txs.length > 0 ? (
+        <>
+          <Heading value={L10N.TRANSACTIONS} />
+          <SectionList
+            sections={txs}
+            keyExtractor={(item) => item.timestamp}
+            renderItem={({ item }) => <GroupTransactionsItem currency={baseCurrency} {...item} />}
+            renderSectionHeader={({ section }) => <GroupTransactions {...section} />}
+            initialNumToRender={20}
+            onEndReached={() => {
+              console.log('YEAH');
+              setPage(page + 1);
+            }}
           />
-        )}
-      </ScrollView>
+        </>
+      ) : (
+        <Banner
+          align="center"
+          // ! TODO: Setup image
+          // image={}
+          title={L10N.NO_TRANSACTIONS}
+        />
+      )}
     </Screen>
   );
 };
