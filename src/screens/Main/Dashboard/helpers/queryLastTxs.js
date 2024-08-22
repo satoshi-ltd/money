@@ -1,6 +1,7 @@
 import { C, groupTxsByDate } from '../../../../modules';
 
 const { CURRENCY, ITEMS_PER_PAGE } = C;
+
 export const queryLastTxs = ({ accounts = [], page = 2, txs = [] }) =>
   groupTxsByDate(
     txs

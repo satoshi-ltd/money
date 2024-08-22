@@ -96,9 +96,9 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
           <SectionList
             dataSource={querySearchTxs({ accounts, query, txs, page }) || lastTxs}
             keyExtractor={(item) => item.timestamp}
-            onEndReached={() => setPage(page + 1)}
             renderItem={({ item }) => <GroupTransactionsItem currency={baseCurrency} {...item} />}
             renderSectionHeader={({ section }) => <GroupTransactions {...section} />}
+            onEndReached={() => setPage(page + 1)}
             style={style.sectionList}
           />
         </>

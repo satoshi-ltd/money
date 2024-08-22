@@ -75,12 +75,7 @@ const Transactions = ({ route: { params: { account: { hash } } = {} } = {}, navi
           />
         </>
       ) : (
-        <Banner
-          align="center"
-          // ! TODO: Setup image
-          // image={}
-          title={L10N.NO_TRANSACTIONS}
-        />
+        <Banner align="center" title={L10N.NO_TRANSACTIONS} />
       )}
     </Screen>
   );
