@@ -75,7 +75,6 @@ export const ICON = {
   GASOLINE: 'gas-station-outline',
   ELECTRICITY: 'lightbulb-on-outline',
   WATER: 'water-outline',
-  APARTMENT: 'apartment',
   // healthcare
   HOSPITAL: 'hospital-box-outline',
   PILL: 'pill',

@@ -89,8 +89,7 @@ export const getIcon = ({ type, category, title } = {}) => {
     // Utilities
     if (contains(['gasoline', 'gas station'])) return ICON.GASOLINE;
     if (contains(['phone', 'smartphone'])) return ICON.PHONE;
-    if (contains(['villa', 'condo', 'house', 'rent'])) return ICON.HOME;
-    if (contains(['condo', 'apartment'])) return ICON.APARTMENT;
+    if (contains(['villa', 'condo', 'house', 'rent', 'apartment'])) return ICON.HOME;
     if (contains(['internet', 'wifi'])) return ICON.WIFI;
     if (contains(['water'])) return ICON.WATER;
     if (contains(['electric', 'electricity'])) return ICON.ELECTRICITY;

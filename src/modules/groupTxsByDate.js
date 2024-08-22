@@ -10,10 +10,10 @@ export const groupTxsByDate = (txs = []) => {
     if (date !== txDate) {
       date = txDate;
       dateIndex = query.length;
-      query.push({ timestamp: tx.timestamp, txs: [] });
+      query.push({ timestamp: tx.timestamp, data: [] });
     }
 
-    query[dateIndex].txs.push(tx);
+    query[dateIndex].data.push(tx);
   });
 
   return query;

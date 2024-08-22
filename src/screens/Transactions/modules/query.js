@@ -1,3 +1,4 @@
-import { groupTxsByDate } from '../../../modules';
+import { C, groupTxsByDate } from '../../../modules';
 
-export const query = (txs = [], scroll = false) => groupTxsByDate([...txs].reverse().slice(0, scroll ? 256 : 16));
+const { ITEMS_PER_PAGE } = C;
+export const query = (txs = [], page = 2) => groupTxsByDate([...txs].reverse().slice(0, ITEMS_PER_PAGE * page));
