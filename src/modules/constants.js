@@ -41,7 +41,6 @@ export const C = {
   IS_ANDROID: Platform.OS === 'android',
   IS_IOS: Platform.OS === 'ios',
   IS_WEB: Platform.OS === 'web',
-  ITEMS_PER_PAGE: 20,
 
   LANGUAGE: 'en-EN',
 

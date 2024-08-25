@@ -5,8 +5,4 @@ export const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
-
-  container: {
-    height: '100%',
-  },
 });

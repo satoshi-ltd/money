@@ -1,11 +1,10 @@
 import { C, groupTxsByDate } from '../../../../modules';
 
-const { CURRENCY, ITEMS_PER_PAGE } = C;
-
-export const queryLastTxs = ({ accounts = [], page = 2, txs = [] }) =>
+const { CURRENCY } = C;
+export const queryLastTxs = ({ accounts = [], txs = [] }) =>
   groupTxsByDate(
     txs
-      .slice(-(ITEMS_PER_PAGE * page))
+      .slice(-32)
       .reverse()
       .map((tx = {}) => {
         const { currency = CURRENCY } = accounts.find(({ hash }) => hash === tx.account) || {};

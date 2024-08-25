@@ -3,16 +3,11 @@ import StyleSheet from 'react-native-extended-stylesheet';
 export const style = StyleSheet.create({
   scrollView: {
     marginBottom: '$spaceXL',
-    maxHeight: '$cardAccountSize',
     paddingRight: '$spaceM',
   },
 
   card: {
     marginLeft: '$cardGap',
-  },
-
-  container: {
-    height: '100%',
   },
 
   firstCard: {
@@ -25,9 +20,5 @@ export const style = StyleSheet.create({
 
   inputSearch: {
     marginHorizontal: '$spaceM',
-  },
-
-  sectionList: {
-    flex: 1,
   },
 });

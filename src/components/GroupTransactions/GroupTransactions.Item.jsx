@@ -15,15 +15,7 @@ const {
   INTERNAL_TRANSFER,
 } = C;
 
-const GroupTransactionsItem = ({
-  category = INTERNAL_TRANSFER,
-  currency,
-  timestamp,
-  title,
-  type = EXPENSE,
-  value = 0,
-  ...others
-}) => {
+const Item = ({ category = INTERNAL_TRANSFER, currency, timestamp, title, type = EXPENSE, value = 0, ...others }) => {
   const { navigate } = useNavigation();
   const {
     settings: { baseCurrency },
@@ -83,7 +75,7 @@ const GroupTransactionsItem = ({
   );
 };
 
-GroupTransactionsItem.propTypes = {
+Item.propTypes = {
   category: PropTypes.number,
   currency: PropTypes.string.isRequired,
   timestamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
@@ -92,4 +84,4 @@ GroupTransactionsItem.propTypes = {
   value: PropTypes.number,
 };
 
-export { GroupTransactionsItem };
+export { Item };
