@@ -42,7 +42,7 @@ const Transaction = ({ route: { params = {} } = {}, navigation: { goBack } = {} 
       if (value) goBack();
       setBusy(false);
 
-      if (subscription?.productId && txs.length) {
+      if (subscription?.productIdentifier && txs.length) {
         const lastTxDate = txs[txs.length - 1].timestamp;
         if (Date.now() - lastTxDate > ONE_DAY) {
           PurchaseService.checkSubscription(subscription).then((activeSubscription) => {

@@ -86,6 +86,7 @@ export const L10N = {
   ERROR_EXPORT: 'Unable to export as you don’t have sharing permissions.',
   ERROR_IMPORT: 'The file format is not supported. Please choose a compatible file type.',
   ERROR_PRODUCTS: 'Products not found',
+  ERROR_PURCHASE: 'Purchase failed',
   ERROR_RESTORE: 'Restore failed',
   ERROR_SERVICE_RATES: 'Something was wrong trying to get updated currencies rates. Check that you are online.',
   ERROR_TRY_AGAIN: 'Something wrong happened. Try again.',

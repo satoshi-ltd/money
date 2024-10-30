@@ -8,11 +8,11 @@ import { useStore } from '../../contexts';
 import { L10N } from '../../modules';
 import { PurchaseService } from '../../services';
 
-const Subscription = ({ route: { params: { plans = {} } = {} } = {}, navigation: { goBack, navigate } = {} }) => {
-  const { subscription, updateSubscription } = useStore();
+const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation: { goBack, navigate } = {} }) => {
+  const { updateSubscription } = useStore();
 
   const [busy, setBusy] = useState(null);
-  const [plan, setPlan] = useState(subscription.productId);
+  const [plan, setPlan] = useState(null);
 
   const handleChange = (id) => {
     setPlan(id);
@@ -34,7 +34,8 @@ const Subscription = ({ route: { params: { plans = {} } = {} } = {}, navigation:
 
   const handleStart = () => {
     setBusy('purchase');
-    PurchaseService.buy(plan)
+    const { data } = plans.find((p) => p.productId === plan);
+    PurchaseService.buy(data)
       .then((newSubscription) => {
         if (newSubscription) {
           updateSubscription(newSubscription);
@@ -66,7 +67,7 @@ const Subscription = ({ route: { params: { plans = {} } = {} } = {}, navigation:
             <Card outlined style={productId === plan ? style.optionHighlight : undefined}>
               <View />
               <Text bold color={productId === plan ? 'base' : undefined}>{`${price} / ${title}`}</Text>
-              {productId === 'lifetime' && (
+              {!!description && (
                 <Text color={productId === plan ? 'base' : undefined} tiny>
                   {description}
                 </Text>

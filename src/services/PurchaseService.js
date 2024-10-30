@@ -1,8 +1,21 @@
 import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 
-import { C, L10N } from '../modules';
+import { L10N } from '../modules';
 
-const { PRODUCTION, SANDBOX } = C.APPLE;
+const initializePurchases = async () => {
+  const Purchases = require('react-native-purchases').default;
+
+  Purchases.setLogLevel(Purchases.LOG_LEVEL.VERBOSE);
+
+  if (Platform.OS === 'ios') {
+    Purchases.configure({ apiKey: 'appl_QABCskEAhnKhQxFgsoeZfdNaSgk' });
+  } else if (Platform.OS === 'android') {
+    Purchases.configure({ apiKey: 'goog_MVLuzClgcYPryyRfYDHBZlXdRgg' });
+  }
+
+  return Purchases;
+};
 
 export const PurchaseService = {
   getProducts: async () =>
@@ -10,129 +23,80 @@ export const PurchaseService = {
     new Promise(async (resolve, reject) => {
       if (Constants.appOwnership === 'expo') return resolve([]);
 
-      const InAppPurchases = require('expo-in-app-purchases');
-
       try {
-        await InAppPurchases.connectAsync();
+        const Purchases = await initializePurchases();
 
-        const { responseCode, results } = await InAppPurchases.getProductsAsync(['monthly', 'yearly', 'lifetime']);
-        if (responseCode === InAppPurchases.IAPResponseCode.OK) {
-          resolve(
-            results.sort((a, b) => {
-              return a.priceAmountMicros - b.priceAmountMicros;
-            }),
-          );
-        } else {
-          reject(L10N.ERROR_PRODUCTS);
+        const offerings = await Purchases.getOfferings();
+
+        if (offerings.current !== null && offerings.current.availablePackages.length !== 0) {
+          const plans = offerings.current.availablePackages.map((item) => ({
+            data: item,
+            productId: item.identifier,
+            price: item.product.priceString,
+            title: item.product.identifier,
+            description: item.product.identifier === 'lifetime' ? item.product.description : null,
+          }));
+          resolve(plans);
         }
+        resolve([]);
       } catch (error) {
         reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);
-      } finally {
-        await InAppPurchases.disconnectAsync();
       }
     }),
-  buy: async (productId) =>
+  buy: async (plan) =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
-      if (Constants.appOwnership === 'expo') return resolve({ productId: 'lifetime' });
-
-      const InAppPurchases = require('expo-in-app-purchases');
+      if (Constants.appOwnership === 'expo') return resolve({ productIdentifier: 'lifetime' });
 
       try {
-        await InAppPurchases.connectAsync();
+        const Purchases = await initializePurchases();
 
-        await InAppPurchases.getProductsAsync([productId]);
+        const { customerInfo, productIdentifier } = await Purchases.purchasePackage(plan);
 
-        InAppPurchases.purchaseItemAsync(productId);
-
-        InAppPurchases.setPurchaseListener(async (result) => {
-          switch (result.responseCode) {
-            case InAppPurchases.IAPResponseCode.OK:
-            case InAppPurchases.IAPResponseCode.DEFERRED:
-              await InAppPurchases.finishTransactionAsync(result.results[0], false);
-              resolve(result.results[0]);
-              break;
-            case InAppPurchases.IAPResponseCode.USER_CANCELED:
-              resolve(false);
-              break;
-            case InAppPurchases.IAPResponseCode.ERROR:
-              reject(new Error('IAP Error: ' + result.errorCode));
-              break;
-          }
-          await InAppPurchases.disconnectAsync();
-        });
+        if (typeof customerInfo.entitlements.active['pro'] !== 'undefined') {
+          resolve({ customerInfo, productIdentifier });
+        } else {
+          reject(L10N.ERROR_PURCHASE);
+        }
       } catch (error) {
-        reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);
+        if (!error.userCancelled) {
+          reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);
+        }
       }
     }),
   restore: async () =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
-      if (Constants.appOwnership === 'expo') return resolve();
-
-      const InAppPurchases = require('expo-in-app-purchases');
+      if (Constants.appOwnership === 'expo') return resolve({ productIdentifier: 'lifetime' });
 
       try {
-        await InAppPurchases.connectAsync();
+        const Purchases = await initializePurchases();
 
-        const { responseCode, results } = await InAppPurchases.getPurchaseHistoryAsync();
-        if (responseCode === InAppPurchases.IAPResponseCode.OK) {
-          const activeSubscription = results.find(
-            ({ acknowledged, purchaseState }) =>
-              acknowledged &&
-              [InAppPurchases.InAppPurchaseState.PURCHASED, InAppPurchases.InAppPurchaseState.RESTORED].includes(
-                purchaseState,
-              ),
-          );
-          resolve(activeSubscription);
+        const customerInfo = await Purchases.restorePurchases();
+        if (typeof customerInfo.entitlements.active['pro'] !== 'undefined') {
+          resolve({ customerInfo, productIdentifier: customerInfo.entitlements.active['pro'].productIdentifier });
         } else {
           reject(L10N.ERROR_RESTORE);
         }
       } catch (error) {
         reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);
-      } finally {
-        await InAppPurchases.disconnectAsync();
       }
     }),
-  checkSubscription: async (subscription, sandbox = false) =>
+  checkSubscription: async (subscription) =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
-      if (subscription.productId === 'lifetime') return resolve(true);
+      if (Constants.appOwnership === 'expo' || subscription.productIdentifier === 'lifetime') return resolve(true);
 
-      fetch(!sandbox ? PRODUCTION : SANDBOX, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          'receipt-data': subscription.transactionReceipt,
-          password: process.env.EXPO_PUBLIC_APPLE_SHARED_SECRET,
-          'exclude-old-transactions': true,
-        }),
-      })
-        .then(async (response) => {
-          const json = await response.json();
+      try {
+        const Purchases = await initializePurchases();
 
-          if (json.status === 21007) {
-            return PurchaseService.checkSubscription(subscription, true);
-          }
-          if (json.status !== 0) {
-            return resolve(false);
-          }
-
-          const latestExpirationDate = json.latest_receipt_info
-            .map((info) => new Date(info.expires_date_ms))
-            .reduce((latest, current) => (current > latest ? current : latest), new Date(0));
-
-          resolve(latestExpirationDate > new Date());
-        })
-        .catch(({ message = L10N.ERROR_TRY_AGAIN, response } = {}) => {
-          reject({
-            code: response ? response.status : 500,
-            message,
-          });
-        });
-    }),
+        const customerInfo = await Purchases.getCustomerInfo();
+        if (typeof customerInfo.entitlements.active['pro'] !== 'undefined') {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      } catch (error) {
+        reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);
+      }
 };

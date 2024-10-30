@@ -58,14 +58,14 @@ const Backup = ({ navigation: { navigate } = {}, ...others }) => {
           activity={busy === 'export'}
           flex
           outlined
-          onPress={IS_WEB || subscription?.productId ? handleExport : () => handleSubscription('export')}
+          onPress={IS_WEB || subscription?.productIdentifier ? handleExport : () => handleSubscription('export')}
         >
           {L10N.EXPORT}
         </Button>
         <Button
           activity={busy === 'import'}
           flex
-          onPress={IS_WEB || subscription?.productId ? handleImport : () => handleSubscription('import')}
+          onPress={IS_WEB || subscription?.productIdentifier ? handleImport : () => handleSubscription('import')}
         >
           {L10N.IMPORT}
         </Button>
