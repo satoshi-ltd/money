@@ -99,4 +99,5 @@ export const PurchaseService = {
       } catch (error) {
         reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);
       }
+    }),
 };

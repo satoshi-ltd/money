@@ -18,8 +18,11 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.satoshi-ltd.money",
-      "buildNumber": "22",
-      "usesIcloudStorage": true
+      "buildNumber": "23",
+      "usesIcloudStorage": true,
+      "infoPlist": {
+        "LSMinimumSystemVersion": "12.0"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -27,7 +30,7 @@
         "backgroundColor": "#FFFEFE"
       },
       "package": "com.satoshiltd.money",
-      "versionCode": 22
+      "versionCode": 23
     },
     "web": {
       "favicon": "./assets/favicon.png"
