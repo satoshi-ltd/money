@@ -9,9 +9,9 @@ const initializePurchases = async () => {
   Purchases.setLogLevel(Purchases.LOG_LEVEL.VERBOSE);
 
   if (Platform.OS === 'ios') {
-    Purchases.configure({ apiKey: 'appl_QABCskEAhnKhQxFgsoeZfdNaSgk' });
+    Purchases.configure({ apiKey: 'appl_aGBSQTaLCQAEJevVIvbQKAkNKpZ' });
   } else if (Platform.OS === 'android') {
-    Purchases.configure({ apiKey: 'goog_MVLuzClgcYPryyRfYDHBZlXdRgg' });
+    Purchases.configure({ apiKey: 'goog_bzzicUKLHqrXEdrltqKGmdXgyyI' });
   }
 
   return Purchases;
