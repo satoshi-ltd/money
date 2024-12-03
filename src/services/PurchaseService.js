@@ -34,7 +34,7 @@ export const PurchaseService = {
             productId: item.identifier,
             price: item.product.priceString,
             title: item.product.identifier,
-            description: item.product.identifier === 'lifetime' ? item.product.description : null,
+            description: item.product.identifier === 'lifetime.money' ? L10N.LIFETIME_DESCRIPTION : null,
           }));
           resolve(plans);
         }

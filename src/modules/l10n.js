@@ -115,6 +115,8 @@ export const L10N = {
 
   LAST_TRANSACTIONS: 'Recent activity',
 
+  LIFETIME_DESCRIPTION: "Pay once and don't worry ever",
+
   MONTHS: [
     'January',
     'February',
