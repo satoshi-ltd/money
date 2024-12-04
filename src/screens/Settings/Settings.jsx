@@ -38,6 +38,7 @@ const Settings = ({ navigation = {} }) => {
 
   const handleOption = ({ screen, callback }) => {
     if (screen) navigation.navigate(screen);
+    else if (callback === 'handleSubscription') handleSubscription();
     else if (callback === 'handleExport') handleExport();
     else if (callback === 'handleImport') handleImport();
     else if (callback === 'handleUpdateRates') handleUpdateRates();
@@ -71,6 +72,7 @@ const Settings = ({ navigation = {} }) => {
   };
 
   const handleSubscription = (activityState) => {
+    if (IS_WEB || subscription?.productIdentifier) return;
     setActivity(activityState);
     PurchaseService.getProducts()
       .then((plans) => {
@@ -95,10 +97,10 @@ const Settings = ({ navigation = {} }) => {
         <Text bold caption>
           {L10N.GENERAL.toUpperCase()}
         </Text>
-        {OPTIONS.map(({ caption, disabled, icon, text, ...rest }, index) => (
+        {OPTIONS.map(({ caption, disabled, icon, id, text, ...rest }) => (
           <Setting
             activity={rest.callback && [rest.callback].sync}
-            key={`option-${index}`}
+            key={`option-${id}`}
             {...{
               activity: rest.callback === 'handleUpdateRates' && activity?.updateRates,
               caption:
@@ -159,12 +161,6 @@ const Settings = ({ navigation = {} }) => {
         </Text>
 
         <SliderCurrencies selected={baseCurrency} onChange={handleChangeCurrency} />
-
-        <Text color="contentLight" caption style={[style.hint, style.offset]}>
-          {!activity
-            ? `${L10N.SYNC_RATES_SENTENCE} ${lastRatesUpdate.toString().split(' ').slice(0, 5).join(' ')}`
-            : L10N.WAIT}
-        </Text>
       </View>
     </Screen>
   );

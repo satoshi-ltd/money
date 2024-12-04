@@ -33,7 +33,7 @@ export const PurchaseService = {
             data: item,
             productId: item.identifier,
             price: item.product.priceString,
-            title: item.product.identifier,
+            title: item.product.title,
             description: item.product.identifier === 'lifetime.money' ? L10N.LIFETIME_DESCRIPTION : null,
           }));
           resolve(plans);
