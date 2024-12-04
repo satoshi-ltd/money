@@ -1,6 +1,10 @@
 export const L10N = {
+  ABOUT: 'About môney',
   ACCEPT: 'Accept',
   ACTIVITY: 'Analytics',
+
+  APPERANCE_DARK: 'Switch to dark mode',
+  APPERANCE_LIGHT: 'Switch to light mode',
 
   BACKUP_CAPTION:
     'Take control of your financial data, you own your {accounts} accounts and {txs} transactions. Safeguard your privacy and security while effortlessly managing your info, all with a simple tap.',
@@ -93,11 +97,18 @@ export const L10N = {
   EXPENSE: 'Expense',
   EXPENSES: 'Expenses',
   EXPORT: 'Export',
+  EXPORT_DATA: 'Export Data',
+  EXPORT_DATA_CAPTION: 'JSON archive',
 
   FIRST_ACCOUNT: 'Your first account',
   FIRST_ACCOUNT_CAPTION: 'Choose your main currency. Add more accounts later, each supporting different currencies.',
 
+  GENERAL: 'General',
+  GET_MONEY_PREMIUM: 'Get môney Premium',
+
   IMPORT: 'Import',
+  IMPORT_DATA: 'Import Data',
+  IMPORT_DATA_CAPTION: 'JSON archive',
   INCOME: 'Income',
   INCOMES: 'Incomes',
   INITIAL_BALANCE: 'Initial balance',
@@ -139,10 +150,12 @@ export const L10N = {
 
   PIN: 'Your PIN code',
   PIN_CHOOSE: 'Choose PIN code',
+  PREFERENCES: 'Preferences',
   PURCHASE: 'Purchase',
   PURCHASE_RESTORED: 'Purchase restored.',
 
-  RESTORE_PURCHASE: 'Restore purchase',
+  REMINDERS: 'Reminders',
+  RESTORE_PURCHASES: 'Restore purchases',
 
   SAVE: 'Save',
   SCHEDULE_BACKUP: 'Time to Secure Your Finances!',
@@ -152,6 +165,7 @@ export const L10N = {
   SETTINGS: 'Settings',
   START: 'Start',
   START_TRIAL: 'Start free 7 day trial',
+  SUBSCRIPTION: 'Subscription',
   SUBSCRIPTION_CAPTION: 'No restrictions on accounts and transactions, plus a robust import/export feature.',
   SUBSCRIPTION_CLOSE: 'No thanks',
   SUBSCRIPTION_TERMS: 'Terms',
@@ -161,6 +175,7 @@ export const L10N = {
   SYNC_RATES_CTA: 'Update Rates',
   SWAP: 'Swap',
 
+  TERMS: 'Terms',
   TERMS_AND_CONDITIONS: [
     {
       title: '1. Acceptance of Terms',

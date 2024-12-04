@@ -2,6 +2,7 @@ export const ICON = {
   // navigation
   BACK: 'arrow-left',
   CLOSE: 'close',
+  RIGHT: 'chevron-right',
   // account
   NEW: 'book-plus-outline',
   // transaction
@@ -130,4 +131,12 @@ export const ICON = {
   YURI: 'face-woman',
   //
   UNKNOWN: 'block-helper',
+  // Settings
+  INVERT_COLORS: 'invert-colors',
+  FILE: 'file-document-outline',
+  STAR: 'star',
+  CART: 'cart-outline',
+  DOWNLOAD: 'file-download',
+  UPLOAD: 'file-upload',
+  BELL: 'bell',
 };

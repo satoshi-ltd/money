@@ -1,12 +1,15 @@
 // -- presentation=screen
 export * from './Onboarding';
 export * from './Session';
-export * from './Main/Dashboard';
-export * from './Main/Stats';
-export * from './Main/Accounts';
-export * from './Main/Settings';
-export * from './Subscription';
+
+export * from './Dashboard';
+export * from './Stats';
+export * from './Accounts';
+export * from './Settings';
+
 export * from './Transactions';
+export * from './Subscription';
+
 // -- presentation=modal
 export * from './Account';
 export * from './Transaction';
