@@ -7,7 +7,7 @@ import { Setting } from './components/Setting';
 import { changeBaseCurrency, getLatestRates, verboseDate } from './helpers';
 import { ABOUT, OPTIONS, PREFERENCES } from './Settings.constants';
 import { style } from './Settings.style';
-import { Heading, SliderCurrencies } from '../../components';
+import { SliderCurrencies } from '../../components';
 import { useStore } from '../../contexts';
 import { C, ICON, L10N } from '../../modules';
 import { BackupService, PurchaseService } from '../../services';

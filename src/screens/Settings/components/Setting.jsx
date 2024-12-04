@@ -5,20 +5,9 @@ import { ActivityIndicator } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './Setting.style';
-import { Tabs } from '../../../components';
 import { ICON } from '../../../modules';
 
-const Setting = ({
-  activity = false,
-  caption,
-  disabled,
-  icon,
-  options,
-  selected,
-  text,
-  onChange,
-  onPress = () => {},
-} = {}) => (
+const Setting = ({ activity = false, caption, disabled, icon, text, onPress = () => {} } = {}) => (
   <Pressable onPress={!disabled && !activity ? onPress : undefined}>
     <View gap row style={style.setting}>
       {icon && (
@@ -38,8 +27,6 @@ const Setting = ({
 
         {activity ? (
           <ActivityIndicator size="small" color={StyleSheet.value('$colorContent')} />
-        ) : options ? (
-          <Tabs {...{ selected, options, onChange }} />
         ) : (
           <Icon name={ICON.RIGHT} />
         )}
