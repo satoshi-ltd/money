@@ -10,8 +10,10 @@ StyleSheet.build(LightTheme);
 
 export const App = () => {
   const [ready] = useFonts({
-    'font-default': require('../assets/fonts/VisbyCF-Medium.otf'),
-    'font-bold': require('../assets/fonts/VisbyCF-Bold.otf'),
+    'font-default': require('../assets/fonts/EuclidCircularA-Regular.ttf'),
+    'font-bold': require('../assets/fonts/EuclidCircularA-SemiBold.ttf'),
+    'font-default-secondary': require('../assets/fonts/CanelaText-Regular.otf'),
+    'font-bold-secondary': require('../assets/fonts/CanelaText-Bold.otf'),
 
     'shield-icons': require('../assets/fonts/Shield-Icons.ttf'),
   });
