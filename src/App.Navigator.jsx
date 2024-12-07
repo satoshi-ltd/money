@@ -34,8 +34,8 @@ const commonScreenOptions = (theme = 'light') => ({
   headerShown: true,
   // headerStyle: {},
   // headerTintColor: StyleSheet.value('$colorAccent'),
-  // headerTitle: () => <Logo />,
-  headerTitle: ({ ...props }) => <Text bold {...props} />,
+  // headerTitle: ({ ...props }) => <Text bold {...props} />,
+  headerTitle: () => <Logo />,
   headerTitleAlign: 'center',
   // headerTitleStyle: {},
   headerTransparent: true,
@@ -131,7 +131,7 @@ export const Navigator = () => {
         screenOptions={screenOptions}
       >
         <Stack.Screen name="onboarding" component={Onboarding} />
-        <Stack.Screen name="session" component={Session} options={screen} />
+        <Stack.Screen name="session" component={Session} options={{ ...screen, headerShown: false }} />
         <Stack.Screen name="main" component={Tabs} />
         {/* transactions */}
         <Stack.Screen name="transactions" component={Transactions} options={screen} />

@@ -1,7 +1,8 @@
-import { Screen } from '@satoshi-ltd/nano-design';
+import { Screen, Text } from '@satoshi-ltd/nano-design';
 import React, { useLayoutEffect, useMemo, useState } from 'react';
 
 import { Chart, ItemGroupCategories, SliderMonths } from './components';
+import { Heading } from '../../components';
 import { calcScales, orderCaptions, queryMonth, queryChart } from './modules';
 import { style } from './Stats.style';
 import { useStore } from '../../contexts';
@@ -53,6 +54,8 @@ const Stats = () => {
 
   return (
     <Screen style={style.screen}>
+      <Heading value={L10N.HISTORY} />
+
       <SliderMonths {...slider} onChange={handleSliderChange} />
 
       <Chart

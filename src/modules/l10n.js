@@ -106,6 +106,7 @@ export const L10N = {
   GENERAL: 'General',
   GET_MONEY_PREMIUM: 'Get môney Premium',
 
+  HISTORY: 'Months',
   HOME: 'Home',
 
   IMPORT: 'Import',
