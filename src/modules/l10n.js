@@ -106,6 +106,8 @@ export const L10N = {
   GENERAL: 'General',
   GET_MONEY_PREMIUM: 'Get môney Premium',
 
+  HOME: 'Home',
+
   IMPORT: 'Import',
   IMPORT_DATA: 'Import Data',
   IMPORT_DATA_CAPTION: 'JSON archive',
@@ -153,6 +155,7 @@ export const L10N = {
   PIN: 'Your PIN code',
   PIN_CHOOSE: 'Choose PIN code',
   PREFERENCES: 'Preferences',
+  PREMIUM: 'Premium',
   PURCHASE: 'Purchase',
   PURCHASE_RESTORED: 'Purchase restored.',
 

@@ -8,11 +8,11 @@ export * from './Accounts';
 export * from './Settings';
 
 export * from './Transactions';
-export * from './Subscription';
 
 // -- presentation=modal
 export * from './Account';
-export * from './Transaction';
 export * from './Clone';
 export * from './Confirm';
+export * from './Subscription';
 export * from './TermsAndConditions';
+export * from './Transaction';

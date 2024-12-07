@@ -89,9 +89,9 @@ const Settings = ({ navigation = {} }) => {
 
   return (
     <Screen gap offset style={style.screen}>
-      {/* <Text bold secondary subtitle>
+      <Text bold secondary subtitle>
         {L10N.SETTINGS}
-      </Text> */}
+      </Text>
 
       <View style={style.group}>
         <Text bold caption>

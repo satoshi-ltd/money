@@ -52,7 +52,7 @@ const Stats = () => {
   const chartProps = { currency: baseCurrency, highlight: slider.index };
 
   return (
-    <Screen>
+    <Screen style={style.screen}>
       <SliderMonths {...slider} onChange={handleSliderChange} />
 
       <Chart
