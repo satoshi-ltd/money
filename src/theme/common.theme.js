@@ -8,6 +8,7 @@ export const CommonTheme = {
   $fontWeightBold: '600',
   $fontWeightDefaultSecondary: '400',
   $fontWeightBoldSecondary: '700',
+  // $fontSizeTiny: 9,
 
   $lineHeightDefaultRatio: 1.25,
   $lineHeightBodyRatio: 1.5,
@@ -33,6 +34,6 @@ export const CommonTheme = {
   $cardAccountSnap: '$cardAccountSize + $cardGap',
 
   // -- <Option> ---------------------------------------------------------------
-  $optionSize: '$spaceM * 5',
+  $optionSize: '$spaceM * 5.2',
   $optionSnap: '$optionSize + $cardGap',
 };
