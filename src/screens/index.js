@@ -14,5 +14,4 @@ export * from './Account';
 export * from './Clone';
 export * from './Confirm';
 export * from './Subscription';
-export * from './TermsAndConditions';
 export * from './Transaction';
