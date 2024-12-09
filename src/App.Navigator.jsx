@@ -7,9 +7,9 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
 
+import { Logo } from './components';
 import { useStore } from './contexts';
 import { C, getNavigationTheme, ICON, L10N } from './modules';
-import { Logo } from './components';
 import {
   Account,
   Accounts,
@@ -23,8 +23,8 @@ import {
   Subscription,
   Transaction,
   Transactions,
-  TermsAndConditions,
 } from './screens';
+import { PurchaseService } from './services';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -45,6 +45,14 @@ const commonScreenOptions = (theme = 'light') => ({
 const Tabs = ({ navigation = {} }) => {
   const { settings: { theme } = {} } = useStore();
 
+  const handleSubscription = () => {
+    PurchaseService.getProducts()
+      .then((plans) => {
+        navigation.navigate('subscription', { plans });
+      })
+      .catch((error) => alert(error));
+  };
+
   const screenOptions = {
     ...commonScreenOptions(theme),
     headerLeft: () => <></>,
@@ -53,7 +61,7 @@ const Tabs = ({ navigation = {} }) => {
         icon={ICON.STAR}
         secondary
         small
-        onPress={() => navigation.navigate('subscription')}
+        onPress={handleSubscription}
         style={{ marginRight: StyleSheet.value('$viewOffset') }}
       >
         <Text bold tiny>
@@ -139,7 +147,6 @@ export const Navigator = () => {
         <Stack.Screen name="clone" component={Clone} options={modal} />
         {/* -- settings */}
         <Stack.Screen name="account" component={Account} options={modal} />
-        <Stack.Screen name="terms" component={TermsAndConditions} options={modal} />
         {/* -- common */}
         <Stack.Screen name="confirm" component={Confirm} options={modal} />
         <Stack.Screen name="subscription" component={Subscription} options={modal} />
