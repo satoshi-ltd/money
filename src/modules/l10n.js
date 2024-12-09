@@ -157,6 +157,7 @@ export const L10N = {
   PIN_CHOOSE: 'Choose PIN code',
   PREFERENCES: 'Preferences',
   PREMIUM: 'Premium',
+  PRIVACY: 'Privacy Policy',
   PURCHASE: 'Purchase',
   PURCHASE_RESTORED: 'Purchase restored.',
 
@@ -172,8 +173,10 @@ export const L10N = {
   START: 'Start',
   START_TRIAL: 'Start free 7 day trial',
   SUBSCRIPTION: 'Subscription',
+  SUBSCRIPTION_AND: 'and',
   SUBSCRIPTION_CAPTION: 'No restrictions on accounts and transactions, plus a robust import/export feature.',
   SUBSCRIPTION_CLOSE: 'No thanks',
+  SUBSCRIPTION_PRIVACY: 'Privacy Policy',
   SUBSCRIPTION_TERMS: 'Terms',
   SUBSCRIPTION_TERMS_CAPTION:
     'By tapping "Start free 7 day trial", you will not be charged for the next 7 days, your subscription will auto-renew for the same price and package length until you cancel via App Store Settings. and you agree to our',

@@ -1,4 +1,6 @@
-import { ICON, L10N } from '../../modules';
+import { C, ICON, L10N } from '../../modules';
+
+const { PRIVACY_URL, TERMS_URL } = C;
 
 const OPTIONS = [
   {
@@ -54,8 +56,13 @@ const ABOUT = [
   },
   {
     icon: ICON.FILE,
-    screen: 'terms',
+    url: TERMS_URL,
     text: L10N.TERMS,
+  },
+  {
+    icon: ICON.FILE,
+    url: PRIVACY_URL,
+    text: L10N.PRIVACY,
   },
 ];
 
