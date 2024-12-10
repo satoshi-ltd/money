@@ -1,12 +1,15 @@
 import { Action, Button, Card, Pressable, Modal, Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import { Linking } from 'react-native';
 
 import { style } from './Subscription.style';
 import { Logo } from '../../components';
 import { useStore } from '../../contexts';
-import { L10N } from '../../modules';
+import { C, L10N } from '../../modules';
 import { PurchaseService } from '../../services';
+
+const { PRIVACY_URL, TERMS_URL } = C;
 
 const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation: { goBack, navigate } = {} }) => {
   const { updateSubscription } = useStore();
@@ -47,7 +50,11 @@ const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation:
   };
 
   const handleTermsAndConditions = () => {
-    navigate('terms');
+    Linking.openURL(TERMS_URL);
+  };
+
+  const handlePrivacy = () => {
+    Linking.openURL(PRIVACY_URL);
   };
 
   return (
@@ -92,9 +99,15 @@ const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation:
       <Text tiny>
         {L10N.SUBSCRIPTION_TERMS_CAPTION}
         {` `}
-        <Pressable onPress={() => handleTermsAndConditions()}>
+        <Pressable onPress={handleTermsAndConditions}>
           <Text bold tiny style={style.pressableTerms}>
             {L10N.SUBSCRIPTION_TERMS}
+          </Text>
+        </Pressable>
+        {` ${L10N.SUBSCRIPTION_AND} `}
+        <Pressable onPress={handlePrivacy}>
+          <Text bold tiny style={style.pressableTerms}>
+            {L10N.SUBSCRIPTION_PRIVACY}
           </Text>
         </Pressable>
         .

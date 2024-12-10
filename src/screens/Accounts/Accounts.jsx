@@ -17,7 +17,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
   const currencies = query(accounts);
 
   return (
-    <Screen>
+    <Screen style={style.screen}>
       <Heading value={L10N.CURRENCIES} />
       <ScrollView horizontal snap={StyleSheet.value('$cardAccountSnap')} style={style.scrollView}>
         {currencies.map(({ base, currency, ...item }, index) => (
@@ -54,7 +54,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
                   <Text bold numberOfLines={1}>
                     {title}
                   </Text>
-                  <PriceFriendly bold color="contentLight" currency={currency} caption value={currentBalance} />
+                  <PriceFriendly color="contentLight" currency={currency} caption value={currentBalance} />
                 </View>
               </View>
             </Pressable>

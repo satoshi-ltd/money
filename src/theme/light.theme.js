@@ -1,28 +1,14 @@
-import { DefaultTheme } from '@satoshi-ltd/nano-design/build/module/theme';
+import { CommonTheme } from './common.theme';
 
 export const LightTheme = {
   $theme: 'light',
 
-  ...DefaultTheme,
+  ...CommonTheme,
 
-  // -- typography -------------------------------------------------------------
-  $fontWeightDefault: '500',
-  $fontWeightBold: '700',
-
-  // -- <Icon> -----------------------------------------------------------------
-  $iconFamily: 'shield-icons',
-  $iconGlyphs: require('../../assets/fonts/Shield-Icons.json'),
-  $iconSize: 24,
-
-  // == Components =============================================================
-  $cardGap: '$spaceS',
-  // -- <CardAccount> ----------------------------------------------------------
-  $cardAccountSize: '$spaceM * 10',
-  $cardAccountSnap: '$cardAccountSize + $cardGap',
-  // -- <Option> ---------------------------------------------------------------
-  $optionSize: '$spaceM * 5',
-  $optionSnap: '$optionSize + $cardGap',
-  // -- <InputText> ------------------------------------------------------------
-  $inputTextFontSize: '$fontSizeSubtitle',
-  $inputTextHeight: '$spaceM * 4.5',
+  // -- palette ----------------------------------------------------------------
+  // $colorBase: '#FFFEFE',
+  // $colorBorder: '#f0f0f0',
+  // $colorContent: '#000000',
+  $colorContentLight: '#555555',
+  // $colorDisabled: '#999999',
 };

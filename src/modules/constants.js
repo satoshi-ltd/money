@@ -42,6 +42,8 @@ export const C = {
   MS_IN_DAY,
   MS_IN_WEEK,
 
+  PRIVACY_URL: 'https://www.satoshi-ltd.com/privacy-policy/',
+
   STATS_MONTHS_LIMIT: 12,
   SYMBOL: {
     USD: '$',
@@ -88,6 +90,8 @@ export const C = {
     XAG: 'gr',
     // ZAR: 'R',
   },
+
+  TERMS_URL: 'https://www.satoshi-ltd.com/terms-of-use/',
 
   TIMEOUT: {
     BUSY: 40,

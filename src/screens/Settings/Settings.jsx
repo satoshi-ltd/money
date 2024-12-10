@@ -1,6 +1,7 @@
 import { Screen, Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import { Linking } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 import { Setting } from './components/Setting';
@@ -36,7 +37,8 @@ const Settings = ({ navigation = {} }) => {
     setActivity({ updateRates: false });
   };
 
-  const handleOption = ({ screen, callback }) => {
+  const handleOption = ({ callback, screen, url }) => {
+    if (url) Linking.openURL(url);
     if (screen) navigation.navigate(screen);
     else if (callback === 'handleSubscription') handleSubscription();
     else if (callback === 'handleExport') handleExport();
@@ -72,7 +74,7 @@ const Settings = ({ navigation = {} }) => {
   };
 
   const handleSubscription = (activityState) => {
-    if (IS_WEB || subscription?.productIdentifier) return;
+    if (subscription?.productIdentifier) return;
     setActivity(activityState);
     PurchaseService.getProducts()
       .then((plans) => {
@@ -89,9 +91,9 @@ const Settings = ({ navigation = {} }) => {
 
   return (
     <Screen gap offset style={style.screen}>
-      {/* <Text bold secondary subtitle>
+      <Text bold secondary subtitle>
         {L10N.SETTINGS}
-      </Text> */}
+      </Text>
 
       <View style={style.group}>
         <Text bold caption>
