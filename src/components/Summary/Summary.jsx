@@ -1,17 +1,15 @@
-import { Pressable, Text, View } from '@satoshi-ltd/nano-design';
+import { Icon, Pressable, Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { verboseMonth } from './helpers';
-import { SummaryBox } from './Summary.Box';
 import { style } from './Summary.style';
 import { useStore } from '../../contexts';
-import { C, exchange, getProgressionPercentage, L10N } from '../../modules';
+import { C, exchange, getProgressionPercentage, ICON, L10N } from '../../modules';
 import { PriceFriendly } from '../PriceFriendly';
 
 const { CURRENCY } = C;
 
-const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth = {}, detail = false }) => {
+const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth = {}, title }) => {
   const {
     rates,
     settings: { baseCurrency, maskAmount },
@@ -26,13 +24,34 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
 
   return (
     <View style={style.container}>
-      <Text bold caption color="contentLight">
-        {L10N.BALANCE}
-      </Text>
+      {/* <Text bold caption color="contentLight">
+        {L10N.TOTAL_BALANCE}
+      </Text> */}
+
+      <View row spaceBetween>
+        <Text bold secondary subtitle>
+          {!title ? L10N.TOTAL_BALANCE : `${title} ${L10N.BALANCE}`}
+        </Text>
+        <View row style={style.tags}>
+          {incomes > 0 && (
+            <View row>
+              <Icon color="accent" name={ICON.INCOME} caption />
+              <PriceFriendly bold color="accent" currency={currency} _operator value={incomes} tiny />
+            </View>
+          )}
+          {expenses > 0 && (
+            <View row>
+              <Icon name={ICON.EXPENSE} caption />
+              <PriceFriendly bold currency={currency} _operator value={expenses * 1} tiny />
+            </View>
+          )}
+        </View>
+      </View>
 
       <Pressable onPress={() => updateSettings({ maskAmount: !maskAmount })}>
-        <PriceFriendly bold currency={currency} title value={Math.abs(currentBalance)} />
+        <PriceFriendly bold currency={currency} title value={currentBalance} />
       </Pressable>
+
       {baseCurrency !== currency && (
         <PriceFriendly
           bold
@@ -42,18 +61,24 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
         />
       )}
 
-      {detail && (
-        <View style={style.summary}>
-          <SummaryBox
-            caption={verboseMonth(new Date(), L10N)}
+      {progressionPercentage !== 0 && (
+        <View row style={style.progression}>
+          <Icon
+            color={progressionPercentage > 0 ? 'accent' : undefined}
+            name={`trending-${progressionPercentage > 0 ? 'up' : 'down'}`}
+          />
+          <PriceFriendly
+            bold
+            color={progressionPercentage > 0 ? 'accent' : undefined}
             currency="%"
-            highlight={progressionPercentage > 0}
+            fixed={progressionPercentage >= 100 ? 0 : undefined}
             operator
+            tiny
             value={progressionPercentage}
           />
-          <SummaryBox caption={L10N.INCOMES} currency={baseCurrency} value={incomes} />
-          <SummaryBox caption={L10N.EXPENSES} currency={baseCurrency} value={expenses} />
-          <SummaryBox caption={L10N.TODAY} currency={baseCurrency} operator value={today} />
+          <Text color="contentLight" tiny>
+            {L10N.IN_THIS_PAST_MONTH}
+          </Text>
         </View>
       )}
 
@@ -68,6 +93,7 @@ Summary.propTypes = {
   currentBalance: PropTypes.number,
   currentMonth: PropTypes.shape({}),
   detail: PropTypes.bool,
+  title: PropTypes.string,
 };
 
 export { Summary };

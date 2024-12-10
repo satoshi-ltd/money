@@ -54,7 +54,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
                   <Text bold numberOfLines={1}>
                     {title}
                   </Text>
-                  <PriceFriendly bold color="contentLight" currency={currency} caption value={currentBalance} />
+                  <PriceFriendly color="contentLight" currency={currency} caption value={currentBalance} />
                 </View>
               </View>
             </Pressable>

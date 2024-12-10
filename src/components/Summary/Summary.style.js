@@ -7,11 +7,8 @@ export const style = StyleSheet.create({
   },
 
   container: {
-    alignItems: 'center',
-    alignContent: 'center',
-    justifyContent: 'center',
-    marginBottom: '$spaceXL',
-    // marginHorizontal: '$spaceM',
+    marginBottom: '$spaceL',
+    paddingHorizontal: '$viewOffset',
   },
 
   summary: {
@@ -21,9 +18,11 @@ export const style = StyleSheet.create({
     width: '100%',
   },
 
-  summaryBox: {
-    alignItems: 'center',
-    flex: 1,
-    marginHorizontal: '$spaceXS',
+  progression: {
+    gap: '$spaceXXS',
+  },
+
+  tags: {
+    gap: '$spaceS',
   },
 });

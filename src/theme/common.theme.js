@@ -4,14 +4,14 @@ export const CommonTheme = {
   ...DefaultTheme,
 
   // -- typography -------------------------------------------------------------
+  $fontSizeTitle: 32,
   $fontWeightDefault: '400',
   $fontWeightBold: '600',
   $fontWeightDefaultSecondary: '400',
   $fontWeightBoldSecondary: '700',
-  // $fontSizeTiny: 9,
 
   $lineHeightDefaultRatio: 1.25,
-  $lineHeightBodyRatio: 1.5,
+  $lineHeightBodyRatio: 1.25,
 
   // -- palette ----------------------------------------------------------------
   $scolorAccent: '#FFC431',

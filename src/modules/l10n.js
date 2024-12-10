@@ -115,6 +115,7 @@ export const L10N = {
   INCOME: 'Income',
   INCOMES: 'Incomes',
   INITIAL_BALANCE: 'Initial balance',
+  IN_THIS_PAST_MONTH: 'in this past month',
 
   LAST_TRANSACTIONS: 'Recent activity',
 
@@ -186,6 +187,7 @@ export const L10N = {
 
   TERMS: 'Terms',
   TODAY: 'Today',
+  TOTAL_BALANCE: 'Total Balance',
   TRANSACTION: ['Expense', 'Income', 'Swap'],
   TRANSACTIONS: 'Transactions',
   TRANSFERS: 'Transfers',
