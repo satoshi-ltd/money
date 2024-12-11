@@ -1,4 +1,4 @@
-import { Action, Input, Screen, ScrollView, Text } from '@satoshi-ltd/nano-design';
+import { Action, Input, Screen, ScrollView } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';

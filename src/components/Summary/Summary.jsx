@@ -16,7 +16,7 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
     updateSettings,
   } = useStore();
 
-  const { expenses = 0, incomes = 0, progression = 0, progressionCurrency = 0, today = 0 } = currentMonth;
+  const { expenses = 0, incomes = 0, progression = 0, progressionCurrency = 0 } = currentMonth;
   const progressionPercentage = getProgressionPercentage(
     currentBalance,
     currency === baseCurrency ? progression : progressionCurrency,

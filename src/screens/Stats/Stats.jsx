@@ -1,4 +1,4 @@
-import { Screen, Text } from '@satoshi-ltd/nano-design';
+import { Screen } from '@satoshi-ltd/nano-design';
 import React, { useLayoutEffect, useMemo, useState } from 'react';
 
 import { Chart, ItemGroupCategories, SliderMonths } from './components';
