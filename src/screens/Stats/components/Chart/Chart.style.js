@@ -2,7 +2,8 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 export const style = StyleSheet.create({
   $barSize: '$spaceS * 1.25',
-  $barRadius: '$barSize / 2',
+  // $barRadius: '$barSize / 2',
+  $barRadius: '$borderRadius',
 
   bars: {
     alignItems: 'flex-end',
@@ -100,6 +101,11 @@ export const style = StyleSheet.create({
     borderColor: '$colorBase',
     borderWidth: 1,
     margin: 1,
+  },
+
+  chartHeadingInverted: {
+    marginTop: 0,
+    marginBottom: '$viewOffset / 4',
   },
 
   // colors

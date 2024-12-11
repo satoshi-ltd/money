@@ -37,7 +37,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
       </ScrollView>
 
       <Heading value={L10N.ACCOUNTS} />
-      <View>
+      <>
         {filter(accounts, selected).map((account) => {
           const { currency, currentBalance = 0, title } = account;
           const hasBalance =
@@ -60,7 +60,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
             </Pressable>
           );
         })}
-      </View>
+      </>
     </Screen>
   );
 };

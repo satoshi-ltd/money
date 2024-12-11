@@ -2,10 +2,12 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 export const style = StyleSheet.create({
   container: {
-    gap: '$spaceS',
-    marginBottom: '$spaceM',
+    marginBottom: '$viewOffset',
+  },
+
+  content: {
+    gap: '$viewOffset',
     marginHorizontal: '$spaceM',
-    marginTop: '$spaceXS',
   },
 
   touchable: {

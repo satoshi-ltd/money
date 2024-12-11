@@ -3,8 +3,8 @@ import React from 'react';
 
 import { Heading, PriceFriendly } from '../../../../components';
 
-const ChartHeading = ({ color, currency, max, min, title }) => (
-  <Heading value={title}>
+const ChartHeading = ({ color, currency, max, min, title, ...others }) => (
+  <Heading {...others} value={title}>
     {min > 0 && <PriceFriendly bold color={color} currency={currency} fixed={0} label="min " tiny value={min} />}
     {max > 0 && <PriceFriendly bold color={color} currency={currency} fixed={0} label="  max " tiny value={max} />}
   </Heading>

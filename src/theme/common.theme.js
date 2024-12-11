@@ -16,6 +16,9 @@ export const CommonTheme = {
   // -- palette ----------------------------------------------------------------
   $scolorAccent: '#FFC431',
 
+  // -- border ----------------------------------------------------------------
+  $borderRadius: '$spaceXS',
+
   // -- <Icon> -----------------------------------------------------------------
   $iconFamily: 'shield-icons',
   $iconGlyphs: require('../../assets/fonts/Shield-Icons.json'),
