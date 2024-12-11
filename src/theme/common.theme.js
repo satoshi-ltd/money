@@ -4,7 +4,7 @@ export const CommonTheme = {
   ...DefaultTheme,
 
   // -- typography -------------------------------------------------------------
-  $fontSizeTitle: 32,
+  $fontSizeTitle: 30,
   $fontWeightDefault: '400',
   $fontWeightBold: '600',
   $fontWeightDefaultSecondary: '400',

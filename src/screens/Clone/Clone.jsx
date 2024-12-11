@@ -56,7 +56,7 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
 
   return (
     <Modal title="Clone" onClose={goBack}>
-      <Text bold color="contentLight" subtitle>
+      <Text bold color="contentLight" secondary subtitle>
         {L10N.TRANSACTION[type]}
       </Text>
       <Text bold title style={style.title}>
