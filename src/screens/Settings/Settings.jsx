@@ -21,9 +21,19 @@ const Settings = ({ navigation = {} }) => {
 
   const [activity, setActivity] = useState();
 
-  const { accounts = [], importBackup, updateSettings, settings = {}, subscription, txs = [] } = store;
+  const {
+    accounts = [],
+    importBackup,
+    updateSettings,
+    updateSubscription,
+    settings = {},
+    subscription,
+    txs = [],
+  } = store;
 
   const { baseCurrency, lastRatesUpdate = '', theme } = settings;
+
+  const isPremium = !!subscription?.productIdentifier;
 
   const handleChangeCurrency = async (currency) => {
     setActivity(true);
@@ -44,19 +54,19 @@ const Settings = ({ navigation = {} }) => {
     else if (callback === 'handleExport') handleExport();
     else if (callback === 'handleImport') handleImport();
     else if (callback === 'handleUpdateRates') handleUpdateRates();
-    // else if (callback === 'handleRestorePurchases') handleRestorePurchases();
+    else if (callback === 'handleRestorePurchases') handleRestorePurchases();
     // else if (callback === 'handleSync') handleSync();
   };
 
   const handleExport = async () => {
-    if (!IS_WEB && !subscription?.productIdentifier) return handleSubscription('export');
+    if (!IS_WEB && !isPremium) return handleSubscription('export');
 
     const exported = await BackupService.export({ accounts, settings, txs });
     if (exported) alert(L10N.CONFIRM_EXPORT_SUCCESS);
   };
 
   const handleImport = async () => {
-    if (!IS_WEB && !subscription?.productIdentifier) return handleSubscription('export');
+    if (!IS_WEB && !isPremium) return handleSubscription('import');
 
     const backup = await BackupService.import().catch((error) => alert(error));
 
@@ -74,12 +84,25 @@ const Settings = ({ navigation = {} }) => {
   };
 
   const handleSubscription = (activityState) => {
-    if (subscription?.productIdentifier) return;
+    if (subscription?.productIdentifier) navigation.navigate('subscription');
     setActivity(activityState);
     PurchaseService.getProducts()
       .then((plans) => {
         navigation.navigate('subscription', { plans });
         setActivity();
+      })
+      .catch((error) => alert(error));
+  };
+
+  const handleRestorePurchases = () => {
+    setActivity('restore');
+    PurchaseService.restore()
+      .then((activeSubscription) => {
+        if (activeSubscription) {
+          updateSubscription(activeSubscription);
+          alert(L10N.PURCHASE_RESTORED);
+          setActivity();
+        }
       })
       .catch((error) => alert(error));
   };
@@ -147,7 +170,7 @@ const Settings = ({ navigation = {} }) => {
         <Text bold caption>
           {L10N.ABOUT.toUpperCase()}
         </Text>
-        {ABOUT.map(({ disabled, icon, text, ...rest }, index) => (
+        {ABOUT(isPremium).map(({ disabled, icon, text, ...rest }, index) => (
           <Setting
             activity={activity && activity[rest.callback]}
             key={`about-${index}`}

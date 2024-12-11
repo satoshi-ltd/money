@@ -43,7 +43,7 @@ const commonScreenOptions = (theme = 'light') => ({
 
 // eslint-disable-next-line react/prop-types
 const Tabs = ({ navigation = {} }) => {
-  const { settings: { theme } = {} } = useStore();
+  const { settings: { theme } = {}, subscription } = useStore();
 
   const handleSubscription = () => {
     PurchaseService.getProducts()
@@ -56,19 +56,22 @@ const Tabs = ({ navigation = {} }) => {
   const screenOptions = {
     ...commonScreenOptions(theme),
     headerLeft: () => <></>,
-    headerRight: () => (
-      <Button
-        icon={ICON.STAR}
-        secondary
-        small
-        onPress={handleSubscription}
-        style={{ marginRight: StyleSheet.value('$viewOffset') }}
-      >
-        <Text bold tiny>
-          {L10N.PREMIUM}
-        </Text>
-      </Button>
-    ),
+    headerRight: () =>
+      !subscription?.productIdentifier ? (
+        <Button
+          icon={ICON.STAR}
+          secondary
+          small
+          onPress={handleSubscription}
+          style={{ marginRight: StyleSheet.value('$viewOffset') }}
+        >
+          <Text bold tiny>
+            {L10N.PREMIUM}
+          </Text>
+        </Button>
+      ) : (
+        <></>
+      ),
     tabBarBackground: () => <BlurView intensity={60} tint={theme} style={{ flex: 1 }} />,
     tabBarShowLabel: false,
     tabBarStyle: { backgroundColor: 'transparent', borderTopWidth: 0, elevation: 0, position: 'absolute' },
