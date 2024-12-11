@@ -13,6 +13,7 @@ import { C, getNavigationTheme, ICON, L10N } from './modules';
 import {
   Account,
   Accounts,
+  BaseCurrency,
   Clone,
   Confirm,
   Dashboard,
@@ -150,6 +151,7 @@ export const Navigator = () => {
         <Stack.Screen name="clone" component={Clone} options={modal} />
         {/* -- settings */}
         <Stack.Screen name="account" component={Account} options={modal} />
+        <Stack.Screen name="baseCurrency" component={BaseCurrency} options={modal} />
         {/* -- common */}
         <Stack.Screen name="confirm" component={Confirm} options={modal} />
         <Stack.Screen name="subscription" component={Subscription} options={modal} />
