@@ -35,6 +35,11 @@ const OPTIONS = [
 
 const PREFERENCES = [
   {
+    icon: ICON.SWAP,
+    screen: 'baseCurrency',
+    text: L10N.CHOOSE_CURRENCY,
+  },
+  {
     disabled: true,
     icon: ICON.BELL,
     screen: 'reminders',

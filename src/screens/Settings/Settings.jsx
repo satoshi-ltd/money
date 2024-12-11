@@ -5,10 +5,9 @@ import { Linking } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 import { Setting } from './components/Setting';
-import { changeBaseCurrency, getLatestRates, verboseDate } from './helpers';
+import { getLatestRates, verboseDate } from './helpers';
 import { ABOUT, OPTIONS, PREFERENCES } from './Settings.constants';
 import { style } from './Settings.style';
-import { SliderCurrencies } from '../../components';
 import { useStore } from '../../contexts';
 import { C, ICON, L10N } from '../../modules';
 import { BackupService, PurchaseService } from '../../services';
@@ -34,12 +33,6 @@ const Settings = ({ navigation = {} }) => {
   const { baseCurrency, lastRatesUpdate = '', theme } = settings;
 
   const isPremium = !!subscription?.productIdentifier;
-
-  const handleChangeCurrency = async (currency) => {
-    setActivity(true);
-    await changeBaseCurrency({ currency, L10N, store });
-    setActivity(false);
-  };
 
   const handleUpdateRates = async () => {
     setActivity({ ...activity, updateRates: true });
@@ -158,6 +151,7 @@ const Settings = ({ navigation = {} }) => {
         />
         {PREFERENCES.map(({ disabled, icon, text, ...rest }, index) => (
           <Setting
+            caption={rest.screen === 'baseCurrency' ? L10N.CURRENCY_NAME[baseCurrency] : undefined}
             activity={activity && activity[rest.callback]}
             key={`preference-${index}`}
             {...{ disabled, icon, text }}
@@ -178,14 +172,6 @@ const Settings = ({ navigation = {} }) => {
             onPress={() => handleOption(rest)}
           />
         ))}
-      </View>
-
-      <View>
-        <Text bold caption>
-          {L10N.CHOOSE_CURRENCY.toUpperCase()}
-        </Text>
-
-        <SliderCurrencies selected={baseCurrency} onChange={handleChangeCurrency} />
       </View>
     </Screen>
   );
