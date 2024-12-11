@@ -48,6 +48,8 @@ const Item = ({ category = INTERNAL_TRANSFER, currency, timestamp, title, type =
             </Text>
             <PriceFriendly
               bold
+              // caption
+              // color={is.income ? 'accent' : undefined}
               currency={currency}
               highlight={is.income}
               operator={is.expense}
@@ -61,9 +63,9 @@ const Item = ({ category = INTERNAL_TRANSFER, currency, timestamp, title, type =
             </Text>
             {baseCurrency !== currency && (
               <PriceFriendly
+                caption
                 color="contentLight"
                 currency={baseCurrency}
-                caption
                 operator={is.expense}
                 value={exchange(value, currency, baseCurrency, rates, timestamp) * operator}
               />

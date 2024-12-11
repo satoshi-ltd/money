@@ -9,7 +9,6 @@ export const style = StyleSheet.create({
   },
 
   buttons: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    gap: '$viewOffset / 2',
   },
 });

@@ -25,4 +25,15 @@ export const style = StyleSheet.create({
   tags: {
     gap: '$spaceS',
   },
+
+  tag: {
+    gap: '$spaceXXS',
+  },
+
+  income: {
+    backgroundColor: '$colorBorder',
+    borderRadius: '$borderRadius',
+    paddingHorizontal: '$spaceXS',
+    paddingVertical: '$spaceXXS',
+  },
 });

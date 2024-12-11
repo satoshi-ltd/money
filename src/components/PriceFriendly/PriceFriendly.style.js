@@ -7,10 +7,9 @@ export const style = StyleSheet.create({
 
   highlight: {
     backgroundColor: '$colorAccent',
-    borderRadius: '$spaceXS',
+    borderRadius: '$borderRadius',
     marginRight: `$spaceXS * -1`,
     paddingHorizontal: '$spaceXS',
-    paddingVertical: '$spaceXXS / 2',
   },
 
   symbol: {

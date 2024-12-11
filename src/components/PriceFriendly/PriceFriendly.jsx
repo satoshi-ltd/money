@@ -54,7 +54,7 @@ const PriceFriendly = ({
         <>
           {operatorEnhanced && <Text {...others}>{operatorEnhanced}</Text>}
           {LEFT_SYMBOLS.includes(symbol) && <Text {...symbolProps} />}
-          <Text {...others} bold={bold}>
+          <Text {...others} {...{ bold }}>
             {formatedValue}
           </Text>
           {!LEFT_SYMBOLS.includes(symbol) && <Text {...symbolProps} />}

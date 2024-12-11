@@ -5,14 +5,12 @@ import React from 'react';
 import { style } from './ButtonSummary.style';
 
 const ButtonSummary = ({ icon, text, onPress }) => (
-  <View style={style.container}>
-    <Pressable onPress={onPress} style={style.button}>
-      <Icon name={icon} subtitle />
-    </Pressable>
+  <Pressable onPress={onPress} style={style.container}>
+    <Icon name={icon} />
     <Text bold tiny>
       {text}
     </Text>
-  </View>
+  </Pressable>
 );
 
 ButtonSummary.propTypes = {

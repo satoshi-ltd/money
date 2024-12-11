@@ -7,20 +7,14 @@ export const style = StyleSheet.create({
     width: '100%',
   },
 
-  cardDate: {
-    alignItems: 'center',
-    height: '$spaceXXL + $spaceXS',
-    justifyContent: 'center',
-    marginBottom: '$spaceXS',
-    marginHorizontal: '$spaceM',
-    marginTop: '$spaceS',
-    padding: 0,
-    width: '$spaceXXL + $spaceXS',
+  date: {
+    marginTop: '$spaceXS',
+    marginLeft: '$viewOffset',
   },
 
   cardIcon: {
-    height: '$spaceXXL + $spaceXS',
+    height: '$spaceXXL + $spaceS',
+    width: '$spaceXXL + $spaceS',
     marginRight: '$spaceS',
-    width: '$spaceXXL + $spaceXS',
   },
 });

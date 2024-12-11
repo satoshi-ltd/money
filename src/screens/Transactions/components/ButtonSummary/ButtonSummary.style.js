@@ -3,16 +3,13 @@ import StyleSheet from 'react-native-extended-stylesheet';
 export const style = StyleSheet.create({
   container: {
     alignItems: 'center',
+    borderColor: '$colorBorder',
+    borderRadius: '$borderRadius',
+    borderStyle: '$borderStyle',
+    borderWidth: '1px',
+    flex: 2,
     gap: '$spaceXS',
-    marginHorizontal: '$spaceS + $spaceXS',
-  },
-
-  button: {
-    backgroundColor: '$colorAccent',
-    borderRadius: '$spaceXXL',
-    height: '$spaceXXL + $spaceS',
-    width: '$spaceXXL + $spaceS',
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingVertical: '$viewOffset / 2',
+    width: '100%',
   },
 });
