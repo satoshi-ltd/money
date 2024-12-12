@@ -69,7 +69,7 @@ const Transactions = ({ route: { params: { account: { hash } } = {} } = {}, navi
     <Screen style={style.screen}>
       <ScrollView ref={scrollview} onScroll={handleScroll}>
         <Summary {...rest} currency={currency} title={account?.title}>
-          <View style={style.buttons}>
+          <View row style={style.buttons}>
             <ButtonSummary icon={ICON.INCOME} text={L10N.INCOME} onPress={() => handleTransaction(INCOME)} />
             <ButtonSummary icon={ICON.EXPENSE} text={L10N.EXPENSE} onPress={() => handleTransaction(EXPENSE)} />
             {accounts.length > 1 && (

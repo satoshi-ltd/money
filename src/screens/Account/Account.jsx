@@ -56,7 +56,7 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
   return (
     <Modal onClose={firstAccount ? undefined : goBack}>
       <View style={style.title}>
-        <Text bold subtitle>
+        <Text bold secondary subtitle>
           {firstAccount ? L10N.FIRST_ACCOUNT : editMode ? L10N.SETTINGS : `${L10N.NEW} ${L10N.ACCOUNT}`}
         </Text>
         {firstAccount && (

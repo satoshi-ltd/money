@@ -119,6 +119,7 @@ export const L10N = {
 
   LAST_TRANSACTIONS: 'Recent activity',
 
+  LIFETIME: 'Lifetime',
   LIFETIME_DESCRIPTION: "Pay once and don't worry ever",
 
   MONTHS: [
@@ -174,9 +175,11 @@ export const L10N = {
   START: 'Start',
   START_TRIAL: 'Start free 7 day trial',
   SUBSCRIPTION: 'Subscription',
+  SUBSCRIPTION_ACTUAL_PLAN: 'Actual plan',
   SUBSCRIPTION_AND: 'and',
   SUBSCRIPTION_CAPTION: 'No restrictions on accounts and transactions, plus a robust import/export feature.',
   SUBSCRIPTION_CLOSE: 'No thanks',
+  SUBSCRIPTION_NEXT_BILLING_DATE: 'Next billing date',
   SUBSCRIPTION_PRIVACY: 'Privacy Policy',
   SUBSCRIPTION_TERMS: 'Terms',
   SUBSCRIPTION_TERMS_CAPTION:

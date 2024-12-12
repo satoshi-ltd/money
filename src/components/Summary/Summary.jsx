@@ -16,7 +16,7 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
     updateSettings,
   } = useStore();
 
-  const { expenses = 0, incomes = 0, progression = 0, progressionCurrency = 0, today = 0 } = currentMonth;
+  const { expenses = 0, incomes = 0, progression = 0, progressionCurrency = 0 } = currentMonth;
   const progressionPercentage = getProgressionPercentage(
     currentBalance,
     currency === baseCurrency ? progression : progressionCurrency,
@@ -24,25 +24,21 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
 
   return (
     <View style={style.container}>
-      {/* <Text bold caption color="contentLight">
-        {L10N.TOTAL_BALANCE}
-      </Text> */}
-
       <View row spaceBetween>
         <Text bold secondary subtitle>
           {!title ? L10N.TOTAL_BALANCE : `${title} ${L10N.BALANCE}`}
         </Text>
         <View row style={style.tags}>
           {incomes > 0 && (
-            <View row>
+            <View row style={[style.tag, style.income]}>
               <Icon color="accent" name={ICON.INCOME} caption />
-              <PriceFriendly bold color="accent" currency={currency} _operator value={incomes} tiny />
+              <PriceFriendly bold color="accent" currency={currency} tiny value={incomes} />
             </View>
           )}
           {expenses > 0 && (
-            <View row>
+            <View row style={style.tag}>
               <Icon name={ICON.EXPENSE} caption />
-              <PriceFriendly bold currency={currency} _operator value={expenses * 1} tiny />
+              <PriceFriendly bold currency={currency} tiny value={expenses} />
             </View>
           )}
         </View>

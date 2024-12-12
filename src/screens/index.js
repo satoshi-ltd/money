@@ -11,6 +11,7 @@ export * from './Transactions';
 
 // -- presentation=modal
 export * from './Account';
+export * from './BaseCurrency';
 export * from './Clone';
 export * from './Confirm';
 export * from './Subscription';

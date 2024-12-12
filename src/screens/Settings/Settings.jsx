@@ -5,10 +5,9 @@ import { Linking } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 import { Setting } from './components/Setting';
-import { changeBaseCurrency, getLatestRates, verboseDate } from './helpers';
+import { getLatestRates, verboseDate } from './helpers';
 import { ABOUT, OPTIONS, PREFERENCES } from './Settings.constants';
 import { style } from './Settings.style';
-import { SliderCurrencies } from '../../components';
 import { useStore } from '../../contexts';
 import { C, ICON, L10N } from '../../modules';
 import { BackupService, PurchaseService } from '../../services';
@@ -21,15 +20,19 @@ const Settings = ({ navigation = {} }) => {
 
   const [activity, setActivity] = useState();
 
-  const { accounts = [], importBackup, updateSettings, settings = {}, subscription, txs = [] } = store;
+  const {
+    accounts = [],
+    importBackup,
+    updateSettings,
+    updateSubscription,
+    settings = {},
+    subscription,
+    txs = [],
+  } = store;
 
   const { baseCurrency, lastRatesUpdate = '', theme } = settings;
 
-  const handleChangeCurrency = async (currency) => {
-    setActivity(true);
-    await changeBaseCurrency({ currency, L10N, store });
-    setActivity(false);
-  };
+  const isPremium = !!subscription?.productIdentifier;
 
   const handleUpdateRates = async () => {
     setActivity({ ...activity, updateRates: true });
@@ -44,19 +47,19 @@ const Settings = ({ navigation = {} }) => {
     else if (callback === 'handleExport') handleExport();
     else if (callback === 'handleImport') handleImport();
     else if (callback === 'handleUpdateRates') handleUpdateRates();
-    // else if (callback === 'handleRestorePurchases') handleRestorePurchases();
+    else if (callback === 'handleRestorePurchases') handleRestorePurchases();
     // else if (callback === 'handleSync') handleSync();
   };
 
   const handleExport = async () => {
-    if (!IS_WEB && !subscription?.productIdentifier) return handleSubscription('export');
+    if (!IS_WEB && !isPremium) return handleSubscription('export');
 
     const exported = await BackupService.export({ accounts, settings, txs });
     if (exported) alert(L10N.CONFIRM_EXPORT_SUCCESS);
   };
 
   const handleImport = async () => {
-    if (!IS_WEB && !subscription?.productIdentifier) return handleSubscription('export');
+    if (!IS_WEB && !isPremium) return handleSubscription('import');
 
     const backup = await BackupService.import().catch((error) => alert(error));
 
@@ -74,12 +77,25 @@ const Settings = ({ navigation = {} }) => {
   };
 
   const handleSubscription = (activityState) => {
-    if (subscription?.productIdentifier) return;
+    if (subscription?.productIdentifier) navigation.navigate('subscription');
     setActivity(activityState);
     PurchaseService.getProducts()
       .then((plans) => {
         navigation.navigate('subscription', { plans });
         setActivity();
+      })
+      .catch((error) => alert(error));
+  };
+
+  const handleRestorePurchases = () => {
+    setActivity('restore');
+    PurchaseService.restore()
+      .then((activeSubscription) => {
+        if (activeSubscription) {
+          updateSubscription(activeSubscription);
+          alert(L10N.PURCHASE_RESTORED);
+          setActivity();
+        }
       })
       .catch((error) => alert(error));
   };
@@ -135,6 +151,7 @@ const Settings = ({ navigation = {} }) => {
         />
         {PREFERENCES.map(({ disabled, icon, text, ...rest }, index) => (
           <Setting
+            caption={rest.screen === 'baseCurrency' ? L10N.CURRENCY_NAME[baseCurrency] : undefined}
             activity={activity && activity[rest.callback]}
             key={`preference-${index}`}
             {...{ disabled, icon, text }}
@@ -147,7 +164,7 @@ const Settings = ({ navigation = {} }) => {
         <Text bold caption>
           {L10N.ABOUT.toUpperCase()}
         </Text>
-        {ABOUT.map(({ disabled, icon, text, ...rest }, index) => (
+        {ABOUT(isPremium).map(({ disabled, icon, text, ...rest }, index) => (
           <Setting
             activity={activity && activity[rest.callback]}
             key={`about-${index}`}
@@ -155,14 +172,6 @@ const Settings = ({ navigation = {} }) => {
             onPress={() => handleOption(rest)}
           />
         ))}
-      </View>
-
-      <View>
-        <Text bold caption>
-          {L10N.CHOOSE_CURRENCY.toUpperCase()}
-        </Text>
-
-        <SliderCurrencies selected={baseCurrency} onChange={handleChangeCurrency} />
       </View>
     </Screen>
   );

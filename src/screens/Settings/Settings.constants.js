@@ -35,6 +35,11 @@ const OPTIONS = [
 
 const PREFERENCES = [
   {
+    icon: ICON.SWAP,
+    screen: 'baseCurrency',
+    text: L10N.CHOOSE_CURRENCY,
+  },
+  {
     disabled: true,
     icon: ICON.BELL,
     screen: 'reminders',
@@ -42,18 +47,25 @@ const PREFERENCES = [
   },
 ];
 
-const ABOUT = [
-  {
-    callback: 'handleSubscription',
-    icon: ICON.STAR,
-    text: L10N.GET_MONEY_PREMIUM,
-  },
-  {
-    disabled: true,
-    callback: 'handleRestorePurchases',
-    icon: ICON.CART,
-    text: L10N.RESTORE_PURCHASES,
-  },
+const ABOUT = (isPremium) => [
+  ...(!isPremium
+    ? [
+        {
+          callback: 'handleSubscription',
+          icon: ICON.STAR,
+          text: L10N.GET_MONEY_PREMIUM,
+        },
+      ]
+    : []),
+  ...(!isPremium
+    ? [
+        {
+          callback: 'handleRestorePurchases',
+          icon: ICON.CART,
+          text: L10N.RESTORE_PURCHASES,
+        },
+      ]
+    : []),
   {
     icon: ICON.FILE,
     url: TERMS_URL,

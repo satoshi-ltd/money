@@ -25,14 +25,14 @@ export const style = StyleSheet.create({
   },
 
   item: {
-    paddingHorizontal: '$spaceM',
-    paddingVertical: '$spaceS',
+    paddingHorizontal: '$viewOffset',
+    paddingVertical: '$viewOffset / 2',
     width: '100%',
   },
 
   cardCurrency: {
-    height: '$spaceXXL + $spaceXS',
+    height: '$spaceXXL + $spaceS',
     marginRight: '$spaceS',
-    width: '$spaceXXL + $spaceXS',
+    width: '$spaceXXL + $spaceS',
   },
 });

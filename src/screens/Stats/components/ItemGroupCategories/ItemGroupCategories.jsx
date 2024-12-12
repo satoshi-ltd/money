@@ -31,11 +31,11 @@ const ItemGroupCategories = ({ color, dataSource, type }) => {
   });
 
   return (
-    <>
+    <View style={style.container}>
       <Heading value={type === EXPENSE ? L10N.EXPENSES : L10N.INCOMES}>
         <PriceFriendly bold color="content" currency={baseCurrency} fixed={0} value={total} />
       </Heading>
-      <View style={style.container}>
+      <View style={style.content}>
         {orderByAmount(totals).map(({ key, amount }) => (
           <Pressable
             key={key}
@@ -72,7 +72,7 @@ const ItemGroupCategories = ({ color, dataSource, type }) => {
           </Pressable>
         ))}
       </View>
-    </>
+    </View>
   );
 };
 

@@ -62,7 +62,7 @@ const Transaction = ({ route: { params = {} } = {}, navigation: { goBack } = {} 
 
   return (
     <Modal onClose={goBack}>
-      <Text bold subtitle style={style.title}>
+      <Text bold secondary subtitle style={style.title}>
         {L10N.TRANSACTION[type]}
       </Text>
 

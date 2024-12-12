@@ -4,11 +4,11 @@ export const style = StyleSheet.create({
   bar: {
     backgroundColor: '$colorBorder',
     borderRadius: '$borderRadius',
-    maxHeight: '$spaceXXL + $spaceXS',
+    maxHeight: '$spaceXXL + $spaceS',
     height: '100%',
     position: 'absolute',
     top: 0,
-    minWidth: '$spaceXXL + $spaceXS',
+    minWidth: '$spaceXXL + $spaceS',
   },
 
   highlight: {
@@ -16,19 +16,19 @@ export const style = StyleSheet.create({
   },
 
   content: {
-    paddingLeft: '$spaceXXS',
-    height: '$spaceXXL + $spaceXS',
+    paddingLeft: '$spaceXS',
+    height: '$spaceXXL + $spaceS',
   },
 
   detail: {
     height: 'auto',
-    marginLeft: '$spaceXXL + $spaceS',
+    marginLeft: '$spaceXXL + $spaceM',
     marginVertical: '$spaceXXS',
   },
 
   cardIcon: {
     height: '$spaceXXL',
-    marginRight: '$spaceS',
+    marginRight: '$spaceS + $spaceXS',
     width: '$spaceXXL',
   },
 

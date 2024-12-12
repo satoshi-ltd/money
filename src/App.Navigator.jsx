@@ -13,6 +13,7 @@ import { C, getNavigationTheme, ICON, L10N } from './modules';
 import {
   Account,
   Accounts,
+  BaseCurrency,
   Clone,
   Confirm,
   Dashboard,
@@ -43,7 +44,7 @@ const commonScreenOptions = (theme = 'light') => ({
 
 // eslint-disable-next-line react/prop-types
 const Tabs = ({ navigation = {} }) => {
-  const { settings: { theme } = {} } = useStore();
+  const { settings: { theme } = {}, subscription } = useStore();
 
   const handleSubscription = () => {
     PurchaseService.getProducts()
@@ -56,31 +57,34 @@ const Tabs = ({ navigation = {} }) => {
   const screenOptions = {
     ...commonScreenOptions(theme),
     headerLeft: () => <></>,
-    headerRight: () => (
-      <Button
-        icon={ICON.STAR}
-        secondary
-        small
-        onPress={handleSubscription}
-        style={{ marginRight: StyleSheet.value('$viewOffset') }}
-      >
-        <Text bold tiny>
-          {L10N.PREMIUM}
-        </Text>
-      </Button>
-    ),
+    headerRight: () =>
+      !subscription?.productIdentifier ? (
+        <Button
+          icon={ICON.STAR}
+          secondary
+          small
+          onPress={handleSubscription}
+          style={{ marginRight: StyleSheet.value('$viewOffset') }}
+        >
+          <Text bold tiny>
+            {L10N.PREMIUM}
+          </Text>
+        </Button>
+      ) : (
+        <></>
+      ),
     tabBarBackground: () => <BlurView intensity={60} tint={theme} style={{ flex: 1 }} />,
-    tabBarShowLabel: false,
+    tabBarShowLabel: true,
+    tabBarLabelPosition: 'below-icon',
     tabBarStyle: { backgroundColor: 'transparent', borderTopWidth: 0, elevation: 0, position: 'absolute' },
   };
 
-  const tabBarIcon = ({ color, icon, text }) => (
-    <>
-      <Icon name={icon} subtitle style={{ color, marginBottom: 2 }} />
-      <Text tiny style={{ color }}>
-        {text}
-      </Text>
-    </>
+  const tabBarIcon = ({ color, icon }) => <Icon name={icon} subtitle style={{ color }} />;
+
+  const tabBarLabel = ({ color, text }) => (
+    <Text tiny style={{ color, marginBottom: 4 }}>
+      {text}
+    </Text>
   );
 
   return (
@@ -89,7 +93,8 @@ const Tabs = ({ navigation = {} }) => {
         name="dashboard"
         component={Dashboard}
         options={{
-          tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.HOME, text: L10N.HOME }),
+          tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.HOME }),
+          tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.HOME }),
           title: L10N.OVERALL_BALANCE,
         }}
       />
@@ -97,7 +102,8 @@ const Tabs = ({ navigation = {} }) => {
         name="stats"
         component={Stats}
         options={{
-          tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.STATS, text: L10N.ACTIVITY }),
+          tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.ACTIVITY }),
+          tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.STATS }),
           title: L10N.ACTIVITY,
         }}
       />
@@ -105,7 +111,8 @@ const Tabs = ({ navigation = {} }) => {
         name="accounts"
         component={Accounts}
         options={{
-          tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.ACCOUNTS, text: L10N.ACCOUNTS }),
+          tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.ACCOUNTS }),
+          tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.ACCOUNTS }),
           title: L10N.ACCOUNTS,
         }}
       />
@@ -113,7 +120,8 @@ const Tabs = ({ navigation = {} }) => {
         name="settings"
         component={Settings}
         options={{
-          tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.SETTINGS, text: L10N.SETTINGS }),
+          tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.SETTINGS }),
+          tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.SETTINGS }),
           title: L10N.SETTINGS,
         }}
       />
@@ -147,6 +155,7 @@ export const Navigator = () => {
         <Stack.Screen name="clone" component={Clone} options={modal} />
         {/* -- settings */}
         <Stack.Screen name="account" component={Account} options={modal} />
+        <Stack.Screen name="baseCurrency" component={BaseCurrency} options={modal} />
         {/* -- common */}
         <Stack.Screen name="confirm" component={Confirm} options={modal} />
         <Stack.Screen name="subscription" component={Subscription} options={modal} />

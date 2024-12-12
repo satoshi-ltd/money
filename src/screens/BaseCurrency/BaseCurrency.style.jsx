@@ -5,6 +5,11 @@ export const style = StyleSheet.create({
     marginBottom: '$viewOffset / 2',
   },
 
+  slider: {
+    marginLeft: '$viewOffset * -1',
+    marginRight: '$viewOffset * -1',
+  },
+
   buttons: {
     gap: '$viewOffset',
     marginTop: '$spaceL',

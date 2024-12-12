@@ -1,22 +1,32 @@
-import { Card, Text } from '@satoshi-ltd/nano-design';
+import { Text } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { style } from './GroupTransaction.style';
 import { Item } from './GroupTransactions.Item';
-import { L10N } from '../../modules';
+
+export const verboseDate = (date = new Date(), { locale = 'en-US', ...props } = {}) => {
+  const day = date.toDateString();
+  const today = new Date().toDateString();
+  let yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  yesterday = yesterday.toDateString();
+
+  return day === today
+    ? 'Today'
+    : day === yesterday
+    ? 'Yesterday'
+    : date.toLocaleDateString
+    ? date.toLocaleDateString(locale, props)
+    : date;
+};
 
 const GroupTransactions = ({ currency, timestamp = new Date(), txs = [] }) => (
   <>
-    <Card color="content" small style={style.cardDate}>
-      <Text bold color="base">
-        {new Date(timestamp || null).getDate()}
-      </Text>
+    <Text bold caption color="contentLight" secondary style={style.date}>
+      {verboseDate(new Date(timestamp), { day: 'numeric', month: 'long', year: 'numeric' })}
+    </Text>
 
-      <Text color="base" tiny>
-        {L10N.MONTHS[new Date(timestamp).getMonth()].toUpperCase().substring(0, 3)}
-      </Text>
-    </Card>
     {txs.map((tx) => (
       <Item key={tx.hash} currency={currency} {...tx} />
     ))}

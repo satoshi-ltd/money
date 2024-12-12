@@ -48,7 +48,7 @@ export const PurchaseService = {
   buy: async (plan) =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
-      if (Constants.appOwnership === 'expo') return resolve({ productIdentifier: 'lifetime' });
+      if (Constants.appOwnership === 'expo' || IS_WEB) return resolve({ productIdentifier: 'lifetime' });
 
       try {
         const Purchases = await initializePurchases();
@@ -69,7 +69,7 @@ export const PurchaseService = {
   restore: async () =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
-      if (Constants.appOwnership === 'expo') return resolve({ productIdentifier: 'lifetime' });
+      if (Constants.appOwnership === 'expo' || IS_WEB) return resolve({ productIdentifier: 'lifetime' });
 
       try {
         const Purchases = await initializePurchases();
@@ -87,7 +87,8 @@ export const PurchaseService = {
   checkSubscription: async (subscription) =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
-      if (Constants.appOwnership === 'expo' || subscription.productIdentifier === 'lifetime') return resolve(true);
+      if (Constants.appOwnership === 'expo' || IS_WEB || subscription.productIdentifier === 'lifetime')
+        return resolve(true);
 
       try {
         const Purchases = await initializePurchases();

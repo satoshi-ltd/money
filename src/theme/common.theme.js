@@ -4,7 +4,7 @@ export const CommonTheme = {
   ...DefaultTheme,
 
   // -- typography -------------------------------------------------------------
-  $fontSizeTitle: 32,
+  $fontSizeTitle: 30,
   $fontWeightDefault: '400',
   $fontWeightBold: '600',
   $fontWeightDefaultSecondary: '400',
@@ -15,6 +15,9 @@ export const CommonTheme = {
 
   // -- palette ----------------------------------------------------------------
   $scolorAccent: '#FFC431',
+
+  // -- border ----------------------------------------------------------------
+  $borderRadius: '$spaceXS',
 
   // -- <Icon> -----------------------------------------------------------------
   $iconFamily: 'shield-icons',
