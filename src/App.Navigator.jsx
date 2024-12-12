@@ -74,17 +74,17 @@ const Tabs = ({ navigation = {} }) => {
         <></>
       ),
     tabBarBackground: () => <BlurView intensity={60} tint={theme} style={{ flex: 1 }} />,
-    tabBarShowLabel: false,
+    tabBarShowLabel: true,
+    tabBarLabelPosition: 'below-icon',
     tabBarStyle: { backgroundColor: 'transparent', borderTopWidth: 0, elevation: 0, position: 'absolute' },
   };
 
-  const tabBarIcon = ({ color, icon, text }) => (
-    <>
-      <Icon name={icon} subtitle style={{ color, marginBottom: 2 }} />
-      <Text tiny style={{ color }}>
-        {text}
-      </Text>
-    </>
+  const tabBarIcon = ({ color, icon }) => <Icon name={icon} subtitle style={{ color }} />;
+
+  const tabBarLabel = ({ color, text }) => (
+    <Text tiny style={{ color, marginBottom: 4 }}>
+      {text}
+    </Text>
   );
 
   return (
@@ -93,7 +93,8 @@ const Tabs = ({ navigation = {} }) => {
         name="dashboard"
         component={Dashboard}
         options={{
-          tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.HOME, text: L10N.HOME }),
+          tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.HOME }),
+          tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.HOME }),
           title: L10N.OVERALL_BALANCE,
         }}
       />
@@ -101,7 +102,8 @@ const Tabs = ({ navigation = {} }) => {
         name="stats"
         component={Stats}
         options={{
-          tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.STATS, text: L10N.ACTIVITY }),
+          tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.ACTIVITY }),
+          tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.STATS }),
           title: L10N.ACTIVITY,
         }}
       />
@@ -109,7 +111,8 @@ const Tabs = ({ navigation = {} }) => {
         name="accounts"
         component={Accounts}
         options={{
-          tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.ACCOUNTS, text: L10N.ACCOUNTS }),
+          tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.ACCOUNTS }),
+          tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.ACCOUNTS }),
           title: L10N.ACCOUNTS,
         }}
       />
@@ -117,7 +120,8 @@ const Tabs = ({ navigation = {} }) => {
         name="settings"
         component={Settings}
         options={{
-          tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.SETTINGS, text: L10N.SETTINGS }),
+          tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.SETTINGS }),
+          tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.SETTINGS }),
           title: L10N.SETTINGS,
         }}
       />
