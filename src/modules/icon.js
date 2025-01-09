@@ -132,7 +132,8 @@ export const ICON = {
   //
   UNKNOWN: 'block-helper',
   // Settings
-  INVERT_COLORS: 'invert-colors',
+  COLOR_FILL: 'format-color-fill',
+  THEME: 'theme-light-dark',
   FILE: 'file-document-outline',
   STAR: 'star',
   CART: 'cart-outline',

@@ -30,7 +30,7 @@ const Settings = ({ navigation = {} }) => {
     txs = [],
   } = store;
 
-  const { baseCurrency, lastRatesUpdate = '', theme } = settings;
+  const { baseCurrency, colorCurrency = false, lastRatesUpdate = '', theme } = settings;
 
   const isPremium = !!subscription?.productIdentifier;
 
@@ -48,7 +48,6 @@ const Settings = ({ navigation = {} }) => {
     else if (callback === 'handleImport') handleImport();
     else if (callback === 'handleUpdateRates') handleUpdateRates();
     else if (callback === 'handleRestorePurchases') handleRestorePurchases();
-    // else if (callback === 'handleSync') handleSync();
   };
 
   const handleExport = async () => {
@@ -105,6 +104,10 @@ const Settings = ({ navigation = {} }) => {
     updateSettings({ theme: StyleSheet.value('$theme') });
   };
 
+  const handlecolorCurrency = () => {
+    updateSettings({ colorCurrency: !colorCurrency });
+  };
+
   return (
     <Screen gap offset style={style.screen}>
       <Text bold secondary subtitle>
@@ -145,9 +148,14 @@ const Settings = ({ navigation = {} }) => {
           {L10N.PREFERENCES.toUpperCase()}
         </Text>
         <Setting
-          icon={ICON.INVERT_COLORS}
+          icon={ICON.THEME}
           text={theme === 'dark' ? L10N.APPERANCE_LIGHT : L10N.APPERANCE_DARK}
           onPress={handleTheme}
+        />
+        <Setting
+          icon={ICON.COLOR_FILL}
+          text={colorCurrency ? L10N.CURRENCY_COLOR_DISABLE : L10N.CURRENCY_COLOR_ENABLE}
+          onPress={handlecolorCurrency}
         />
         {PREFERENCES.map(({ disabled, icon, text, ...rest }, index) => (
           <Setting

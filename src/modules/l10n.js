@@ -59,6 +59,8 @@ export const L10N = {
   CONFIRM_IMPORT_CAPTION: ({ accounts = [], txs = [] }) =>
     `Ready to import the JSON file? It'll update your finances with ${accounts.length} accounts and ${txs.length} transactions. Just make sure the file is good to go—this action can't be undone!"`,
   CONFIRM_IMPORT_SUCCESS: 'Imported successfully.',
+  CURRENCY_COLOR_ENABLE: 'Enable currency colors',
+  CURRENCY_COLOR_DISABLE: 'Disable currency colors',
   CURRENCY_NAME: {
     AUD: 'Australian Dollar',
     BTC: 'Bitcoin',
