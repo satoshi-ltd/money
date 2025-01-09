@@ -11,10 +11,6 @@ export const style = StyleSheet.create({
     gap: '$spaceS',
   },
 
-  options: {
-    gap: '$spaceM',
-  },
-
   optionHighlight: {
     backgroundColor: '$colorContent',
   },

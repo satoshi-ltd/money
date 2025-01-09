@@ -1,4 +1,4 @@
-import { Text } from '@satoshi-ltd/nano-design';
+import { Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -22,7 +22,7 @@ export const verboseDate = (date = new Date(), { locale = 'en-US', ...props } = 
 };
 
 const GroupTransactions = ({ currency, timestamp = new Date(), txs = [] }) => (
-  <>
+  <View style={style.container}>
     <Text bold caption color="contentLight" secondary style={style.date}>
       {verboseDate(new Date(timestamp), { day: 'numeric', month: 'long', year: 'numeric' })}
     </Text>
@@ -30,7 +30,7 @@ const GroupTransactions = ({ currency, timestamp = new Date(), txs = [] }) => (
     {txs.map((tx) => (
       <Item key={tx.hash} currency={currency} {...tx} />
     ))}
-  </>
+  </View>
 );
 
 GroupTransactions.propTypes = {

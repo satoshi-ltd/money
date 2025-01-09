@@ -19,7 +19,7 @@ const INITIAL_STATE = { form: {}, valid: false };
 const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } = {} }) => {
   const store = useStore();
 
-  const { accounts, addTx, deleteTx, updateTx } = store;
+  const { accounts, createTx, deleteTx, updateTx } = store;
 
   const [dataSource, setDataSource] = useState({});
   const [state, setState] = useState(INITIAL_STATE);
@@ -36,7 +36,7 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
     const { hash, timestamp, ...tx } = dataSource;
 
     if (edit) await updateTx({ hash: dataSource.hash, ...state.form });
-    else if (clone) await addTx({ ...tx });
+    else if (clone) await createTx({ ...tx });
     else if (remove) {
       navigate('confirm', {
         caption: L10N.CONFIRM_DELETION_CAPTION,
@@ -74,7 +74,7 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
         <Button flex outlined onPress={() => handleSubmit({ clone: true })}>
           {L10N.CLONE}
         </Button>
-        <Button disabled={!state.valid} flex onPress={() => handleSubmit({ edit: true })}>
+        <Button disabled={!state.valid} flex secondary onPress={() => handleSubmit({ edit: true })}>
           {L10N.SAVE}
         </Button>
       </View>

@@ -13,7 +13,7 @@ const { CURRENCY } = C;
 const INITIAL_STATE = { balance: 0, currency: undefined, title: undefined };
 
 const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate } = {} }) => {
-  const { addAccount, settings: { baseCurrency } = {}, updateRates, updateAccount } = useStore();
+  const { createAccount, settings: { baseCurrency } = {}, updateRates, updateAccount } = useStore();
 
   const [busy, setBusy] = useState(false);
   const [form, setForm] = useState(INITIAL_STATE);
@@ -38,7 +38,7 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
 
   const handleSubmit = async () => {
     setBusy(true);
-    const method = editMode ? updateAccount : addAccount;
+    const method = editMode ? updateAccount : createAccount;
 
     const account = await method(form);
     if (firstAccount && form.currency !== CURRENCY) {
@@ -93,7 +93,7 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
             {L10N.CLOSE}
           </Button>
         )}
-        <Button disabled={busy || !form.currency || !form.title} flex onPress={handleSubmit}>
+        <Button disabled={busy || !form.currency || !form.title} flex secondary onPress={handleSubmit}>
           {L10N.SAVE}
         </Button>
       </View>

@@ -20,8 +20,6 @@ export const CommonTheme = {
   $borderRadius: '$spaceXS',
 
   // -- <Icon> -----------------------------------------------------------------
-  $iconFamily: 'shield-icons',
-  $iconGlyphs: require('../../assets/fonts/Shield-Icons.json'),
   $iconSize: 24,
 
   // -- <InputText> ------------------------------------------------------------

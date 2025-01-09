@@ -48,17 +48,15 @@ const Item = ({ category = INTERNAL_TRANSFER, currency, timestamp, title, type =
             </Text>
             <PriceFriendly
               bold
-              // caption
-              // color={is.income ? 'accent' : undefined}
+              color={is.income ? 'accent' : undefined}
               currency={currency}
-              highlight={is.income}
-              operator={is.expense}
+              operator
               value={value * operator}
             />
           </View>
 
           <View gap row spaceBetween>
-            <Text color="contentLight" caption>
+            <Text caption color="contentLight">
               {`${verboseTime(new Date(timestamp))} - ${L10N.CATEGORIES[type][category]}`}
             </Text>
             {baseCurrency !== currency && (
@@ -66,8 +64,7 @@ const Item = ({ category = INTERNAL_TRANSFER, currency, timestamp, title, type =
                 caption
                 color="contentLight"
                 currency={baseCurrency}
-                operator={is.expense}
-                value={exchange(value, currency, baseCurrency, rates, timestamp) * operator}
+                value={exchange(value, currency, baseCurrency, rates, timestamp)}
               />
             )}
           </View>

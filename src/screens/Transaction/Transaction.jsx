@@ -74,7 +74,7 @@ const Transaction = ({ route: { params = {} } = {}, navigation: { goBack } = {} 
         <Button disabled={busy} flex outlined onPress={goBack}>
           {L10N.CLOSE}
         </Button>
-        <Button disabled={busy || !valid} flex onPress={handleSubmit}>
+        <Button disabled={busy || !valid} flex secondary onPress={handleSubmit}>
           {L10N.SAVE}
         </Button>
       </View>

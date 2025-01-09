@@ -3,9 +3,9 @@ export const createTransaction = async ({
   state: {
     form: { category, value, title = '' },
   },
-  store: { addTx },
+  store: { createTx },
 }) =>
-  addTx({
+  createTx({
     account: account.hash,
     category: parseInt(category, 10),
     title,

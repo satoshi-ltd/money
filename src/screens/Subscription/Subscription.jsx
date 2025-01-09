@@ -106,7 +106,7 @@ const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation:
             <Text align="center">{L10N.SUBSCRIPTION_CAPTION}</Text>
           </View>
 
-          <View style={style.options}>
+          <View gap>
             <Text align="center" bold subtitle>
               {L10N.CHOOSE_PLAN}
             </Text>
@@ -130,7 +130,7 @@ const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation:
             <Action activity={busy === 'restore'} color="content" onPress={handleRestore}>
               {L10N.RESTORE_PURCHASE}
             </Action>
-            <Button activity={busy === 'purchase'} onPress={handleStart}>
+            <Button activity={busy === 'purchase'} secondary onPress={handleStart}>
               {plan === 'lifetime' ? L10N.PURCHASE : L10N.START_TRIAL}
             </Button>
             <Button outlined onPress={goBack}>

@@ -1,6 +1,10 @@
 import StyleSheet from 'react-native-extended-stylesheet';
 
 export const style = StyleSheet.create({
+  container: {
+    marginBottom: '$viewOffset',
+  },
+
   content: {
     paddingHorizontal: '$spaceM',
     paddingVertical: '$spaceS',
@@ -8,13 +12,12 @@ export const style = StyleSheet.create({
   },
 
   date: {
-    marginTop: '$spaceXS',
     marginLeft: '$viewOffset',
   },
 
   cardIcon: {
     height: '$spaceXXL + $spaceS',
     width: '$spaceXXL + $spaceS',
-    marginRight: '$spaceS',
+    marginRight: '$viewOffset / 2',
   },
 });

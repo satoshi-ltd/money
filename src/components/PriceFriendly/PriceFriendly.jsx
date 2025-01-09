@@ -15,16 +15,15 @@ const PriceFriendly = ({
   bold = false,
   currency,
   fixed,
-  highlight,
   label,
-  maskAmount,
+  maskAmount: propMaskAmount,
   operator,
   value = 0,
   ...others
 }) => {
-  const { settings = {} } = useStore();
+  const { settings: { maskAmount } = {} } = useStore();
 
-  const maskedAmount = maskAmount !== undefined ? maskAmount : settings.maskAmount;
+  const maskedAmount = propMaskAmount || maskAmount;
   const operatorEnhanced = (operator && parseFloat(value, 10) !== 0) || value < 0 ? (value > 0 ? '+' : '-') : undefined;
   const symbol = SYMBOL[currency] || currency;
 
@@ -44,10 +43,10 @@ const PriceFriendly = ({
   });
 
   return (
-    <View row style={[style.container, highlight && !maskAmount && style.highlight]}>
+    <View row style={style.container}>
       {label && <Text {...others}>{label}</Text>}
       {maskedAmount ? (
-        <Text {...others} bold={bold}>
+        <Text {...others} {...{ bold }}>
           {formatedValue}
         </Text>
       ) : (
@@ -68,7 +67,6 @@ PriceFriendly.propTypes = {
   bold: PropTypes.bool,
   currency: PropTypes.string,
   fixed: PropTypes.number,
-  highlight: PropTypes.bool,
   label: PropTypes.string,
   maskAmount: PropTypes.bool,
   operator: PropTypes.bool,

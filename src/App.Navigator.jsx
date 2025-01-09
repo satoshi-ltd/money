@@ -66,9 +66,7 @@ const Tabs = ({ navigation = {} }) => {
           onPress={handleSubscription}
           style={{ marginRight: StyleSheet.value('$viewOffset') }}
         >
-          <Text bold tiny>
-            {L10N.PREMIUM}
-          </Text>
+          {L10N.PREMIUM}
         </Button>
       ) : (
         <></>
