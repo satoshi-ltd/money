@@ -7,7 +7,7 @@ export const style = StyleSheet.create({
 
   content: {
     gap: '$viewOffset',
-    marginHorizontal: '$spaceM',
+    marginHorizontal: '$viewOffset',
   },
 
   touchable: {

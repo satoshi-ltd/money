@@ -6,8 +6,8 @@ export const style = StyleSheet.create({
   },
 
   content: {
-    paddingHorizontal: '$spaceM',
-    paddingVertical: '$spaceS',
+    paddingHorizontal: '$viewOffset',
+    paddingVertical: '$viewOffset / 2',
     width: '100%',
   },
 

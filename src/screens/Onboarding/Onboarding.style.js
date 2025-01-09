@@ -21,7 +21,7 @@ export const style = StyleSheet.create({
 
   image: {
     height: IMAGE_SIZE * 1.2,
-    marginBottom: '$spaceM',
+    marginBottom: '$viewOffset',
     width: IMAGE_SIZE,
   },
 
@@ -29,7 +29,7 @@ export const style = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: '$spaceXL',
     paddingHorizontal: '$spaceXL',
-    paddingTop: '$spaceM',
+    paddingTop: '$viewOffset',
     justifyContent: 'space-between',
   },
 

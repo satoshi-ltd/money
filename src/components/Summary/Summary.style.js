@@ -8,7 +8,7 @@ export const style = StyleSheet.create({
   },
 
   container: {
-    marginBottom: '$spaceL',
+    marginBottom: '$viewOffset',
     paddingHorizontal: '$viewOffset',
   },
 

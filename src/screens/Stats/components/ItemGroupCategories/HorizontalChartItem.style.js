@@ -22,7 +22,7 @@ export const style = StyleSheet.create({
 
   detail: {
     height: 'auto',
-    marginLeft: '$spaceXXL + $spaceM',
+    marginLeft: '$spaceXXL + $viewOffset',
     marginVertical: '$spaceXXS',
   },
 

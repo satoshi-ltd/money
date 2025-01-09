@@ -13,7 +13,7 @@ export const style = StyleSheet.create({
   },
 
   offset: {
-    marginHorizontal: '$spaceM',
+    marginHorizontal: '$viewOffset',
     width: 'auto',
   },
 });

@@ -17,7 +17,7 @@ const HorizontalChartItem = ({ amount, currency, detail, highlight, icon, title,
         style={[
           style.bar,
           highlight && style.highlight,
-          { width: ((screen.width - StyleSheet.value('$spaceM') * 2) * width) / 100 },
+          { width: ((screen.width - StyleSheet.value('$viewOffset') * 2) * width) / 100 },
         ]}
       />
     )}

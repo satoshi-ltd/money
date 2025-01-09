@@ -10,7 +10,7 @@ export const style = StyleSheet.create({
 
   scrollView: {
     marginBottom: '$spaceXL',
-    paddingRight: '$spaceM',
+    paddingRight: '$viewOffset',
   },
 
   card: {
