@@ -2,7 +2,21 @@ import PropTypes from 'prop-types';
 import React, { createContext, useContext, useLayoutEffect, useState } from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
 
-import { consolidate, parseTx, parseAccount } from './modules';
+import { consolidate } from './modules';
+import {
+  // -- account
+  createAccount,
+  updateAccount,
+  // -- tx
+  createTx,
+  updateTx,
+  deleteTx,
+  // -- settings
+  updateSettings,
+  updateSubscription,
+  updateRates,
+  importBackup,
+} from './reducers';
 import { DEFAULTS, FILENAME } from './store.constants';
 import { StorageService } from '../services';
 import { DarkTheme, LightTheme } from '../theme';
@@ -19,8 +33,6 @@ const StoreProvider = ({ children }) => {
       const { theme = 'light' } = await store.get('settings').value;
       StyleSheet.build(theme === 'light' ? LightTheme : DarkTheme);
 
-      await rebuildTxs(store);
-
       setState({
         store,
         accounts: await store.get('accounts')?.value,
@@ -33,128 +45,22 @@ const StoreProvider = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // * -- This method is only for us -----------------------------------------------------------------------------------
-  const rebuildTxs = async (store = {}) => {
-    const txs = (await store.get('txs')?.value) || [];
-    const [{ vault } = {}] = txs;
-
-    if (vault) {
-      const nextTxs = txs.map(({ vault: account, ...others } = {}) => ({ ...others, account }));
-
-      await store.wipe('txs');
-      await store.get('txs').save(nextTxs);
-
-      alert('Database rebuilt correctly.');
-    }
-  };
-  // * -----------------------------------------------------------------------------------------------------------------
-
-  const addTx = async (data = {}) => {
-    const { store } = state;
-
-    store.get('txs');
-    const tx = await store.save(parseTx(data));
-    setState({ ...state, txs: await store.get('txs').value });
-
-    return tx;
-  };
-
-  const addAccount = async (data = {}) => {
-    const { store } = state;
-    const account = await store.get('accounts').save(parseAccount(data));
-    if (account) setState({ ...state, accounts: await store.get('accounts').value });
-
-    return account;
-  };
-
-  const deleteTx = async ({ hash }) => {
-    const { store } = state;
-
-    await store.get('txs').remove({ hash });
-    setState({ ...state, txs: await store.get('txs').value });
-  };
-
-  // ! TODO: Should be in an standalone service
-  const importBackup = async ({ accounts = [], settings = {}, txs = [] } = {}) => {
-    const { store } = state;
-
-    await store.wipe('accounts');
-    await store.wipe('settings');
-    await store.wipe('txs');
-    await store.get('accounts').save(accounts);
-    await store.get('settings').save(settings);
-    await store.get('txs').save(txs);
-
-    setState({
-      ...state,
-      settings,
-      accounts,
-      txs,
-    });
-  };
-
-  const updateRates = async (rates, baseCurrency = state.settings.baseCurrency) => {
-    const nextRates = { ...state.rates, ...rates };
-    const nextSettings = { ...state.settings, baseCurrency, lastRatesUpdate: new Date() };
-    const accounts = await state.store.get('accounts').value;
-
-    await state.store.get('rates').save(nextRates);
-    await state.store.get('settings').save(nextSettings);
-
-    setState({ ...state, accounts, rates: nextRates, settings: nextSettings });
-  };
-
-  const updateSettings = async (value) => {
-    const nextSettings = { ...state.settings, ...value };
-    await state.store.get('settings').save(nextSettings);
-
-    setState({ ...state, settings: nextSettings });
-  };
-
-  const updateSubscription = async (subscription) => {
-    await state.store.wipe('subscription');
-    await state.store.get('subscription').save(subscription);
-
-    setState({ ...state, subscription });
-  };
-
-  const updateTx = async ({ hash, ...data } = {}) => {
-    const { store } = state;
-    const tx = await store.get('txs').findOne({ hash });
-    if (!tx) return undefined;
-
-    await store.update({ hash }, parseTx({ ...tx, ...data }));
-    setState({ ...state, txs: await store.value });
-
-    return await store.findOne({ hash });
-  };
-
-  const updateAccount = async ({ hash, ...data } = {}) => {
-    const { store } = state;
-    store.get('accounts');
-
-    const account = await store.findOne({ hash });
-    if (!account) return undefined;
-
-    await store.update({ hash }, parseAccount({ ...account, ...data }));
-    setState({ ...state, accounts: await store.value });
-
-    return await store.findOne({ hash });
-  };
-
   return (
     <StoreContext.Provider
       value={{
         ...consolidate(state),
-        addAccount,
-        addTx,
-        deleteTx,
-        importBackup,
-        updateAccount,
-        updateRates,
-        updateSettings,
-        updateSubscription,
-        updateTx,
+        // -- account
+        createAccount: (...props) => createAccount(...props, [state, setState]),
+        updateAccount: (...props) => updateAccount(...props, [state, setState]),
+        // -- tx
+        createTx: (...props) => createTx(...props, [state, setState]),
+        updateTx: (...props) => updateTx(...props, [state, setState]),
+        deleteTx: (...props) => deleteTx(...props, [state, setState]),
+        // -- settings
+        updateSettings: (...props) => updateSettings(...props, [state, setState]),
+        updateSubscription: (...props) => updateSubscription(...props, [state, setState]),
+        updateRates: (...props) => updateRates(...props, [state, setState]),
+        importBackup: (...props) => importBackup(...props, [state, setState]),
       }}
     >
       {state.store ? children : undefined}

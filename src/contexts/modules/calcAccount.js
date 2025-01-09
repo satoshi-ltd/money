@@ -1,4 +1,4 @@
-import { C, exchange, getMonthDiff, isInternalTransfer } from '../../../modules';
+import { C, exchange, getMonthDiff, isInternalTransfer } from '../../modules';
 
 const {
   TX: { TYPE },
@@ -54,6 +54,7 @@ export const calcAccount = ({ account = {}, baseCurrency, genesisDate, months = 
         ? exchange(value, ...exchangeProps, new Date(genesisDate.getFullYear(), genesisDate.getMonth() + index + 1, 1))
         : value,
     ),
+    chartBalanceBase: [...chartBalance],
     currentBalance,
     currentBalanceBase: exchange(currentBalance, ...exchangeProps),
     currentMonth: {

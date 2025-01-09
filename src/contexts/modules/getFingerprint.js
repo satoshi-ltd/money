@@ -1,4 +1,5 @@
-import { entropy, UUID } from './internal';
+import { entropy } from './entropy';
+import { UUID } from './UUID';
 
 export const getFingerprint = () => {
   const values = {

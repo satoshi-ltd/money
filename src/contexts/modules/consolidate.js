@@ -1,4 +1,4 @@
-import { calcAccount } from './internal';
+import { calcAccount } from './calcAccount';
 import { exchange, getMonthDiff } from '../../modules';
 
 const KEYS = ['expenses', 'incomes', 'progression', 'today'];
@@ -32,12 +32,7 @@ export const consolidate = ({
     );
   }
 
-  const currentMonth = {
-    expenses: 0,
-    incomes: 0,
-    progression: 0,
-    today: 0,
-  };
+  const currentMonth = { expenses: 0, incomes: 0, progression: 0, today: 0 };
   let balance = 0;
   let currentBalance = 0;
   const chartBalance = [];
