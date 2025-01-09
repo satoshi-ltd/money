@@ -41,6 +41,10 @@ export const C = {
 
   EXPENSE_AS_INVESTMENT: 5,
 
+  EVENT: {
+    NOTIFICATION: 'notification',
+  },
+
   FIXED: {
     BTC: 8,
     ETH: 4,

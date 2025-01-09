@@ -7,10 +7,10 @@ import { NumKeyboard } from './components';
 import { style } from './Session.style';
 import { Logo } from '../../components';
 import { useStore } from '../../contexts';
-import { C, L10N } from '../../modules';
+import { C, eventEmitter, L10N } from '../../modules';
 import { BackupService, ServiceRates } from '../../services';
 
-const { VERSION } = C;
+const { EVENT, VERSION } = C;
 
 const Session = ({ navigation: { reset } = {} }) => {
   const { accounts = [], settings = {}, updateRates, updateSettings } = useStore();
@@ -25,7 +25,9 @@ const Session = ({ navigation: { reset } = {} }) => {
   }, []);
 
   const fetchRates = async () => {
-    const rates = await ServiceRates.get(settings)['catch'](() => alert(L10N.ERROR_SERVICE_RATES));
+    const rates = await ServiceRates.get(settings)['catch'](() =>
+      eventEmitter.emit(EVENT.NOTIFICATION, { error: true, message: L10N.ERROR_SERVICE_RATES }),
+    );
     if (rates) updateRates(rates);
   };
 

@@ -5,8 +5,10 @@ import React, { useEffect, useState } from 'react';
 import { style } from './BaseCurrency.style';
 import { SliderCurrencies } from '../../components';
 import { useStore } from '../../contexts';
-import { L10N } from '../../modules';
+import { C, eventEmitter, L10N } from '../../modules';
 import { ServiceRates } from '../../services';
+
+const { EVENT } = C;
 
 const BaseCurrency = ({ navigation: { goBack } = {} }) => {
   const store = useStore();
@@ -24,7 +26,7 @@ const BaseCurrency = ({ navigation: { goBack } = {} }) => {
     setActivity(true);
 
     const rates = await ServiceRates.get({ baseCurrency: currency, latest: false }).catch(() =>
-      alert(L10N.ERROR_SERVICE_RATES),
+      eventEmitter.emit(EVENT.NOTIFICATION, { error: true, message: L10N.ERROR_SERVICE_RATES }),
     );
     if (rates) await updateRates({ ...rates, currency });
 

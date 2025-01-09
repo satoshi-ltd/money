@@ -9,11 +9,11 @@ import { getLatestRates, verboseDate } from './helpers';
 import { ABOUT, OPTIONS, PREFERENCES } from './Settings.constants';
 import { style } from './Settings.style';
 import { useStore } from '../../contexts';
-import { C, ICON, L10N } from '../../modules';
+import { C, eventEmitter, ICON, L10N } from '../../modules';
 import { BackupService, PurchaseService } from '../../services';
 import { DarkTheme, LightTheme } from '../../theme';
 
-const { IS_WEB } = C;
+const { EVENT, IS_WEB } = C;
 
 const Settings = ({ navigation = {} }) => {
   const store = useStore();
@@ -54,13 +54,13 @@ const Settings = ({ navigation = {} }) => {
     if (!IS_WEB && !isPremium) return handleSubscription('export');
 
     const exported = await BackupService.export({ accounts, settings, txs });
-    if (exported) alert(L10N.CONFIRM_EXPORT_SUCCESS);
+    if (exported) eventEmitter.emit(EVENT.NOTIFICATION, { message: L10N.CONFIRM_EXPORT_SUCCESS });
   };
 
   const handleImport = async () => {
     if (!IS_WEB && !isPremium) return handleSubscription('import');
 
-    const backup = await BackupService.import().catch((error) => alert(error));
+    const backup = await BackupService.import().catch(handleError);
 
     if (backup) {
       navigation.navigate('confirm', {
@@ -69,7 +69,7 @@ const Settings = ({ navigation = {} }) => {
         onAccept: async () => {
           await importBackup(backup);
           navigation.navigate('dashboard');
-          alert(L10N.CONFIRM_IMPORT_SUCCESS);
+          eventEmitter.emit(EVENT.NOTIFICATION, { message: L10N.CONFIRM_IMPORT_SUCCESS });
         },
       });
     }
@@ -83,7 +83,7 @@ const Settings = ({ navigation = {} }) => {
         navigation.navigate('subscription', { plans });
         setActivity();
       })
-      .catch((error) => alert(error));
+      .catch(handleError);
   };
 
   const handleRestorePurchases = () => {
@@ -92,12 +92,14 @@ const Settings = ({ navigation = {} }) => {
       .then((activeSubscription) => {
         if (activeSubscription) {
           updateSubscription(activeSubscription);
-          alert(L10N.PURCHASE_RESTORED);
+          eventEmitter.emit(EVENT.NOTIFICATION, { message: L10N.PURCHASE_RESTORED });
           setActivity();
         }
       })
-      .catch((error) => alert(error));
+      .catch(handleError);
   };
+
+  const handleError = (error) => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, message: JSON.stringify(error) });
 
   const handleTheme = () => {
     StyleSheet.build(StyleSheet.value('$theme') === 'light' ? DarkTheme : LightTheme);

@@ -6,11 +6,11 @@ import { Linking } from 'react-native';
 import { style } from './Subscription.style';
 import { Logo } from '../../components';
 import { useStore } from '../../contexts';
-import { C, L10N } from '../../modules';
+import { C, eventEmitter, L10N } from '../../modules';
 import { PurchaseService } from '../../services';
 import { verboseDate } from '../Settings/helpers';
 
-const { PRIVACY_URL, TERMS_URL } = C;
+const { EVENT, PRIVACY_URL, TERMS_URL } = C;
 
 const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation: { goBack } = {} }) => {
   const { subscription, updateSubscription } = useStore();
@@ -30,12 +30,12 @@ const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation:
       .then((activeSubscription) => {
         if (activeSubscription) {
           updateSubscription(activeSubscription);
-          alert(L10N.PURCHASE_RESTORED);
           goBack();
           setBusy(null);
+          eventEmitter.emit(EVENT.NOTIFICATION, { message: L10N.PURCHASE_RESTORED });
         }
       })
-      .catch((error) => alert(error));
+      .catch(handleError);
   };
 
   const handleStart = () => {
@@ -49,8 +49,10 @@ const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation:
           setBusy(null);
         }
       })
-      .catch((error) => alert(error));
+      .catch(handleError);
   };
+
+  const handleError = (error) => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, message: JSON.stringify(error) });
 
   const handleTermsAndConditions = () => {
     Linking.openURL(TERMS_URL);

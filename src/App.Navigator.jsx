@@ -9,7 +9,7 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 import { Logo } from './components';
 import { useStore } from './contexts';
-import { C, getNavigationTheme, ICON, L10N } from './modules';
+import { C, eventEmitter, getNavigationTheme, ICON, L10N } from './modules';
 import {
   Account,
   Accounts,
@@ -26,6 +26,8 @@ import {
   Transactions,
 } from './screens';
 import { PurchaseService } from './services';
+
+const { EVENT } = C;
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -51,7 +53,7 @@ const Tabs = ({ navigation = {} }) => {
       .then((plans) => {
         navigation.navigate('subscription', { plans });
       })
-      .catch((error) => alert(error));
+      .catch((error) => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, message: JSON.stringify(error) }));
   };
 
   const screenOptions = {

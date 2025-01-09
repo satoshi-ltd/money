@@ -1,5 +1,6 @@
 export * from './constants';
 export * from './currencyDecimals';
+export * from './eventEmitter';
 export * from './exchange';
 export * from './getCurrencySymbol';
 export * from './getProgressionPercentage';
