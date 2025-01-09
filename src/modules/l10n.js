@@ -1,5 +1,5 @@
 export const L10N = {
-  ABOUT: 'About môney',
+  ABOUT: 'About Money',
   ACCEPT: 'Accept',
   ACTIVITY: 'Analytics',
 
@@ -7,7 +7,7 @@ export const L10N = {
   APPERANCE_LIGHT: 'Switch to light mode',
 
   BACKUP_CAPTION:
-    'Take control of your financial data, you own your {accounts} accounts and {txs} transactions. Safeguard your privacy and security while effortlessly managing your info, all with a simple tap.',
+    'Take control of your finances with {accounts} accounts and {txs} transactions. Secure your data and privacy effortlessly.',
   BALANCE: 'Balance',
 
   CANCEL: 'Cancel',
@@ -58,7 +58,7 @@ export const L10N = {
   CONFIRM_EXPORT_SUCCESS: 'Export successful! Your data has been saved.',
   CONFIRM_IMPORT: 'Confirm import',
   CONFIRM_IMPORT_CAPTION: ({ accounts = [], txs = [] }) =>
-    `Ready to import the JSON file? It'll update your finances with ${accounts.length} accounts and ${txs.length} transactions. Just make sure the file is good to go—this action can't be undone!"`,
+    `Import the JSON file to update your ${accounts.length} accounts and ${txs.length} transactions. This action is irreversible.`,
   CONFIRM_IMPORT_SUCCESS: 'Imported successfully.',
   CURRENCY_COLOR_ENABLE: 'Enable currency colors',
   CURRENCY_COLOR_DISABLE: 'Disable currency colors',
@@ -90,12 +90,12 @@ export const L10N = {
 
   ENABLE: 'Enable',
   ERROR: 'Something went wrong',
-  ERROR_EXPORT: 'Unable to export as you don’t have sharing permissions.',
-  ERROR_IMPORT: 'The file format is not supported. Please choose a compatible file type.',
+  ERROR_EXPORT: 'Export failed due to missing sharing permissions.',
+  ERROR_IMPORT: 'Unsupported file format. Please select a compatible file type.',
   ERROR_PRODUCTS: 'Products not found',
   ERROR_PURCHASE: 'Purchase failed',
   ERROR_RESTORE: 'Restore failed',
-  ERROR_SERVICE_RATES: 'Something was wrong trying to get updated currencies rates. Check that you are online.',
+  ERROR_SERVICE_RATES: 'Unable to fetch updated currency rates. Please check your internet connection.',
   ERROR_TRY_AGAIN: 'Something wrong happened. Try again.',
   EXPENSE: 'Expense',
   EXPENSES: 'Expenses',
@@ -153,7 +153,7 @@ export const L10N = {
     'Protect your personal data with Money, which doesn’t collect or share information with third parties.',
   ONBOARDING_SIMPLIFY: 'Simplify Your Finances',
   ONBOARDING_SIMPLIFY_CAPTION:
-    'Money has built-in intelligence that informs you about how you use your money and helps you make more informed financial decisions.',
+    'Money’s built-in intelligence helps you understand your spending and make better financial decisions.',
   ONBOARDING_WELCOME: 'Welcome to Money!',
   ONBOARDING_WELCOME_CAPTION: 'Explore seamless and secure management of your multicurrency accounts. Welcome aboard!',
   OVERALL_BALANCE: 'Overall Balance',
@@ -170,7 +170,7 @@ export const L10N = {
   RESTORE_PURCHASES: 'Restore purchases',
 
   SAVE: 'Save',
-  SCHEDULE_BACKUP: 'Time to Secure Your Finances!',
+  SCHEDULE_BACKUP: 'Secure Your Finances!',
   SCHEDULE_BACKUP_CAPTION:
     "Don't forget to perform your weekly backup. Keep your financial information safe and up-to-date. It's quick and easy. Do it now!",
   SEARCH: 'Search',
@@ -186,7 +186,7 @@ export const L10N = {
   SUBSCRIPTION_PRIVACY: 'Privacy Policy',
   SUBSCRIPTION_TERMS: 'Terms',
   SUBSCRIPTION_TERMS_CAPTION:
-    'By tapping "Start free 7 day trial", you will not be charged for the next 7 days, your subscription will auto-renew for the same price and package length until you cancel via App Store Settings. and you agree to our',
+    'By starting the 7-day free trial, your subscription will auto-renew unless canceled via App Store settings. By proceeding, you agree to our',
   SYNC_RATES_SENTENCE: 'Last update on',
   SYNC_RATES_CTA: 'Update Rates',
   SWAP: 'Swap',
