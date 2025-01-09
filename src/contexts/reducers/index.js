@@ -1,6 +1,7 @@
 // -- account
 export * from './createAccount';
 export * from './updateAccount';
+export * from './deleteAccount';
 // -- tx
 export * from './createTx';
 export * from './updateTx';

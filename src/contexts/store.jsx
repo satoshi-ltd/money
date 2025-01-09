@@ -7,6 +7,7 @@ import {
   // -- account
   createAccount,
   updateAccount,
+  deleteAccount,
   // -- tx
   createTx,
   updateTx,
@@ -52,6 +53,7 @@ const StoreProvider = ({ children }) => {
         // -- account
         createAccount: (...props) => createAccount(...props, [state, setState]),
         updateAccount: (...props) => updateAccount(...props, [state, setState]),
+        deleteAccount: (...props) => deleteAccount(...props, [state, setState]),
         // -- tx
         createTx: (...props) => createTx(...props, [state, setState]),
         updateTx: (...props) => updateTx(...props, [state, setState]),

@@ -54,6 +54,7 @@ export const L10N = {
   CONCEPT: 'Concept',
   CONFIRM_DELETION: 'Confirm deletion',
   CONFIRM_DELETION_CAPTION: 'Confirm permanent deletion of this transaction? This action is irreversible.',
+  CONFIRM_DELETION_SUCCESS: 'Deleted successfully.',
   CONFIRM_EXPORT_SUCCESS: 'Export successful! Your data has been saved.',
   CONFIRM_IMPORT: 'Confirm import',
   CONFIRM_IMPORT_CAPTION: ({ accounts = [], txs = [] }) =>
