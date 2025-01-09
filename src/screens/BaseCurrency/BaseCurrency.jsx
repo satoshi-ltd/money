@@ -26,7 +26,7 @@ const BaseCurrency = ({ navigation: { goBack } = {} }) => {
     const rates = await ServiceRates.get({ baseCurrency: currency, latest: false }).catch(() =>
       alert(L10N.ERROR_SERVICE_RATES),
     );
-    if (rates) await updateRates(rates, currency);
+    if (rates) await updateRates({ ...rates, currency });
 
     goBack();
     setActivity(false);

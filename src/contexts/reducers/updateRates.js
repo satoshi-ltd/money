@@ -1,7 +1,8 @@
-export const updateRates = async (rates, baseCurrency, [state, setState]) => {
-  baseCurrency = state.settings.baseCurrency;
+export const updateRates = async ({ currency, ...rates } = {}, [state, setState]) => {
+  const { settings: { baseCurrency } = {} } = state;
+
   const nextRates = { ...state.rates, ...rates };
-  const nextSettings = { ...state.settings, baseCurrency, lastRatesUpdate: new Date() };
+  const nextSettings = { ...state.settings, baseCurrency: currency || baseCurrency, lastRatesUpdate: new Date() };
   const accounts = await state.store.get('accounts').value;
 
   await state.store.get('rates').save(nextRates);
