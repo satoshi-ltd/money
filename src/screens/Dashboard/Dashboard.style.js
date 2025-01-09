@@ -18,14 +18,15 @@ export const style = StyleSheet.create({
   },
 
   firstCard: {
-    marginLeft: '$spaceM',
+    marginLeft: '$viewOffset',
   },
 
   lastCard: {
-    marginRight: '$spaceM',
+    marginRight: '$viewOffset',
   },
 
   inputSearch: {
-    marginHorizontal: '$spaceM',
+    marginHorizontal: '$viewOffset',
+    marginBottom: '$viewOffset',
   },
 });

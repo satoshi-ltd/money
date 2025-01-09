@@ -1,4 +1,4 @@
-import { parseAccount } from '../modules';
+import { parseAccount } from './modules';
 
 export const updateAccount = async ({ hash, ...data } = {}, [state, setState]) => {
   const { store } = state;

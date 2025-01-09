@@ -1,4 +1,4 @@
-import { parseTx } from '../modules';
+import { parseTx } from './modules';
 
 export const createTx = async (data = {}, [state, setState]) => {
   const { store } = state;

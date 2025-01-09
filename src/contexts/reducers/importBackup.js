@@ -1,4 +1,3 @@
-// ! TODO: Should be in an standalone service
 export const importBackup = async ({ accounts = [], settings = {}, txs = [] } = {}, [state, setState]) => {
   const { store } = state;
 
