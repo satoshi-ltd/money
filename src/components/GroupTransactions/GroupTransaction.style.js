@@ -15,6 +15,10 @@ export const style = StyleSheet.create({
     marginLeft: '$viewOffset',
   },
 
+  text: {
+    flex: 1,
+  },
+
   cardIcon: {
     height: '$spaceXXL + $spaceS',
     width: '$spaceXXL + $spaceS',

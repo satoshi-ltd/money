@@ -18,6 +18,7 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
 
   useEffect(() => {
     if (!accounts.length) navigate('account', { firstAccount: true });
+    else navigate('transactions', { account: accounts[0] });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -49,6 +50,7 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
       <ScrollView horizontal snap={StyleSheet.value('$cardAccountSnap')} style={[style.scrollView]}>
         {sortedAccounts.map((account, index) => {
           const {
+            chartBalanceBase = [],
             currentBalance,
             currency,
             currentMonth: { progressionCurrency },
@@ -58,9 +60,9 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
 
           return (
             <CardAccount
-              {...account.others}
               key={hash}
               balance={currentBalance}
+              chart={chartBalanceBase}
               currency={currency}
               operator
               percentage={getProgressionPercentage(currentBalance, progressionCurrency)}

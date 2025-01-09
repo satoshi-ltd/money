@@ -1,4 +1,4 @@
-import { C, exchange, getMonthDiff, isInternalTransfer } from '../../modules';
+import { C, exchange, getMonthDiff } from '../../modules';
 
 const {
   TX: { TYPE },
@@ -21,7 +21,7 @@ export const calcAccount = ({ account = {}, baseCurrency, genesisDate, months = 
   chartBalance[0] = account.balance > 0 ? account.balance : 0;
 
   const dataSource = txs.filter((tx) => tx.account === account.hash);
-  dataSource.forEach(({ category, timestamp, type, value = 0 }) => {
+  dataSource.forEach(({ timestamp, type, value = 0 }) => {
     const isExpense = type === TYPE.EXPENSE;
     const date = new Date(timestamp);
     const monthIndex = getMonthDiff(genesisDate, date);
@@ -31,14 +31,12 @@ export const calcAccount = ({ account = {}, baseCurrency, genesisDate, months = 
 
     // ! @TODO: Should revisit this algo
     if (monthIndex === months) {
-      if (!isInternalTransfer({ category })) {
-        currentMonthTxs += 1;
-        if (isExpense) expenses += value;
-        else incomes += value;
-        progression += isExpense ? -value : value;
+      currentMonthTxs += 1;
+      if (isExpense) expenses += value;
+      else incomes += value;
+      progression += isExpense ? -value : value;
 
-        if (date.getDate() === currentDay) today += isExpense ? -value : value;
-      }
+      if (date.getDate() === currentDay) today += isExpense ? -value : value;
     }
   });
 

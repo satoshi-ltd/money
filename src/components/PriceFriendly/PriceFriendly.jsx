@@ -7,7 +7,7 @@ import { style } from './PriceFriendly.style';
 import { useStore } from '../../contexts';
 import { C, currencyDecimals } from '../../modules';
 
-const { SYMBOL } = C;
+const { COLOR, SYMBOL } = C;
 
 const LEFT_SYMBOLS = ['$', '£'];
 
@@ -21,15 +21,17 @@ const PriceFriendly = ({
   value = 0,
   ...others
 }) => {
-  const { settings: { maskAmount } = {} } = useStore();
+  const { settings: { colorCurrency, maskAmount } = {} } = useStore();
 
   const maskedAmount = propMaskAmount || maskAmount;
   const operatorEnhanced = (operator && parseFloat(value, 10) !== 0) || value < 0 ? (value > 0 ? '+' : '-') : undefined;
   const symbol = SYMBOL[currency] || currency;
+  const color = (colorCurrency && operatorEnhanced === '+' && COLOR[currency]) || others.color;
 
   const symbolProps = {
     ...others,
     bold,
+    color,
     children: symbol,
     style: [style.symbol, others.style],
   };
@@ -46,14 +48,18 @@ const PriceFriendly = ({
     <View row style={style.container}>
       {label && <Text {...others}>{label}</Text>}
       {maskedAmount ? (
-        <Text {...others} {...{ bold }}>
+        <Text {...others} {...{ bold, color }}>
           {formatedValue}
         </Text>
       ) : (
         <>
-          {operatorEnhanced && <Text {...others}>{operatorEnhanced}</Text>}
+          {operatorEnhanced && (
+            <Text {...others} color={color}>
+              {operatorEnhanced}
+            </Text>
+          )}
           {LEFT_SYMBOLS.includes(symbol) && <Text {...symbolProps} />}
-          <Text {...others} {...{ bold }}>
+          <Text {...others} {...{ bold, color }}>
             {formatedValue}
           </Text>
           {!LEFT_SYMBOLS.includes(symbol) && <Text {...symbolProps} />}

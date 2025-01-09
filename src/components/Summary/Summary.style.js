@@ -2,7 +2,8 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 export const style = StyleSheet.create({
   children: {
-    marginTop: '$spaceL',
+    gap: '$viewOffset',
+    marginTop: '$viewOffset',
     width: '100%',
   },
 
@@ -20,6 +21,13 @@ export const style = StyleSheet.create({
 
   progression: {
     gap: '$spaceXXS',
+  },
+
+  color: {
+    borderRadius: '50%',
+    height: '$fontSizeTiny',
+    marginRight: '$spaceXS',
+    width: '$fontSizeTiny',
   },
 
   tags: {

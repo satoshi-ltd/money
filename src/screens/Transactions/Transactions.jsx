@@ -1,12 +1,13 @@
-import { Icon, Screen, ScrollView, Pressable, View } from '@satoshi-ltd/nano-design';
+import { Icon, Screen, Pressable, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import { useWindowDimensions } from 'react-native';
+import StyleSheet from 'react-native-extended-stylesheet';
 
 import { ButtonSummary } from './components';
 import { query } from './modules';
 import { style } from './Transactions.style';
-import { Banner, GroupTransactions, Heading, Summary } from '../../components';
+import { Banner, GroupTransactions, Heading, LineChart, Summary } from '../../components';
 import { useStore } from '../../contexts';
 import { C, ICON, L10N } from '../../modules';
 
@@ -16,18 +17,21 @@ const {
   },
 } = C;
 
-const Transactions = ({ route: { params: { account: { hash } } = {} } = {}, navigation = {} }) => {
+const Transactions = ({
+  route: { params: { account: { hash, chartBalanceBase = [] } } = {} } = {},
+  navigation = {},
+}) => {
   const scrollview = useRef(null);
   const { accounts = [], settings: { baseCurrency } = {} } = useStore();
 
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
 
   const [dataSource, setDataSource] = useState({});
   const [scrollQuery, setScrollQuery] = useState(false);
   const [txs, setTxs] = useState([]);
 
   useEffect(() => {
-    scrollview.current.scrollTo({ y: 0, animated: false });
+    scrollview.current?.scrollTo({ y: 0, animated: false });
 
     const account = accounts.find((item) => item.hash === hash);
     if (!account) return;
@@ -65,36 +69,43 @@ const Transactions = ({ route: { params: { account: { hash } } = {} } = {}, navi
   const account = accounts.find((item) => item.hash === hash);
   const { currency = baseCurrency, ...rest } = dataSource;
 
+  // ! TODO assign events to <Screen>
   return (
-    <Screen style={style.screen}>
-      <ScrollView ref={scrollview} onScroll={handleScroll}>
-        <Summary {...rest} currency={currency} title={account?.title}>
-          <View row style={style.buttons}>
-            <ButtonSummary icon={ICON.INCOME} text={L10N.INCOME} onPress={() => handleTransaction(INCOME)} />
-            <ButtonSummary icon={ICON.EXPENSE} text={L10N.EXPENSE} onPress={() => handleTransaction(EXPENSE)} />
-            {accounts.length > 1 && (
-              <ButtonSummary icon={ICON.SWAP} text={L10N.SWAP} onPress={() => handleTransaction(TRANSFER)} />
-            )}
-            <ButtonSummary icon={ICON.SETTINGS} text={L10N.SETTINGS} onPress={handleEdit} />
-          </View>
-        </Summary>
+    <Screen ref={scrollview} onScroll={handleScroll} style={style.screen}>
+      <Summary {...rest} currency={currency} title={account?.title}>
+        <LineChart
+          currency={currency}
+          height={128}
+          showPointer
+          values={chartBalanceBase}
+          width={width - StyleSheet.value('$viewOffset') * 2}
+        />
 
-        {txs.length > 0 ? (
-          <>
-            <Heading value={L10N.TRANSACTIONS} />
-            {txs.map((item) => (
-              <GroupTransactions key={item.timestamp} {...item} currency={currency} />
-            ))}
-          </>
-        ) : (
-          <Banner
-            align="center"
-            // ! TODO: Setup image
-            // image={}
-            title={L10N.NO_TRANSACTIONS}
-          />
-        )}
-      </ScrollView>
+        <View row style={style.buttons}>
+          <ButtonSummary icon={ICON.INCOME} text={L10N.INCOME} onPress={() => handleTransaction(INCOME)} />
+          <ButtonSummary icon={ICON.EXPENSE} text={L10N.EXPENSE} onPress={() => handleTransaction(EXPENSE)} />
+          {accounts.length > 1 && (
+            <ButtonSummary icon={ICON.SWAP} text={L10N.SWAP} onPress={() => handleTransaction(TRANSFER)} />
+          )}
+          <ButtonSummary icon={ICON.SETTINGS} text={L10N.SETTINGS} onPress={handleEdit} />
+        </View>
+      </Summary>
+
+      {txs.length > 0 ? (
+        <>
+          <Heading value={L10N.TRANSACTIONS} />
+          {txs.map((item) => (
+            <GroupTransactions key={item.timestamp} {...item} currency={currency} />
+          ))}
+        </>
+      ) : (
+        <Banner
+          align="center"
+          // ! TODO: Setup image
+          // image={}
+          title={L10N.NO_TRANSACTIONS}
+        />
+      )}
     </Screen>
   );
 };

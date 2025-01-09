@@ -43,7 +43,7 @@ const Item = ({ category = INTERNAL_TRANSFER, currency, timestamp, title, type =
 
         <View flex>
           <View gap row spaceBetween>
-            <Text bold numberOfLines={1}>
+            <Text flex bold numberOfLines={1} style={style.text}>
               {title}
             </Text>
             <PriceFriendly

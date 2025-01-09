@@ -141,7 +141,6 @@ export const Navigator = () => {
 
       <Stack.Navigator
         initialRouteName={onboarded ? (C.IS_DEV && pin ? 'main' : 'session') : 'onboarding'}
-        // screenOptions={OPTIONS.SCREEN}
         screenOptions={screenOptions}
       >
         <Stack.Screen name="onboarding" component={Onboarding} />

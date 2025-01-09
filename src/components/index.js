@@ -7,6 +7,7 @@ export * from './GroupTransactions';
 export * from './Heading';
 export * from './InputCurrency';
 export * from './InputText';
+export * from './LineChart';
 export * from './Logo';
 export * from './Notification';
 export * from './PriceFriendly';
