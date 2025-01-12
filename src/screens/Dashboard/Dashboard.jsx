@@ -18,7 +18,10 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
 
   useEffect(() => {
     if (!accounts.length) navigate('account', { firstAccount: true });
-    else navigate('transactions', { account: accounts[0] });
+    // else navigate('transactions', { account: accounts[5] });
+    // setTimeout(() => {
+    //   navigate('transaction', { type: 0 });
+    // }, 1000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
