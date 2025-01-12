@@ -3,7 +3,8 @@ import StyleSheet from 'react-native-extended-stylesheet';
 export const style = StyleSheet.create({
   $barSize: '$spaceS * 1.25',
   // $barRadius: '$barSize / 2',
-  $barRadius: '$borderRadius',
+  // $barRadius: '$borderRadius',
+  $barRadius: '$spaceXXS',
 
   bars: {
     alignItems: 'flex-end',
@@ -27,7 +28,7 @@ export const style = StyleSheet.create({
   },
 
   offset: {
-    marginHorizontal: '$spaceM',
+    marginHorizontal: '$viewOffset',
   },
 
   barInverted: {

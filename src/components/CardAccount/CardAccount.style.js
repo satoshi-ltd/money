@@ -6,11 +6,23 @@ const style = StyleSheet.create({
     width: '$cardAccountSize',
   },
 
-  // ! TODO: Should use $cardAccountSize
-  cardCurrency: {
-    height: '$spaceXXL',
-    width: '$spaceXXL',
-    borderRadius: '$spaceXXL / 2',
+  color: {
+    borderRadius: '50%',
+    height: '$fontSizeTiny',
+    marginRight: '$spaceXS',
+    width: '$fontSizeTiny',
+  },
+
+  chart: {
+    bottom: '$spaceXS',
+    left: 0,
+    opacity: 0.66,
+    position: 'absolute',
+  },
+
+  percentage: {
+    textShadowColor: '$colorBorder',
+    textShadowRadius: 4,
   },
 });
 

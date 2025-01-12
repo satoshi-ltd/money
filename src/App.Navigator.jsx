@@ -9,7 +9,7 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 import { Logo } from './components';
 import { useStore } from './contexts';
-import { C, getNavigationTheme, ICON, L10N } from './modules';
+import { C, eventEmitter, getNavigationTheme, ICON, L10N } from './modules';
 import {
   Account,
   Accounts,
@@ -26,6 +26,8 @@ import {
   Transactions,
 } from './screens';
 import { PurchaseService } from './services';
+
+const { EVENT, TX: { TYPE: { EXPENSE } } = {} } = C;
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -51,7 +53,7 @@ const Tabs = ({ navigation = {} }) => {
       .then((plans) => {
         navigation.navigate('subscription', { plans });
       })
-      .catch((error) => alert(error));
+      .catch((error) => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, message: JSON.stringify(error) }));
   };
 
   const screenOptions = {
@@ -66,9 +68,7 @@ const Tabs = ({ navigation = {} }) => {
           onPress={handleSubscription}
           style={{ marginRight: StyleSheet.value('$viewOffset') }}
         >
-          <Text bold tiny>
-            {L10N.PREMIUM}
-          </Text>
+          {L10N.PREMIUM}
         </Button>
       ) : (
         <></>
@@ -108,6 +108,23 @@ const Tabs = ({ navigation = {} }) => {
         }}
       />
       <Tab.Screen
+        name="transaction"
+        component={Transaction}
+        options={{
+          tabBarButton: () => (
+            <Button
+              icon={ICON.EXPENSE}
+              large
+              onPress={() => navigation.navigate('transaction', { type: EXPENSE })}
+              style={{
+                marginHorizontal: StyleSheet.value('$spaceM'),
+                top: -StyleSheet.value('$spaceS'),
+              }}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
         name="accounts"
         component={Accounts}
         options={{
@@ -143,7 +160,6 @@ export const Navigator = () => {
 
       <Stack.Navigator
         initialRouteName={onboarded ? (C.IS_DEV && pin ? 'main' : 'session') : 'onboarding'}
-        // screenOptions={OPTIONS.SCREEN}
         screenOptions={screenOptions}
       >
         <Stack.Screen name="onboarding" component={Onboarding} />

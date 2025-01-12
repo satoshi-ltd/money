@@ -1,4 +1,4 @@
-import { UUID } from './internal';
+import { UUID } from '../../modules';
 
 export const parseTx = ({
   account,

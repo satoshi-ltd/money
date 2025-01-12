@@ -6,6 +6,7 @@ const { CURRENCY } = C;
 const DEFAULTS = {
   settings: {
     baseCurrency: CURRENCY,
+    colorCurrency: false,
     fingerprint: getFingerprint(),
     maskAmount: false,
     onboarded: false,

@@ -10,7 +10,7 @@ export const style = StyleSheet.create({
 
   scrollView: {
     marginBottom: '$spaceXL',
-    paddingRight: '$spaceM',
+    paddingRight: '$viewOffset',
   },
 
   card: {
@@ -18,14 +18,15 @@ export const style = StyleSheet.create({
   },
 
   firstCard: {
-    marginLeft: '$spaceM',
+    marginLeft: '$viewOffset',
   },
 
   lastCard: {
-    marginRight: '$spaceM',
+    marginRight: '$viewOffset',
   },
 
   inputSearch: {
-    marginHorizontal: '$spaceM',
+    marginHorizontal: '$viewOffset',
+    marginBottom: '$viewOffset',
   },
 });

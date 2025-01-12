@@ -8,7 +8,7 @@ export const style = StyleSheet.create({
 
   content: {
     alignItems: 'center',
-    gap: '$spaceM',
+    gap: '$viewOffset',
   },
 
   pinCode: {

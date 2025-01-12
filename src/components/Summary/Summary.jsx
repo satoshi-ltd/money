@@ -7,40 +7,38 @@ import { useStore } from '../../contexts';
 import { C, exchange, getProgressionPercentage, ICON, L10N } from '../../modules';
 import { PriceFriendly } from '../PriceFriendly';
 
-const { CURRENCY } = C;
+const { COLOR, CURRENCY } = C;
 
 const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth = {}, title }) => {
   const {
     rates,
-    settings: { baseCurrency, maskAmount },
+    settings: { baseCurrency, colorCurrency = false, maskAmount },
     updateSettings,
   } = useStore();
 
-  const { expenses = 0, incomes = 0, progression = 0, progressionCurrency = 0 } = currentMonth;
+  const {
+    expenses = 0,
+    expensesBase = 0,
+    incomes = 0,
+    incomesBase = 0,
+    progression = 0,
+    progressionCurrency = 0,
+  } = currentMonth;
   const progressionPercentage = getProgressionPercentage(
     currentBalance,
     currency === baseCurrency ? progression : progressionCurrency,
   );
 
+  const color = colorCurrency && title ? COLOR[currency] : 'accent';
+
   return (
     <View style={style.container}>
       <View row spaceBetween>
-        <Text bold secondary subtitle>
-          {!title ? L10N.TOTAL_BALANCE : `${title} ${L10N.BALANCE}`}
-        </Text>
-        <View row style={style.tags}>
-          {incomes > 0 && (
-            <View row style={[style.tag, style.income]}>
-              <Icon color="accent" name={ICON.INCOME} caption />
-              <PriceFriendly bold color="accent" currency={currency} tiny value={incomes} />
-            </View>
-          )}
-          {expenses > 0 && (
-            <View row style={style.tag}>
-              <Icon name={ICON.EXPENSE} caption />
-              <PriceFriendly bold currency={currency} tiny value={expenses} />
-            </View>
-          )}
+        <View row>
+          {colorCurrency && title && <View style={[style.color, { backgroundColor: COLOR[currency] }]} />}
+          <Text bold secondary subtitle>
+            {!title ? L10N.TOTAL_BALANCE : `${title} ${L10N.BALANCE}`}
+          </Text>
         </View>
       </View>
 
@@ -60,12 +58,12 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
       {progressionPercentage !== 0 && (
         <View row style={style.progression}>
           <Icon
-            color={progressionPercentage > 0 ? 'accent' : undefined}
+            color={progressionPercentage > 0 ? color : undefined}
             name={`trending-${progressionPercentage > 0 ? 'up' : 'down'}`}
           />
           <PriceFriendly
             bold
-            color={progressionPercentage > 0 ? 'accent' : undefined}
+            color={progressionPercentage > 0 ? color : undefined}
             currency="%"
             fixed={progressionPercentage >= 100 ? 0 : undefined}
             operator
@@ -75,6 +73,22 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
           <Text color="contentLight" tiny>
             {L10N.IN_THIS_PAST_MONTH}
           </Text>
+          <View flex />
+
+          <View row style={style.tags}>
+            {(incomes > 0 || incomesBase > 0) && (
+              <View row style={[style.tag, style.income]}>
+                <Icon color={color} name={ICON.INCOME} caption />
+                <PriceFriendly bold color={color} currency={currency} tiny value={incomesBase || incomes} />
+              </View>
+            )}
+            {(expenses > 0 || expensesBase > 0) && (
+              <View row style={style.tag}>
+                <Icon name={ICON.EXPENSE} caption />
+                <PriceFriendly bold currency={currency} tiny value={expensesBase || expenses} />
+              </View>
+            )}
+          </View>
         </View>
       )}
 

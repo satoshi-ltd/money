@@ -9,11 +9,11 @@ import { getLatestRates, verboseDate } from './helpers';
 import { ABOUT, OPTIONS, PREFERENCES } from './Settings.constants';
 import { style } from './Settings.style';
 import { useStore } from '../../contexts';
-import { C, ICON, L10N } from '../../modules';
+import { C, eventEmitter, ICON, L10N } from '../../modules';
 import { BackupService, PurchaseService } from '../../services';
 import { DarkTheme, LightTheme } from '../../theme';
 
-const { IS_WEB } = C;
+const { EVENT, IS_WEB } = C;
 
 const Settings = ({ navigation = {} }) => {
   const store = useStore();
@@ -30,7 +30,7 @@ const Settings = ({ navigation = {} }) => {
     txs = [],
   } = store;
 
-  const { baseCurrency, lastRatesUpdate = '', theme } = settings;
+  const { baseCurrency, colorCurrency = false, lastRatesUpdate = '', theme } = settings;
 
   const isPremium = !!subscription?.productIdentifier;
 
@@ -48,20 +48,19 @@ const Settings = ({ navigation = {} }) => {
     else if (callback === 'handleImport') handleImport();
     else if (callback === 'handleUpdateRates') handleUpdateRates();
     else if (callback === 'handleRestorePurchases') handleRestorePurchases();
-    // else if (callback === 'handleSync') handleSync();
   };
 
   const handleExport = async () => {
     if (!IS_WEB && !isPremium) return handleSubscription('export');
 
     const exported = await BackupService.export({ accounts, settings, txs });
-    if (exported) alert(L10N.CONFIRM_EXPORT_SUCCESS);
+    if (exported) eventEmitter.emit(EVENT.NOTIFICATION, { message: L10N.CONFIRM_EXPORT_SUCCESS });
   };
 
   const handleImport = async () => {
     if (!IS_WEB && !isPremium) return handleSubscription('import');
 
-    const backup = await BackupService.import().catch((error) => alert(error));
+    const backup = await BackupService.import().catch(handleError);
 
     if (backup) {
       navigation.navigate('confirm', {
@@ -70,7 +69,7 @@ const Settings = ({ navigation = {} }) => {
         onAccept: async () => {
           await importBackup(backup);
           navigation.navigate('dashboard');
-          alert(L10N.CONFIRM_IMPORT_SUCCESS);
+          eventEmitter.emit(EVENT.NOTIFICATION, { message: L10N.CONFIRM_IMPORT_SUCCESS });
         },
       });
     }
@@ -84,7 +83,7 @@ const Settings = ({ navigation = {} }) => {
         navigation.navigate('subscription', { plans });
         setActivity();
       })
-      .catch((error) => alert(error));
+      .catch(handleError);
   };
 
   const handleRestorePurchases = () => {
@@ -93,16 +92,22 @@ const Settings = ({ navigation = {} }) => {
       .then((activeSubscription) => {
         if (activeSubscription) {
           updateSubscription(activeSubscription);
-          alert(L10N.PURCHASE_RESTORED);
+          eventEmitter.emit(EVENT.NOTIFICATION, { message: L10N.PURCHASE_RESTORED });
           setActivity();
         }
       })
-      .catch((error) => alert(error));
+      .catch(handleError);
   };
+
+  const handleError = (error) => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, message: JSON.stringify(error) });
 
   const handleTheme = () => {
     StyleSheet.build(StyleSheet.value('$theme') === 'light' ? DarkTheme : LightTheme);
     updateSettings({ theme: StyleSheet.value('$theme') });
+  };
+
+  const handlecolorCurrency = () => {
+    updateSettings({ colorCurrency: !colorCurrency });
   };
 
   return (
@@ -145,9 +150,14 @@ const Settings = ({ navigation = {} }) => {
           {L10N.PREFERENCES.toUpperCase()}
         </Text>
         <Setting
-          icon={ICON.INVERT_COLORS}
+          icon={ICON.THEME}
           text={theme === 'dark' ? L10N.APPERANCE_LIGHT : L10N.APPERANCE_DARK}
           onPress={handleTheme}
+        />
+        <Setting
+          icon={ICON.COLOR_FILL}
+          text={colorCurrency ? L10N.CURRENCY_COLOR_DISABLE : L10N.CURRENCY_COLOR_ENABLE}
+          onPress={handlecolorCurrency}
         />
         {PREFERENCES.map(({ disabled, icon, text, ...rest }, index) => (
           <Setting

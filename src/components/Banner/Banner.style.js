@@ -31,6 +31,6 @@ export const style = StyleSheet.create({
     minHeight: 304,
     width: 176,
     minWidth: 176,
-    marginBottom: '$spaceM',
+    marginBottom: '$viewOffset',
   },
 });

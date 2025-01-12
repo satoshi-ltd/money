@@ -5,21 +5,21 @@ import React, { useEffect, useState } from 'react';
 import { style } from './Account.style';
 import { InputCurrency, InputText, SliderCurrencies } from '../../components';
 import { useStore } from '../../contexts';
-import { C, L10N } from '../../modules';
+import { C, eventEmitter, L10N } from '../../modules';
 import { ServiceRates } from '../../services';
 
-const { CURRENCY } = C;
+const { CURRENCY, EVENT } = C;
 
 const INITIAL_STATE = { balance: 0, currency: undefined, title: undefined };
 
 const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate } = {} }) => {
-  const { addAccount, settings: { baseCurrency } = {}, updateRates, updateAccount } = useStore();
+  const { settings: { baseCurrency } = {}, createAccount, updateAccount, deleteAccount, updateRates } = useStore();
 
   const [busy, setBusy] = useState(false);
   const [form, setForm] = useState(INITIAL_STATE);
 
   const editMode = form.hash !== undefined;
-  const { firstAccount } = params;
+  const { firstAccount, hash } = params;
 
   useEffect(() => {
     const { hash, balance, currency = baseCurrency, title } = params;
@@ -36,9 +36,25 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
     });
   };
 
+  const handleDelete = async () => {
+    navigate('confirm', {
+      caption: L10N.CONFIRM_DELETION_CAPTION,
+      title: L10N.CONFIRM_DELETION,
+      onAccept: async () => {
+        setBusy(true);
+        await deleteAccount(params);
+
+        eventEmitter.emit(EVENT.NOTIFICATION, { message: L10N.CONFIRM_DELETION_SUCCESS });
+        goBack();
+        goBack();
+        setBusy(false);
+      },
+    });
+  };
+
   const handleSubmit = async () => {
     setBusy(true);
-    const method = editMode ? updateAccount : addAccount;
+    const method = editMode ? updateAccount : createAccount;
 
     const account = await method(form);
     if (firstAccount && form.currency !== CURRENCY) {
@@ -88,12 +104,17 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
       />
 
       <View row style={style.buttons}>
+        {hash && (
+          <Button disabled={busy} flex outlined onPress={handleDelete}>
+            {L10N.DELETE}
+          </Button>
+        )}
         {!firstAccount && (
           <Button disabled={busy} flex outlined onPress={goBack}>
             {L10N.CLOSE}
           </Button>
         )}
-        <Button disabled={busy || !form.currency || !form.title} flex onPress={handleSubmit}>
+        <Button disabled={busy || !form.currency || !form.title} flex secondary onPress={handleSubmit}>
           {L10N.SAVE}
         </Button>
       </View>

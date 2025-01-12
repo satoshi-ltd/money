@@ -1,9 +1,14 @@
 export const query = (accounts = []) => {
   const currencies = {};
 
-  accounts.forEach(({ currency, currentBalance: balance, currentBalanceBase: base }) => {
-    let item = currencies[currency] || { balance: 0, base: 0 };
-    item = { balance: item.balance + balance, base: item.base + base, currency };
+  accounts.forEach(({ chartBalanceBase, currency, currentBalance: balance, currentBalanceBase: base }) => {
+    let item = currencies[currency] || { balance: 0, base: 0, chart: [] };
+    item = {
+      balance: item.balance + balance,
+      base: item.base + base,
+      currency,
+      chart: chartBalanceBase.map((value, index) => (item.chart[index] = (item.chart[index] || 0) + value)),
+    };
 
     currencies[currency] = item;
   });

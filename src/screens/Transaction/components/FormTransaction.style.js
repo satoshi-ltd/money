@@ -2,9 +2,9 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 export const style = StyleSheet.create({
   scrollView: {
-    marginLeft: '$spaceM * -1',
-    marginRight: '$spaceM * -1',
-    marginBottom: '$spaceM',
+    marginLeft: '$viewOffset * -1',
+    marginRight: '$viewOffset * -1',
+    marginBottom: '$viewOffset',
   },
 
   option: {

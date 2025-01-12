@@ -6,11 +6,11 @@ import { Linking } from 'react-native';
 import { style } from './Subscription.style';
 import { Logo } from '../../components';
 import { useStore } from '../../contexts';
-import { C, L10N } from '../../modules';
+import { C, eventEmitter, L10N } from '../../modules';
 import { PurchaseService } from '../../services';
 import { verboseDate } from '../Settings/helpers';
 
-const { PRIVACY_URL, TERMS_URL } = C;
+const { EVENT, PRIVACY_URL, TERMS_URL } = C;
 
 const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation: { goBack } = {} }) => {
   const { subscription, updateSubscription } = useStore();
@@ -30,12 +30,12 @@ const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation:
       .then((activeSubscription) => {
         if (activeSubscription) {
           updateSubscription(activeSubscription);
-          alert(L10N.PURCHASE_RESTORED);
           goBack();
           setBusy(null);
+          eventEmitter.emit(EVENT.NOTIFICATION, { message: L10N.PURCHASE_RESTORED });
         }
       })
-      .catch((error) => alert(error));
+      .catch(handleError);
   };
 
   const handleStart = () => {
@@ -49,8 +49,10 @@ const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation:
           setBusy(null);
         }
       })
-      .catch((error) => alert(error));
+      .catch(handleError);
   };
+
+  const handleError = (error) => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, message: JSON.stringify(error) });
 
   const handleTermsAndConditions = () => {
     Linking.openURL(TERMS_URL);
@@ -106,7 +108,7 @@ const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation:
             <Text align="center">{L10N.SUBSCRIPTION_CAPTION}</Text>
           </View>
 
-          <View style={style.options}>
+          <View gap>
             <Text align="center" bold subtitle>
               {L10N.CHOOSE_PLAN}
             </Text>
@@ -130,7 +132,7 @@ const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation:
             <Action activity={busy === 'restore'} color="content" onPress={handleRestore}>
               {L10N.RESTORE_PURCHASE}
             </Action>
-            <Button activity={busy === 'purchase'} onPress={handleStart}>
+            <Button activity={busy === 'purchase'} secondary onPress={handleStart}>
               {plan === 'lifetime' ? L10N.PURCHASE : L10N.START_TRIAL}
             </Button>
             <Button outlined onPress={goBack}>

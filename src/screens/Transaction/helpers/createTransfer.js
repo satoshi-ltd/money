@@ -12,9 +12,9 @@ export const createTransfer = async ({
   state: {
     form: { from, to, exchange, value },
   },
-  store: { addTx },
+  store: { createTx },
 }) => {
-  let block = await addTx({
+  let block = await createTx({
     account: account.hash,
     category: INTERNAL_TRANSFER,
     title: to.title,
@@ -23,7 +23,7 @@ export const createTransfer = async ({
   });
 
   if (block) {
-    block = await addTx({
+    block = await createTx({
       account: to.hash,
       category: INTERNAL_TRANSFER,
       title: from.title,

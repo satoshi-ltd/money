@@ -6,9 +6,9 @@ export const style = StyleSheet.create({
   },
 
   slider: {
-    marginBottom: '$spaceM',
-    marginLeft: '$spaceM * -1',
-    marginRight: '$spaceM * -1',
+    marginBottom: '$viewOffset',
+    marginLeft: '$viewOffset * -1',
+    marginRight: '$viewOffset * -1',
   },
 
   inputCurrency: {
@@ -23,7 +23,7 @@ export const style = StyleSheet.create({
   },
 
   buttons: {
-    gap: '$spaceM',
+    gap: '$viewOffset',
     marginTop: '$spaceL',
   },
 });

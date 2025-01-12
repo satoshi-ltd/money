@@ -1,8 +1,6 @@
-import { C, exchange, getMonthDiff, isInternalTransfer } from '../../../modules';
+import { C, exchange, getMonthDiff, isInternalTransfer } from '../../modules';
 
-const {
-  TX: { TYPE },
-} = C;
+const { TX: { TYPE } = {} } = C;
 
 export const calcAccount = ({ account = {}, baseCurrency, genesisDate, months = 0, rates = {}, txs = [] }) => {
   const now = new Date();
@@ -13,7 +11,9 @@ export const calcAccount = ({ account = {}, baseCurrency, genesisDate, months = 
   let { balance: currentBalance = 0 } = account;
   let currentMonthTxs = 0;
   let expenses = 0;
+  let expensesBase = 0;
   let incomes = 0;
+  let incomesBase = 0;
   let progression = 0;
   let today = 0;
 
@@ -31,13 +31,16 @@ export const calcAccount = ({ account = {}, baseCurrency, genesisDate, months = 
 
     // ! @TODO: Should revisit this algo
     if (monthIndex === months) {
+      currentMonthTxs += 1;
+      progression += isExpense ? -value : value;
+      if (date.getDate() === currentDay) today += isExpense ? -value : value;
+
+      if (isExpense) expensesBase += value;
+      else incomesBase += value;
+
       if (!isInternalTransfer({ category })) {
-        currentMonthTxs += 1;
         if (isExpense) expenses += value;
         else incomes += value;
-        progression += isExpense ? -value : value;
-
-        if (date.getDate() === currentDay) today += isExpense ? -value : value;
       }
     }
   });
@@ -54,11 +57,14 @@ export const calcAccount = ({ account = {}, baseCurrency, genesisDate, months = 
         ? exchange(value, ...exchangeProps, new Date(genesisDate.getFullYear(), genesisDate.getMonth() + index + 1, 1))
         : value,
     ),
+    chartBalanceBase: [...chartBalance],
     currentBalance,
     currentBalanceBase: exchange(currentBalance, ...exchangeProps),
     currentMonth: {
       expenses: exchange(expenses, ...exchangeProps),
+      expensesBase,
       incomes: exchange(incomes, ...exchangeProps),
+      incomesBase,
       progression: exchange(progression, ...exchangeProps),
       progressionCurrency: progression,
       today: exchange(today, ...exchangeProps),

@@ -21,6 +21,6 @@ export const style = StyleSheet.create({
     borderStyle: '$borderStyle',
     borderBottomWidth: '$borderWidth',
     flex: 1,
-    paddingVertical: '$spaceM',
+    paddingVertical: '$viewOffset',
   },
 });

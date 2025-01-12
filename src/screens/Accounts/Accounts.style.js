@@ -17,11 +17,11 @@ export const style = StyleSheet.create({
   },
 
   firstCard: {
-    marginLeft: '$spaceM',
+    marginLeft: '$viewOffset',
   },
 
   lastCard: {
-    marginRight: '$spaceM',
+    marginRight: '$viewOffset',
   },
 
   item: {
@@ -33,6 +33,15 @@ export const style = StyleSheet.create({
   cardCurrency: {
     height: '$spaceXXL + $spaceS',
     marginRight: '$spaceS',
+    // opacity: 0.33,
+    width: '$spaceXXL + $spaceS',
+  },
+
+  currency: {
+    height: '$spaceXXL + $spaceS',
+    left: 0,
+    lineHeight: '$spaceXXL + $spaceS',
+    position: 'absolute',
     width: '$spaceXXL + $spaceS',
   },
 });

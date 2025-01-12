@@ -1,18 +1,25 @@
+import { useRoute } from '@react-navigation/native';
+import { Text, View } from '@satoshi-ltd/nano-design';
 import React from 'react';
-import { Image } from 'react-native';
 
 import { style } from './Logo.style';
 import { useStore } from '../../contexts';
-
-const LOGO = {
-  dark: require('../../../assets/images/logo-dark.png'),
-  light: require('../../../assets/images/logo-light.png'),
-};
+import { C } from '../../modules';
 
 const Logo = () => {
-  const { settings: { theme = 'light' } = {} } = useStore();
+  const { name, params: { account: { currency } = {} } = {} } = useRoute();
+  const { settings: { colorCurrency = false } = {} } = useStore();
 
-  return <Image resizeMode="contain" source={LOGO[theme]} style={style.image} />;
+  const color = colorCurrency && name === 'transactions' && currency ? C.COLOR[currency] : undefined;
+
+  return (
+    <View style={style.container}>
+      <Text bold style={style.text}>
+        môney
+      </Text>
+      <View style={[style.color, color && { backgroundColor: color }]} />
+    </View>
+  );
 };
 
 export { Logo };

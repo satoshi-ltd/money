@@ -26,8 +26,8 @@ export const style = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     gap: '$spaceS',
-    marginHorizontal: '$spaceM',
-    marginVertical: '$spaceS',
+    marginHorizontal: '$viewOffset',
+    marginVertical: '$viewOffset / 2',
     width: 'auto',
   },
 });

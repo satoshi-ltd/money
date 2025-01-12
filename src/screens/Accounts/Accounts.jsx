@@ -7,10 +7,12 @@ import { style } from './Accounts.style';
 import { filter, query } from './modules';
 import { CardAccount, Heading, PriceFriendly } from '../../components';
 import { useStore } from '../../contexts';
-import { getCurrencySymbol, L10N } from '../../modules';
+import { C, getCurrencySymbol, L10N } from '../../modules';
+
+const { COLOR } = C;
 
 const Accounts = ({ navigation: { navigate } = {} }) => {
-  const { accounts = [], overall = {} } = useStore();
+  const { accounts = [], settings: { colorCurrency = false } = {}, overall = {} } = useStore();
 
   const [selected, setSelected] = useState();
 
@@ -43,15 +45,26 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
           const hasBalance =
             currentBalance !== undefined && currentBalance !== null && parseFloat(currentBalance.toFixed(2)) > 0;
 
+          const color = !hasBalance ? 'contentLight' : undefined;
+
           return (
             <Pressable key={account.hash} onPress={() => navigate('transactions', { account })}>
               <View row style={style.item}>
-                <Card align="center" small outlined={!hasBalance} style={style.cardCurrency}>
-                  <Text bold>{getCurrencySymbol(currency)}</Text>
-                </Card>
+                <View align="center">
+                  <Card
+                    small
+                    style={[
+                      style.cardCurrency,
+                      colorCurrency ? { backgroundColor: COLOR[currency], opacity: 0.25 } : undefined,
+                    ]}
+                  />
+                  <Text align="center" bold color={colorCurrency ? COLOR[currency] : color} style={style.currency}>
+                    {getCurrencySymbol(currency)}
+                  </Text>
+                </View>
 
                 <View>
-                  <Text bold numberOfLines={1}>
+                  <Text bold color={color} numberOfLines={1}>
                     {title}
                   </Text>
                   <PriceFriendly color="contentLight" currency={currency} caption value={currentBalance} />

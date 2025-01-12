@@ -1,42 +1,36 @@
-import { Icon, Pressable, Text, View } from '@satoshi-ltd/nano-design';
-import PropTypes from 'prop-types';
-import React from 'react';
-import { SafeAreaView } from 'react-native';
+import { Notification as NotificationBase } from '@satoshi-ltd/nano-design';
+import React, { useEffect, useState } from 'react';
 
-import { style } from './Notification.style';
-import { ICON } from '../../modules';
+import { C, eventEmitter, L10N } from '../../modules';
 
-// ! TODO: Refactor
+const { EVENT } = C;
 
-const Notification = ({ color, isVisible, text, onClose }) => {
-  const colorContent = color !== 'accent' ? 'base' : undefined;
+export const Notification = () => {
+  const [value, setValue] = useState();
+  const [visible, setVisible] = useState(false);
 
-  return (
-    <View style={[style.notification, style[color], { translateY: isVisible ? '0%' : '-100%' }]}>
-      <SafeAreaView style={style.safeAreaView}>
-        <Icon
-          color={colorContent}
-          name={color === 'accent' ? ICON.SUCCESS : color === 'info' ? ICON.INFO : ICON.ALERT}
-        />
-        <Text bold color={colorContent} caption style={style.text}>
-          {text}
-        </Text>
+  useEffect(() => {
+    const listener = (data = {}) => {
+      if (visible) setVisible(false);
+      setTimeout(
+        () => {
+          setValue(data);
+          setVisible(true);
 
-        <Pressable onPress={onClose}>
-          <Icon color={colorContent} subtitle name={ICON.CLOSE} />
-        </Pressable>
-      </SafeAreaView>
-    </View>
-  );
+          if (!data.error) setTimeout(() => setVisible(false), 5000);
+        },
+        visible ? 300 : 0,
+      );
+    };
+
+    eventEmitter.on(EVENT.NOTIFICATION, listener);
+    return () => eventEmitter.off(EVENT.NOTIFICATION, listener);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleClose = () => setVisible(false);
+
+  const { error, message = L10N.ERROR } = value || {};
+
+  return <NotificationBase error={error} text={message} visible={visible} onClose={handleClose} />;
 };
-
-Notification.displayName = 'Notification';
-
-Notification.propTypes = {
-  color: PropTypes.oneOf(['alert', 'info', 'accent']),
-  isVisible: PropTypes.bool,
-  text: PropTypes.string.isRequired,
-  onClose: PropTypes.func,
-};
-
-export { Notification };

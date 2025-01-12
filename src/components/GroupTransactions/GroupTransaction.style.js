@@ -1,20 +1,27 @@
 import StyleSheet from 'react-native-extended-stylesheet';
 
 export const style = StyleSheet.create({
+  container: {
+    marginBottom: '$viewOffset',
+  },
+
   content: {
-    paddingHorizontal: '$spaceM',
-    paddingVertical: '$spaceS',
+    paddingHorizontal: '$viewOffset',
+    paddingVertical: '$viewOffset / 2',
     width: '100%',
   },
 
   date: {
-    marginTop: '$spaceXS',
     marginLeft: '$viewOffset',
+  },
+
+  text: {
+    flex: 1,
   },
 
   cardIcon: {
     height: '$spaceXXL + $spaceS',
     width: '$spaceXXL + $spaceS',
-    marginRight: '$spaceS',
+    marginRight: '$viewOffset / 2',
   },
 });
