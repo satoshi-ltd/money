@@ -6,10 +6,12 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './FormTransaction.style';
 import { CardOption, InputCurrency, InputText } from '../../../components';
-import { getIcon, L10N } from '../../../modules';
+import { C, getIcon, L10N } from '../../../modules';
 import { queryCategories } from '../helpers';
 
-const FormTransaction = ({ account = {}, form = {}, onChange, type }) => {
+const { TX: { TYPE: { EXPENSE } } = {} } = C;
+
+const FormTransaction = ({ account = {}, form = {}, onChange, type = EXPENSE }) => {
   const scrollview = useRef(null);
   const { width } = useWindowDimensions();
 
@@ -32,7 +34,7 @@ const FormTransaction = ({ account = {}, form = {}, onChange, type }) => {
 
   const optionSnap = StyleSheet.value('$optionSnap');
   const categories = queryCategories({ type });
-  const totals = account.txs.reduce(
+  const totals = account.txs?.reduce(
     (total, { category }) => ((total[category] = (total[category] || 0) + 1), total),
     {},
   );
@@ -48,7 +50,7 @@ const FormTransaction = ({ account = {}, form = {}, onChange, type }) => {
 
   return (
     <>
-      <ScrollView horizontal ref={scrollview} snap={optionSnap} style={style.scrollView} width={width}>
+      <ScrollView horizontal ref={scrollview} snap={optionSnap} width={width} style={style.scrollView}>
         {sortedCategories.map((item, index) => (
           <CardOption
             key={item.key}

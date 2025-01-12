@@ -2,7 +2,7 @@ import { Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
-import { LineChart as LineChartBase } from 'react-native-gifted-charts';
+import { CurveType, LineChart as LineChartBase } from 'react-native-gifted-charts';
 
 import { style } from './LineChart.style';
 import { useStore } from '../../contexts';
@@ -42,6 +42,7 @@ const LineChart = ({
         {...{ color, height, maxValue, minValue, width }}
         adjustToWidth
         curved
+        curveType={CurveType.QUADRATIC}
         data={values.map((value, index) => ({ index, value, dataPointText: parseInt(value) }))}
         disableScroll
         endSpacing={0}
@@ -63,6 +64,7 @@ const LineChart = ({
           showPointer
             ? {
                 autoAdjustPointerLabelPosition: true,
+                initialPointerIndex: values.length ? values.length - 1 : undefined,
                 pointerLabelComponent: ([{ index, value }]) => (
                   <View align="center">
                     <Text bold tiny style={style.pointerCaption}>

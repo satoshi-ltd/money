@@ -16,7 +16,7 @@ const style = StyleSheet.create({
   chart: {
     bottom: '$spaceXS',
     left: 0,
-    opacity: 0.5,
+    opacity: 0.66,
     position: 'absolute',
   },
 

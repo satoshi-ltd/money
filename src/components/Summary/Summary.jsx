@@ -16,7 +16,14 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
     updateSettings,
   } = useStore();
 
-  const { expenses = 0, incomes = 0, progression = 0, progressionCurrency = 0 } = currentMonth;
+  const {
+    expenses = 0,
+    expensesBase = 0,
+    incomes = 0,
+    incomesBase = 0,
+    progression = 0,
+    progressionCurrency = 0,
+  } = currentMonth;
   const progressionPercentage = getProgressionPercentage(
     currentBalance,
     currency === baseCurrency ? progression : progressionCurrency,
@@ -69,16 +76,16 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
           <View flex />
 
           <View row style={style.tags}>
-            {incomes > 0 && (
+            {(incomes > 0 || incomesBase > 0) && (
               <View row style={[style.tag, style.income]}>
                 <Icon color={color} name={ICON.INCOME} caption />
-                <PriceFriendly bold color={color} currency={currency} tiny value={incomes} />
+                <PriceFriendly bold color={color} currency={currency} tiny value={incomesBase || incomes} />
               </View>
             )}
-            {expenses > 0 && (
+            {(expenses > 0 || expensesBase > 0) && (
               <View row style={style.tag}>
                 <Icon name={ICON.EXPENSE} caption />
-                <PriceFriendly bold currency={currency} tiny value={expenses} />
+                <PriceFriendly bold currency={currency} tiny value={expensesBase || expenses} />
               </View>
             )}
           </View>

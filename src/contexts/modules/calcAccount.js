@@ -1,8 +1,6 @@
-import { C, exchange, getMonthDiff } from '../../modules';
+import { C, exchange, getMonthDiff, isInternalTransfer } from '../../modules';
 
-const {
-  TX: { TYPE },
-} = C;
+const { TX: { TYPE } = {} } = C;
 
 export const calcAccount = ({ account = {}, baseCurrency, genesisDate, months = 0, rates = {}, txs = [] }) => {
   const now = new Date();
@@ -13,7 +11,9 @@ export const calcAccount = ({ account = {}, baseCurrency, genesisDate, months = 
   let { balance: currentBalance = 0 } = account;
   let currentMonthTxs = 0;
   let expenses = 0;
+  let expensesBase = 0;
   let incomes = 0;
+  let incomesBase = 0;
   let progression = 0;
   let today = 0;
 
@@ -21,7 +21,7 @@ export const calcAccount = ({ account = {}, baseCurrency, genesisDate, months = 
   chartBalance[0] = account.balance > 0 ? account.balance : 0;
 
   const dataSource = txs.filter((tx) => tx.account === account.hash);
-  dataSource.forEach(({ timestamp, type, value = 0 }) => {
+  dataSource.forEach(({ category, timestamp, type, value = 0 }) => {
     const isExpense = type === TYPE.EXPENSE;
     const date = new Date(timestamp);
     const monthIndex = getMonthDiff(genesisDate, date);
@@ -32,11 +32,16 @@ export const calcAccount = ({ account = {}, baseCurrency, genesisDate, months = 
     // ! @TODO: Should revisit this algo
     if (monthIndex === months) {
       currentMonthTxs += 1;
-      if (isExpense) expenses += value;
-      else incomes += value;
       progression += isExpense ? -value : value;
-
       if (date.getDate() === currentDay) today += isExpense ? -value : value;
+
+      if (isExpense) expensesBase += value;
+      else incomesBase += value;
+
+      if (!isInternalTransfer({ category })) {
+        if (isExpense) expenses += value;
+        else incomes += value;
+      }
     }
   });
 
@@ -57,7 +62,9 @@ export const calcAccount = ({ account = {}, baseCurrency, genesisDate, months = 
     currentBalanceBase: exchange(currentBalance, ...exchangeProps),
     currentMonth: {
       expenses: exchange(expenses, ...exchangeProps),
+      expensesBase,
       incomes: exchange(incomes, ...exchangeProps),
+      incomesBase,
       progression: exchange(progression, ...exchangeProps),
       progressionCurrency: progression,
       today: exchange(today, ...exchangeProps),
