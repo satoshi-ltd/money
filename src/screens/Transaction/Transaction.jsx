@@ -5,40 +5,40 @@ import React, { useEffect, useState } from 'react';
 import { FormTransaction, FormTransfer } from './components';
 import { createTransaction, createTransfer } from './helpers';
 import { style } from './Transaction.style';
+import { SliderAccounts } from '../../components';
 import { useStore } from '../../contexts';
 import { C, L10N } from '../../modules';
 import { PurchaseService } from '../../services';
 
-const {
-  TIMEOUT,
-  TX: {
-    TYPE: { TRANSFER },
-  },
-} = C;
+const { TIMEOUT, TX: { TYPE: { TRANSFER } } = {} } = C;
 const ONE_DAY = 24 * 60 * 60 * 1000;
 
 const INITIAL_STATE = { form: {}, valid: false };
 
-const Transaction = ({ route: { params = {} } = {}, navigation: { goBack } = {} }) => {
+const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigation: { goBack } = {} }) => {
   const store = useStore();
   const { subscription, txs = [], updateSubscription } = store;
 
+  const [account, setAccount] = useState(params.account);
   const [busy, setBusy] = useState(false);
-  const [dataSource, setDataSource] = useState({});
+  // const [dataSource, setDataSource] = useState({});
 
   const [state, setState] = useState(INITIAL_STATE);
 
   useEffect(() => {
-    const { account, type } = params;
-    setDataSource({ account, type });
-    setState(INITIAL_STATE);
+    // setAccount(params.account);
+    // setState(INITIAL_STATE);
   }, [params]);
+
+  useEffect(() => {
+    setState(INITIAL_STATE);
+  }, [account]);
 
   const handleSubmit = async () => {
     setBusy(true);
     setTimeout(async () => {
       const method = type === TRANSFER ? createTransfer : createTransaction;
-      const value = await method({ props: dataSource, state, store });
+      const value = await method({ props: { account, type }, state, store });
       if (value) goBack();
       setBusy(false);
 
@@ -55,9 +55,7 @@ const Transaction = ({ route: { params = {} } = {}, navigation: { goBack } = {} 
     }, TIMEOUT.BUSY);
   };
 
-  const { type } = dataSource;
   const { valid } = state;
-
   const Form = type === TRANSFER ? FormTransfer : FormTransaction;
 
   return (
@@ -66,8 +64,14 @@ const Transaction = ({ route: { params = {} } = {}, navigation: { goBack } = {} 
         {L10N.TRANSACTION[type]}
       </Text>
 
-      {type !== undefined && (
-        <Form {...dataSource} {...state} debounce={200} onChange={(value) => setState({ ...state, ...value })} />
+      <Text bold caption color="contentLight" style={style.title}>
+        {account ? L10N.SELECT_CATEGORY : L10N.SELECT_ACCOUNT}
+      </Text>
+
+      {!account ? (
+        <SliderAccounts selected={account?.hash} onChange={setAccount} />
+      ) : (
+        <Form {...{ account, type }} {...state} debounce={200} onChange={(value) => setState({ ...state, ...value })} />
       )}
 
       <View row style={style.buttons}>

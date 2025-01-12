@@ -174,6 +174,8 @@ export const L10N = {
   SCHEDULE_BACKUP_CAPTION:
     "Don't forget to perform your weekly backup. Keep your financial information safe and up-to-date. It's quick and easy. Do it now!",
   SEARCH: 'Search',
+  SELECT_ACCOUNT: 'Select account',
+  SELECT_CATEGORY: 'Select category',
   SETTINGS: 'Settings',
   START: 'Start',
   START_TRIAL: 'Start free 7 day trial',

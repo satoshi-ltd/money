@@ -27,7 +27,7 @@ import {
 } from './screens';
 import { PurchaseService } from './services';
 
-const { EVENT } = C;
+const { EVENT, TX: { TYPE: { EXPENSE } } = {} } = C;
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -105,6 +105,23 @@ const Tabs = ({ navigation = {} }) => {
           tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.ACTIVITY }),
           tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.STATS }),
           title: L10N.ACTIVITY,
+        }}
+      />
+      <Tab.Screen
+        name="transaction"
+        component={Transaction}
+        options={{
+          tabBarButton: () => (
+            <Button
+              icon={ICON.EXPENSE}
+              large
+              onPress={() => navigation.navigate('transaction', { type: EXPENSE })}
+              style={{
+                marginHorizontal: StyleSheet.value('$spaceM'),
+                top: -StyleSheet.value('$spaceS'),
+              }}
+            />
+          ),
         }}
       />
       <Tab.Screen

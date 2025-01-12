@@ -11,5 +11,6 @@ export * from './LineChart';
 export * from './Logo';
 export * from './Notification';
 export * from './PriceFriendly';
+export * from './SliderAccounts';
 export * from './SliderCurrencies';
 export * from './Summary';
