@@ -14,3 +14,4 @@ export * from './PriceFriendly';
 export * from './SliderAccounts';
 export * from './SliderCurrencies';
 export * from './Summary';
+export * from './TransactionsList';

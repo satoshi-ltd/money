@@ -1,3 +1,5 @@
 import { groupTxsByDate } from '../../../modules';
 
-export const query = (txs = [], scroll = false) => groupTxsByDate([...txs].reverse().slice(0, scroll ? 256 : 16));
+const ITEMS_PER_PAGE = 20;
+
+export const query = (txs = [], page = 1) => groupTxsByDate([...txs].reverse().slice(0, page * ITEMS_PER_PAGE));
