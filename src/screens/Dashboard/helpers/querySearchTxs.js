@@ -1,6 +1,8 @@
-import { L10N, groupTxsByDate } from '../../../modules';
+import { C, L10N, groupTxsByDate } from '../../../modules';
 
-export const querySearchTxs = ({ accounts = [], query, txs = [] }) =>
+const { TRANSACTIONS_PER_PAGE } = C;
+
+export const querySearchTxs = ({ accounts = [], page = 1, query, txs = [] }) =>
   query
     ? groupTxsByDate(
         txs
@@ -17,7 +19,7 @@ export const querySearchTxs = ({ accounts = [], query, txs = [] }) =>
 
             return (title && title.includes(lowerCaseQuery)) || (category && category.includes(lowerCaseQuery));
           })
-          .slice(0, 16)
+          .slice(0, page * TRANSACTIONS_PER_PAGE)
           .map((tx = {}) => {
             const { currency } = accounts.find(({ hash }) => hash === tx.account) || {};
 

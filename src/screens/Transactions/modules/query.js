@@ -1,5 +1,5 @@
-import { groupTxsByDate } from '../../../modules';
+import { C, groupTxsByDate } from '../../../modules';
 
-const ITEMS_PER_PAGE = 20;
+const { TRANSACTIONS_PER_PAGE } = C;
 
-export const query = (txs = [], page = 1) => groupTxsByDate([...txs].reverse().slice(0, page * ITEMS_PER_PAGE));
+export const query = (txs = [], page = 1) => groupTxsByDate([...txs].reverse().slice(0, page * TRANSACTIONS_PER_PAGE));

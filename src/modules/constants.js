@@ -104,6 +104,8 @@ export const C = {
     SYNC: 60000,
   },
 
+  TRANSACTIONS_PER_PAGE: 20,
+
   TX: {
     TYPE: {
       EXPENSE: 0,
