@@ -67,6 +67,9 @@ const Settings = ({ navigation = {} }) => {
         caption: L10N.CONFIRM_IMPORT_CAPTION(backup),
         title: L10N.CONFIRM_IMPORT,
         onAccept: async () => {
+          if (backup?.settings?.theme) {
+            StyleSheet.build(backup.settings.theme === 'light' ? LightTheme : DarkTheme);
+          }
           await importBackup(backup);
           navigation.navigate('dashboard');
           eventEmitter.emit(EVENT.NOTIFICATION, { message: L10N.CONFIRM_IMPORT_SUCCESS });
