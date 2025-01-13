@@ -2,6 +2,7 @@ export const L10N = {
   ABOUT: 'About Money',
   ACCEPT: 'Accept',
   ACTIVITY: 'Analytics',
+  ANNUALY: 'Annualy',
 
   APPERANCE_DARK: 'Switch to dark mode',
   APPERANCE_LIGHT: 'Switch to light mode',
@@ -11,6 +12,7 @@ export const L10N = {
   BALANCE: 'Balance',
 
   CANCEL: 'Cancel',
+  CANCEL_ANYTIME: 'Cancel anytime',
   CATEGORIES: [
     {
       // Expenses
@@ -48,7 +50,6 @@ export const L10N = {
 
   CHANGE_DESTINATION: 'Change destination',
   CHOOSE_CURRENCY: 'Base currency',
-  CHOOSE_PLAN: 'Choose your plan',
   CLONE: 'Clone',
   CLOSE: 'Close',
   CONCEPT: 'Concept',
@@ -125,6 +126,7 @@ export const L10N = {
   LIFETIME: 'Lifetime',
   LIFETIME_DESCRIPTION: "Pay once and don't worry ever",
 
+  MONTH: 'month',
   MONTHS: [
     'January',
     'February',
@@ -188,7 +190,37 @@ export const L10N = {
   SUBSCRIPTION_PRIVACY: 'Privacy Policy',
   SUBSCRIPTION_TERMS: 'Terms',
   SUBSCRIPTION_TERMS_CAPTION:
-    'By starting the 7-day free trial, your subscription will auto-renew unless canceled via App Store settings. By proceeding, you agree to our',
+    'By tapping "Start free 7 day trial", you will not be charged for the next 7 days, your subscription will auto-renew for the same price and package length until you cancel via App Store Settings. and you agree to our',
+
+  SUBSCRIPTION_TITLE: 'Maximize Your Financial Management',
+  SUBSCRIPTION_DESCRIPTION:
+    'Unlock premium features to take full control of your finances with an annual subscription.',
+  SUBSCRIPTION_LIFETIME_DESCRIPTION:
+    'Lifetime access to advanced financial tools and personalized insights with a one-time payment.',
+
+  SUBSCRIPTION_ITEMS: [
+    {
+      icon: 'currency-usd',
+      title: 'Unlimited Multicurrency Accounts',
+      description: 'Manage as many accounts in different currencies as you need, without any limits.',
+    },
+    {
+      icon: 'swap-horizontal',
+      title: 'Unlimited Transactions',
+      description: 'Track and record all your financial activities without restrictions.',
+    },
+    {
+      icon: 'palette',
+      title: 'Enhanced Themes Customization',
+      description: 'Create a unique visual experience by customizing themes for each currency.',
+    },
+    {
+      icon: 'backup-restore',
+      title: 'Import & Export Feature',
+      description: 'Easily back up and transfer your financial data with the import and export functionality.',
+    },
+  ],
+
   SYNC_RATES_SENTENCE: 'Last update on',
   SYNC_RATES_CTA: 'Update Rates',
   SWAP: 'Swap',
