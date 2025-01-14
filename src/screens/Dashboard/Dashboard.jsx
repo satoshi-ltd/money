@@ -45,7 +45,7 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
         renderItem={({ item }) => <TransactionItem {...item} currency={baseCurrency} />}
         renderSectionHeader={({ section }) => <TransactionsHeader {...section} />}
         stickySectionHeadersEnabled={false}
-        sections={querySearchTxs({ accounts, query, txs }) || lastTxs}
+        sections={querySearchTxs({ accounts, page, query, txs }) || lastTxs}
         // sections={lastTxs}
       />
     </Screen>
