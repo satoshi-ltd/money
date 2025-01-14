@@ -9,36 +9,17 @@ import { useStore } from '../../contexts';
 import { C, eventEmitter, L10N } from '../../modules';
 import { PurchaseService } from '../../services';
 
-const planData = {};
 const { EVENT, PRIVACY_URL, TERMS_URL } = C;
 
 const SubscriptionOptions = ({ route: { params: { plans = [] } = {} } = {}, navigation: { goBack } = {} }) => {
   const { updateSubscription } = useStore();
 
   const [busy, setBusy] = useState(null);
-  const [plan, setPlan] = useState(null);
-
-  const handleChange = (id) => {
-    setPlan(id);
-  };
-
-  // const handleRestore = () => {
-  //   setBusy('restore');
-  //   PurchaseService.restore()
-  //     .then((activeSubscription) => {
-  //       if (activeSubscription) {
-  //         updateSubscription(activeSubscription);
-  //         goBack();
-  //         setBusy(null);
-  //         eventEmitter.emit(EVENT.NOTIFICATION, { message: L10N.PURCHASE_RESTORED });
-  //       }
-  //     })
-  //     .catch(handleError);
-  // };
+  const [plan, setPlan] = useState(PLAN.SUBSCRIPTION);
 
   const handleStart = () => {
     setBusy('purchase');
-    const { data } = plans.find((p) => p.productId === plan) || {};
+    const { data } = plans[plan] || {};
     PurchaseService.buy(data)
       .then((newSubscription) => {
         if (newSubscription) {
@@ -61,6 +42,7 @@ const SubscriptionOptions = ({ route: { params: { plans = [] } = {} } = {}, navi
   };
 
   const isLifetime = plan === PLAN.LIFETIME;
+  const planData = plans[plan];
 
   return (
     <>
@@ -69,8 +51,11 @@ const SubscriptionOptions = ({ route: { params: { plans = [] } = {} } = {}, navi
           accent={isLifetime}
           caption
           selected={isLifetime ? 1 : 0}
-          options={[{ text: L10N.SUBSCRIPTION }, { text: L10N.LIFETIME }]}
-          onChange={(option) => setPlan(option.text === L10N.SUBSCRIPTION ? PLAN.SUBSCRIPTION : PLAN.LIFETIME)}
+          options={[
+            { id: PLAN.SUBSCRIPTION, text: L10N.SUBSCRIPTION },
+            { id: PLAN.LIFETIME, text: L10N.LIFETIME },
+          ]}
+          onChange={(option) => setPlan(option.id)}
         />
       </View>
 
@@ -100,36 +85,26 @@ const SubscriptionOptions = ({ route: { params: { plans = [] } = {} } = {}, navi
       </Card>
 
       <View align="center">
-        <Text align="center" bold caption>
-          {`${planData?.price || 'THB 3,990thb'} ${L10N.ANNUALY} (${planData?.pricePerMonth || 'THB 332.50'}/${
-            L10N.MONTH
-          })`}
-        </Text>
-        <Text align="center" bold caption>
-          {L10N.CANCEL_ANYTIME}
-        </Text>
+        {isLifetime ? (
+          <Text align="center" bold caption>
+            {`${planData?.price || 'THB 3,990thb'} ${L10N.LIFETIME}`}
+          </Text>
+        ) : (
+          <>
+            <Text align="center" bold caption>
+              {`${planData?.price || 'THB 3,990thb'} ${L10N.ANNUALY} (${planData?.pricePerMonth || 'THB 332.50'}/${
+                L10N.MONTH
+              })`}
+            </Text>
+            <Text align="center" bold caption>
+              {L10N.CANCEL_ANYTIME}
+            </Text>
+          </>
+        )}
       </View>
 
-      {/* <View gap>
-        {plans.map(({ productId, price, title, description }) => (
-          <Pressable key={productId} onPress={() => handleChange(productId)}>
-            <Card outlined style={productId === plan ? style.optionHighlight : undefined}>
-              <View />≈<Text bold color={productId === plan ? 'base' : undefined}>{`${price} / ${title}`}</Text>
-              {!!description && (
-                <Text color={productId === plan ? 'base' : undefined} tiny>
-                  {description}
-                </Text>
-              )}
-            </Card>
-          </Pressable>
-        ))}
-      </View> */}
-
-      {/* <Action activity={busy === 'restore'} color="content" onPress={handleRestore}>
-          {L10N.RESTORE_PURCHASE}
-        </Action> */}
       <Button activity={busy === 'purchase'} secondary={isLifetime} onPress={handleStart}>
-        {plan === 'lifetime' ? L10N.PURCHASE : L10N.START_TRIAL}
+        {plan === PLAN.LIFETIME ? L10N.PURCHASE : L10N.START_TRIAL}
       </Button>
 
       <Text align="center" tiny>

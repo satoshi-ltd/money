@@ -1,6 +1,6 @@
 const PLAN = {
-  SUBSCRIPTION: 'money.subscription',
-  LIFETIME: 'money.lifetime',
+  SUBSCRIPTION: '$rc_annual',
+  LIFETIME: '$rc_lifetime',
 };
 
 export { PLAN };
