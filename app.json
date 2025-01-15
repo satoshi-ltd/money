@@ -14,7 +14,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#FFFEFE"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.satoshi-limited.money",
@@ -48,7 +50,8 @@
           "icon": "./assets/icon.png",
           "color": "#FFFEFE"
         }
-      ]
+      ],
+      "expo-font"
     ],
     "extra": {
       "eas": {
