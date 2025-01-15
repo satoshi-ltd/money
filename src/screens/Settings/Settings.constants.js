@@ -33,17 +33,16 @@ const OPTIONS = [
   },
 ];
 
+const REMINDER_BACKUP_OPTIONS = [
+  { text: L10N.OFF, value: 0 },
+  { text: L10N.ON, value: 1 },
+];
+
 const PREFERENCES = [
   {
     icon: ICON.SWAP,
     screen: 'baseCurrency',
     text: L10N.CHOOSE_CURRENCY,
-  },
-  {
-    disabled: true,
-    icon: ICON.BELL,
-    screen: 'reminders',
-    text: L10N.REMINDERS,
   },
 ];
 
@@ -78,4 +77,4 @@ const ABOUT = (isPremium) => [
   },
 ];
 
-export { ABOUT, OPTIONS, PREFERENCES };
+export { ABOUT, OPTIONS, PREFERENCES, REMINDER_BACKUP_OPTIONS };

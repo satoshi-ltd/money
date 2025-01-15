@@ -8,7 +8,7 @@ import { style } from './Session.style';
 import { Logo } from '../../components';
 import { useStore } from '../../contexts';
 import { C, eventEmitter, L10N } from '../../modules';
-import { BackupService, ServiceRates } from '../../services';
+import { NotificationsService, ServiceRates } from '../../services';
 
 const { EVENT, VERSION } = C;
 
@@ -41,7 +41,7 @@ const Session = ({ navigation: { reset } = {} }) => {
 
   const handleSubmit = async () => {
     if (signup) await updateSettings({ pin });
-    await BackupService.scheduleNotification();
+    NotificationsService.init();
 
     reset({ index: 0, routes: [{ name: 'main' }] });
   };

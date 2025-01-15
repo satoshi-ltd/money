@@ -34,6 +34,7 @@ export const C = {
 
   CURRENCY: 'USD',
 
+  DEFAULT_THEME: 'light',
   DELAY_PRESS_MS: 500,
 
   // ENDPOINT: IS_DEV ? 'http://localhost:8080' : 'https://ledgernode.soyjavi.com',

@@ -11,6 +11,7 @@ const DEFAULTS = {
     maskAmount: false,
     onboarded: false,
     pin: undefined,
+    reminders: [1],
     theme: 'light',
   },
   rates: {},
