@@ -4,17 +4,29 @@ import { Platform } from 'react-native';
 import { C, L10N } from '../modules';
 
 const { IS_WEB } = C;
+const APIKEY = {
+  ios: 'appl_aGBSQTaLCQAEJevVIvbQKAkNKpZ',
+  android: 'goog_bzzicUKLHqrXEdrltqKGmdXgyyI',
+};
+
+const PREMIUM_MOCK = {
+  customerInfo: {
+    entitlements: {
+      active: {
+        pro: {
+          identifier: 'pro',
+        },
+      },
+    },
+  },
+  productIdentifier: 'lifetime',
+};
 
 const initializePurchases = async () => {
   const Purchases = require('react-native-purchases').default;
 
   Purchases.setLogLevel(Purchases.LOG_LEVEL.VERBOSE);
-
-  if (Platform.OS === 'ios') {
-    Purchases.configure({ apiKey: 'appl_aGBSQTaLCQAEJevVIvbQKAkNKpZ' });
-  } else if (Platform.OS === 'android') {
-    Purchases.configure({ apiKey: 'goog_bzzicUKLHqrXEdrltqKGmdXgyyI' });
-  }
+  Purchases.configure({ apiKey: APIKEY[Platform.OS] });
 
   return Purchases;
 };
@@ -54,7 +66,7 @@ export const PurchaseService = {
   buy: async (plan) =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
-      if (Constants.appOwnership === 'expo' || IS_WEB) return resolve({ productIdentifier: 'lifetime' });
+      if (Constants.appOwnership === 'expo' || IS_WEB) return resolve(PREMIUM_MOCK);
 
       try {
         const Purchases = await initializePurchases();
@@ -75,7 +87,7 @@ export const PurchaseService = {
   restore: async () =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
-      if (Constants.appOwnership === 'expo' || IS_WEB) return resolve({ productIdentifier: 'lifetime' });
+      if (Constants.appOwnership === 'expo' || IS_WEB) return resolve(PREMIUM_MOCK);
 
       try {
         const Purchases = await initializePurchases();

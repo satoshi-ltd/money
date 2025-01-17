@@ -128,7 +128,7 @@ const Settings = ({ navigation = {} }) => {
         <Text bold caption>
           {L10N.GENERAL.toUpperCase()}
         </Text>
-        {OPTIONS.map(({ caption, disabled, icon, id, text, ...rest }) => (
+        {OPTIONS(isPremium, subscription).map(({ caption, disabled, icon, id, text, ...rest }) => (
           <Setting
             activity={rest.callback && [rest.callback].sync}
             key={`option-${id}`}
@@ -148,7 +148,7 @@ const Settings = ({ navigation = {} }) => {
               icon,
               text,
             }}
-            onPress={() => handleOption(rest)}
+            onPress={rest.callback ? () => handleOption(rest) : undefined}
           />
         ))}
       </View>
@@ -180,6 +180,7 @@ const Settings = ({ navigation = {} }) => {
           caption={L10N.REMINDER_BACKUP_CAPTION}
           icon={ICON.BELL}
           onChange={(value = 0) => handleChangeReminder(value)}
+          onPress={() => {}}
           options={REMINDER_BACKUP_OPTIONS}
           selected={reminders?.[0] || 1}
           text={L10N.REMINDER_BACKUP}

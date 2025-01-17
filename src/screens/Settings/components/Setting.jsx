@@ -10,21 +10,11 @@ import { C, ICON } from '../../../modules';
 
 const { DEFAULT_THEME } = C;
 
-const Setting = ({
-  activity = false,
-  caption,
-  disabled,
-  icon,
-  options,
-  selected,
-  text,
-  onChange,
-  onPress = () => {},
-} = {}) => {
+const Setting = ({ activity = false, caption, disabled, icon, options, selected, text, onChange, onPress } = {}) => {
   const { settings: { theme } = {} } = useStore();
 
   return (
-    <Pressable onPress={!disabled && !activity ? onPress : undefined}>
+    <Pressable onPress={!disabled && !activity && onPress ? onPress : undefined}>
       <View gap row style={style.setting}>
         {icon && (
           <Card color={disabled ? 'border' : 'accent'} small style={{ width: 'auto' }}>
@@ -45,8 +35,10 @@ const Setting = ({
             <ActivityIndicator size="small" color={StyleSheet.value('$colorContent')} />
           ) : options ? (
             <Tabs {...{ selected, options, onChange }} />
-          ) : (
+          ) : onPress ? (
             <Icon name={ICON.RIGHT} />
+          ) : (
+            <></>
           )}
         </View>
       </View>
