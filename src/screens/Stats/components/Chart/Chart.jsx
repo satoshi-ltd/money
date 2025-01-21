@@ -59,12 +59,12 @@ const Chart = ({
 };
 
 Chart.propTypes = {
-  color: PropTypes.string,
+  color: PropTypes.any,
   currency: PropTypes.string,
   multipleData: PropTypes.bool,
   pointerIndex: PropTypes.number,
   title: PropTypes.string,
-  values: PropTypes.arrayOf(PropTypes.any),
+  values: PropTypes.any,
   onPointerChange: PropTypes.func,
   style: PropTypes.any,
 };

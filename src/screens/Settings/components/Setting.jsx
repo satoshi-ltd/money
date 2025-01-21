@@ -11,13 +11,17 @@ import { C, ICON } from '../../../modules';
 const { DEFAULT_THEME } = C;
 
 const Setting = ({ activity = false, caption, disabled, icon, options, selected, text, onChange, onPress } = {}) => {
-  const { settings: { theme } = {} } = useStore();
+  const { settings: { baseCurrency, colorCurrency, theme } = {} } = useStore();
 
   return (
     <Pressable onPress={!disabled && !activity && onPress ? onPress : undefined}>
       <View gap row style={style.setting}>
         {icon && (
-          <Card color={disabled ? 'border' : 'accent'} small style={{ width: 'auto' }}>
+          <Card
+            color={disabled ? 'border' : 'accent'}
+            small
+            style={{ backgroundColor: colorCurrency ? C.COLOR[baseCurrency] : undefined, width: 'auto' }}
+          >
             <Icon color={theme !== DEFAULT_THEME ? 'base' : undefined} name={icon} />
           </Card>
         )}

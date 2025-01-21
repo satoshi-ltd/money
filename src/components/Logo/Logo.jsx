@@ -8,9 +8,9 @@ import { C } from '../../modules';
 
 const Logo = () => {
   const { name, params: { account: { currency } = {} } = {} } = useRoute();
-  const { settings: { colorCurrency = false } = {} } = useStore();
+  const { settings: { baseCurrency, colorCurrency = false } = {} } = useStore();
 
-  const color = colorCurrency && name === 'transactions' && currency ? C.COLOR[currency] : undefined;
+  const color = colorCurrency ? C.COLOR[name === 'transactions' ? currency : baseCurrency] : undefined;
 
   return (
     <View style={style.container}>
