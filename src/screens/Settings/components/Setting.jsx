@@ -22,7 +22,7 @@ const Setting = ({ activity = false, caption, disabled, icon, options, selected,
             small
             style={{ backgroundColor: colorCurrency ? C.COLOR[baseCurrency] : undefined, width: 'auto' }}
           >
-            <Icon color={theme !== DEFAULT_THEME ? 'base' : undefined} name={icon} />
+            <Icon color={theme !== DEFAULT_THEME && colorCurrency ? 'base' : undefined} name={icon} />
           </Card>
         )}
         <View row style={style.content}>
