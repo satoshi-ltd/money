@@ -2,7 +2,7 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 export const style = StyleSheet.create({
   container: {
-    psition: 'relative',
+    position: 'relative',
   },
 
   text: {
@@ -12,6 +12,10 @@ export const style = StyleSheet.create({
 
   color: {
     backgroundColor: '$colorAccent',
+    maxWidth: 13,
+    maxHeight: 13,
+    minWidth: 13,
+    minHeight: 13,
     height: 13,
     width: 13,
     borderRadius: '50%',

@@ -2,10 +2,10 @@ import { C, L10N, groupTxsByDate } from '../../../modules';
 
 const { TRANSACTIONS_PER_PAGE } = C;
 
-export const querySearchTxs = ({ accounts = [], page = 1, query, txs = [] }) =>
+export const querySearchTxs = ({ account = {}, page = 1, query }) =>
   query
     ? groupTxsByDate(
-        txs
+        [...account.txs]
           .slice()
           .reverse()
           .filter((tx = {}) => {
@@ -19,11 +19,6 @@ export const querySearchTxs = ({ accounts = [], page = 1, query, txs = [] }) =>
 
             return (title && title.includes(lowerCaseQuery)) || (category && category.includes(lowerCaseQuery));
           })
-          .slice(0, page * TRANSACTIONS_PER_PAGE)
-          .map((tx = {}) => {
-            const { currency } = accounts.find(({ hash }) => hash === tx.account) || {};
-
-            return { ...tx, currency };
-          }),
+          .slice(0, page * TRANSACTIONS_PER_PAGE),
       )
     : undefined;

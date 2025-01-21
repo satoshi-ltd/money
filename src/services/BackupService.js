@@ -1,13 +1,11 @@
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
-import * as Notifications from 'expo-notifications';
 import * as Sharing from 'expo-sharing';
 import { Platform } from 'react-native';
 
 import { L10N } from '../modules';
 
 const IS_WEB = Platform.OS === 'web';
-const SECONDS_PER_WEEK = 60 * 60 * 24 * 7;
 
 export const BackupService = {
   export: async ({ accounts = [], settings = {}, txs = [] } = {}) =>
@@ -32,8 +30,6 @@ export const BackupService = {
         await Sharing.shareAsync(fileUri);
 
         resolve(true);
-
-        BackupService.scheduleNotification();
       } catch (error) {
         reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);
       }
@@ -69,20 +65,4 @@ export const BackupService = {
         reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);
       }
     }),
-
-  scheduleNotification: async () => {
-    if (IS_WEB) return;
-
-    const { status } = await Notifications.getPermissionsAsync();
-    if (status === 'granted') {
-      await Notifications.cancelAllScheduledNotificationsAsync();
-      await Notifications.scheduleNotificationAsync({
-        content: { title: L10N.SCHEDULE_BACKUP, body: L10N.SCHEDULE_BACKUP_CAPTION },
-        trigger: { seconds: SECONDS_PER_WEEK },
-      });
-    } else {
-      const { status } = await Notifications.requestPermissionsAsync();
-      if (status === 'granted') await BackupService.scheduleNotification();
-    }
-  },
 };

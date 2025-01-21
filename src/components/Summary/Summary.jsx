@@ -29,7 +29,7 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
     currency === baseCurrency ? progression : progressionCurrency,
   );
 
-  const color = colorCurrency && title ? COLOR[currency] : 'accent';
+  const color = (colorCurrency && COLOR[currency]) || 'accent';
 
   return (
     <View style={style.container}>

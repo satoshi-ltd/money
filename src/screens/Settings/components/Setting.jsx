@@ -1,39 +1,54 @@
-import { Card, Icon, Pressable, Text, View } from '@satoshi-ltd/nano-design';
+import { Card, Icon, Pressable, Tabs, Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { ActivityIndicator } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './Setting.style';
-import { ICON } from '../../../modules';
+import { useStore } from '../../../contexts';
+import { C, ICON } from '../../../modules';
 
-const Setting = ({ activity = false, caption, disabled, icon, text, onPress = () => {} } = {}) => (
-  <Pressable onPress={!disabled && !activity ? onPress : undefined}>
-    <View gap row style={style.setting}>
-      {icon && (
-        <Card color={disabled ? 'border' : 'accent'} small style={{ width: 'auto' }}>
-          <Icon name={icon} />
-        </Card>
-      )}
-      <View row style={style.content}>
-        <View flex>
-          <Text color={disabled ? 'contentLight' : undefined}>{text}</Text>
-          {caption && (
-            <Text caption color="contentLight">
-              {caption}
-            </Text>
+const { DEFAULT_THEME } = C;
+
+const Setting = ({ activity = false, caption, disabled, icon, options, selected, text, onChange, onPress } = {}) => {
+  const { settings: { baseCurrency, colorCurrency, theme } = {} } = useStore();
+
+  return (
+    <Pressable onPress={!disabled && !activity && onPress ? onPress : undefined}>
+      <View gap row style={style.setting}>
+        {icon && (
+          <Card
+            color={disabled ? 'border' : 'accent'}
+            small
+            style={{ backgroundColor: colorCurrency ? C.COLOR[baseCurrency] : undefined, width: 'auto' }}
+          >
+            <Icon color={theme !== DEFAULT_THEME ? 'base' : undefined} name={icon} />
+          </Card>
+        )}
+        <View row style={style.content}>
+          <View flex>
+            <Text color={disabled ? 'contentLight' : undefined}>{text}</Text>
+            {caption && (
+              <Text caption color="contentLight">
+                {caption}
+              </Text>
+            )}
+          </View>
+
+          {activity ? (
+            <ActivityIndicator size="small" color={StyleSheet.value('$colorContent')} />
+          ) : options ? (
+            <Tabs {...{ selected, options, onChange }} />
+          ) : onPress ? (
+            <Icon name={ICON.RIGHT} />
+          ) : (
+            <></>
           )}
         </View>
-
-        {activity ? (
-          <ActivityIndicator size="small" color={StyleSheet.value('$colorContent')} />
-        ) : (
-          <Icon name={ICON.RIGHT} />
-        )}
       </View>
-    </View>
-  </Pressable>
-);
+    </Pressable>
+  );
+};
 
 Setting.displayName = 'Setting';
 

@@ -13,6 +13,7 @@ const LEFT_SYMBOLS = ['$', '£'];
 
 const PriceFriendly = ({
   bold = false,
+  color: propColor,
   currency,
   fixed,
   label,
@@ -26,7 +27,7 @@ const PriceFriendly = ({
   const maskedAmount = propMaskAmount || maskAmount;
   const operatorEnhanced = (operator && parseFloat(value, 10) !== 0) || value < 0 ? (value > 0 ? '+' : '-') : undefined;
   const symbol = SYMBOL[currency] || currency;
-  const color = (colorCurrency && operatorEnhanced === '+' && COLOR[currency]) || others.color;
+  const color = (colorCurrency && operatorEnhanced === '+' && COLOR[currency]) || propColor;
 
   const symbolProps = {
     ...others,
@@ -46,7 +47,11 @@ const PriceFriendly = ({
 
   return (
     <View row style={style.container}>
-      {label && <Text {...others}>{label}</Text>}
+      {label && (
+        <Text {...others} {...{ color }}>
+          {label}
+        </Text>
+      )}
       {maskedAmount ? (
         <Text {...others} {...{ bold, color }}>
           {formatedValue}
@@ -71,6 +76,7 @@ const PriceFriendly = ({
 
 PriceFriendly.propTypes = {
   bold: PropTypes.bool,
+  color: PropTypes.string,
   currency: PropTypes.string,
   fixed: PropTypes.number,
   label: PropTypes.string,

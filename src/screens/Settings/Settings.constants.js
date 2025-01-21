@@ -2,10 +2,12 @@ import { C, ICON, L10N } from '../../modules';
 
 const { PRIVACY_URL, TERMS_URL } = C;
 
-const OPTIONS = [
+const OPTIONS = (isPremium, subscription) => [
   {
-    callback: 'handleSubscription',
-    // caption: '$$No active subscription',
+    callback: !isPremium ? 'handleSubscription' : undefined,
+    caption: isPremium
+      ? `${L10N.SUBSCRIPTION_ACTUAL_PLAN}: ${subscription?.customerInfo?.entitlements?.active?.['pro']?.identifier}`
+      : undefined,
     icon: ICON.STAR,
     id: 1,
     text: L10N.SUBSCRIPTION,
@@ -33,17 +35,16 @@ const OPTIONS = [
   },
 ];
 
+const REMINDER_BACKUP_OPTIONS = [
+  { text: L10N.OFF, value: 0 },
+  { text: L10N.ON, value: 1 },
+];
+
 const PREFERENCES = [
   {
     icon: ICON.SWAP,
     screen: 'baseCurrency',
     text: L10N.CHOOSE_CURRENCY,
-  },
-  {
-    disabled: true,
-    icon: ICON.BELL,
-    screen: 'reminders',
-    text: L10N.REMINDERS,
   },
 ];
 
@@ -78,4 +79,4 @@ const ABOUT = (isPremium) => [
   },
 ];
 
-export { ABOUT, OPTIONS, PREFERENCES };
+export { ABOUT, OPTIONS, PREFERENCES, REMINDER_BACKUP_OPTIONS };

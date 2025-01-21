@@ -6,11 +6,11 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 import { Setting } from './components/Setting';
 import { getLatestRates, verboseDate } from './helpers';
-import { ABOUT, OPTIONS, PREFERENCES } from './Settings.constants';
+import { ABOUT, OPTIONS, PREFERENCES, REMINDER_BACKUP_OPTIONS } from './Settings.constants';
 import { style } from './Settings.style';
 import { useStore } from '../../contexts';
 import { C, eventEmitter, ICON, L10N } from '../../modules';
-import { BackupService, PurchaseService } from '../../services';
+import { BackupService, NotificationsService, PurchaseService } from '../../services';
 import { DarkTheme, LightTheme } from '../../theme';
 
 const { EVENT, IS_WEB } = C;
@@ -30,7 +30,7 @@ const Settings = ({ navigation = {} }) => {
     txs = [],
   } = store;
 
-  const { baseCurrency, colorCurrency = false, lastRatesUpdate = '', theme } = settings;
+  const { baseCurrency, colorCurrency = false, lastRatesUpdate = '', reminders, theme } = settings;
 
   const isPremium = !!subscription?.productIdentifier;
 
@@ -67,6 +67,9 @@ const Settings = ({ navigation = {} }) => {
         caption: L10N.CONFIRM_IMPORT_CAPTION(backup),
         title: L10N.CONFIRM_IMPORT,
         onAccept: async () => {
+          if (backup?.settings?.theme) {
+            StyleSheet.build(backup.settings.theme === 'light' ? LightTheme : DarkTheme);
+          }
           await importBackup(backup);
           navigation.navigate('dashboard');
           eventEmitter.emit(EVENT.NOTIFICATION, { message: L10N.CONFIRM_IMPORT_SUCCESS });
@@ -110,6 +113,11 @@ const Settings = ({ navigation = {} }) => {
     updateSettings({ colorCurrency: !colorCurrency });
   };
 
+  const handleChangeReminder = (item) => {
+    NotificationsService.reminders([item.value]);
+    updateSettings({ reminders: [item.value] });
+  };
+
   return (
     <Screen gap offset style={style.screen}>
       <Text bold secondary subtitle>
@@ -120,7 +128,7 @@ const Settings = ({ navigation = {} }) => {
         <Text bold caption>
           {L10N.GENERAL.toUpperCase()}
         </Text>
-        {OPTIONS.map(({ caption, disabled, icon, id, text, ...rest }) => (
+        {OPTIONS(isPremium, subscription).map(({ caption, disabled, icon, id, text, ...rest }) => (
           <Setting
             activity={rest.callback && [rest.callback].sync}
             key={`option-${id}`}
@@ -140,7 +148,7 @@ const Settings = ({ navigation = {} }) => {
               icon,
               text,
             }}
-            onPress={() => handleOption(rest)}
+            onPress={rest.callback ? () => handleOption(rest) : undefined}
           />
         ))}
       </View>
@@ -168,6 +176,15 @@ const Settings = ({ navigation = {} }) => {
             onPress={() => handleOption(rest)}
           />
         ))}
+        <Setting
+          caption={L10N.REMINDER_BACKUP_CAPTION}
+          icon={ICON.BELL}
+          onChange={(value = 0) => handleChangeReminder(value)}
+          onPress={() => {}}
+          options={REMINDER_BACKUP_OPTIONS}
+          selected={reminders?.[0] || 1}
+          text={L10N.REMINDER_BACKUP}
+        />
       </View>
 
       <View style={style.group}>

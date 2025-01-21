@@ -1,4 +1,4 @@
-import { C } from '../../../../../modules';
+import { C } from '../../../modules';
 
 const { STATS_MONTHS_LIMIT } = C;
 
