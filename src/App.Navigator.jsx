@@ -147,7 +147,7 @@ const Tabs = ({ navigation = {} }) => {
 };
 
 export const Navigator = () => {
-  const { settings: { onboarded = true, pin, theme = 'light' } = {} } = useStore();
+  const { settings: { baseCurrency, colorCurrency, onboarded = true, pin, theme = 'light' } = {} } = useStore();
 
   const screenOptions = { headerBackTitleVisible: false, headerShadowVisible: false, headerShown: false };
   const screen = { ...commonScreenOptions(theme) };
@@ -155,7 +155,7 @@ export const Navigator = () => {
   // const modalFullscreen = { ...modal, headerShown: false, presentation: 'modal' };
 
   return (
-    <NavigationContainer theme={getNavigationTheme()}>
+    <NavigationContainer theme={getNavigationTheme(colorCurrency ? C.COLOR[baseCurrency] : undefined)}>
       <StatusBar style={theme === 'dark' ? 'light' : 'dark'} translucent />
 
       <Stack.Navigator
