@@ -3,15 +3,18 @@ import { parseDate } from './parseDate';
 import { C, exchange, isInternalTransfer } from '../../../modules';
 
 const {
+  STATS_MONTHS_LIMIT,
   TX: {
     TYPE: { EXPENSE },
   },
 } = C;
 
-export default (
-  { accounts = [], overall = {}, rates = {}, settings: { baseCurrency } = {}, txs = [] },
-  { month, year },
-) => {
+export default ({ accounts = [], overall = {}, rates = {}, settings: { baseCurrency } = {}, txs = [] }, index) => {
+  const today = new Date();
+  today.setMonth(today.getMonth() - (STATS_MONTHS_LIMIT - index - 1));
+  const month = today.getMonth();
+  const year = today.getFullYear();
+
   const values = { expenses: {}, incomes: {} };
   const rangeTxs = [];
   const currencies = {};

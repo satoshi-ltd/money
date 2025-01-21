@@ -32,9 +32,17 @@ const ItemGroupCategories = ({ color, dataSource, type }) => {
 
   return (
     <View style={style.container}>
-      <Heading value={type === EXPENSE ? L10N.EXPENSES : L10N.INCOMES}>
-        <PriceFriendly bold color="content" currency={baseCurrency} fixed={0} value={total} />
+      <Heading color={color} value={type === EXPENSE ? L10N.EXPENSES : L10N.INCOMES}>
+        <PriceFriendly
+          bold
+          color={color}
+          currency={baseCurrency}
+          fixed={0}
+          operator
+          value={total * (type === EXPENSE ? -1 : 1)}
+        />
       </Heading>
+
       <View style={style.content}>
         {orderByAmount(totals).map(({ key, amount }) => (
           <Pressable
@@ -44,13 +52,12 @@ const ItemGroupCategories = ({ color, dataSource, type }) => {
           >
             <HorizontalChartItem
               amount={Object.keys(dataSource[key])?.length}
+              color={color}
               currency={baseCurrency}
-              highlight={type !== EXPENSE}
               icon={getIcon({ type, category: key })}
               title={L10N.CATEGORIES[type][key]}
               value={amount}
               width={Math.floor((amount / total) * 100)}
-              marginBottom="XS"
             />
 
             {expand === key && (
@@ -58,7 +65,6 @@ const ItemGroupCategories = ({ color, dataSource, type }) => {
                 {orderByAmount(dataSource[key]).map((item) => (
                   <HorizontalChartItem
                     key={`${key}-${item.key}`}
-                    color={color}
                     currency={baseCurrency}
                     detail
                     highlight={type !== EXPENSE}

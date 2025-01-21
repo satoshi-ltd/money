@@ -4,35 +4,19 @@ export const style = StyleSheet.create({
   bar: {
     backgroundColor: '$colorBorder',
     borderRadius: '$borderRadius',
-    maxHeight: '$spaceXXL + $spaceS',
     height: '100%',
+    maxHeight: '$spaceL + $spaceXS',
+    minWidth: '$spaceL + $spaceXS',
     position: 'absolute',
     top: 0,
-    minWidth: '$spaceXXL + $spaceS',
-  },
-
-  highlight: {
-    backgroundColor: '$colorAccent',
   },
 
   content: {
-    paddingLeft: '$spaceXS',
-    height: '$spaceXXL + $spaceS',
+    gap: '$viewOffset / 2',
+    padding: '$viewOffset / 4',
   },
 
   detail: {
-    height: 'auto',
-    marginLeft: '$spaceXXL + $viewOffset',
-    marginVertical: '$spaceXXS',
-  },
-
-  cardIcon: {
-    height: '$spaceXXL',
-    marginRight: '$spaceS + $spaceXS',
-    width: '$spaceXXL',
-  },
-
-  amount: {
-    top: '$spaceXXS * -1',
+    paddingBottom: 0,
   },
 });

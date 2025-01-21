@@ -6,7 +6,7 @@ export const style = StyleSheet.create({
   },
 
   content: {
-    gap: '$viewOffset',
+    gap: '$viewOffset / 2',
     marginHorizontal: '$viewOffset',
   },
 

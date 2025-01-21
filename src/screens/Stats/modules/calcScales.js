@@ -1,7 +1,7 @@
 import { median } from './median';
 
 export default (values = []) => {
-  if (!values) return {};
+  if (!values || !values.length) return { min: 0, max: 0 };
 
   const max = Math.floor(Math.max(...values));
   let min = 0;

@@ -6,55 +6,44 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './HorizontalChartItem.style';
 import { PriceFriendly } from '../../../../components';
-import { L10N } from '../../../../modules';
 
 const screen = Dimensions.get('window');
 
-const HorizontalChartItem = ({ amount, currency, detail, highlight, icon, title, value, width = 100 }) => (
-  <>
-    {!detail && (
-      <View
-        style={[
-          style.bar,
-          highlight && style.highlight,
-          { width: ((screen.width - StyleSheet.value('$viewOffset') * 2) * width) / 100 },
-        ]}
-      />
-    )}
+const HorizontalChartItem = ({ color, currency, detail, icon, title, value, width = 0 }) => {
+  const textProps = {
+    bold: !detail,
+    caption: !detail,
+    color: detail ? 'contentLight' : 'content',
+    tiny: detail,
+  };
 
-    <View row style={[style.content, detail && style.detail]}>
-      {icon && (
-        <Card align="center" small style={[style.cardIcon, highlight && style.highlight]}>
-          <Icon name={icon} />
-        </Card>
+  return (
+    <>
+      {!detail && (
+        <View
+          style={[
+            style.bar,
+            color ? { backgroundColor: color, opacity: 0.33 } : undefined,
+            { width: ((screen.width - StyleSheet.value('$viewOffset') * 2) * width) / 100 },
+          ]}
+        />
       )}
-      <View flex>
-        <Text bold={!detail} caption={detail} color={detail ? 'contentLight' : undefined}>
-          {title}
-        </Text>
-        {amount && (
-          <Text caption style={style.amount}>
-            {L10N.CATEGORIES_AMOUNT(amount)}
-          </Text>
-        )}
+
+      <View row style={[style.content, detail && style.detail]}>
+        <Icon name={icon} />
+        <View flex>
+          <Text {...textProps}>{title}</Text>
+        </View>
+        <PriceFriendly {...textProps} currency={currency} fixed={0} value={value} />
       </View>
-      <PriceFriendly
-        bold
-        caption
-        color={detail ? 'contentLight' : undefined}
-        currency={currency}
-        fixed={0}
-        value={value}
-      />
-    </View>
-  </>
-);
+    </>
+  );
+};
 
 HorizontalChartItem.propTypes = {
-  amount: PropTypes.number,
+  color: PropTypes.string,
   currency: PropTypes.string,
   detail: PropTypes.bool,
-  highlight: PropTypes.bool,
   icon: PropTypes.string,
   title: PropTypes.string.isRequired,
   value: PropTypes.number.isRequired,
