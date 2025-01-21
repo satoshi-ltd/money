@@ -48,7 +48,13 @@ const TransactionItem = ({
             <Text bold numberOfLines={1} style={style.text}>
               {title}
             </Text>
-            <PriceFriendly bold currency={currency} operator value={value * operator} />
+            <PriceFriendly
+              bold
+              color={type !== EXPENSE ? 'accent' : undefined}
+              currency={currency}
+              operator
+              value={value * operator}
+            />
           </View>
 
           <View gap row spaceBetween>
