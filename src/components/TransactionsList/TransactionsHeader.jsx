@@ -2,7 +2,7 @@ import { Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { style } from './TransactionsHeader.style';
+import { style } from './TransactionsList.style';
 
 const verboseDate = (date = new Date(), { locale = 'en-US', ...props } = {}) => {
   const day = date.toDateString();
@@ -21,11 +21,9 @@ const verboseDate = (date = new Date(), { locale = 'en-US', ...props } = {}) => 
 };
 
 const TransactionsHeader = ({ title = new Date() }) => (
-  <View style={style.container}>
-    <Text bold caption color="contentLight" secondary style={style.date}>
-      {verboseDate(new Date(title), { day: 'numeric', month: 'long', year: 'numeric' })}
-    </Text>
-  </View>
+  <Text bold caption color="contentLight" secondary style={style.date}>
+    {verboseDate(new Date(title), { day: 'numeric', month: 'long', year: 'numeric' })}
+  </Text>
 );
 
 TransactionsHeader.propTypes = {

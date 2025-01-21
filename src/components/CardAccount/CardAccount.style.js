@@ -19,11 +19,6 @@ const style = StyleSheet.create({
     opacity: 0.66,
     position: 'absolute',
   },
-
-  percentage: {
-    textShadowColor: '$colorBorder',
-    textShadowRadius: 4,
-  },
 });
 
 export { style };

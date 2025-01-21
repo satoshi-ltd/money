@@ -54,17 +54,7 @@ const CardAccount = ({
           </View>
         )}
         {!!percentage && (
-          <PriceFriendly
-            bold
-            tiny
-            color={color}
-            currency="%"
-            detail
-            fixed={2}
-            operator
-            value={percentage}
-            style={style.percentage}
-          />
+          <PriceFriendly bold tiny color={color} currency="%" detail fixed={2} operator value={percentage} />
         )}
 
         <LineChart

@@ -47,7 +47,7 @@ const Transactions = ({
     <Screen disableScroll={!IS_WEB}>
       <SectionList
         style={style.screen}
-        initialNumToRender={20}
+        initialNumToRender={32}
         keyExtractor={(item) => item.timestamp}
         ListEmptyComponent={() => (
           <Banner

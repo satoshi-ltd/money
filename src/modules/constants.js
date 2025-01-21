@@ -38,7 +38,7 @@ export const C = {
   DELAY_PRESS_MS: 500,
 
   // ENDPOINT: IS_DEV ? 'http://localhost:8080' : 'https://ledgernode.soyjavi.com',
-  ENDPOINT: 'https://ledgernode.soyjavi.com',
+  ENDPOINT: 'https://money.satoshi-ltd.com',
 
   EXPENSE_AS_INVESTMENT: 5,
 
@@ -105,7 +105,7 @@ export const C = {
     SYNC: 60000,
   },
 
-  TRANSACTIONS_PER_PAGE: 20,
+  TRANSACTIONS_PER_PAGE: 32,
 
   TX: {
     TYPE: {

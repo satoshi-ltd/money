@@ -3,14 +3,14 @@ import { Card, Icon, Pressable, Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { style } from './TransactionsHeader.style';
+import { style } from './TransactionsList.style';
 import { useStore } from '../../contexts';
 import { C, exchange, getIcon, L10N, verboseTime } from '../../modules';
 import { PriceFriendly } from '../PriceFriendly';
 
 const {
   TX: {
-    TYPE: { EXPENSE, INCOME },
+    TYPE: { EXPENSE },
   },
   INTERNAL_TRANSFER,
 } = C;
@@ -36,12 +36,6 @@ const TransactionItem = ({
     navigate('clone', { ...others, category, currency, timestamp, title, type, value });
   };
 
-  const is = {
-    income: type === INCOME,
-    expense: type === EXPENSE,
-    swap: type === INCOME && category === INTERNAL_TRANSFER,
-  };
-
   return (
     <Pressable onPress={handlePress}>
       <View row style={style.content}>
@@ -51,20 +45,14 @@ const TransactionItem = ({
 
         <View flex>
           <View gap row spaceBetween>
-            <Text flex bold numberOfLines={1} style={style.text}>
+            <Text bold numberOfLines={1} style={style.text}>
               {title}
             </Text>
-            <PriceFriendly
-              bold
-              color={is.income ? 'accent' : undefined}
-              currency={currency}
-              operator
-              value={value * operator}
-            />
+            <PriceFriendly bold currency={currency} operator value={value * operator} />
           </View>
 
           <View gap row spaceBetween>
-            <Text caption color="contentLight">
+            <Text caption color="contentLight" style={style.text}>
               {`${verboseTime(new Date(timestamp))} - ${L10N.CATEGORIES[type][category]}`}
             </Text>
             {baseCurrency !== currency && (

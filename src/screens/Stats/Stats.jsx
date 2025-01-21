@@ -21,7 +21,7 @@ const Stats = () => {
   const [chart, setChart] = useState({});
   const [pointerIndex, setPointerIndex] = useState(STATS_MONTHS_LIMIT - 1);
 
-  const { settings: { baseCurrency, colorAccent: color } = {}, txs } = store;
+  const { settings: { baseCurrency, colorCurrency } = {}, txs } = store;
 
   useLayoutEffect(() => {
     setChart(queryChart(store));
@@ -31,6 +31,7 @@ const Stats = () => {
 
   const { expenses = {}, incomes = {} } = queryMonth(store, pointerIndex) || {};
   const chartProps = { currency: baseCurrency, pointerIndex };
+  const color = (colorCurrency && C.COLOR[baseCurrency]) || StyleSheet.value('$colorAccent');
   const colorExpense = StyleSheet.value('$colorContent');
 
   return (

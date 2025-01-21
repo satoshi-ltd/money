@@ -13,7 +13,7 @@ import { C } from '../../modules';
 const { IS_WEB } = C;
 
 const Dashboard = ({ navigation: { navigate } = {} }) => {
-  const { accounts = [], settings: { baseCurrency } = {}, txs = [] } = useStore();
+  const { accounts = [], txs = [] } = useStore();
 
   const [lastTxs, setLastTxs] = useState([]);
   const [query, setQuery] = useState();
@@ -21,6 +21,7 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
 
   useEffect(() => {
     if (!accounts.length) navigate('account', { firstAccount: true });
+    // -- Shortcuts
     // else navigate('transactions', { account: accounts[5] });
     // setTimeout(() => {
     //   navigate('transaction', { type: 0 });
@@ -38,11 +39,11 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
     <Screen disableScroll={!IS_WEB}>
       <SectionList
         style={style.screen}
-        initialNumToRender={20}
+        initialNumToRender={32}
         keyExtractor={(item) => item.timestamp}
         ListHeaderComponent={<DashboardListHeader navigate={navigate} onSearch={setQuery} setPage={setPage} />}
         onEndReached={() => setPage((prevPage) => prevPage + 1)}
-        renderItem={({ item }) => <TransactionItem {...item} currency={baseCurrency} />}
+        renderItem={({ item }) => <TransactionItem {...item} />}
         renderSectionHeader={({ section }) => <TransactionsHeader {...section} />}
         stickySectionHeadersEnabled={false}
         sections={querySearchTxs({ accounts, page, query, txs }) || lastTxs}
