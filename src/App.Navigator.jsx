@@ -35,12 +35,8 @@ const Tab = createBottomTabNavigator();
 const commonScreenOptions = (theme = 'light') => ({
   headerBackground: () => <BlurView intensity={60} tint={theme} style={{ flex: 1 }} />,
   headerShown: true,
-  // headerStyle: {},
-  // headerTintColor: StyleSheet.value('$colorAccent'),
-  // headerTitle: ({ ...props }) => <Text bold {...props} />,
   headerTitle: () => <Logo />,
   headerTitleAlign: 'center',
-  // headerTitleStyle: {},
   headerTransparent: true,
 });
 
@@ -62,6 +58,7 @@ const Tabs = ({ navigation = {} }) => {
     ...commonScreenOptions(theme),
     headerLeft: () => <></>,
     headerRight: () => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const { settings: { colorCurrency } = {}, subscription } = useStore();
 
       return !subscription?.productIdentifier ? (
@@ -157,7 +154,6 @@ export const Navigator = () => {
   const screenOptions = { headerBackTitleVisible: false, headerShadowVisible: false, headerShown: false };
   const screen = { ...commonScreenOptions(theme) };
   const modal = { cardOverlayEnabled: true, gestureEnabled: true, presentation: 'transparentModal' };
-  // const modalFullscreen = { ...modal, headerShown: false, presentation: 'modal' };
 
   return (
     <NavigationContainer theme={getNavigationTheme()}>

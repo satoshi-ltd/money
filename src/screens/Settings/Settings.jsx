@@ -1,8 +1,7 @@
 import { Screen, Setting, Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Linking } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
 
 // import { Setting } from './components/Setting';
 import { getLatestRates, verboseDate } from './helpers';
@@ -11,7 +10,6 @@ import { style } from './Settings.style';
 import { useStore } from '../../contexts';
 import { C, eventEmitter, ICON, L10N } from '../../modules';
 import { BackupService, NotificationsService, PurchaseService } from '../../services';
-import { DarkTheme, LightTheme } from '../../theme';
 
 const { EVENT, IS_WEB } = C;
 

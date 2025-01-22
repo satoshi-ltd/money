@@ -1,4 +1,4 @@
-import { Card, Icon, Text, View } from '@satoshi-ltd/nano-design';
+import { Icon, Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Dimensions } from 'react-native';
