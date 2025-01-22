@@ -6,7 +6,9 @@ const OPTIONS = (isPremium, subscription) => [
   {
     callback: !isPremium ? 'handleSubscription' : undefined,
     caption: isPremium
-      ? `${L10N.SUBSCRIPTION_ACTUAL_PLAN}: ${subscription?.customerInfo?.entitlements?.active?.['pro']?.identifier}`
+      ? subscription?.productIdentifier?.split('.')?.[0] === 'lifetime'
+        ? L10N.PREMIUM_LIFETIME
+        : L10N.PREMIUM_YEARLY
       : undefined,
     icon: ICON.STAR,
     id: 1,

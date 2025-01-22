@@ -22,7 +22,7 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
   useEffect(() => {
     if (!accounts.length) navigate('account', { firstAccount: true });
     // -- Shortcuts
-    navigate('transactions', { account: accounts[5] });
+    // navigate('transactions', { account: accounts[5] });
     // else navigate('transactions', { account: accounts[5] });
     // setTimeout(() => {
     //   navigate('transaction', { type: 0 });
