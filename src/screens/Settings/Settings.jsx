@@ -1,10 +1,10 @@
-import { Screen, Text, View } from '@satoshi-ltd/nano-design';
+import { Screen, Setting, Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Linking } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
-import { Setting } from './components/Setting';
+// import { Setting } from './components/Setting';
 import { getLatestRates, verboseDate } from './helpers';
 import { ABOUT, OPTIONS, PREFERENCES, REMINDER_BACKUP_OPTIONS } from './Settings.constants';
 import { style } from './Settings.style';
@@ -25,6 +25,7 @@ const Settings = ({ navigation = {} }) => {
     importBackup,
     updateSettings,
     updateSubscription,
+    updateTheme,
     settings = {},
     subscription,
     txs = [],
@@ -67,9 +68,9 @@ const Settings = ({ navigation = {} }) => {
         caption: L10N.CONFIRM_IMPORT_CAPTION(backup),
         title: L10N.CONFIRM_IMPORT,
         onAccept: async () => {
-          if (backup?.settings?.theme) {
-            StyleSheet.build(backup.settings.theme === 'light' ? LightTheme : DarkTheme);
-          }
+          const { settings: { theme } = {} } = backup || {};
+
+          if (theme) updateTheme(theme);
           await importBackup(backup);
           navigation.navigate('dashboard');
           eventEmitter.emit(EVENT.NOTIFICATION, { message: L10N.CONFIRM_IMPORT_SUCCESS });
@@ -105,11 +106,12 @@ const Settings = ({ navigation = {} }) => {
   const handleError = (error) => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, message: JSON.stringify(error) });
 
   const handleTheme = () => {
-    StyleSheet.build(StyleSheet.value('$theme') === 'light' ? DarkTheme : LightTheme);
-    updateSettings({ theme: StyleSheet.value('$theme') });
+    const nextTheme = theme === 'light' ? 'dark' : 'light';
+    updateTheme(nextTheme);
+    updateSettings({ theme: nextTheme });
   };
 
-  const handlecolorCurrency = () => {
+  const handleColorCurrency = () => {
     updateSettings({ colorCurrency: !colorCurrency });
   };
 
@@ -165,7 +167,7 @@ const Settings = ({ navigation = {} }) => {
         <Setting
           icon={ICON.COLOR_FILL}
           text={colorCurrency ? L10N.CURRENCY_COLOR_DISABLE : L10N.CURRENCY_COLOR_ENABLE}
-          onPress={handlecolorCurrency}
+          onPress={handleColorCurrency}
         />
         {PREFERENCES.map(({ disabled, icon, text, ...rest }, index) => (
           <Setting
