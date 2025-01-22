@@ -17,7 +17,7 @@ const INITIAL_STATE = { form: {}, valid: false };
 
 const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigation: { goBack } = {} }) => {
   const store = useStore();
-  const { subscription, txs = [], updateSubscription } = store;
+  const { settings: { colorCurrency } = {}, subscription, txs = [], updateSubscription } = store;
 
   const [account, setAccount] = useState(params.account);
   const [busy, setBusy] = useState(false);
@@ -80,7 +80,7 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
         <Button disabled={busy} flex outlined onPress={goBack}>
           {L10N.CLOSE}
         </Button>
-        <Button disabled={busy || !valid} flex secondary onPress={handleSubmit}>
+        <Button disabled={busy || !valid} flex secondary={!colorCurrency} onPress={handleSubmit}>
           {L10N.SAVE}
         </Button>
       </View>

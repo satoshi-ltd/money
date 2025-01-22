@@ -13,7 +13,7 @@ const { EVENT } = C;
 const BaseCurrency = ({ navigation: { goBack } = {} }) => {
   const store = useStore();
 
-  const { settings: { baseCurrency } = {}, updateRates } = store;
+  const { settings: { baseCurrency, colorCurrency } = {}, updateRates } = store;
 
   const [activity, setActivity] = useState(false);
   const [currency, setCurrency] = useState();
@@ -46,7 +46,13 @@ const BaseCurrency = ({ navigation: { goBack } = {} }) => {
         <Button flex outlined onPress={goBack}>
           {L10N.CLOSE}
         </Button>
-        <Button activity={activity} disabled={currency === baseCurrency} flex onPress={handleSubmit}>
+        <Button
+          activity={activity}
+          disabled={currency === baseCurrency}
+          flex
+          secondary={!colorCurrency}
+          onPress={handleSubmit}
+        >
           {L10N.SAVE}
         </Button>
       </View>
