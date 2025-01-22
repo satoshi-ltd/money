@@ -64,9 +64,11 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
         {L10N.TRANSACTION[type]}
       </Text>
 
-      <Text bold caption color="contentLight" style={style.title}>
-        {account ? L10N.SELECT_CATEGORY : L10N.SELECT_ACCOUNT}
-      </Text>
+      {type !== TRANSFER && (
+        <Text bold caption color="contentLight" style={style.title}>
+          {account ? L10N.SELECT_CATEGORY : L10N.SELECT_ACCOUNT}
+        </Text>
+      )}
 
       {!account ? (
         <SliderAccounts selected={account?.hash} onChange={setAccount} />

@@ -48,8 +48,8 @@ export const L10N = {
   ],
   CATEGORIES_AMOUNT: (amount) => `${amount} ${amount > 1 ? 'categories' : 'category'}`,
 
-  CHANGE_DESTINATION: 'Change destination',
-  CHOOSE_CURRENCY: 'Base currency',
+  CHANGE_DESTINATION: 'Change Destination',
+  CHOOSE_CURRENCY: 'Choose Base Currency',
   CLONE: 'Clone',
   CLOSE: 'Close',
   CONCEPT: 'Concept',
@@ -181,6 +181,7 @@ export const L10N = {
   SEARCH: 'Search',
   SELECT_ACCOUNT: 'Select account',
   SELECT_CATEGORY: 'Select category',
+  SELECT_DESTINATION: 'Select Destination',
   SETTINGS: 'Settings',
   START: 'Start',
   START_TRIAL: 'Start free 7 day trial',

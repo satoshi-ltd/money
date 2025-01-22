@@ -68,7 +68,7 @@ const FormTransaction = ({ account = {}, form = {}, onChange }) => {
         <Pressable onPress={() => setSelectAccount(true)} style={style.inputAccount}>
           <Icon body color="contentLight" name={ICON.OTHERS} />
           <Text caption color="contentLight">
-            {L10N.CHANGE_DESTINATION}
+            {form.destination ? L10N.CHANGE_DESTINATION : L10N.SELECT_DESTINATION}
           </Text>
         </Pressable>
       )}

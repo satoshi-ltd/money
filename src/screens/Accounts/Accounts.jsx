@@ -5,14 +5,12 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './Accounts.style';
 import { filter, query } from './modules';
-import { CardAccount, Heading, PriceFriendly } from '../../components';
+import { CardAccount, CurrencyLogo, Heading, PriceFriendly } from '../../components';
 import { useStore } from '../../contexts';
-import { C, getCurrencySymbol, L10N } from '../../modules';
-
-const { COLOR } = C;
+import { L10N } from '../../modules';
 
 const Accounts = ({ navigation: { navigate } = {} }) => {
-  const { accounts = [], settings: { colorCurrency = false } = {}, overall = {} } = useStore();
+  const { accounts = [], overall = {} } = useStore();
 
   const [selected, setSelected] = useState();
 
@@ -50,18 +48,9 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
           return (
             <Pressable key={account.hash} onPress={() => navigate('transactions', { account })}>
               <View row style={style.item}>
-                <View align="center">
-                  <Card
-                    small
-                    style={[
-                      style.cardCurrency,
-                      colorCurrency ? { backgroundColor: COLOR[currency], opacity: 0.25 } : undefined,
-                    ]}
-                  />
-                  <Text align="center" bold color={colorCurrency ? COLOR[currency] : color} style={style.currency}>
-                    {getCurrencySymbol(currency)}
-                  </Text>
-                </View>
+                <Card small style={style.cardCurrency}>
+                  <CurrencyLogo currency={currency} />
+                </Card>
 
                 <View>
                   <Text bold color={color} numberOfLines={1}>

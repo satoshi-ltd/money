@@ -38,8 +38,8 @@ const InputCurrency = ({
   };
 
   return (
-    <View gap row style={[style.container, focus && style.focus, others.style]}>
-      {showCurrency && <CurrencyLogo color="border" currency={currency} />}
+    <View row style={[style.container, focus && style.focus, others.style]}>
+      {showCurrency && <CurrencyLogo currency={currency} />}
       <View>
         <Text bold={!!accountHash} caption={!accountHash}>
           {title || label}

@@ -1,26 +1,28 @@
 import StyleSheet from 'react-native-extended-stylesheet';
 
 export const style = StyleSheet.create({
-  cardCurrency: {
-    alignItems: 'center',
-    borderRadius: '$iconSize',
-    height: '$iconSize',
-    justifyContent: 'center',
-    padding: 0,
-    width: '$iconSize',
-  },
-
   container: {
+    height: '$spaceXL - $spaceXS',
+    width: '$spaceXL - $spaceXS',
     alignItems: 'center',
-    backgroundColor: '$colorBase',
-    borderRadius: '$iconSize',
-    height: '$iconSize',
     justifyContent: 'center',
-    overflow: 'hidden',
-    width: '$iconSize',
   },
 
-  secondary: {
-    backgroundColor: '$colorBorder',
+  coin: {
+    backgroundColor: '$colorContent',
+    borderRadius: '50%',
+    height: '100%',
+    left: 0,
+    position: 'absolute',
+    top: 0,
+    width: '100%',
+  },
+
+  colorCurrency: {
+    opacity: 0.25,
+  },
+
+  highlight: {
+    backgroundColor: '$colorBase',
   },
 });
