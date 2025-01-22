@@ -25,9 +25,12 @@ const Stats = () => {
 
   useLayoutEffect(() => {
     setChart(queryChart(store));
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [txs]);
+  }, [baseCurrency, txs]);
+
+  const handlePointerIndex = (next) => {
+    if (next !== pointerIndex) setPointerIndex(next);
+  };
 
   const { expenses = {}, incomes = {} } = queryMonth(store, pointerIndex) || {};
   const chartProps = { currency: baseCurrency, pointerIndex };
@@ -41,7 +44,7 @@ const Stats = () => {
         color={color}
         title={L10N.OVERALL_BALANCE}
         values={chart.balance}
-        onPointerChange={setPointerIndex}
+        onPointerChange={handlePointerIndex}
       />
 
       <Chart

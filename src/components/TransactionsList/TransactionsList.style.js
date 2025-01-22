@@ -7,6 +7,10 @@ export const style = StyleSheet.create({
     width: '100%',
   },
 
+  headerContainer: {
+    backgroundColor: '$colorBase',
+  },
+
   date: {
     marginTop: '$viewOffset / 2',
     marginLeft: '$viewOffset',

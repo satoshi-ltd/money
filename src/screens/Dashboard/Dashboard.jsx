@@ -22,7 +22,7 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
   useEffect(() => {
     if (!accounts.length) navigate('account', { firstAccount: true });
     // -- Shortcuts
-    // navigate('transactions', { account: accounts[5] });
+    navigate('transactions', { account: accounts[5] });
     // else navigate('transactions', { account: accounts[5] });
     // setTimeout(() => {
     //   navigate('transaction', { type: 0 });
@@ -39,16 +39,15 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
   return (
     <Screen disableScroll={!IS_WEB}>
       <SectionList
-        style={style.screen}
-        initialNumToRender={32}
+        initialNumToRender={C.TRANSACTIONS_PER_PAGE}
         keyExtractor={(item) => item.timestamp}
         ListHeaderComponent={<DashboardListHeader navigate={navigate} onSearch={setQuery} setPage={setPage} />}
-        onEndReached={() => setPage((prevPage) => prevPage + 1)}
         renderItem={({ item }) => <TransactionItem {...item} />}
         renderSectionHeader={({ section }) => <TransactionsHeader {...section} />}
-        stickySectionHeadersEnabled={false}
         sections={querySearchTxs({ accounts, page, query, txs }) || lastTxs}
-        // sections={lastTxs}
+        stickySectionHeadersEnabled={false}
+        onEndReached={!IS_WEB ? () => setPage((prevPage) => prevPage + 1) : undefined}
+        style={style.screen}
       />
     </Screen>
   );

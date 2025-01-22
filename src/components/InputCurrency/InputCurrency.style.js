@@ -17,6 +17,7 @@ export const style = StyleSheet.create({
 
   focus: {
     borderColor: '$inputBorderColorFocus',
+    zIndex: 1,
   },
 
   input: {

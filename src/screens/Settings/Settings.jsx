@@ -2,8 +2,8 @@ import { Screen, Setting, Text, View } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { Linking } from 'react-native';
+import StyleSheet from 'react-native-extended-stylesheet';
 
-// import { Setting } from './components/Setting';
 import { getLatestRates, verboseDate } from './helpers';
 import { ABOUT, OPTIONS, PREFERENCES, REMINDER_BACKUP_OPTIONS } from './Settings.constants';
 import { style } from './Settings.style';
@@ -118,6 +118,10 @@ const Settings = ({ navigation = {} }) => {
     updateSettings({ reminders: [item.value] });
   };
 
+  const settingProps = colorCurrency
+    ? { color: StyleSheet.value('$colorContent'), iconColor: StyleSheet.value('$colorBase') }
+    : {};
+
   return (
     <Screen gap offset style={style.screen}>
       <Text bold secondary subtitle>
@@ -130,6 +134,7 @@ const Settings = ({ navigation = {} }) => {
         </Text>
         {OPTIONS(isPremium, subscription).map(({ caption, disabled, icon, id, text, ...rest }) => (
           <Setting
+            {...settingProps}
             activity={rest.callback && [rest.callback].sync}
             key={`option-${id}`}
             {...{
@@ -158,17 +163,20 @@ const Settings = ({ navigation = {} }) => {
           {L10N.PREFERENCES.toUpperCase()}
         </Text>
         <Setting
+          {...settingProps}
           icon={ICON.THEME}
           text={theme === 'dark' ? L10N.APPERANCE_LIGHT : L10N.APPERANCE_DARK}
           onPress={handleTheme}
         />
         <Setting
+          {...settingProps}
           icon={ICON.COLOR_FILL}
           text={colorCurrency ? L10N.CURRENCY_COLOR_DISABLE : L10N.CURRENCY_COLOR_ENABLE}
           onPress={handleColorCurrency}
         />
         {PREFERENCES.map(({ disabled, icon, text, ...rest }, index) => (
           <Setting
+            {...settingProps}
             caption={rest.screen === 'baseCurrency' ? L10N.CURRENCY_NAME[baseCurrency] : undefined}
             activity={activity && activity[rest.callback]}
             key={`preference-${index}`}
@@ -177,6 +185,7 @@ const Settings = ({ navigation = {} }) => {
           />
         ))}
         <Setting
+          {...settingProps}
           caption={L10N.REMINDER_BACKUP_CAPTION}
           icon={ICON.BELL}
           onChange={(value = 0) => handleChangeReminder(value)}
@@ -193,6 +202,7 @@ const Settings = ({ navigation = {} }) => {
         </Text>
         {ABOUT(isPremium).map(({ disabled, icon, text, ...rest }, index) => (
           <Setting
+            {...settingProps}
             activity={activity && activity[rest.callback]}
             key={`about-${index}`}
             {...{ disabled, icon, text }}

@@ -81,6 +81,7 @@ const LineChart = ({
                 autoAdjustPointerLabelPosition: true,
                 initialPointerIndex: data.length ? data.length - 1 : undefined,
                 pointerLabelComponent: ([{ index, value } = {}]) => {
+                  // ! TODO: Seems is dispatching too much times
                   onPointerChange(index);
 
                   return !multipleData ? (
