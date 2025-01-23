@@ -54,6 +54,7 @@ const Stats = () => {
         multipleData
         title={`${L10N.INCOMES} & ${L10N.EXPENSES}`}
         values={[chart.incomes, chart.expenses]}
+        // onPointerChange={handlePointerIndex}
       />
 
       {Object.keys(incomes).length > 0 && <ItemGroupCategories color={color} type={INCOME} dataSource={incomes} />}

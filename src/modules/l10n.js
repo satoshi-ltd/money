@@ -177,6 +177,11 @@ export const L10N = {
   RESTORE_PURCHASES: 'Restore purchases',
 
   SAVE: 'Save',
+  SCALE_KEY: {
+    min: 'Low',
+    med: 'Median',
+    max: 'High',
+  },
   SCHEDULE_BACKUP: 'Secure Your Finances!',
   SCHEDULE_BACKUP_CAPTION:
     "Don't forget to perform your weekly backup. Keep your financial information safe and up-to-date. It's quick and easy. Do it now!",

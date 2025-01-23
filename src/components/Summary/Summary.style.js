@@ -39,9 +39,13 @@ export const style = StyleSheet.create({
   },
 
   income: {
-    backgroundColor: '$colorBorder',
+    backgroundColor: '$colorAccent',
+    position: 'absolute',
     borderRadius: '$borderRadius',
-    paddingHorizontal: '$spaceXS',
-    paddingVertical: '$spaceXXS',
+    bottom: '$spaceXXS * -1',
+    left: '$spaceXXS * -1',
+    right: '$spaceXXS * -1',
+    top: '$spaceXXS * -1',
+    opacity: 0.15,
   },
 });
