@@ -52,12 +52,8 @@ const LineChart = ({
         adjustToWidth
         curved
         curveType={CurveType.QUADRATIC}
-        data={data.map((value, index) => ({ index, value: parseInt(value), dataPointText: parseInt(value) }))}
-        data2={data2?.map((value, index) => ({
-          index,
-          value: parseInt(value),
-          dataPointText: parseInt(value),
-        }))}
+        data={data.map((value, index) => ({ index, value, dataPointText: value }))}
+        data2={data2?.map((value, index) => ({ index, value: value, dataPointText: value }))}
         disableScroll
         endSpacing={0}
         hideAxesAndRules
@@ -81,6 +77,7 @@ const LineChart = ({
                 autoAdjustPointerLabelPosition: true,
                 initialPointerIndex: data.length ? data.length - 1 : undefined,
                 pointerLabelComponent: ([{ index, value } = {}]) => {
+                  // ! TODO: Seems is dispatching too much times
                   onPointerChange(index);
 
                   return !multipleData ? (

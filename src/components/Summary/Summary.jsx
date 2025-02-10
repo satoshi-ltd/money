@@ -12,7 +12,7 @@ const { COLOR, CURRENCY } = C;
 const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth = {}, title }) => {
   const {
     rates,
-    settings: { baseCurrency, colorCurrency = false, maskAmount },
+    settings: { baseCurrency, colorCurrency, maskAmount },
     updateSettings,
   } = useStore();
 
@@ -59,6 +59,7 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
         <View row style={style.progression}>
           <Icon
             color={progressionPercentage > 0 ? color : undefined}
+            caption
             name={`trending-${progressionPercentage > 0 ? 'up' : 'down'}`}
           />
           <PriceFriendly
@@ -77,14 +78,15 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
 
           <View row style={style.tags}>
             {(incomes > 0 || incomesBase > 0) && (
-              <View row style={[style.tag, style.income]}>
-                <Icon color={color} name={ICON.INCOME} caption />
+              <View row style={style.tag}>
+                <View style={[style.income, { backgroundColor: colorCurrency ? C.COLOR[currency] : undefined }]} />
+                <Icon color={color} name={ICON.INCOME} tiny />
                 <PriceFriendly bold color={color} currency={currency} tiny value={incomesBase || incomes} />
               </View>
             )}
             {(expenses > 0 || expensesBase > 0) && (
               <View row style={style.tag}>
-                <Icon name={ICON.EXPENSE} caption />
+                <Icon name={ICON.EXPENSE} tiny />
                 <PriceFriendly bold currency={currency} tiny value={expensesBase || expenses} />
               </View>
             )}

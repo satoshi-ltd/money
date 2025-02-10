@@ -31,17 +31,10 @@ export const style = StyleSheet.create({
   },
 
   cardCurrency: {
+    alignItems: 'center',
     height: '$spaceXXL + $spaceS',
     marginRight: '$spaceS',
-    // opacity: 0.33,
-    width: '$spaceXXL + $spaceS',
-  },
-
-  currency: {
-    height: '$spaceXXL + $spaceS',
-    left: 0,
-    lineHeight: '$spaceXXL + $spaceS',
-    position: 'absolute',
+    justifyContent: 'center',
     width: '$spaceXXL + $spaceS',
   },
 });

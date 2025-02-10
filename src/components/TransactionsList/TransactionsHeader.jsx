@@ -21,9 +21,11 @@ const verboseDate = (date = new Date(), { locale = 'en-US', ...props } = {}) => 
 };
 
 const TransactionsHeader = ({ title = new Date() }) => (
-  <Text bold caption color="contentLight" secondary style={style.date}>
-    {verboseDate(new Date(title), { day: 'numeric', month: 'long', year: 'numeric' })}
-  </Text>
+  <View style={style.headerContainer}>
+    <Text bold caption color="contentLight" secondary style={style.date}>
+      {verboseDate(new Date(title), { day: 'numeric', month: 'long', year: 'numeric' })}
+    </Text>
+  </View>
 );
 
 TransactionsHeader.propTypes = {

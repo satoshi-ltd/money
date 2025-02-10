@@ -35,18 +35,16 @@ const Tab = createBottomTabNavigator();
 const commonScreenOptions = (theme = 'light') => ({
   headerBackground: () => <BlurView intensity={60} tint={theme} style={{ flex: 1 }} />,
   headerShown: true,
-  // headerStyle: {},
-  // headerTintColor: StyleSheet.value('$colorAccent'),
-  // headerTitle: ({ ...props }) => <Text bold {...props} />,
   headerTitle: () => <Logo />,
   headerTitleAlign: 'center',
-  // headerTitleStyle: {},
   headerTransparent: true,
 });
 
 // eslint-disable-next-line react/prop-types
 const Tabs = ({ navigation = {} }) => {
-  const { settings: { theme } = {}, subscription } = useStore();
+  const { settings: { theme } = {} } = useStore();
+
+  // ! TODO: Somehow we should use new accent
 
   const handleSubscription = () => {
     PurchaseService.getProducts()
@@ -59,11 +57,14 @@ const Tabs = ({ navigation = {} }) => {
   const screenOptions = {
     ...commonScreenOptions(theme),
     headerLeft: () => <></>,
-    headerRight: () =>
-      !subscription?.productIdentifier ? (
+    headerRight: () => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { settings: { colorCurrency } = {}, subscription } = useStore();
+
+      return !subscription?.productIdentifier ? (
         <Button
           icon={ICON.STAR}
-          secondary
+          secondary={!colorCurrency}
           small
           onPress={handleSubscription}
           style={{ marginRight: StyleSheet.value('$viewOffset') }}
@@ -72,7 +73,8 @@ const Tabs = ({ navigation = {} }) => {
         </Button>
       ) : (
         <></>
-      ),
+      );
+    },
     tabBarBackground: () => <BlurView intensity={60} tint={theme} style={{ flex: 1 }} />,
     tabBarShowLabel: true,
     tabBarLabelPosition: 'below-icon',
@@ -147,15 +149,14 @@ const Tabs = ({ navigation = {} }) => {
 };
 
 export const Navigator = () => {
-  const { settings: { baseCurrency, colorCurrency, onboarded = true, pin, theme = 'light' } = {} } = useStore();
+  const { settings: { onboarded = true, pin, theme = 'light' } = {} } = useStore();
 
   const screenOptions = { headerBackTitleVisible: false, headerShadowVisible: false, headerShown: false };
   const screen = { ...commonScreenOptions(theme) };
   const modal = { cardOverlayEnabled: true, gestureEnabled: true, presentation: 'transparentModal' };
-  // const modalFullscreen = { ...modal, headerShown: false, presentation: 'modal' };
 
   return (
-    <NavigationContainer theme={getNavigationTheme(colorCurrency ? C.COLOR[baseCurrency] : undefined)}>
+    <NavigationContainer theme={getNavigationTheme()}>
       <StatusBar style={theme === 'dark' ? 'light' : 'dark'} translucent />
 
       <Stack.Navigator

@@ -6,12 +6,14 @@ export const style = StyleSheet.create({
     borderColor: '$inputBorderColor',
     borderRadius: '$inputBorderRadius',
     borderStyle: '$inputBorderStyle',
+    borderTopColor: 'transparent',
     borderWidth: '$inputBorderWidth',
     minHeight: '$inputTextHeight',
   },
 
   focus: {
     borderColor: '$inputBorderColorFocus',
+    borderTopColor: '$inputBorderColorFocus',
   },
 
   input: {

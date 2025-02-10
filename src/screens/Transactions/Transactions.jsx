@@ -42,21 +42,14 @@ const Transactions = ({
   }, [accounts, hash, page]);
 
   const { currency = baseCurrency } = dataSource;
+
   // ! TODO assign events to <Screen>
   return (
     <Screen disableScroll={!IS_WEB}>
       <SectionList
-        style={style.screen}
-        initialNumToRender={32}
+        initialNumToRender={C.TRANSACTIONS_PER_PAGE}
         keyExtractor={(item) => item.timestamp}
-        ListEmptyComponent={() => (
-          <Banner
-            align="center"
-            // ! TODO: Setup image
-            // image={}
-            title={L10N.NO_TRANSACTIONS}
-          />
-        )}
+        ListEmptyComponent={() => <Banner align="center" title={L10N.NO_TRANSACTIONS} />}
         ListHeaderComponent={
           <TransactionsListHeader
             chartBalanceBase={chartBalanceBase}
@@ -66,11 +59,12 @@ const Transactions = ({
             setPage={setPage}
           />
         }
-        onEndReached={() => setPage((prevPage) => prevPage + 1)}
         renderItem={({ item }) => <TransactionItem {...item} currency={currency} />}
         renderSectionHeader={({ section }) => <TransactionsHeader {...section} />}
-        stickySectionHeadersEnabled={false}
         sections={querySearchTxs({ account: dataSource, page, query }) || txs}
+        stickySectionHeadersEnabled={false}
+        onEndReached={!IS_WEB ? () => setPage((prevPage) => prevPage + 1) : undefined}
+        style={style.screen}
       />
     </Screen>
   );

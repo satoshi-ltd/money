@@ -31,13 +31,13 @@ const StoreProvider = ({ children }) => {
     (async () => {
       const store = await new StorageService({ defaults: DEFAULTS, filename: FILENAME });
 
-      const { theme = 'light' } = await store.get('settings').value;
-      StyleSheet.build(theme === 'light' ? LightTheme : DarkTheme);
+      const settings = (await store.get('settings')?.value) || {};
+      updateTheme(settings.theme, settings);
 
       setState({
         store,
         accounts: await store.get('accounts')?.value,
-        settings: await store.get('settings')?.value,
+        settings,
         subscription: await store.get('subscription')?.value,
         rates: await store.get('rates')?.value,
         txs: await store.get('txs')?.value,
@@ -45,6 +45,10 @@ const StoreProvider = ({ children }) => {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const updateTheme = (theme) => {
+    StyleSheet.build(theme === 'light' ? LightTheme : DarkTheme);
+  };
 
   return (
     <StoreContext.Provider
@@ -60,8 +64,9 @@ const StoreProvider = ({ children }) => {
         deleteTx: (...props) => deleteTx(...props, [state, setState]),
         // -- settings
         updateSettings: (...props) => updateSettings(...props, [state, setState]),
-        updateSubscription: (...props) => updateSubscription(...props, [state, setState]),
         updateRates: (...props) => updateRates(...props, [state, setState]),
+        updateSubscription: (...props) => updateSubscription(...props, [state, setState]),
+        updateTheme,
         importBackup: (...props) => importBackup(...props, [state, setState]),
       }}
     >

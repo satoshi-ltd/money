@@ -7,6 +7,7 @@ export const style = StyleSheet.create({
     borderRadius: '$inputBorderRadius',
     borderStyle: '$inputBorderStyle',
     borderWidth: '$inputBorderWidth',
+    gap: '$viewOffset / 2',
     minHeight: '$inputTextHeight',
     paddingLeft: '$inputPaddingHorizontal',
     paddingRight: '$inputPaddingHorizontal',

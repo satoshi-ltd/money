@@ -13,7 +13,13 @@ const { CURRENCY, EVENT } = C;
 const INITIAL_STATE = { balance: 0, currency: undefined, title: undefined };
 
 const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate } = {} }) => {
-  const { settings: { baseCurrency } = {}, createAccount, updateAccount, deleteAccount, updateRates } = useStore();
+  const {
+    settings: { baseCurrency, colorCurrency } = {},
+    createAccount,
+    updateAccount,
+    deleteAccount,
+    updateRates,
+  } = useStore();
 
   const [busy, setBusy] = useState(false);
   const [form, setForm] = useState(INITIAL_STATE);
@@ -114,7 +120,7 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
             {L10N.CLOSE}
           </Button>
         )}
-        <Button disabled={busy || !form.currency || !form.title} flex secondary onPress={handleSubmit}>
+        <Button disabled={busy || !form.currency || !form.title} flex secondary={!colorCurrency} onPress={handleSubmit}>
           {L10N.SAVE}
         </Button>
       </View>

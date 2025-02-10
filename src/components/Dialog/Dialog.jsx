@@ -3,23 +3,24 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { style } from './Dialog.style';
+import { useStore } from '../../contexts';
 
-const Dialog = ({ accept, cancel, text, onAccept, onCancel, title, ...others }) => (
+const Dialog = ({ accept, cancel, text, onAccept, onCancel, title, ...others }) => {
+  const { settings: { colorCurrency } = {} } = useStore();
+
   <View {...others} swipeable onClose={onCancel}>
     <Text bold subtitle style={style.title}>
       {title}
     </Text>
     {text && <Text color="contentLight">{text}</Text>}
     <View style={style.buttons}>
-      {cancel && onCancel && (
-        <Button secondary onPress={onCancel}>
-          {cancel}
-        </Button>
-      )}
-      <Button onPress={onAccept}>{accept}</Button>
+      {cancel && onCancel && <Button onPress={onCancel}>{cancel}</Button>}
+      <Button secondary={!colorCurrency} onPress={onAccept}>
+        {accept}
+      </Button>
     </View>
-  </View>
-);
+  </View>;
+};
 
 Dialog.propTypes = {
   accept: PropTypes.string,
