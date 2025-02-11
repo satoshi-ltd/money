@@ -140,4 +140,5 @@ export const ICON = {
   DOWNLOAD: 'file-download',
   UPLOAD: 'file-upload',
   BELL: 'bell',
+  UPDATE: 'update',
 };

@@ -17,7 +17,7 @@ const OPTIONS = (isPremium, subscription) => [
   {
     callback: 'handleUpdateRates',
     caption: L10N.IMPORT_DATA_CAPTION,
-    icon: ICON.UPLOAD,
+    icon: ICON.UPDATE,
     id: 2,
     text: L10N.SYNC_RATES_CTA,
   },
