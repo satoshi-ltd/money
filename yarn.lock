@@ -862,83 +862,6 @@
   dependencies:
     uuid "^8.0.0"
 
-"@expo/cli@0.22.10":
-  version "0.22.10"
-  resolved "https://registry.yarnpkg.com/@expo/cli/-/cli-0.22.10.tgz#28c05ab3f825ce1fb3d6387c059cb19aa4639ec8"
-  integrity sha512-MA4TOtf6x8ixVaQbUINgest/DsrWcMVGMmjXYtnhUfwQGvZtJC+aI+xMBM7ow2OqY2B/xfoRcgqkvWkl36yxkA==
-  dependencies:
-    "@0no-co/graphql.web" "^1.0.8"
-    "@babel/runtime" "^7.20.0"
-    "@expo/code-signing-certificates" "^0.0.5"
-    "@expo/config" "~10.0.8"
-    "@expo/config-plugins" "~9.0.14"
-    "@expo/devcert" "^1.1.2"
-    "@expo/env" "~0.4.1"
-    "@expo/image-utils" "^0.6.4"
-    "@expo/json-file" "^9.0.1"
-    "@expo/metro-config" "~0.19.9"
-    "@expo/osascript" "^2.1.5"
-    "@expo/package-manager" "^1.7.1"
-    "@expo/plist" "^0.2.1"
-    "@expo/prebuild-config" "^8.0.25"
-    "@expo/rudder-sdk-node" "^1.1.1"
-    "@expo/spawn-async" "^1.7.2"
-    "@expo/xcpretty" "^4.3.0"
-    "@react-native/dev-middleware" "0.76.6"
-    "@urql/core" "^5.0.6"
-    "@urql/exchange-retry" "^1.3.0"
-    accepts "^1.3.8"
-    arg "^5.0.2"
-    better-opn "~3.0.2"
-    bplist-creator "0.0.7"
-    bplist-parser "^0.3.1"
-    cacache "^18.0.2"
-    chalk "^4.0.0"
-    ci-info "^3.3.0"
-    compression "^1.7.4"
-    connect "^3.7.0"
-    debug "^4.3.4"
-    env-editor "^0.4.1"
-    fast-glob "^3.3.2"
-    form-data "^3.0.1"
-    freeport-async "^2.0.0"
-    fs-extra "~8.1.0"
-    getenv "^1.0.0"
-    glob "^10.4.2"
-    internal-ip "^4.3.0"
-    is-docker "^2.0.0"
-    is-wsl "^2.1.1"
-    lodash.debounce "^4.0.8"
-    minimatch "^3.0.4"
-    node-forge "^1.3.1"
-    npm-package-arg "^11.0.0"
-    ora "^3.4.0"
-    picomatch "^3.0.1"
-    pretty-bytes "^5.6.0"
-    pretty-format "^29.7.0"
-    progress "^2.0.3"
-    prompts "^2.3.2"
-    qrcode-terminal "0.11.0"
-    require-from-string "^2.0.2"
-    requireg "^0.2.2"
-    resolve "^1.22.2"
-    resolve-from "^5.0.0"
-    resolve.exports "^2.0.3"
-    semver "^7.6.0"
-    send "^0.19.0"
-    slugify "^1.3.4"
-    source-map-support "~0.5.21"
-    stacktrace-parser "^0.1.10"
-    structured-headers "^0.4.1"
-    tar "^6.2.1"
-    temp-dir "^2.0.0"
-    tempy "^0.7.1"
-    terminal-link "^2.1.1"
-    undici "^6.18.2"
-    unique-string "~2.0.0"
-    wrap-ansi "^7.0.0"
-    ws "^8.12.1"
-
 "@expo/cli@0.22.9":
   version "0.22.9"
   resolved "https://registry.yarnpkg.com/@expo/cli/-/cli-0.22.9.tgz#add1465a0946ecbc8ef4d09236fa8a6e9760bcb5"
@@ -1889,12 +1812,12 @@
     eslint-plugin-react-hooks "^4.3"
     prettier "^2.2.1"
 
-"@satoshi-ltd/nano-design@^0.2":
-  version "0.2.56"
-  resolved "https://registry.yarnpkg.com/@satoshi-ltd/nano-design/-/nano-design-0.2.56.tgz#e199111486250707b6fb230c5b18b363e08456db"
-  integrity sha512-BDRWs/GQHIMDFTWGk2MrbKCkdqB3XllxfBPsPovUt0KpFhzpVl5scH9NVBM9/QrFo+zPsKVzdx9lCplOF5YJUw==
+"@satoshi-ltd/nano-design@0.2.69":
+  version "0.2.69"
+  resolved "https://registry.yarnpkg.com/@satoshi-ltd/nano-design/-/nano-design-0.2.69.tgz#03747e165ca86563c2599b5a9ece1c1168f1ace8"
+  integrity sha512-CwenmGBXLMF9jocnnjtQljjeIkY7hmwTSSYxRWD1PHK2+f2OTPtIPmwdxSu3kTuWXdP/Eru6FzPjVP+5bCNSNA==
   dependencies:
-    expo "^52.0.0"
+    expo "~52.0.25"
 
 "@segment/loosely-validate-event@^2.0.0":
   version "2.0.0"
@@ -4804,31 +4727,10 @@ expo-modules-autolinking@2.0.5:
     require-from-string "^2.0.2"
     resolve-from "^5.0.0"
 
-expo-modules-autolinking@2.0.7:
-  version "2.0.7"
-  resolved "https://registry.yarnpkg.com/expo-modules-autolinking/-/expo-modules-autolinking-2.0.7.tgz#fc40ba7505f42f971253ea20a927693f2c123a56"
-  integrity sha512-rkGc6a/90AC3q8wSy4V+iIpq6Fd0KXmQICKrvfmSWwrMgJmLfwP4QTrvLYPYOOMjFwNJcTaohcH8vzW/wYKrMg==
-  dependencies:
-    "@expo/spawn-async" "^1.7.2"
-    chalk "^4.1.0"
-    commander "^7.2.0"
-    fast-glob "^3.2.5"
-    find-up "^5.0.0"
-    fs-extra "^9.1.0"
-    require-from-string "^2.0.2"
-    resolve-from "^5.0.0"
-
 expo-modules-core@2.1.3:
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/expo-modules-core/-/expo-modules-core-2.1.3.tgz#b8b8d4f5128a4f59c1093cfdddfc6936af2ddbc9"
   integrity sha512-DkSEr7q/SobjmCAo70833+xl0liShEFDHuC/YzXmHoDRxYHJaZCNc9uVBqjMeRfPVWp+4Rj9hF/gNvfad7vy0g==
-  dependencies:
-    invariant "^2.2.4"
-
-expo-modules-core@2.1.4:
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/expo-modules-core/-/expo-modules-core-2.1.4.tgz#f710555c6e0ede0776e8b72a7e2b50d7873542a0"
-  integrity sha512-gfsbTPSaocgcQQDy4Z4ztg1hcOofwODctAA+yoNcrUQr/hRaDc6ndIJQwGPjoGXnEbXVxFfzGGSAkNiqK1I7lQ==
   dependencies:
     invariant "^2.2.4"
 
@@ -4869,30 +4771,6 @@ expo-updates-interface@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/expo-updates-interface/-/expo-updates-interface-1.0.0.tgz#b98c66b800d29561c62409556948b2af3d5316e5"
   integrity sha512-93oWtvULJOj+Pp+N/lpTcFfuREX1wNeHtp7Lwn8EbzYYmdn37MvZU3TPW2tYYCZuhzmKEXnUblYcruYoDu7IrQ==
-
-expo@^52.0.0:
-  version "52.0.27"
-  resolved "https://registry.yarnpkg.com/expo/-/expo-52.0.27.tgz#9eeceda4990ee5a78a66d3f2c26122118ba9454c"
-  integrity sha512-PxIS8JRTegUNYq4vNeP0eCqm7p17oGNYjJ/9x207zkwVlklywD9LYIckGojXEY5JPW/DwhbhtO6E2hMgdQQugg==
-  dependencies:
-    "@babel/runtime" "^7.20.0"
-    "@expo/cli" "0.22.10"
-    "@expo/config" "~10.0.8"
-    "@expo/config-plugins" "~9.0.14"
-    "@expo/fingerprint" "0.11.7"
-    "@expo/metro-config" "0.19.9"
-    "@expo/vector-icons" "^14.0.0"
-    babel-preset-expo "~12.0.6"
-    expo-asset "~11.0.2"
-    expo-constants "~17.0.4"
-    expo-file-system "~18.0.7"
-    expo-font "~13.0.3"
-    expo-keep-awake "~14.0.2"
-    expo-modules-autolinking "2.0.7"
-    expo-modules-core "2.1.4"
-    fbemitter "^3.0.0"
-    web-streams-polyfill "^3.3.2"
-    whatwg-url-without-unicode "8.0.0-3"
 
 expo@~52.0.25:
   version "52.0.25"
@@ -9008,7 +8886,7 @@ resolve-workspace-root@^2.0.0:
   resolved "https://registry.yarnpkg.com/resolve-workspace-root/-/resolve-workspace-root-2.0.0.tgz#a0098daa0067cd0efa6eb525c57c8fb4a61e78f8"
   integrity sha512-IsaBUZETJD5WsI11Wt8PKHwaIe45or6pwNc8yflvLJ4DWtImK9kuLoH5kUva/2Mmx/RdIyr4aONNSa2v9LTJsw==
 
-resolve.exports@^2.0.0, resolve.exports@^2.0.2, resolve.exports@^2.0.3:
+resolve.exports@^2.0.0, resolve.exports@^2.0.2:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/resolve.exports/-/resolve.exports-2.0.3.tgz#41955e6f1b4013b7586f873749a635dea07ebe3f"
   integrity sha512-OcXjMsGdhL4XnbShKpAcSqPMzQoYkYyhbEaeSko47MjRP9NfEQMhZkXL1DoFlt9LWQn4YttrdnV6X2OiyzBi+A==
