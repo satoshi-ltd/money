@@ -1819,10 +1819,10 @@
     eslint-plugin-react-hooks "^4.3"
     prettier "^2.2.1"
 
-"@satoshi-ltd/nano-design@0.2.69":
-  version "0.2.69"
-  resolved "https://registry.yarnpkg.com/@satoshi-ltd/nano-design/-/nano-design-0.2.69.tgz#03747e165ca86563c2599b5a9ece1c1168f1ace8"
-  integrity sha512-CwenmGBXLMF9jocnnjtQljjeIkY7hmwTSSYxRWD1PHK2+f2OTPtIPmwdxSu3kTuWXdP/Eru6FzPjVP+5bCNSNA==
+"@satoshi-ltd/nano-design@0.2.70":
+  version "0.2.70"
+  resolved "https://registry.yarnpkg.com/@satoshi-ltd/nano-design/-/nano-design-0.2.70.tgz#33630cd64ddfc262620112939e1ef77f1a21436d"
+  integrity sha512-53XVziHo9b8W0nH/RLrPLTwzHCJdkD3JUSli7d7kim5nxdzfIyhvBR9bioUhb0q7g+7AQFH5s4Lc+r9KXgFaEw==
   dependencies:
     expo "~52.0.25"
 
