@@ -17,7 +17,7 @@ const HorizontalChartItem = ({ color, currency, detail, icon, title, value, widt
       duration: 400,
       easing: Easing.inOut(Easing.ease),
       toValue: ((screen.width - StyleSheet.value('$viewOffset') * 2) * propWidth) / 100,
-      useNativeDriver: true,
+      useNativeDriver: false,
     }).start();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [propWidth]);
