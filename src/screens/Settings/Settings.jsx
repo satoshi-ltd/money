@@ -4,10 +4,11 @@ import React, { useState } from 'react';
 import { Linking } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
-import { getLatestRates, verboseDate } from './helpers';
+import { getLatestRates } from './helpers';
 import { ABOUT, OPTIONS, PREFERENCES, REMINDER_BACKUP_OPTIONS } from './Settings.constants';
 import { style } from './Settings.style';
 import { useStore } from '../../contexts';
+import { verboseDate } from '../../modules';
 import { C, eventEmitter, ICON, L10N } from '../../modules';
 import { BackupService, NotificationsService, PurchaseService } from '../../services';
 
