@@ -53,7 +53,7 @@ const Settings = ({ navigation = {} }) => {
     if (!IS_WEB && !isPremium) return handleSubscription('export');
 
     const exported = await BackupService.export({ accounts, settings, txs });
-    if (exported) eventEmitter.emit(EVENT.NOTIFICATION, { message: L10N.CONFIRM_EXPORT_SUCCESS });
+    if (exported) eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.CONFIRM_EXPORT_SUCCESS });
   };
 
   const handleImport = async () => {
@@ -71,7 +71,7 @@ const Settings = ({ navigation = {} }) => {
           if (theme) updateTheme(theme);
           await importBackup(backup);
           navigation.navigate('dashboard');
-          eventEmitter.emit(EVENT.NOTIFICATION, { message: L10N.CONFIRM_IMPORT_SUCCESS });
+          eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.CONFIRM_IMPORT_SUCCESS });
         },
       });
     }
@@ -94,14 +94,14 @@ const Settings = ({ navigation = {} }) => {
       .then((activeSubscription) => {
         if (activeSubscription) {
           updateSubscription(activeSubscription);
-          eventEmitter.emit(EVENT.NOTIFICATION, { message: L10N.PURCHASE_RESTORED });
+          eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.PURCHASE_RESTORED });
           setActivity();
         }
       })
       .catch(handleError);
   };
 
-  const handleError = (error) => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, message: JSON.stringify(error) });
+  const handleError = (error) => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, text: JSON.stringify(error) });
 
   const handleTheme = () => {
     const nextTheme = theme === 'light' ? 'dark' : 'light';

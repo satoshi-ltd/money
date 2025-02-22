@@ -90,7 +90,7 @@ export const L10N = {
   DISABLE: 'Disable',
 
   ENABLE: 'Enable',
-  ERROR: 'Something went wrong',
+  ERROR: 'Something went wrong.',
   ERROR_EXPORT: 'Export failed due to missing sharing permissions.',
   ERROR_IMPORT: 'Unsupported file format. Please select a compatible file type.',
   ERROR_PRODUCTS: 'Products not found',

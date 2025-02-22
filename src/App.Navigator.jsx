@@ -51,7 +51,7 @@ const Tabs = ({ navigation = {} }) => {
       .then((plans) => {
         navigation.navigate('subscription', { plans });
       })
-      .catch((error) => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, message: JSON.stringify(error) }));
+      .catch((error) => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, text: JSON.stringify(error) }));
   };
 
   const screenOptions = {

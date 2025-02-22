@@ -30,7 +30,13 @@ export const Notification = () => {
 
   const handleClose = () => setVisible(false);
 
-  const { error, message = L10N.ERROR } = value || {};
+  const { error, text, title } = value || {};
 
-  return <NotificationBase error={error} text={message} visible={visible} onClose={handleClose} />;
+  return (
+    <NotificationBase
+      {...{ error, text, visible }}
+      title={title || (error ? L10N.ERROR : 'Info')}
+      onClose={handleClose}
+    />
+  );
 };
