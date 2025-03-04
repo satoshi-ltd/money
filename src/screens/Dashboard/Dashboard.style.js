@@ -5,6 +5,7 @@ export const style = StyleSheet.create({
   screen: {
     paddingBottom: '$spaceXXL * 2',
     paddingTop: '$spaceXXL + $viewOffset',
+    ...Platform.select({ android: { paddingTop: 0 } }),
     ...Platform.select({ web: { marginTop: '$viewOffset' } }),
   },
 

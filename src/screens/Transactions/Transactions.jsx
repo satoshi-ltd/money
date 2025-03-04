@@ -33,7 +33,10 @@ const Transactions = ({
     navigation.setOptions({
       title: account.title,
       headerLeft: () => (
-        <Pressable onPress={() => navigation.goBack()}>
+        <Pressable
+          onPress={() => navigation.goBack()}
+          {...(C.IS_ANDROID ? { onPressIn: () => navigation.goBack() } : {})}
+        >
           <Icon name="chevron-left" title />
         </Pressable>
       ),

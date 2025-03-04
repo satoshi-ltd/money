@@ -38,7 +38,7 @@ const commonScreenOptions = (theme = 'light') => ({
   headerShown: true,
   headerTitle: () => <Logo />,
   headerTitleAlign: 'center',
-  headerTransparent: true,
+  headerTransparent: C.IS_ANDROID ? false : true,
 });
 
 // eslint-disable-next-line react/prop-types
