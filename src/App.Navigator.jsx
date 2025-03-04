@@ -34,6 +34,7 @@ const Tab = createBottomTabNavigator();
 
 const commonScreenOptions = (theme = 'light') => ({
   headerBackground: () => <BlurView intensity={60} tint={theme} style={{ flex: 1 }} />,
+  headerBackVisible: false,
   headerShown: true,
   headerTitle: () => <Logo />,
   headerTitleAlign: 'center',
