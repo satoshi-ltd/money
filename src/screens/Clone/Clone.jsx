@@ -62,7 +62,9 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
         </Text>
         <InputDate
           value={state.form.timestamp ? new Date(state.form.timestamp) : undefined}
-          onChange={(value) => setState({ form: { ...state.form, timestamp: value.getTime() }, valid: true })}
+          onChange={(value) =>
+            setState((prevState) => ({ form: { ...prevState.form, timestamp: value.getTime() }, valid: true }))
+          }
         />
       </View>
       <Text bold title style={style.title}>
