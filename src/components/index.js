@@ -6,6 +6,7 @@ export * from './Dialog';
 export * from './GroupTransactions';
 export * from './Heading';
 export * from './InputCurrency';
+export * from './InputDate';
 export * from './InputText';
 export * from './LineChart';
 export * from './Logo';

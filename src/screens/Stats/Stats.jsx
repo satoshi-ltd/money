@@ -10,10 +10,10 @@ import { C, L10N } from '../../modules';
 
 const {
   STATS_MONTHS_LIMIT,
-  TX: {
-    TYPE: { EXPENSE, INCOME },
-  },
+  TX: { TYPE: { EXPENSE, INCOME } = {} },
 } = C;
+
+let debounceTimeout;
 
 const Stats = () => {
   const store = useStore();
@@ -29,7 +29,10 @@ const Stats = () => {
   }, [baseCurrency, txs]);
 
   const handlePointerIndex = (next) => {
-    if (next !== pointerIndex) setPointerIndex(next);
+    clearTimeout(debounceTimeout);
+    debounceTimeout = setTimeout(() => {
+      if (next !== pointerIndex) setPointerIndex(next);
+    }, 100);
   };
 
   const { expenses = {}, incomes = {} } = queryMonth(store, pointerIndex) || {};
@@ -54,7 +57,7 @@ const Stats = () => {
         multipleData
         title={`${L10N.INCOMES} & ${L10N.EXPENSES}`}
         values={[chart.incomes, chart.expenses]}
-        // onPointerChange={handlePointerIndex}
+        onPointerChange={handlePointerIndex}
       />
 
       {Object.keys(incomes).length > 0 && <ItemGroupCategories color={color} type={INCOME} dataSource={incomes} />}
@@ -65,6 +68,7 @@ const Stats = () => {
         color={StyleSheet.value('$colorContent')}
         title={L10N.TRANSFERS}
         values={chart.transfers}
+        onPointerChange={handlePointerIndex}
       />
     </Screen>
   );

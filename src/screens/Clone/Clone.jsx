@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
 import { style } from './Clone.style';
+import { InputDate } from '../../components';
 import { useStore } from '../../contexts';
 import { C, L10N } from '../../modules';
-// ! TODO: Should be a /component
-import { FormTransaction } from '../Transaction/components';
+import { FormTransaction } from '../Transaction/components'; // ! TODO: Should be a /component
 
 const {
   TX: {
@@ -25,10 +25,10 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
   const [state, setState] = useState(INITIAL_STATE);
 
   useEffect(() => {
-    const { category, title, value } = params;
+    const { category, title, timestamp, value } = params;
 
     setDataSource(params);
-    setState({ form: { category, title, value }, valid: false });
+    setState({ form: { category, timestamp, title, value }, valid: false });
   }, [params]);
 
   const handleSubmit = async ({ remove, clone, edit }) => {
@@ -56,9 +56,15 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
 
   return (
     <Modal title="Clone" onClose={goBack}>
-      <Text bold color="contentLight" secondary subtitle>
-        {L10N.TRANSACTION[type]}
-      </Text>
+      <View row spaceBetween>
+        <Text bold color="contentLight" secondary subtitle>
+          {L10N.TRANSACTION[type]}
+        </Text>
+        <InputDate
+          value={state.form.timestamp ? new Date(state.form.timestamp) : undefined}
+          onChange={(value) => setState({ form: { ...state.form, timestamp: value.getTime() }, valid: true })}
+        />
+      </View>
       <Text bold title style={style.title}>
         {title}
       </Text>

@@ -10,7 +10,7 @@ export const getLatestRates = async ({
   },
 }) => {
   const rates = await ServiceRates.get({ baseCurrency, latest: true }).catch(() =>
-    eventEmitter.emit(EVENT.NOTIFICATION, { error: true, message: L10N.ERROR_SERVICE_RATES }),
+    eventEmitter.emit(EVENT.NOTIFICATION, { error: true, title: L10N.ERROR_SERVICE_RATES }),
   );
 
   if (rates) await updateRates(rates);

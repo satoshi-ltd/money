@@ -5,6 +5,7 @@ import React from 'react';
 import { style } from './GroupTransaction.style';
 import { Item } from './GroupTransactions.Item';
 
+// ! TODO: Refacto
 export const verboseDate = (date = new Date(), { locale = 'en-US', ...props } = {}) => {
   const day = date.toDateString();
   const today = new Date().toDateString();

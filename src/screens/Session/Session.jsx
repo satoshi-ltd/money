@@ -26,7 +26,7 @@ const Session = ({ navigation: { reset } = {} }) => {
 
   const fetchRates = async () => {
     const rates = await ServiceRates.get(settings)['catch'](() =>
-      eventEmitter.emit(EVENT.NOTIFICATION, { error: true, message: L10N.ERROR_SERVICE_RATES }),
+      eventEmitter.emit(EVENT.NOTIFICATION, { error: true, title: L10N.ERROR_SERVICE_RATES }),
     );
     if (rates) updateRates(rates);
   };
@@ -46,6 +46,9 @@ const Session = ({ navigation: { reset } = {} }) => {
     reset({ index: 0, routes: [{ name: 'main' }] });
   };
 
+  const { baseCurrency, colorCurrency = false } = settings;
+  const color = colorCurrency ? C.COLOR[baseCurrency] : undefined;
+
   return (
     <SafeAreaView style={style.safeAreaView}>
       <View style={style.content}>
@@ -53,7 +56,13 @@ const Session = ({ navigation: { reset } = {} }) => {
         <Text detail>{signup ? L10N.PIN_CHOOSE : L10N.PIN}</Text>
         <View style={style.pinCode}>
           {['•', '•', '•', '•'].map((letter, index) => (
-            <View key={index} style={[style.pin, pin.length > index && style.pinActive]} />
+            <View
+              key={index}
+              style={[
+                style.pin,
+                pin.length > index ? (color ? { backgroundColor: color } : style.pinActive) : undefined,
+              ]}
+            />
           ))}
         </View>
 

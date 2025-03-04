@@ -50,7 +50,7 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
         setBusy(true);
         await deleteAccount(params);
 
-        eventEmitter.emit(EVENT.NOTIFICATION, { message: L10N.CONFIRM_DELETION_SUCCESS });
+        eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.CONFIRM_DELETION_SUCCESS });
         goBack();
         goBack();
         setBusy(false);

@@ -4,6 +4,7 @@ import React from 'react';
 
 import { style } from './TransactionsList.style';
 
+// ! TODO: Refacto
 const verboseDate = (date = new Date(), { locale = 'en-US', ...props } = {}) => {
   const day = date.toDateString();
   const today = new Date().toDateString();
