@@ -25,7 +25,7 @@ const Chart = ({
 
   // eslint-disable-next-line react/prop-types
   const Scale = ({ color, dataSource }) => (
-    <View row style={style.scale}>
+    <View row style={[style.scale, multipleData && style.multiScale]}>
       {Object.entries(calcScales(dataSource)).map(([key, value]) => (
         <View key={key} row style={style.scale}>
           <PriceFriendly {...{ color, currency, value }} bold fixed={0} tiny label={`${L10N.SCALE_KEY[key]} `} />

@@ -8,4 +8,8 @@ export const style = StyleSheet.create({
   scale: {
     gap: '$viewOffset / 2',
   },
+
+  multiScale: {
+    marginTop: '$viewOffset / 2',
+  },
 });
