@@ -1,15 +1,17 @@
 import { median } from './median';
 
 export default (values = []) => {
-  if (!values || !values.length) return { min: 0, max: 0 };
+  if (values.length <= 1) return { min: 0, max: 0 };
 
-  const max = Math.floor(Math.max(...values));
+  const previousMonths = values.slice(0, -1);
+
+  const max = Math.floor(Math.max(...previousMonths));
   let min = 0;
   let med = 0;
 
   if (max > 0) {
-    min = Math.floor(Math.min(...values));
-    med = median(values);
+    min = Math.floor(Math.min(...previousMonths));
+    med = median(previousMonths);
   }
 
   return {
