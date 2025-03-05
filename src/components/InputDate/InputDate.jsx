@@ -1,19 +1,28 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Pressable, Text, View } from '@satoshi-ltd/nano-design';
+import { Pressable, Text } from '@satoshi-ltd/nano-design';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './InputDate.style';
 import { useStore } from '../../contexts';
-import { C, verboseDate } from '../../modules';
+import { verboseDate } from '../../modules';
 
 const DATE_FORMAT = { day: 'numeric', month: 'long', year: 'numeric' };
 
-const InputDate = ({ disabled = false, value = new Date(), onChange = () => {}, ...others }) => {
+const InputDate = ({ value = new Date(), onChange = () => {} }) => {
+  const inputRef = useRef(null);
   const { session: { locale } = {}, settings: { theme } = {} } = useStore();
-  const [open, setOpen] = useState(C.IS_IOS ? true : false);
+
+  const [open, setOpen] = useState(false);
+
+  const handlePress = () => {
+    if (inputRef.current) {
+      inputRef.current.showPicker?.();
+      inputRef.current.focus();
+    }
+  };
 
   const handleChange = (event, nextDate) => {
     onChange(new Date(nextDate));
@@ -24,48 +33,38 @@ const InputDate = ({ disabled = false, value = new Date(), onChange = () => {}, 
     onChange(new Date(value));
   };
 
-  return (
+  return Platform.OS !== 'web' ? (
+    Platform.OS === 'ios' || open ? (
+      <DateTimePicker
+        accentColor={StyleSheet.value('$colorAccent')}
+        is24Hour
+        maximumDate={new Date()}
+        mode="date"
+        display="default"
+        textColor={StyleSheet.value('$colorContent')}
+        themeVariant={theme}
+        value={value}
+        onChange={handleChange}
+        style={style.dateTimePicker}
+      />
+    ) : (
+      <Pressable onPress={() => setOpen(true)} style={style.pressable}>
+        <Text>{verboseDate(value, { locale, ...DATE_FORMAT })}</Text>
+      </Pressable>
+    )
+  ) : (
     <>
-      {disabled && (
-        <Text bold color="contentLight" secondary>
-          {verboseDate(value, { locale, ...DATE_FORMAT })}
-        </Text>
-      )}
-      {!disabled && Platform.OS === 'web' && (
-        <View row>
-          <input
-            type="date"
-            max={new Date().toISOString().split('T')[0]}
-            value={value ? value.toISOString().split('T')[0] : undefined}
-            onChange={handleChangeInput}
-            style={style.input}
-          />
-          <Text bold color="contentLight" secondary>
-            {verboseDate(value, { locale, ...DATE_FORMAT })}
-          </Text>
-        </View>
-      )}
-      {!disabled && !open && (
-        <Pressable onPress={() => setOpen(true)}>
-          <Text bold color="contentLight" secondary>
-            {verboseDate(value, { locale, ...DATE_FORMAT })}
-          </Text>
-        </Pressable>
-      )}
-      {!disabled && open && (
-        <DateTimePicker
-          accentColor={StyleSheet.value('$colorAccent')}
-          is24Hour
-          maximumDate={new Date()}
-          mode="date"
-          display="default"
-          textColor={StyleSheet.value('$colorContent')}
-          themeVariant={theme}
-          value={value}
-          onChange={handleChange}
-          style={[style.dateTimePicker, others.style]}
-        />
-      )}
+      <input
+        ref={inputRef}
+        type="date"
+        max={new Date().toISOString().split('T')[0]}
+        value={value ? value.toISOString().split('T')[0] : undefined}
+        onChange={handleChangeInput}
+        style={style.inputWeb}
+      />
+      <Pressable onPress={handlePress} style={style.pressable}>
+        <Text>{verboseDate(value, { locale, ...DATE_FORMAT })}</Text>
+      </Pressable>
     </>
   );
 };

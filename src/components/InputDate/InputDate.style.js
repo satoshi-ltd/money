@@ -8,18 +8,17 @@ export const style = StyleSheet.create({
     padding: 0,
   },
 
-  input: {
-    backgroundColor: 'transparent',
-    border: 0,
-    color: '$colorContentLight',
-    fontFamily: 'font-default-secondary',
-    fontSize: '$fontSizeTitle',
-    fontWeight: '$fontWeightDefault',
-    height: '$fontSizeTitle',
-    lineHeight: '$fontSizeTitle',
+  inputWeb: {
+    position: 'absolute',
     margin: 0,
-    marginRight: '$viewOffset / 2',
-    padding: 0,
-    width: '$fontSizeTitle',
+    width: 0,
+    right: 0,
+  },
+
+  pressable: {
+    backgroundColor: '$colorBorder',
+    borderRadius: '$borderRadius',
+    paddingHorizontal: '$spaceS',
+    paddingVertical: '$spaceXS',
   },
 });
