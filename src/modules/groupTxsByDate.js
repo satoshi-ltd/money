@@ -4,17 +4,19 @@ export const groupTxsByDate = (txs = []) => {
   let date;
   let dateIndex = 0;
 
-  txs.forEach((tx) => {
-    const txDate = new Date(new Date(tx.timestamp).getTime() - offset).toISOString().substr(0, 10);
+  txs
+    .sort((a, b) => b.timestamp - a.timestamp)
+    .forEach((tx) => {
+      const txDate = new Date(new Date(tx.timestamp).getTime() - offset).toISOString().substr(0, 10);
 
-    if (date !== txDate) {
-      date = txDate;
-      dateIndex = query.length;
-      query.push({ title: tx.timestamp, data: [] });
-    }
+      if (date !== txDate) {
+        date = txDate;
+        dateIndex = query.length;
+        query.push({ title: tx.timestamp, data: [] });
+      }
 
-    query[dateIndex].data.push(tx);
-  });
+      query[dateIndex].data.push(tx);
+    });
 
   return query;
 };
