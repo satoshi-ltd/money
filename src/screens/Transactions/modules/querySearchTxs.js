@@ -5,9 +5,9 @@ const { TRANSACTIONS_PER_PAGE } = C;
 export const querySearchTxs = ({ account = {}, page = 1, query }) =>
   query
     ? groupTxsByDate(
-        [...account.txs]
+        account.txs
           .slice()
-          .reverse()
+          .sort((a, b) => b.timestamp - a.timestamp)
           .filter((tx = {}) => {
             const title = tx.title ? tx.title.toLowerCase() : undefined;
 

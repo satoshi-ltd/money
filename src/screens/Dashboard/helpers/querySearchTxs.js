@@ -7,7 +7,7 @@ export const querySearchTxs = ({ accounts = [], page = 1, query, txs = [] }) =>
     ? groupTxsByDate(
         txs
           .slice()
-          .reverse()
+          .sort((a, b) => b.timestamp - a.timestamp)
           .filter((tx = {}) => {
             const title = tx.title ? tx.title.toLowerCase() : undefined;
 
