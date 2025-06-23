@@ -18,10 +18,11 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
   const [query, setQuery] = useState();
 
   const handleSearch = () => {
-    setSearch(() => {
+    setSearch((prevSearch) => {
       setPage(1);
       onSearch();
-      return !search;
+      if (prevSearch) setQuery('');
+      return !prevSearch;
     });
   };
 
