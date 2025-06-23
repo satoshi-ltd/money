@@ -24,8 +24,8 @@ export const App = () => {
     <SafeAreaProvider>
       <StoreProvider>
         <Navigator />
-        <Notification />
       </StoreProvider>
+      <Notification />
     </SafeAreaProvider>
   ) : null;
 };
