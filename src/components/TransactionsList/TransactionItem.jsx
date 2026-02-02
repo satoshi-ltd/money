@@ -40,10 +40,7 @@ const TransactionItem = ({
   return (
     <Pressable onPress={handlePress}>
       <View row style={style.content}>
-        <Card
-          //
-          small
-          style={style.iconCard}>
+        <Card small>
           <Icon name={getIcon({ category, type, title })} />
         </Card>
 

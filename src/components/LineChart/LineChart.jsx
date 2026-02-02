@@ -22,16 +22,25 @@ const LineChart = ({
   style: propStyle,
   ...props
 }) => {
-  const colorAccent = StyleSheet.value('$colorAccent');
+  const getValue = (token, fallback) =>
+    StyleSheet && typeof StyleSheet.value === 'function' ? StyleSheet.value(token) : fallback;
+  const colorAccent = getValue('$colorAccent', '#FFBC2D');
   const [color, color2] = multipleData ? propColor : [propColor || colorAccent];
   let [data = [], data2 = []] = multipleData ? values : [values];
 
-  data = data.filter((value) => typeof value === 'number' && !isNaN(value));
-  const max = Math.max(...data);
-  const min = Math.min(...data);
+  const normalize = (series = []) =>
+    series
+      .filter((value) => typeof value === 'number' && !isNaN(value))
+      .map((value) => Math.max(0, value));
+
+  data = normalize(data);
+  data2 = normalize(data2);
+  const hasData = data.length > 0;
+  const max = hasData ? Math.max(...data) : 0;
+  const min = hasData ? Math.min(...data) : 0;
   const range = max - min;
-  const maxValue = max + range * 0.05;
-  const minValue = min - range * 0.15;
+  const maxValue = hasData ? max + range * 0.05 : 0;
+  const minValue = hasData ? min - range * 0.15 : 0;
 
   const months = getLastMonths();
 
@@ -92,7 +101,7 @@ const LineChart = ({
                 pointerLabelWidth: 96,
                 pointerColor: color,
                 pointer2Color: color2,
-                pointerStripColor: StyleSheet.value('$colorContentLight'),
+                pointerStripColor: getValue('$colorContentLight', '#A09485'),
                 pointerStripWidth: 1,
                 ...pointerConfig,
               }

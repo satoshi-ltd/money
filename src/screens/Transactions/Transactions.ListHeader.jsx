@@ -73,7 +73,7 @@ const TransactionsListHeader = ({ chartBalanceBase, dataSource, navigation, onSe
           </View>
         </Summary>
 
-        <Heading value={L10N.TRANSACTIONS} style={style.headingTight}>
+        <Heading value={L10N.TRANSACTIONS}>
           <Button
             icon={!search ? ICON.SEARCH : ICON.CLOSE}
             outlined

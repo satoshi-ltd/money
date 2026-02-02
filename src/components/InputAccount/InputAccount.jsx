@@ -1,0 +1,122 @@
+import Card from '../Card';
+import { CurrencyLogo } from '../CurrencyLogo';
+import Dropdown from '../Dropdown';
+import { Icon, Pressable, Text, View } from '../../design-system';
+import { PriceFriendly } from '../PriceFriendly';
+import PropTypes from 'prop-types';
+import React, { useEffect, useMemo, useState } from 'react';
+import StyleSheet from 'react-native-extended-stylesheet';
+
+import { style } from './InputAccount.style';
+import { L10N } from '../../modules';
+import { sortAccounts } from '../../modules/sortAccounts';
+
+const InputAccount = ({ accounts = [], inlineMax = 4, onSelect, selected }) => {
+  const [showSelect, setShowSelect] = useState(false);
+  const useInline = accounts.length > 0 && accounts.length <= inlineMax;
+
+  const sortedAccounts = useMemo(() => sortAccounts(accounts), [accounts]);
+
+  useEffect(() => {
+    if (!selected && sortedAccounts.length) {
+      onSelect(sortedAccounts[0]);
+    }
+  }, [onSelect, selected, sortedAccounts]);
+
+  const options = useMemo(
+    () => sortedAccounts.map((item) => ({ id: item.hash, label: item.title, account: item })),
+    [sortedAccounts],
+  );
+
+  const handleSelect = (next) => {
+    if (!next) return;
+    onSelect(next);
+  };
+
+  if (useInline) {
+    return (
+      <View style={style.list}>
+        {sortedAccounts.map((item) => (
+          <Pressable key={item.hash} onPress={() => handleSelect(item)}>
+            <View row style={style.item}>
+              <Card small style={style.iconCard}>
+                <CurrencyLogo currency={item.currency} muted={!item?.currentBalance || item.currentBalance < 0} />
+              </Card>
+              <View flex style={style.textContainer}>
+                <Text bold numberOfLines={2} style={style.text}>
+                  {item.title}
+                </Text>
+                <View row style={style.subline}>
+                  <Text caption color="contentLight">
+                    {L10N.BALANCE}
+                  </Text>
+                  <PriceFriendly
+                    caption
+                    color="contentLight"
+                    currency={item.currency}
+                    value={item.currentBalance || 0}
+                  />
+                </View>
+              </View>
+              {item.hash === selected?.hash ? <Icon name="check" color="accent" /> : <View style={style.rightPlaceholder} />}
+            </View>
+          </Pressable>
+        ))}
+      </View>
+    );
+  }
+
+  return (
+    <View style={style.select}>
+      <Pressable onPress={() => setShowSelect(true)}>
+        <View row style={[style.item, showSelect && style.focus]}>
+          <Card small style={style.iconCard}>
+            <CurrencyLogo
+              currency={selected?.currency}
+              muted={!selected?.currentBalance || selected?.currentBalance < 0}
+            />
+          </Card>
+          <View flex style={style.textContainer}>
+            <Text bold numberOfLines={2} style={style.text}>
+              {selected?.title}
+            </Text>
+            <View row style={style.subline}>
+              <Text caption color="contentLight">
+                {L10N.BALANCE}
+              </Text>
+              <PriceFriendly
+                caption
+                color="contentLight"
+                currency={selected?.currency}
+                value={selected?.currentBalance || 0}
+              />
+            </View>
+          </View>
+          <Icon name="chevron-down" color="contentLight" />
+        </View>
+      </Pressable>
+
+      <Dropdown
+        maxItems={6}
+        onClose={() => setShowSelect(false)}
+        onSelect={(option) => {
+          handleSelect(option.account);
+          setShowSelect(false);
+        }}
+        options={options}
+        selected={selected?.hash}
+        visible={showSelect}
+        width={StyleSheet.value('$optionSize') * 2.8}
+      />
+    </View>
+  );
+};
+
+InputAccount.propTypes = {
+  accounts: PropTypes.arrayOf(PropTypes.shape({})),
+  inlineMax: PropTypes.number,
+  onSelect: PropTypes.func.isRequired,
+  selected: PropTypes.shape({}),
+};
+
+export default InputAccount;

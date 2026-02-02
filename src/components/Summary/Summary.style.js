@@ -13,6 +13,10 @@ export const style = StyleSheet.create({
   noPadding: {
     paddingHorizontal: 0,
   },
+  heading: {
+    marginHorizontal: 0,
+    marginVertical: 0,
+  },
   balanceRow: {
     alignItems: 'baseline',
     gap: '$spaceXXS',

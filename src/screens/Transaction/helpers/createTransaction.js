@@ -1,7 +1,7 @@
 export const createTransaction = async ({
   props: { account = {}, type },
   state: {
-    form: { category, value, title = '' },
+    form: { category, timestamp, value, title = '' },
   },
   store: { createTx },
 }) =>
@@ -9,6 +9,7 @@ export const createTransaction = async ({
     account: account.hash,
     category: parseInt(category, 10),
     title,
+    timestamp: timestamp || Date.now(),
     type,
     value: parseFloat(value, 10),
   });

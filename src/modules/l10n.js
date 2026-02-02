@@ -2,6 +2,7 @@ export const L10N = {
   ABOUT: 'About Money',
   ACCEPT: 'Accept',
   ACTIVITY: 'Analytics',
+  AMOUNT: 'Amount',
   ANNUALY: 'Annualy',
 
   APPERANCE_DARK: 'Switch to dark mode',
@@ -55,6 +56,8 @@ export const L10N = {
   CONCEPT: 'Concept',
   CONFIRM_DELETION: 'Confirm deletion',
   CONFIRM_DELETION_CAPTION: 'Confirm permanent deletion of this transaction? This action is irreversible.',
+  CONFIRM_ACCOUNT_DELETION_CAPTION:
+    'Confirm permanent deletion of this account and all its transactions? This action is irreversible.',
   CONFIRM_DELETION_SUCCESS: 'Deleted successfully.',
   CONFIRM_EXPORT_SUCCESS: 'Export successful! Your data has been saved.',
   CONFIRM_IMPORT: 'Confirm import',
@@ -81,6 +84,7 @@ export const L10N = {
     XAU: 'Gold',
     XAG: 'Silver',
   },
+  CURRENCY: 'Currency',
   CURRENCIES: 'Currencies',
 
   DARK_MODE: 'Dark Mode',
@@ -186,6 +190,12 @@ export const L10N = {
   SEARCH: 'Search',
   SELECT_ACCOUNT: 'Select account',
   SELECT_CATEGORY: 'Select category',
+  ACCOUNT: 'Account',
+  FROM_ACCOUNT: 'From',
+  CATEGORY: 'Category',
+  DETAILS: 'Details',
+  DATE: 'Date',
+  DESTINATION: 'To',
   SELECT_DESTINATION: 'Select Destination',
   SETTINGS: 'Settings',
   START: 'Start',

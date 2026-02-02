@@ -1,33 +1,38 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { KeyboardAvoidingView, Modal as RNModal, Platform, Pressable as RNPressable, View as RNView } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useEffect, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
+import { Animated, KeyboardAvoidingView, Modal as RNModal, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useIsFocused } from '@react-navigation/native';
 
-import { Icon, Pressable, ScrollView, Text, View } from '../../design-system';
-import { ICON } from '../../modules';
+import { Pressable, View } from '../../design-system';
 import { styles } from './Modal.styles';
 
-const Modal = ({ children, gap, onClose, style, title }) => {
+const Modal = ({ children, onClose }) => {
   const [visible, setVisible] = useState(true);
   const isFocused = useIsFocused();
   const isAndroid = Platform.OS === 'android';
-  const { top, bottom } = useSafeAreaInsets();
+  const backdropOpacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (!isFocused) return;
     setVisible(true);
+    Animated.timing(backdropOpacity, {
+      toValue: 1,
+      duration: 180,
+      useNativeDriver: true,
+    }).start();
   }, [isFocused]);
-
-  const containerStyle = useMemo(
-    () => [styles.container, gap ? styles.gap : null, style, !isAndroid ? { paddingBottom: 0 } : null],
-    [gap, isAndroid, style],
-  );
-  const scrollContentStyle = useMemo(() => [styles.scrollContent, { paddingBottom: bottom }], [bottom]);
 
   const handleClose = () => {
     if (!onClose) return;
-    setVisible(false);
-    onClose();
+    Animated.timing(backdropOpacity, {
+      toValue: 0,
+      duration: 160,
+      useNativeDriver: true,
+    }).start(() => {
+      setVisible(false);
+      onClose();
+    });
   };
 
   if (!visible || !isFocused) return null;
@@ -35,41 +40,33 @@ const Modal = ({ children, gap, onClose, style, title }) => {
   return (
     <RNModal
       transparent
-      animationType="fade"
+      animationType="slide"
       visible={visible && isFocused}
       onRequestClose={onClose ? handleClose : undefined}
     >
-      <RNView style={styles.overlay}>
-        <RNPressable style={{ flex: 1 }} onPress={handleClose} />
+      <View style={styles.overlay}>
+        <Animated.View style={[styles.backdrop, { opacity: backdropOpacity }]}>
+          <Pressable style={{ flex: 1 }} onPress={handleClose} />
+        </Animated.View>
         <KeyboardAvoidingView
           behavior={isAndroid ? 'height' : 'padding'}
-          keyboardVerticalOffset={top}
           style={{ justifyContent: 'flex-end' }}
         >
-          <RNView style={styles.sheet}>
-            <SafeAreaView edges={['bottom']} style={containerStyle}>
-              <View style={styles.handle} />
-              {(title || onClose) && (
-                <View style={styles.header}>
-                  <Text bold subtitle style={styles.title}>
-                    {title}
-                  </Text>
-                  {onClose ? (
-                    <Pressable onPress={handleClose} style={styles.close}>
-                      <Icon name={ICON.CLOSE} />
-                    </Pressable>
-                  ) : null}
-                </View>
-              )}
-              <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={scrollContentStyle}>
-                {children}
-              </ScrollView>
+          <View style={styles.sheet}>
+            <SafeAreaView edges={['bottom']} style={styles.container}>
+              <Pressable onPress={handleClose} style={styles.handle} />
+              {children}
             </SafeAreaView>
-          </RNView>
+          </View>
         </KeyboardAvoidingView>
-      </RNView>
+      </View>
     </RNModal>
   );
 };
 
 export default Modal;
+
+Modal.propTypes = {
+  children: PropTypes.node,
+  onClose: PropTypes.func,
+};

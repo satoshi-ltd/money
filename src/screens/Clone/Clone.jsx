@@ -1,6 +1,7 @@
 import { Button, Panel, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import { Alert } from 'react-native';
 
 import { style } from './Clone.style';
 import { InputDate } from '../../components';
@@ -36,14 +37,17 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
     if (edit) await updateTx({ hash: dataSource.hash, ...state.form });
     else if (clone) await createTx({ ...tx });
     else if (remove) {
-      navigate('confirm', {
-        caption: L10N.CONFIRM_DELETION_CAPTION,
-        title: L10N.CONFIRM_DELETION,
-        onAccept: async () => {
-          await deleteTx({ hash });
-          goBack();
+      Alert.alert(L10N.CONFIRM_DELETION, L10N.CONFIRM_DELETION_CAPTION, [
+        { text: L10N.CANCEL, style: 'cancel' },
+        {
+          text: L10N.ACCEPT,
+          style: 'destructive',
+          onPress: async () => {
+            await deleteTx({ hash });
+            goBack();
+          },
         },
-      });
+      ]);
     }
 
     if (!remove) goBack();
@@ -52,27 +56,24 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
   const { account, title = '', type = EXPENSE } = dataSource;
   const accountInfo = accounts.find(({ hash }) => hash === account);
 
-  const headerTitle = L10N.TRANSACTION_TITLE;
+  const headerTitle =
+    type === C?.TX?.TYPE?.TRANSFER
+      ? L10N.SWAP
+      : type === C?.TX?.TYPE?.INCOME
+        ? L10N.INCOME
+        : L10N.EXPENSE;
 
   return (
     <Panel offset title={headerTitle} onBack={goBack}>
-      <View row spaceBetween>
-        <Text bold color="contentLight" secondary subtitle>
-          {L10N.TRANSACTION[type]}
-        </Text>
-        <InputDate
-          value={state.form.timestamp ? new Date(state.form.timestamp) : undefined}
-          onChange={(value) =>
-            setState((prevState) => ({ form: { ...prevState.form, timestamp: value.getTime() }, valid: true }))
-          }
-        />
-      </View>
-      <Text bold title style={style.title}>
-        {title}
-      </Text>
-
       {state.form?.category !== undefined && (
-        <FormTransaction {...state} account={accountInfo} debounce={200} type={dataSource?.type} onChange={setState} />
+        <FormTransaction
+          {...state}
+          account={accountInfo}
+          debounce={200}
+          showDate
+          type={dataSource?.type}
+          onChange={setState}
+        />
       )}
 
       <View row style={style.buttons}>

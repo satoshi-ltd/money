@@ -1,12 +1,12 @@
-import { Text, View } from '../../design-system';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { Keyboard, TextInput } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
+import { Field } from '../Field';
 import { style } from './InputText.style';
 
-const InputText = ({ keyboard = 'default', label, value = '', onChange, ...others }) => {
+const InputText = ({ first, keyboard = 'default', label, last, value = '', onChange, ...others }) => {
   const [focus, setFocus] = useState(false);
 
   const handleChange = (next = '') => {
@@ -14,10 +14,7 @@ const InputText = ({ keyboard = 'default', label, value = '', onChange, ...other
   };
 
   return (
-    <View style={[style.container, focus && style.focus, others.style]}>
-      <Text caption color={!focus ? 'contentLight' : undefined} pointerEvents="none" style={style.label}>
-        {label}
-      </Text>
+    <Field focused={focus} label={label} first={first} last={last} style={others.style}>
       <TextInput
         autoCapitalize="none"
         autoCorrect
@@ -34,13 +31,15 @@ const InputText = ({ keyboard = 'default', label, value = '', onChange, ...other
         onSubmitEditing={Keyboard.dismiss}
         style={style.input}
       />
-    </View>
+    </Field>
   );
 };
 
 InputText.propTypes = {
+  first: PropTypes.bool,
   keyboard: PropTypes.string,
   label: PropTypes.string.isRequired,
+  last: PropTypes.bool,
   value: PropTypes.string,
   onChange: PropTypes.func,
 };

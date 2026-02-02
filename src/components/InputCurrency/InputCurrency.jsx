@@ -1,103 +1,63 @@
-import { Text, View } from '../../design-system';
+import { Icon, Pressable, Text, View } from '../../design-system';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
-import { Keyboard, TextInput } from 'react-native';
+import React, { useMemo, useState } from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
 
-import { getLastRates } from './helpers';
-import { style } from './InputCurrency.style';
-import { useStore } from '../../contexts';
+import Dropdown from '../Dropdown';
+import { Field } from '../Field';
 import { L10N } from '../../modules';
-import { CurrencyLogo } from '../CurrencyLogo';
-import { PriceFriendly } from '../PriceFriendly';
+import { style } from './InputCurrency.style';
 
-const isNumber = /^[0-9]+([,.][0-9]+)?$|^[0-9]+([,.][0-9]+)?[.,]$/;
+const InputCurrency = ({ first, label = L10N.CURRENCY, last, onChange, options, value }) => {
+  const [open, setOpen] = useState(false);
 
-const InputCurrency = ({
-  account: { currency, currentBalance, hash: accountHash, title } = {},
-  label = '',
-  showCurrency = false,
-  onChange,
-  ...others
-}) => {
-  const { settings: { baseCurrency } = {}, rates } = useStore();
+  const currencyOptions = useMemo(() => {
+    const base = options && options.length ? options : Object.keys(L10N.CURRENCY_NAME);
+    const sorted = [...base].sort((a, b) => (L10N.CURRENCY_NAME[a] || a).localeCompare(L10N.CURRENCY_NAME[b] || b));
+    return sorted.map((code) => ({
+      id: code,
+      label: L10N.CURRENCY_NAME[code] || code,
+      value: code,
+    }));
+  }, [options]);
 
-  const [exchange, setExchange] = useState();
-  const [focus, setFocus] = useState(false);
-
-  useEffect(() => {
-    if (currency && currency !== baseCurrency) {
-      const latestRates = getLastRates(rates);
-      setExchange(latestRates[currency]);
-    } else setExchange(undefined);
-  }, [baseCurrency, currency, rates]);
-
-  const handleChange = (value = '') => {
-    if (!isNumber.test(value) || value.length === 0) return onChange(undefined);
-    onChange(value.replace(',', '.'));
-  };
+  const selectedLabel = value ? L10N.CURRENCY_NAME[value] || value : '...';
 
   return (
-    <View row style={[style.container, focus && style.focus, others.style]}>
-      {showCurrency && <CurrencyLogo currency={currency} />}
-      <View>
-        <Text bold={!!accountHash} caption={!accountHash}>
-          {title || label}
-        </Text>
-        {accountHash && (
-          <View row style={style.currentBalance}>
-            <Text color="contentLight" caption>
-              {L10N.BALANCE}
-            </Text>
-            <PriceFriendly caption color="contentLight" currency={currency} value={currentBalance} />
-          </View>
-        )}
-      </View>
+    <Field focused={open} label={label} first={first} last={last}>
+      <Pressable onPress={() => setOpen(true)}>
+        <View row spaceBetween style={style.row}>
+          <Text bold numberOfLines={1} style={style.text}>
+            {selectedLabel}
+          </Text>
+          <Icon name="chevron-down" color="contentLight" />
+        </View>
+      </Pressable>
 
-      <View style={style.amounts}>
-        <PriceFriendly
-          bold
-          currency={currency}
-          maskAmount={false}
-          subtitle
-          value={others.value ? parseFloat(others.value, 10) : undefined}
-          style={[style.value, style.hide]}
-        />
-        {exchange && (
-          <PriceFriendly
-            caption
-            color="contentLight"
-            currency={baseCurrency}
-            value={parseFloat(others.value || 0, 10) / exchange}
-          />
-        )}
-      </View>
-
-      <TextInput
-        autoCapitalize="none"
-        autoComplete="off"
-        autoCorrect={false}
-        blurOnSubmit
-        editable
-        keyboardType="numeric"
-        placeholder={!focus ? '...' : undefined}
-        placeholderTextColor={StyleSheet.value('$inputPlaceholderColor')}
-        value={others.value ? others.value.toString() : ''}
-        onBlur={() => setFocus(false)}
-        onChangeText={handleChange}
-        onFocus={() => setFocus(true)}
-        onSubmitEditing={Keyboard.dismiss}
-        style={style.input}
+      <Dropdown
+        maxItems={8}
+        onClose={() => setOpen(false)}
+        onSelect={(option) => {
+          onChange(option.value);
+          setOpen(false);
+        }}
+        options={currencyOptions}
+        selected={value}
+        visible={open}
+        width={StyleSheet.value('$optionSize') * 2.8}
       />
-    </View>
+    </Field>
   );
 };
 
 InputCurrency.propTypes = {
-  account: PropTypes.shape({}),
+  first: PropTypes.bool,
   label: PropTypes.string,
-  showCurrency: PropTypes.bool,
+  last: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
+  options: PropTypes.arrayOf(PropTypes.string),
+  value: PropTypes.string,
 };
 
 export { InputCurrency };
+

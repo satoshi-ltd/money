@@ -2,7 +2,9 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 export const style = StyleSheet.create({
   content: {
+    alignItems: 'center',
     paddingHorizontal: '$viewOffset',
+    gap: '$viewOffset / 2',
     paddingVertical: '$viewOffset / 2',
     width: '100%',
   },
@@ -19,8 +21,4 @@ export const style = StyleSheet.create({
   text: {
     flex: 1,
   },
-  iconCard: {
-    marginRight: '$viewOffset / 2',
-  },
-
 });

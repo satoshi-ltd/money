@@ -1,7 +1,7 @@
-import { Screen, Setting, Text, View } from '../../components';
+import { Heading, Screen, Setting, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { Linking } from 'react-native';
+import { Alert, Linking } from 'react-native';
 
 import { getLatestRates } from './helpers';
 import { ABOUT, OPTIONS, PREFERENCES, REMINDER_BACKUP_OPTIONS } from './Settings.constants';
@@ -62,18 +62,20 @@ const Settings = ({ navigation = {} }) => {
     const backup = await BackupService.import().catch(handleError);
 
     if (backup) {
-      navigation.navigate('confirm', {
-        caption: L10N.CONFIRM_IMPORT_CAPTION(backup),
-        title: L10N.CONFIRM_IMPORT,
-        onAccept: async () => {
-          const { settings: { theme } = {} } = backup || {};
+      Alert.alert(L10N.CONFIRM_IMPORT, L10N.CONFIRM_IMPORT_CAPTION(backup), [
+        { text: L10N.CANCEL, style: 'cancel' },
+        {
+          text: L10N.ACCEPT,
+          onPress: async () => {
+            const { settings: { theme } = {} } = backup || {};
 
-          if (theme) updateTheme(theme);
-          await importBackup(backup);
-          navigation.navigate('dashboard');
-          eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.CONFIRM_IMPORT_SUCCESS });
+            if (theme) updateTheme(theme);
+            await importBackup(backup);
+            navigation.navigate('dashboard');
+            eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.CONFIRM_IMPORT_SUCCESS });
+          },
         },
-      });
+      ]);
     }
   };
 
@@ -118,9 +120,7 @@ const Settings = ({ navigation = {} }) => {
 
   return (
     <Screen gap offset style={style.screen}>
-      <Text bold secondary subtitle>
-        {L10N.SETTINGS}
-      </Text>
+      <Heading value={L10N.SETTINGS} />
 
       <View style={style.group}>
         <Text bold caption>

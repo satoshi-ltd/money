@@ -1,9 +1,10 @@
-import { Button, Panel, Text, View } from '../../components';
+import { Button, Heading, Panel, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import { Alert } from 'react-native';
 
 import { style } from './Account.style';
-import { InputCurrency, InputText, SliderCurrencies } from '../../components';
+import { InputAmount, InputCurrency, InputText } from '../../components';
 import { useStore } from '../../contexts';
 import { C, eventEmitter, L10N } from '../../modules';
 import { ServiceRates } from '../../services';
@@ -42,19 +43,21 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
   };
 
   const handleDelete = async () => {
-    navigate('confirm', {
-      caption: L10N.CONFIRM_DELETION_CAPTION,
-      title: L10N.CONFIRM_DELETION,
-      onAccept: async () => {
-        setBusy(true);
-        await deleteAccount(params);
-
-        eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.CONFIRM_DELETION_SUCCESS });
-        goBack();
-        goBack();
-        setBusy(false);
+    Alert.alert(L10N.CONFIRM_DELETION, L10N.CONFIRM_ACCOUNT_DELETION_CAPTION, [
+      { text: L10N.CANCEL, style: 'cancel' },
+      {
+        text: L10N.ACCEPT,
+        style: 'destructive',
+        onPress: async () => {
+          setBusy(true);
+          await deleteAccount(params);
+          eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.CONFIRM_DELETION_SUCCESS });
+          goBack();
+          goBack();
+          setBusy(false);
+        },
       },
-    });
+    ]);
   };
 
   const handleSubmit = async () => {
@@ -86,25 +89,26 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
         </View>
       )}
 
-      <SliderCurrencies
-        selected={form.currency}
-        onChange={(currency) => handleChange('currency', currency)}
-        style={style.slider}
-      />
+      <Heading value={L10N.DETAILS} />
 
       <InputCurrency
+        first
+        value={form.currency}
+        onChange={(currency) => handleChange('currency', currency)}
+      />
+
+      <InputAmount
         account={{ currency: form.currency }}
         label={L10N.INITIAL_BALANCE}
         value={form.balance}
         onChange={(value) => handleChange('balance', value)}
-        style={style.inputCurrency}
       />
 
       <InputText
+        last
         label={L10N.NAME}
         value={form.title}
         onChange={(value) => handleChange('title', value)}
-        style={style.inputTitle}
       />
 
       <View row style={style.buttons}>

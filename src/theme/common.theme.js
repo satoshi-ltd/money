@@ -54,7 +54,7 @@ export const CommonTheme = {
 
   // -- <InputText> ------------------------------------------------------------
   $inputTextFontSize: '$fontSizeSubtitle',
-  $inputTextHeight: '$spaceM * 4.5',
+  $inputTextHeight: '$spaceM * 4',
   $inputBorderColor: '$colorBorder',
   $inputBorderColorFocus: '$colorAccent',
   $inputBorderRadius: '$borderRadius',

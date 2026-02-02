@@ -1,9 +1,9 @@
+import { sortAccounts } from '../../../modules/sortAccounts';
+
 export const queryAvailableAccounts = (accounts = [], account = {}) => {
   const availableAccounts = [];
   const currencies = account.currency ? [account.currency] : [];
-  const sortedAccounts = accounts
-    .filter(({ hash }) => hash !== account.hash)
-    .sort(({ currentBalanceBase: balance }, { currentBalanceBase: nextBalance }) => nextBalance - balance);
+  const sortedAccounts = sortAccounts(accounts.filter(({ hash }) => hash !== account.hash));
 
   sortedAccounts.forEach(({ currency }) => !currencies.includes(currency) && currencies.push(currency));
 

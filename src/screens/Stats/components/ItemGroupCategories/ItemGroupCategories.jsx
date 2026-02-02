@@ -32,7 +32,7 @@ const ItemGroupCategories = ({ color, dataSource, type }) => {
 
   return (
     <View style={style.container}>
-      <Heading color={color} value={type === EXPENSE ? L10N.EXPENSES : L10N.INCOMES}>
+      <Heading color={color} value={type === EXPENSE ? L10N.EXPENSES : L10N.INCOMES} offset>
         <PriceFriendly
           bold
           color={color}

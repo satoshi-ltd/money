@@ -21,11 +21,7 @@ export const style = StyleSheet.create({
     marginRight: '$viewOffset',
   },
 
-  cardCurrency: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '$spaceXL',
-    width: '$spaceXL',
+  iconSpacing: {
     marginRight: '$viewOffset / 2',
   },
   item: {

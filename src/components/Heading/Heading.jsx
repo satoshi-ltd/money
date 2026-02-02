@@ -4,8 +4,8 @@ import React from 'react';
 
 import { style } from './Heading.style';
 
-const Heading = ({ children, value = '', ...others }) => (
-  <View {...others} row spaceBetween style={[style.heading, others.style]}>
+const Heading = ({ children, offset, value = '', ...others }) => (
+  <View {...others} row spaceBetween style={[style.heading, offset && style.offset, others.style]}>
     <Text bold secondary subtitle>
       {value}
     </Text>
@@ -15,6 +15,7 @@ const Heading = ({ children, value = '', ...others }) => (
 
 Heading.propTypes = {
   children: PropTypes.node,
+  offset: PropTypes.bool,
   value: PropTypes.string,
 };
 

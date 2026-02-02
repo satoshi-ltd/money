@@ -1,12 +1,10 @@
-import { Icon, Pressable, ScrollView, Text } from '../../../components';
+import { Heading, InputAccount, InputAmount } from '../../../components';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
-import StyleSheet from 'react-native-extended-stylesheet';
+import React, { useEffect } from 'react';
 
 import { style } from './FormTransfer.style';
-import { CardOption, InputCurrency } from '../../../components';
 import { useStore } from '../../../contexts';
-import { currencyDecimals, ICON, L10N } from '../../../modules';
+import { currencyDecimals, L10N } from '../../../modules';
 import { getAccount, queryAvailableAccounts } from '../helpers';
 
 const FormTransaction = ({ account = {}, form = {}, onChange }) => {
@@ -16,17 +14,16 @@ const FormTransaction = ({ account = {}, form = {}, onChange }) => {
     rates,
   } = useStore();
 
-  const [selectedAccount, setSelectAccount] = useState(false);
-
   const availableAccounts = queryAvailableAccounts(accounts, account);
 
+  const fallback = availableAccounts[1] || availableAccounts[0];
+
   useEffect(() => {
-    if (form.to === undefined) {
-      const [firstAccount = {}] = availableAccounts;
-      onChange({ form: { destination: firstAccount.hash, to: firstAccount } });
+    if ((!form.destination || form.from?.hash !== account?.hash) && fallback) {
+      onChange({ form: { ...form, destination: fallback.hash, to: fallback, from: account } });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form]);
+  }, [account, fallback?.hash]);
 
   const handleField = (field, fieldValue) => {
     const next = { ...form, [field]: fieldValue };
@@ -52,56 +49,23 @@ const FormTransaction = ({ account = {}, form = {}, onChange }) => {
     });
   };
 
-  const optionSnap = StyleSheet.value('$optionSnap');
-
   return (
     <>
-      <InputCurrency
-        account={account}
-        showCurrency
-        value={form.value}
-        onChange={(value) => handleField('value', value)}
-        style={[!selectedAccount && style.inputCurrency]}
+      <Heading value={L10N.DESTINATION} />
+      <InputAccount
+        accounts={availableAccounts}
+        onSelect={(item) => handleField('destination', item.hash)}
+        selected={getAccount(form.destination, accounts) || fallback}
       />
 
-      {!selectedAccount && (
-        <Pressable onPress={() => setSelectAccount(true)} style={style.inputAccount}>
-          <Icon body color="contentLight" name={ICON.OTHERS} />
-          <Text caption color="contentLight">
-            {form.destination ? L10N.CHANGE_DESTINATION : L10N.SELECT_DESTINATION}
-          </Text>
-        </Pressable>
-      )}
-      {selectedAccount ? (
-        <ScrollView horizontal snap={optionSnap} style={style.scrollView}>
-          {availableAccounts.map(({ currency, hash, title }, index) => (
-            <CardOption
-              currency={currency}
-              highlight={hash === form.destination}
-              key={hash}
-              legend={title}
-              onPress={() => {
-                handleField('destination', hash);
-                setSelectAccount(false);
-              }}
-              style={[
-                style.option,
-                index === 0 && style.firstOption,
-                index === availableAccounts.length - 1 && style.lastOption,
-              ]}
-            />
-          ))}
-        </ScrollView>
-      ) : (
-        <InputCurrency
-          account={getAccount(form.destination, accounts)}
-          currency={form.to ? form.to.currency : baseCurrency}
-          onChange={(value) => handleField('exchange', value)}
-          showCurrency
-          style={style.inputDestination}
-          value={form.to ? form.exchange : undefined}
-        />
-      )}
+      <Heading value={L10N.DETAILS} />
+
+      <InputAmount
+        account={account}
+        value={form.value}
+        onChange={(value) => handleField('value', value)}
+        style={style.inputCurrency}
+      />
     </>
   );
 };

@@ -1,17 +1,17 @@
-import { ScrollView } from '../../../components';
+import { Heading, InputDate, ScrollView } from '../../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import { useWindowDimensions } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './FormTransaction.style';
-import { CardOption, InputCurrency, InputText } from '../../../components';
+import { CardOption, InputAmount, InputText } from '../../../components';
 import { C, getIcon, L10N } from '../../../modules';
 import { queryCategories } from '../helpers';
 
 const EXPENSE = C?.TX?.TYPE?.EXPENSE ?? 0;
 
-const FormTransaction = ({ account = {}, form, onChange, type = EXPENSE }) => {
+const FormTransaction = ({ account = {}, form, onChange, showCategory = true, showDate = true, type = EXPENSE }) => {
   const scrollview = useRef(null);
   const { width } = useWindowDimensions();
   const safeForm = form || {};
@@ -30,7 +30,7 @@ const FormTransaction = ({ account = {}, form, onChange, type = EXPENSE }) => {
 
     onChange({
       form: next,
-      valid: next.category !== undefined && next.title !== '' && next.value > 0,
+      valid: (showCategory ? next.category !== undefined : true) && next.title !== '' && next.value > 0,
     });
   };
 
@@ -52,24 +52,41 @@ const FormTransaction = ({ account = {}, form, onChange, type = EXPENSE }) => {
 
   return (
     <>
-      <ScrollView horizontal ref={scrollview} snap={optionSnap} width={width} style={style.scrollView}>
-        {sortedCategories.map((item, index) => (
-          <CardOption
-            key={item.key}
-            highlight={safeForm.category === item.key}
-            icon={getIcon({ type: safeType, category: item.key })}
-            legend={item.caption}
-            onPress={() => handleField('category', item.key)}
-            style={[
-              style.option,
-              index === 0 && style.firstOption,
-              index === categories.length - 1 && style.lastOption,
-            ]}
-          />
-        ))}
-      </ScrollView>
+      {showCategory && (
+        <>
+          <Heading value={L10N.CATEGORY} />
 
-      <InputCurrency
+          <ScrollView horizontal ref={scrollview} snap={optionSnap} width={width} style={style.scrollView}>
+            {sortedCategories.map((item, index) => (
+              <CardOption
+                key={item.key}
+                highlight={safeForm.category === item.key}
+                icon={getIcon({ type: safeType, category: item.key })}
+                legend={item.caption}
+                onPress={() => handleField('category', item.key)}
+                style={[
+                  style.option,
+                  index === 0 && style.firstOption,
+                  index === categories.length - 1 && style.lastOption,
+                ]}
+              />
+            ))}
+          </ScrollView>
+        </>
+      )}
+
+      <Heading value={L10N.DETAILS} />
+
+      {showDate && (
+        <InputDate
+          first
+          value={safeForm.timestamp ? new Date(safeForm.timestamp) : new Date()}
+          onChange={(value) => handleField('timestamp', value.getTime())}
+        />
+      )}
+
+      <InputAmount
+        first={!showDate}
         account={account}
         currency={account.currency}
         value={safeForm.value}
@@ -78,6 +95,7 @@ const FormTransaction = ({ account = {}, form, onChange, type = EXPENSE }) => {
       />
 
       <InputText
+        last
         label={L10N.CONCEPT}
         value={safeForm.title}
         onChange={(value) => handleField('title', value)}
@@ -90,6 +108,8 @@ const FormTransaction = ({ account = {}, form, onChange, type = EXPENSE }) => {
 FormTransaction.propTypes = {
   account: PropTypes.shape({}).isRequired,
   form: PropTypes.shape({}).isRequired,
+  showCategory: PropTypes.bool,
+  showDate: PropTypes.bool,
   type: PropTypes.number,
   onChange: PropTypes.func.isRequired,
 };

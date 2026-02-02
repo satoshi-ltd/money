@@ -18,7 +18,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
 
   return (
     <Screen style={style.screen}>
-      <Heading value={L10N.CURRENCIES} />
+      <Heading value={L10N.CURRENCIES} offset />
       <ScrollView horizontal snap={StyleSheet.value('$cardAccountSnap')} style={style.scrollView}>
         {currencies.map(({ base, currency, ...item }, index) => (
           <CardAccount
@@ -36,7 +36,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
         ))}
       </ScrollView>
 
-      <Heading value={L10N.ACCOUNTS} />
+      <Heading value={L10N.ACCOUNTS} offset />
       <>
         {filter(accounts, selected).map((account) => {
           const { currency, currentBalance = 0, title } = account;
@@ -48,7 +48,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
           return (
             <Pressable key={account.hash} onPress={() => navigate('transactions', { account })}>
               <View row style={style.item}>
-                <Card small style={style.cardCurrency}>
+                <Card small style={style.iconSpacing}>
                   <CurrencyLogo currency={currency} muted={!hasBalance || currentBalance < 0} />
                 </Card>
 

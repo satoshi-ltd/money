@@ -5,6 +5,7 @@ import React from 'react';
 import { style } from './Summary.style';
 import { useStore } from '../../contexts';
 import { C, exchange, getProgressionPercentage, ICON, L10N } from '../../modules';
+import { Heading } from '../Heading';
 import { PriceFriendly } from '../PriceFriendly';
 
 const { CURRENCY } = C;
@@ -33,12 +34,8 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
 
   return (
     <View style={[style.container, noPadding ? style.noPadding : null]}>
-      <View row spaceBetween>
-        <View row>
-          <Text bold secondary subtitle>
-            {!title ? L10N.TOTAL_BALANCE : `${title} ${L10N.BALANCE}`}
-          </Text>
-        </View>
+      <View style={style.heading}>
+        <Heading value={!title ? L10N.TOTAL_BALANCE : `${title} ${L10N.BALANCE}`} />
       </View>
 
       <View row style={style.balanceRow}>

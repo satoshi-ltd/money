@@ -22,8 +22,4 @@ export const style = StyleSheet.create({
     marginHorizontal: 0,
     marginBottom: '$viewOffset',
   },
-  headingTight: {
-    marginTop: '$spaceXS',
-    marginHorizontal: 0,
-  },
 });

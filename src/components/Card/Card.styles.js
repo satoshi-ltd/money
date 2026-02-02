@@ -12,6 +12,10 @@ export const styles = StyleSheet.create({
     backgroundColor: '$colorAccent',
   },
   small: {
-    padding: '$spaceXS',
+    height: '$spaceXL + $spaceXS',
+    width: '$spaceXL + $spaceXS',
+    padding: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

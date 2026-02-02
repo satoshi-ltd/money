@@ -1,4 +1,4 @@
-import { Button, Input, ScrollView } from '../../components';
+import { Button, Input, ScrollView, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
@@ -40,14 +40,16 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
     <>
       <Summary {...overall} currency={baseCurrency} detail style={style.summary} />
 
-      <Heading value={L10N.ACCOUNTS} style={style.accountsHeading}>
-        <Button
-          icon={ICON.NEW}
-          outlined
-          small
-          onPress={() => navigate('account', { create: true })}
-        />
-      </Heading>
+      <View style={style.accountsHeading}>
+        <Heading value={L10N.ACCOUNTS} offset>
+          <Button
+            icon={ICON.NEW}
+            outlined
+            small
+            onPress={() => navigate('account', { create: true })}
+          />
+        </Heading>
+      </View>
 
       <ScrollView horizontal snap={StyleSheet.value('$cardAccountSnap')} style={[style.scrollView]}>
         {sortedAccounts.map((account, index) => {
@@ -79,14 +81,16 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
           );
         })}
       </ScrollView>
-      <Heading value={L10N.LAST_TRANSACTIONS} style={style.headingTight}>
-        <Button
-          icon={!search ? ICON.SEARCH : ICON.CLOSE}
-          outlined
-          small
-          onPress={handleSearch}
-        />
-      </Heading>
+      <View style={style.headingTight}>
+        <Heading value={L10N.LAST_TRANSACTIONS} offset>
+          <Button
+            icon={!search ? ICON.SEARCH : ICON.CLOSE}
+            outlined
+            small
+            onPress={handleSearch}
+          />
+        </Heading>
+      </View>
       {search && (
         <Input
           autoFocus

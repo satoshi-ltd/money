@@ -1,4 +1,4 @@
-import { Text, View } from '../../../../components';
+import { Heading, Text, View } from '../../../../components';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useWindowDimensions } from 'react-native';
@@ -21,7 +21,14 @@ const Chart = ({
 }) => {
   const [color1, color2] = multipleData ? color : [color];
   const [data1 = [], data2 = []] = multipleData ? values : [values];
+  const normalize = (data = []) =>
+    data.map((val) => (typeof val === 'number' && !isNaN(val) ? Math.max(0, val) : val));
+  const normalizedData1 = normalize(data1);
+  const normalizedData2 = normalize(data2);
   const { width } = useWindowDimensions();
+  const getValue = (token, fallback) =>
+    StyleSheet && typeof StyleSheet.value === 'function' ? StyleSheet.value(token) : fallback;
+  const viewOffset = getValue('$viewOffset', 16);
 
   // eslint-disable-next-line react/prop-types
   const Scale = ({ color, dataSource }) => (
@@ -41,14 +48,20 @@ const Chart = ({
 
   return (
     <View offset style={styleContainer}>
-      <Text bold secondary subtitle style={style.title}>
-        {title}
-      </Text>
+      <View style={style.title}>
+        <Heading value={title} />
+      </View>
 
-      <Scale color={color1} dataSource={data1} />
+      <Scale color={color1} dataSource={normalizedData1} />
 
       <LineChart
-        {...{ currency, color, multipleData, values, onPointerChange }}
+        {...{
+          currency,
+          color,
+          multipleData,
+          values: multipleData ? [normalizedData1, normalizedData2] : normalizedData1,
+          onPointerChange,
+        }}
         height={128}
         isAnimated={false}
         pointerConfig={{
@@ -56,10 +69,10 @@ const Chart = ({
           persistPointer: true,
         }}
         showPointer
-        width={width - StyleSheet.value('$viewOffset') * 2}
+        width={width - viewOffset * 2}
       />
 
-      {multipleData && <Scale color={color2} dataSource={data2} />}
+      {multipleData && <Scale color={color2} dataSource={normalizedData2} />}
     </View>
   );
 };
