@@ -1,4 +1,4 @@
-import { ScrollView } from '@satoshi-ltd/nano-design';
+import { ScrollView } from '../../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import { useWindowDimensions } from 'react-native';
@@ -9,22 +9,24 @@ import { CardOption, InputCurrency, InputText } from '../../../components';
 import { C, getIcon, L10N } from '../../../modules';
 import { queryCategories } from '../helpers';
 
-const { TX: { TYPE: { EXPENSE } } = {} } = C;
+const EXPENSE = C?.TX?.TYPE?.EXPENSE ?? 0;
 
-const FormTransaction = ({ account = {}, form = {}, onChange, type = EXPENSE }) => {
+const FormTransaction = ({ account = {}, form, onChange, type = EXPENSE }) => {
   const scrollview = useRef(null);
   const { width } = useWindowDimensions();
+  const safeForm = form || {};
+  const safeType = type ?? EXPENSE;
 
   useEffect(() => {
     setTimeout(() => {
-      const index = sortedCategories.findIndex(({ key }) => key === form.category);
+      const index = sortedCategories.findIndex(({ key }) => key === safeForm.category);
       scrollview.current?.scrollTo({ x: (index - 1) * optionSnap, animated: true });
     }, 10);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form]);
+  }, [safeForm]);
 
   const handleField = (field, fieldValue) => {
-    const next = { ...form, [field]: fieldValue };
+    const next = { ...safeForm, [field]: fieldValue };
 
     onChange({
       form: next,
@@ -33,7 +35,7 @@ const FormTransaction = ({ account = {}, form = {}, onChange, type = EXPENSE }) 
   };
 
   const optionSnap = StyleSheet.value('$optionSnap');
-  const categories = queryCategories({ type });
+  const categories = queryCategories({ type: safeType });
   const totals = account.txs?.reduce(
     (total, { category }) => ((total[category] = (total[category] || 0) + 1), total),
     {},
@@ -54,8 +56,8 @@ const FormTransaction = ({ account = {}, form = {}, onChange, type = EXPENSE }) 
         {sortedCategories.map((item, index) => (
           <CardOption
             key={item.key}
-            highlight={form.category === item.key}
-            icon={getIcon({ type, category: item.key })}
+            highlight={safeForm.category === item.key}
+            icon={getIcon({ type: safeType, category: item.key })}
             legend={item.caption}
             onPress={() => handleField('category', item.key)}
             style={[
@@ -70,14 +72,14 @@ const FormTransaction = ({ account = {}, form = {}, onChange, type = EXPENSE }) 
       <InputCurrency
         account={account}
         currency={account.currency}
-        value={form.value}
+        value={safeForm.value}
         onChange={(value) => handleField('value', value)}
         style={style.inputCurrency}
       />
 
       <InputText
         label={L10N.CONCEPT}
-        value={form.title}
+        value={safeForm.title}
         onChange={(value) => handleField('title', value)}
         style={style.inputTitle}
       />

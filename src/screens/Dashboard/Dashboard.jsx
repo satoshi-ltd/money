@@ -1,4 +1,4 @@
-import { Screen } from '@satoshi-ltd/nano-design';
+import { Screen } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { SectionList } from 'react-native';
@@ -21,12 +21,6 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
 
   useEffect(() => {
     if (!accounts.length) navigate('account', { firstAccount: true });
-    // -- Shortcuts
-    // navigate('transactions', { account: accounts[5] });
-    // else navigate('transactions', { account: accounts[5] });
-    // setTimeout(() => {
-    //   navigate('transaction', { type: 0 });
-    // }, 1000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -40,7 +34,7 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
     <Screen disableScroll={!IS_WEB}>
       <SectionList
         initialNumToRender={C.TRANSACTIONS_PER_PAGE}
-        keyExtractor={(item) => item.timestamp}
+        keyExtractor={(item, index) => item.hash || `${item.timestamp}-${index}`}
         ListHeaderComponent={<DashboardListHeader navigate={navigate} onSearch={setQuery} setPage={setPage} />}
         renderItem={({ item }) => <TransactionItem {...item} />}
         renderSectionHeader={({ section }) => <TransactionsHeader {...section} />}

@@ -1,4 +1,4 @@
-import { Text, View } from '@satoshi-ltd/nano-design';
+import { Text, View } from '../../design-system';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -7,7 +7,7 @@ import { style } from './PriceFriendly.style';
 import { useStore } from '../../contexts';
 import { C, currencyDecimals } from '../../modules';
 
-const { COLOR, SYMBOL } = C;
+const { SYMBOL } = C;
 
 const LEFT_SYMBOLS = ['$', '£'];
 
@@ -22,12 +22,11 @@ const PriceFriendly = ({
   value = 0,
   ...others
 }) => {
-  const { settings: { colorCurrency, maskAmount } = {} } = useStore();
-
+  const { settings: { maskAmount } = {} } = useStore();
   const maskedAmount = propMaskAmount || maskAmount;
   const operatorEnhanced = (operator && parseFloat(value, 10) !== 0) || value < 0 ? (value > 0 ? '+' : '-') : undefined;
   const symbol = SYMBOL[currency] || currency;
-  const color = (colorCurrency && operatorEnhanced === '+' && COLOR[currency]) || propColor;
+  const color = propColor;
 
   const symbolProps = {
     ...others,

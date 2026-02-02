@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Button, Icon, Text } from '@satoshi-ltd/nano-design';
+import { Button, Footer, Icon, Text } from './components';
 import { BlurView } from 'expo-blur';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
@@ -32,18 +32,18 @@ const { EVENT, TX: { TYPE: { EXPENSE } } = {} } = C;
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const commonScreenOptions = (theme = 'light') => ({
-  headerBackground: () => <BlurView intensity={60} tint={theme} style={{ flex: 1 }} />,
+const commonScreenOptions = () => ({
   headerBackVisible: false,
   headerShown: true,
   headerTitle: () => <Logo />,
   headerTitleAlign: 'center',
-  headerTransparent: C.IS_ANDROID ? false : true,
+  headerTransparent: false,
+  headerStyle: { backgroundColor: StyleSheet.value('$colorBase') },
 });
 
 // eslint-disable-next-line react/prop-types
 const Tabs = ({ navigation = {} }) => {
-  const { settings: { theme } = {} } = useStore();
+  const { settings: { theme } = {}, subscription } = useStore();
 
   // ! TODO: Somehow we should use new accent
 
@@ -60,12 +60,9 @@ const Tabs = ({ navigation = {} }) => {
     headerLeft: () => <></>,
     headerRight: () => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const { settings: { colorCurrency } = {}, subscription } = useStore();
-
       return !subscription?.productIdentifier ? (
         <Button
           icon={ICON.STAR}
-          secondary={!colorCurrency}
           small
           onPress={handleSubscription}
           style={{ marginRight: StyleSheet.value('$viewOffset') }}
@@ -76,10 +73,6 @@ const Tabs = ({ navigation = {} }) => {
         <></>
       );
     },
-    tabBarBackground: () => <BlurView intensity={60} tint={theme} style={{ flex: 1 }} />,
-    tabBarShowLabel: true,
-    tabBarLabelPosition: 'below-icon',
-    tabBarStyle: { backgroundColor: 'transparent', borderTopWidth: 0, elevation: 0, position: 'absolute' },
   };
 
   const tabBarIcon = ({ color, icon }) => <Icon name={icon} subtitle style={{ color }} />;
@@ -91,7 +84,12 @@ const Tabs = ({ navigation = {} }) => {
   );
 
   return (
-    <Tab.Navigator initialRouteName="dashboard" shifting screenOptions={screenOptions}>
+    <Tab.Navigator
+      initialRouteName="dashboard"
+      shifting
+      screenOptions={screenOptions}
+      tabBar={(props) => <Footer {...props} onActionPress={() => navigation.navigate('transaction', { type: EXPENSE })} />}
+    >
       <Tab.Screen
         name="dashboard"
         component={Dashboard}
@@ -150,11 +148,11 @@ const Tabs = ({ navigation = {} }) => {
 };
 
 export const Navigator = () => {
-  const { settings: { onboarded = true, pin, theme = 'light' } = {} } = useStore();
+  const { settings: { onboarded = true,  pin,  theme = 'light' } = {} } = useStore();
 
   const screenOptions = { headerBackTitleVisible: false, headerShadowVisible: false, headerShown: false };
   const screen = { ...commonScreenOptions(theme) };
-  const modal = { cardOverlayEnabled: true, gestureEnabled: true, presentation: 'transparentModal' };
+  const panel = { headerShown: false, presentation: 'card' };
 
   return (
     <NavigationContainer theme={getNavigationTheme()}>
@@ -168,15 +166,15 @@ export const Navigator = () => {
         <Stack.Screen name="session" component={Session} options={{ ...screen, headerShown: false }} />
         <Stack.Screen name="main" component={Tabs} />
         {/* transactions */}
-        <Stack.Screen name="transactions" component={Transactions} options={screen} />
-        <Stack.Screen name="transaction" component={Transaction} options={modal} />
-        <Stack.Screen name="clone" component={Clone} options={modal} />
+        <Stack.Screen name="transactions" component={Transactions} options={panel} />
+        <Stack.Screen name="transaction" component={Transaction} options={panel} />
+        <Stack.Screen name="clone" component={Clone} options={panel} />
         {/* -- settings */}
-        <Stack.Screen name="account" component={Account} options={modal} />
-        <Stack.Screen name="baseCurrency" component={BaseCurrency} options={modal} />
+        <Stack.Screen name="account" component={Account} options={panel} />
+        <Stack.Screen name="baseCurrency" component={BaseCurrency} options={panel} />
         {/* -- common */}
-        <Stack.Screen name="confirm" component={Confirm} options={modal} />
-        <Stack.Screen name="subscription" component={Subscription} options={modal} />
+        <Stack.Screen name="confirm" component={Confirm} options={panel} />
+        <Stack.Screen name="subscription" component={Subscription} options={panel} />
       </Stack.Navigator>
     </NavigationContainer>
   );

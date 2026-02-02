@@ -5,13 +5,25 @@ export const style = StyleSheet.create({
     marginBottom: '$viewOffset / 2',
   },
 
-  slider: {
-    marginLeft: '$viewOffset * -1',
-    marginRight: '$viewOffset * -1',
-  },
+  list: {
+    marginHorizontal: '$viewOffset * -1',
 
-  buttons: {
-    gap: '$viewOffset',
-    marginTop: '$spaceL',
+  },
+  iconCard: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '$spaceXL',
+    width: '$spaceXL',
+    padding: 0,
+    marginRight: '$viewOffset / 2',
+  },
+  rightPlaceholder: {
+    width: '$spaceL',
+  },
+  item: {
+    alignItems: 'center',
+    paddingHorizontal: '$viewOffset',
+    paddingVertical: '$viewOffset / 2',
+    width: '100%',
   },
 });

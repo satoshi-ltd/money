@@ -1,4 +1,4 @@
-import { Button, Modal, Text, View } from '@satoshi-ltd/nano-design';
+import { Button, Panel, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
@@ -10,15 +10,15 @@ import { useStore } from '../../contexts';
 import { C, L10N } from '../../modules';
 import { PurchaseService } from '../../services';
 
-const { TIMEOUT, TX: { TYPE: { TRANSFER } } = {} } = C;
+const TIMEOUT = C?.TIMEOUT;
+const TRANSFER = C?.TX?.TYPE?.TRANSFER ?? 0;
 const ONE_DAY = 24 * 60 * 60 * 1000;
 
 const INITIAL_STATE = { form: {}, valid: false };
 
 const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigation: { goBack } = {} }) => {
   const store = useStore();
-  const { settings: { colorCurrency } = {}, subscription, txs = [], updateSubscription } = store;
-
+  const { subscription, txs = [], updateSubscription } = store;
   const [account, setAccount] = useState(params.account);
   const [busy, setBusy] = useState(false);
   // const [dataSource, setDataSource] = useState({});
@@ -59,10 +59,7 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
   const Form = type === TRANSFER ? FormTransfer : FormTransaction;
 
   return (
-    <Modal onClose={goBack}>
-      <Text bold secondary subtitle style={style.title}>
-        {L10N.TRANSACTION[type]}
-      </Text>
+    <Panel offset title={L10N.TRANSACTION_TITLE} onBack={goBack}>
 
       {type !== TRANSFER && (
         <Text bold caption color="contentLight" style={style.title}>
@@ -80,11 +77,11 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
         <Button disabled={busy} flex outlined onPress={goBack}>
           {L10N.CLOSE}
         </Button>
-        <Button disabled={busy || !valid} flex secondary={!colorCurrency} onPress={handleSubmit}>
+        <Button disabled={busy || !valid} flex onPress={handleSubmit}>
           {L10N.SAVE}
         </Button>
       </View>
-    </Modal>
+    </Panel>
   );
 };
 

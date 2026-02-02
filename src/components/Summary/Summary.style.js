@@ -8,8 +8,14 @@ export const style = StyleSheet.create({
   },
 
   container: {
-    marginBottom: '$viewOffset',
     paddingHorizontal: '$viewOffset',
+  },
+  noPadding: {
+    paddingHorizontal: 0,
+  },
+  balanceRow: {
+    alignItems: 'baseline',
+    gap: '$spaceXXS',
   },
 
   summary: {

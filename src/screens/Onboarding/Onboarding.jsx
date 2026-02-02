@@ -1,4 +1,4 @@
-import { Button, Pagination, ScrollView, Text, View } from '@satoshi-ltd/nano-design';
+import { Button, Pagination, ScrollView, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useRef, useState } from 'react';
 import { SafeAreaView, useWindowDimensions } from 'react-native';

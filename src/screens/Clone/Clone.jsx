@@ -1,4 +1,4 @@
-import { Button, Modal, Text, View } from '@satoshi-ltd/nano-design';
+import { Button, Panel, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
@@ -18,9 +18,7 @@ const INITIAL_STATE = { form: {}, valid: false };
 
 const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } = {} }) => {
   const store = useStore();
-
-  const { accounts, createTx, deleteTx, settings: { colorCurrency } = {}, updateTx } = store;
-
+  const { accounts, createTx, deleteTx, updateTx } = store;
   const [dataSource, setDataSource] = useState({});
   const [state, setState] = useState(INITIAL_STATE);
 
@@ -54,8 +52,10 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
   const { account, title = '', type = EXPENSE } = dataSource;
   const accountInfo = accounts.find(({ hash }) => hash === account);
 
+  const headerTitle = L10N.TRANSACTION_TITLE;
+
   return (
-    <Modal title="Clone" onClose={goBack}>
+    <Panel offset title={headerTitle} onBack={goBack}>
       <View row spaceBetween>
         <Text bold color="contentLight" secondary subtitle>
           {L10N.TRANSACTION[type]}
@@ -82,11 +82,11 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
         <Button flex outlined onPress={() => handleSubmit({ clone: true })}>
           {L10N.CLONE}
         </Button>
-        <Button disabled={!state.valid} flex secondary={!colorCurrency} onPress={() => handleSubmit({ edit: true })}>
+        <Button disabled={!state.valid} flex onPress={() => handleSubmit({ edit: true })}>
           {L10N.SAVE}
         </Button>
       </View>
-    </Modal>
+    </Panel>
   );
 };
 

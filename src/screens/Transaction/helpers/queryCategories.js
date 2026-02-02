@@ -10,7 +10,9 @@ const SORT = [
   [1, 5, 2, 3, 7, 8, 4, 6, 9],
 ];
 
-export const queryCategories = ({ type }) =>
-  SORT[type]
+export const queryCategories = ({ type = 0 } = {}) => {
+  const labels = L10N.CATEGORIES[type] || {};
+  return (SORT[type] || [])
     .filter((key) => !INTERNAL_KEYS.includes(key))
-    .map((key) => ({ key: parseInt(key), caption: L10N.CATEGORIES[type][key] }));
+    .map((key) => ({ key: parseInt(key), caption: labels[key] || '' }));
+};

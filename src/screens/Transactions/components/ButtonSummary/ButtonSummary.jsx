@@ -1,4 +1,4 @@
-import { Icon, Pressable, Text } from '@satoshi-ltd/nano-design';
+import { Icon, Pressable, Text, View } from '../../../../design-system';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -6,7 +6,9 @@ import { style } from './ButtonSummary.style';
 
 const ButtonSummary = ({ icon, text, onPress }) => (
   <Pressable onPress={onPress} style={style.container}>
-    <Icon name={icon} />
+    <View style={style.iconWrap}>
+      <Icon name={icon} />
+    </View>
     <Text bold tiny>
       {text}
     </Text>

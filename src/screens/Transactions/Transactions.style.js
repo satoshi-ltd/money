@@ -1,19 +1,29 @@
-import { Platform } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 export const style = StyleSheet.create({
   screen: {
-    paddingTop: '$spaceXXL + $viewOffset',
-    ...Platform.select({ android: { paddingTop: 0 } }),
-    ...Platform.select({ web: { marginTop: '$viewOffset' } }),
+    paddingTop: 0,
   },
 
   buttons: {
-    gap: '$viewOffset / 2',
+    backgroundColor: '$colorSurface',
+    borderRadius: '$borderRadius * 2',
+    gap: '$spaceXXS',
+    marginTop: '$spaceS',
+    marginBottom: '$spaceS',
+    padding: '$spaceXXS',
+  },
+  headerWrap: {
+    paddingHorizontal: '$viewOffset',
+    paddingTop: '$spaceM',
   },
 
   inputSearch: {
-    marginHorizontal: '$viewOffset',
+    marginHorizontal: 0,
     marginBottom: '$viewOffset',
+  },
+  headingTight: {
+    marginTop: '$spaceXS',
+    marginHorizontal: 0,
   },
 });

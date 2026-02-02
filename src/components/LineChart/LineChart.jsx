@@ -1,4 +1,4 @@
-import { Text, View } from '@satoshi-ltd/nano-design';
+import { Text, View } from '../../design-system';
 import PropTypes from 'prop-types';
 import React from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
@@ -6,7 +6,6 @@ import { CurveType, LineChart as LineChartBase } from 'react-native-gifted-chart
 
 import { getLastMonths } from './helpers';
 import { style } from './LineChart.style';
-import { useStore } from '../../contexts';
 import { C, L10N } from '../../modules';
 import { PriceFriendly } from '../PriceFriendly';
 
@@ -23,10 +22,7 @@ const LineChart = ({
   style: propStyle,
   ...props
 }) => {
-  const { settings: { colorCurrency } = {} } = useStore();
-
-  const colorAccent = (colorCurrency && C.COLOR[currency]) || StyleSheet.value('$colorAccent');
-
+  const colorAccent = StyleSheet.value('$colorAccent');
   const [color, color2] = multipleData ? propColor : [propColor || colorAccent];
   let [data = [], data2 = []] = multipleData ? values : [values];
 

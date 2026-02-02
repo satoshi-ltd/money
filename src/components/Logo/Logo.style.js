@@ -6,21 +6,21 @@ export const style = StyleSheet.create({
   },
 
   text: {
-    fontSize: 24,
-    lineHeight: `24 * $lineHeightDefaultRatio`,
+    fontSize: 22,
+    lineHeight: `22 * $lineHeightDefaultRatio`,
   },
 
   color: {
     backgroundColor: '$colorAccent',
-    maxWidth: 13,
-    maxHeight: 13,
-    minWidth: 13,
-    minHeight: 13,
-    height: 13,
-    width: 13,
+    maxWidth: 11,
+    maxHeight: 11,
+    minWidth: 11,
+    minHeight: 11,
+    height: 11,
+    width: 11,
     borderRadius: '50%',
     position: 'absolute',
-    top: 11,
-    left: 22,
+    top: 10,
+    left: 20,
   },
 });

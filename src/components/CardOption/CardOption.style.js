@@ -6,6 +6,8 @@ const style = StyleSheet.create({
     height: '$optionSize',
     gap: '$spaceXXS',
     width: '$optionSize',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

@@ -1,4 +1,4 @@
-import { Text, View } from '@satoshi-ltd/nano-design';
+import { Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native';
@@ -46,9 +46,6 @@ const Session = ({ navigation: { reset } = {} }) => {
     reset({ index: 0, routes: [{ name: 'main' }] });
   };
 
-  const { baseCurrency, colorCurrency = false } = settings;
-  const color = colorCurrency ? C.COLOR[baseCurrency] : undefined;
-
   return (
     <SafeAreaView style={style.safeAreaView}>
       <View style={style.content}>
@@ -56,13 +53,7 @@ const Session = ({ navigation: { reset } = {} }) => {
         <Text detail>{signup ? L10N.PIN_CHOOSE : L10N.PIN}</Text>
         <View style={style.pinCode}>
           {['•', '•', '•', '•'].map((letter, index) => (
-            <View
-              key={index}
-              style={[
-                style.pin,
-                pin.length > index ? (color ? { backgroundColor: color } : style.pinActive) : undefined,
-              ]}
-            />
+            <View key={index} style={[style.pin, pin.length > index ? style.pinActive : undefined]} />
           ))}
         </View>
 

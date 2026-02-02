@@ -27,7 +27,8 @@
         "backgroundColor": "#FFFEFE"
       },
       "package": "com.satoshilimited.money",
-      "versionCode": 16
+      "versionCode": 16,
+      "windowSoftInputMode": "adjustResize"
     },
     "web": {
       "favicon": "./assets/favicon.png"

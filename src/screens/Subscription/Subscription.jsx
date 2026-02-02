@@ -1,4 +1,4 @@
-import { Button, Card, Icon, Modal, Pressable, Tabs, Text, View } from '@satoshi-ltd/nano-design';
+import { Button, Card, Icon, Panel, Pressable, Tabs, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { Linking } from 'react-native';
@@ -45,7 +45,7 @@ const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation:
   const planData = plans[plan];
 
   return (
-    <Modal gap onClose={goBack} style={style.modal}>
+    <Panel gap offset style={style.modal} title={L10N.SUBSCRIPTION} onBack={goBack}>
       <View align="center">
         <Tabs
           accent={isLifetime}
@@ -68,7 +68,7 @@ const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation:
         </Text>
       </View>
 
-      <Card gap style={style.items}>
+      <Card style={style.items}>
         {L10N.SUBSCRIPTION_ITEMS.map(({ icon, description, title }, index) => (
           <View gap row key={`item-${index}`} style={style.item}>
             <Icon name={icon} title />
@@ -123,7 +123,7 @@ const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation:
         </Pressable>
         .
       </Text>
-    </Modal>
+    </Panel>
   );
 };
 

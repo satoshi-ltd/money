@@ -1,13 +1,10 @@
-import { Button, Text, View } from '@satoshi-ltd/nano-design';
+import { Button, Text, View } from '../../design-system';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { style } from './Dialog.style';
-import { useStore } from '../../contexts';
 
-const Dialog = ({ accept, cancel, text, onAccept, onCancel, title, ...others }) => {
-  const { settings: { colorCurrency } = {} } = useStore();
-
+const Dialog = ({ accept, cancel, text, onAccept, onCancel, title, ...others }) => (
   <View {...others} swipeable onClose={onCancel}>
     <Text bold subtitle style={style.title}>
       {title}
@@ -15,12 +12,10 @@ const Dialog = ({ accept, cancel, text, onAccept, onCancel, title, ...others }) 
     {text && <Text color="contentLight">{text}</Text>}
     <View style={style.buttons}>
       {cancel && onCancel && <Button onPress={onCancel}>{cancel}</Button>}
-      <Button secondary={!colorCurrency} onPress={onAccept}>
-        {accept}
-      </Button>
+      <Button onPress={onAccept}>{accept}</Button>
     </View>
-  </View>;
-};
+  </View>
+);
 
 Dialog.propTypes = {
   accept: PropTypes.string,

@@ -1,4 +1,4 @@
-import { Icon, Text, View } from '@satoshi-ltd/nano-design';
+import { Icon, Text, View } from '../../../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import { Animated, Dimensions, Easing } from 'react-native';
@@ -36,7 +36,7 @@ const HorizontalChartItem = ({ color, currency, detail, icon, title, value, widt
       )}
 
       <View row style={[style.content, detail && style.detail]}>
-        <Icon name={icon} />
+        <Icon name={icon} small />
         <View flex>
           <Text {...textProps}>{title}</Text>
         </View>

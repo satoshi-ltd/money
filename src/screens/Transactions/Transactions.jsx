@@ -1,4 +1,4 @@
-import { Icon, Screen, Pressable } from '@satoshi-ltd/nano-design';
+import { Panel } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { SectionList } from 'react-native';
@@ -12,10 +12,10 @@ import { C, L10N } from '../../modules';
 
 const { IS_WEB } = C;
 
-const Transactions = ({
-  route: { params: { account: { hash, chartBalanceBase = [] } } = {} } = {},
-  navigation = {},
-}) => {
+const Transactions = (props = {}) => {
+  const { route = {}, navigation = {} } = props;
+  const { goBack } = navigation;
+  const { params: { account: { hash, chartBalanceBase = [] } = {} } = {} } = route;
   const { accounts = [], settings: { baseCurrency } = {} } = useStore();
 
   const [dataSource, setDataSource] = useState({});
@@ -30,28 +30,16 @@ const Transactions = ({
     setDataSource(account);
     setTxs(queryLastTxs(account.txs, page));
 
-    navigation.setOptions({
-      title: account.title,
-      headerLeft: () => (
-        <Pressable
-          onPress={() => navigation.goBack()}
-          {...(C.IS_ANDROID ? { onPressIn: () => navigation.goBack() } : {})}
-        >
-          <Icon name="chevron-left" title />
-        </Pressable>
-      ),
-    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accounts, hash, page]);
 
   const { currency = baseCurrency } = dataSource;
 
-  // ! TODO assign events to <Screen>
   return (
-    <Screen disableScroll={!IS_WEB}>
+    <Panel title={L10N.TRANSACTIONS} onBack={goBack} disableScroll>
       <SectionList
         initialNumToRender={C.TRANSACTIONS_PER_PAGE}
-        keyExtractor={(item) => item.timestamp}
+        keyExtractor={(item, index) => item.hash || `${item.timestamp}-${index}`}
         ListEmptyComponent={() => <Banner align="center" title={L10N.NO_TRANSACTIONS} />}
         ListHeaderComponent={
           <TransactionsListHeader
@@ -69,7 +57,7 @@ const Transactions = ({
         onEndReached={!IS_WEB ? () => setPage((prevPage) => prevPage + 1) : undefined}
         style={style.screen}
       />
-    </Screen>
+    </Panel>
   );
 };
 

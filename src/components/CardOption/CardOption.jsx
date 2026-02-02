@@ -1,28 +1,28 @@
-import { Card, Icon, Pressable, Text } from '@satoshi-ltd/nano-design';
+import Card from '../Card';
+import { Icon, Pressable, Text } from '../../design-system';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { style } from './CardOption.style';
+import { useApp } from '../../contexts';
 import { CurrencyLogo } from '../CurrencyLogo';
 
 const CardOption = ({
   caption,
-  color = 'border',
   children,
   currency,
   highlight,
   icon,
   legend,
-  secondary = false,
   onPress,
   ...others
 }) => {
-  const cardColor = highlight ? (secondary ? 'accent' : 'content') : color;
-  const textColor = highlight ? (secondary ? 'content' : 'base') : undefined;
+  const { colors, theme } = useApp();
+  const textColor = highlight ? (theme === 'dark' ? colors.background : 'content') : undefined;
 
   return (
     <Pressable {...others} onPress={onPress}>
-      <Card align="center" color={cardColor} small style={style.card}>
+      <Card active={highlight} small style={style.card}>
         {icon && <Icon color={textColor} name={icon} />}
 
         {currency && <CurrencyLogo currency={currency} highlight={highlight} />}
@@ -47,13 +47,11 @@ const CardOption = ({
 
 CardOption.propTypes = {
   caption: PropTypes.string,
-  color: PropTypes.string,
   children: PropTypes.node,
   currency: PropTypes.string,
   highlight: PropTypes.bool,
   icon: PropTypes.string,
   legend: PropTypes.string,
-  secondary: PropTypes.bool,
   onPress: PropTypes.func,
 };
 

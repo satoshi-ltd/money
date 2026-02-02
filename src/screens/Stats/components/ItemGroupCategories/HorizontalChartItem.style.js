@@ -3,20 +3,24 @@ import StyleSheet from 'react-native-extended-stylesheet';
 export const style = StyleSheet.create({
   bar: {
     backgroundColor: '$colorBorder',
+
     borderRadius: '$borderRadius',
     height: '100%',
-    maxHeight: '$spaceL + $spaceXS',
-    minWidth: '$spaceL + $spaceXS',
+    maxHeight: '$spaceL',
+    minWidth: '$spaceL',
     position: 'absolute',
+    left: 0,
     top: 0,
   },
 
   content: {
-    gap: '$viewOffset / 2',
-    padding: '$viewOffset / 4',
+    gap: '$spaceS',
+    paddingLeft: '$spaceXXS',
+    paddingVertical: '$spaceXXS',
   },
 
   detail: {
     paddingBottom: 0,
+    paddingLeft: '$spaceM',
   },
 });

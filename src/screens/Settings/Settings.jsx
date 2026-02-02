@@ -1,8 +1,7 @@
-import { Screen, Setting, Text, View } from '@satoshi-ltd/nano-design';
+import { Screen, Setting, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { Linking } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
 
 import { getLatestRates } from './helpers';
 import { ABOUT, OPTIONS, PREFERENCES, REMINDER_BACKUP_OPTIONS } from './Settings.constants';
@@ -30,7 +29,7 @@ const Settings = ({ navigation = {} }) => {
     txs = [],
   } = store;
 
-  const { baseCurrency, colorCurrency = false, lastRatesUpdate = '', reminders, theme } = settings;
+  const { baseCurrency, lastRatesUpdate = '', reminders, theme } = settings;
 
   const isPremium = !!subscription?.productIdentifier;
 
@@ -110,18 +109,12 @@ const Settings = ({ navigation = {} }) => {
     updateSettings({ theme: nextTheme });
   };
 
-  const handleColorCurrency = () => {
-    updateSettings({ colorCurrency: !colorCurrency });
-  };
-
   const handleChangeReminder = (item) => {
     NotificationsService.reminders([item.value]);
     updateSettings({ reminders: [item.value] });
   };
 
-  const settingProps = colorCurrency
-    ? { color: StyleSheet.value('$colorContent'), iconColor: StyleSheet.value('$colorBase') }
-    : {};
+  const settingProps = {};
 
   return (
     <Screen gap offset style={style.screen}>
@@ -168,12 +161,6 @@ const Settings = ({ navigation = {} }) => {
           icon={ICON.THEME}
           text={theme === 'dark' ? L10N.APPERANCE_LIGHT : L10N.APPERANCE_DARK}
           onPress={handleTheme}
-        />
-        <Setting
-          {...settingProps}
-          icon={ICON.COLOR_FILL}
-          text={colorCurrency ? L10N.CURRENCY_COLOR_DISABLE : L10N.CURRENCY_COLOR_ENABLE}
-          onPress={handleColorCurrency}
         />
         {PREFERENCES.map(({ disabled, icon, text, ...rest }, index) => (
           <Setting

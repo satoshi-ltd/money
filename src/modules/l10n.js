@@ -49,7 +49,7 @@ export const L10N = {
   CATEGORIES_AMOUNT: (amount) => `${amount} ${amount > 1 ? 'categories' : 'category'}`,
 
   CHANGE_DESTINATION: 'Change Destination',
-  CHOOSE_CURRENCY: 'Choose Base Currency',
+  CHOOSE_CURRENCY: 'Base Currency',
   CLONE: 'Clone',
   CLOSE: 'Close',
   CONCEPT: 'Concept',
@@ -61,8 +61,6 @@ export const L10N = {
   CONFIRM_IMPORT_CAPTION: ({ accounts = [], txs = [] }) =>
     `Import the JSON file to update your ${accounts.length} accounts and ${txs.length} transactions. This action is irreversible.`,
   CONFIRM_IMPORT_SUCCESS: 'Imported successfully.',
-  CURRENCY_COLOR_ENABLE: 'Enable currency colors',
-  CURRENCY_COLOR_DISABLE: 'Disable currency colors',
   CURRENCY_NAME: {
     AUD: 'Australian Dollar',
     BTC: 'Bitcoin',
@@ -239,6 +237,7 @@ export const L10N = {
   TODAY: 'Today',
   TOTAL_BALANCE: 'Total Balance',
   TRANSACTION: ['Expense', 'Income', 'Swap'],
+  TRANSACTION_TITLE: 'Transaction',
   TRANSACTIONS: 'Transactions',
   TRANSFERS: 'Transfers',
 

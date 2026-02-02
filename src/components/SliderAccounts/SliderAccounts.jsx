@@ -1,4 +1,4 @@
-import { ScrollView } from '@satoshi-ltd/nano-design';
+import { ScrollView } from '../../design-system';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import { useWindowDimensions } from 'react-native';

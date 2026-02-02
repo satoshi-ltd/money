@@ -1,4 +1,4 @@
-import { Confirm as ConfirmBase } from '@satoshi-ltd/nano-design';
+import { Confirm as ConfirmBase } from '../../components';
 import PropTypes from 'prop-types';
 import React from 'react';
 

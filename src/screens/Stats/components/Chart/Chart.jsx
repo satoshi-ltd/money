@@ -1,4 +1,4 @@
-import { Text, View } from '@satoshi-ltd/nano-design';
+import { Text, View } from '../../../../components';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useWindowDimensions } from 'react-native';

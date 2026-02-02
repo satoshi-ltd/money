@@ -1,14 +1,3 @@
-import { CommonTheme } from './common.theme';
+import { buildTheme } from './buildTheme';
 
-export const LightTheme = {
-  $theme: 'light',
-
-  ...CommonTheme,
-
-  // -- palette ----------------------------------------------------------------
-  // $colorBase: '#FFFEFE',
-  // $colorBorder: '#f0f0f0',
-  // $colorContent: '#000000',
-  $colorContentLight: '#555555',
-  // $colorDisabled: '#999999',
-};
+export const LightTheme = buildTheme('light');

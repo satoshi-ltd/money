@@ -1,12 +1,8 @@
-import { Platform } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 export const style = StyleSheet.create({
   screen: {
     paddingBottom: '$spaceXXL * 2',
-    paddingTop: '$spaceXXL + $viewOffset',
-    ...Platform.select({ android: { paddingTop: 0 } }),
-    ...Platform.select({ web: { marginTop: '$viewOffset' } }),
   },
 
   scrollView: {
@@ -25,17 +21,20 @@ export const style = StyleSheet.create({
     marginRight: '$viewOffset',
   },
 
+  cardCurrency: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '$spaceXL',
+    width: '$spaceXL',
+    marginRight: '$viewOffset / 2',
+  },
   item: {
+    alignItems: 'center',
     paddingHorizontal: '$viewOffset',
     paddingVertical: '$viewOffset / 2',
     width: '100%',
   },
-
-  cardCurrency: {
-    alignItems: 'center',
-    height: '$spaceXXL + $spaceS',
-    marginRight: '$spaceS',
-    justifyContent: 'center',
-    width: '$spaceXXL + $spaceS',
+  text: {
+    flex: 1,
   },
 });

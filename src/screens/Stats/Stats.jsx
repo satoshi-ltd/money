@@ -1,4 +1,4 @@
-import { Screen } from '@satoshi-ltd/nano-design';
+import { Screen, View } from '../../components';
 import React, { useLayoutEffect, useState } from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
 
@@ -17,12 +17,10 @@ let debounceTimeout;
 
 const Stats = () => {
   const store = useStore();
+  const { settings: { baseCurrency } = {}, txs = [] } = store;
 
   const [chart, setChart] = useState({});
   const [pointerIndex, setPointerIndex] = useState(STATS_MONTHS_LIMIT - 1);
-
-  const { settings: { baseCurrency, colorCurrency } = {}, txs } = store;
-
   useLayoutEffect(() => {
     setChart(queryChart(store));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -37,7 +35,7 @@ const Stats = () => {
 
   const { expenses = {}, incomes = {} } = queryMonth(store, pointerIndex) || {};
   const chartProps = { currency: baseCurrency, pointerIndex };
-  const color = (colorCurrency && C.COLOR[baseCurrency]) || StyleSheet.value('$colorAccent');
+  const color = StyleSheet.value('$colorAccent');
   const colorExpense = StyleSheet.value('$colorContent');
 
   return (
@@ -56,11 +54,16 @@ const Stats = () => {
         hideMonth
         multipleData
         title={`${L10N.INCOMES} & ${L10N.EXPENSES}`}
+        style={style.chartGap}
         values={[chart.incomes, chart.expenses]}
         onPointerChange={handlePointerIndex}
       />
 
-      {Object.keys(incomes).length > 0 && <ItemGroupCategories color={color} type={INCOME} dataSource={incomes} />}
+      {Object.keys(incomes).length > 0 && (
+        <View style={style.sectionGap}>
+          <ItemGroupCategories color={color} type={INCOME} dataSource={incomes} />
+        </View>
+      )}
       {Object.keys(expenses).length > 0 && <ItemGroupCategories type={EXPENSE} dataSource={expenses} />}
 
       <Chart

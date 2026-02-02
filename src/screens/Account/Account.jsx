@@ -1,4 +1,4 @@
-import { Button, Modal, Text, View } from '@satoshi-ltd/nano-design';
+import { Button, Panel, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
@@ -14,13 +14,12 @@ const INITIAL_STATE = { balance: 0, currency: undefined, title: undefined };
 
 const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate } = {} }) => {
   const {
-    settings: { baseCurrency, colorCurrency } = {},
+    settings: { baseCurrency } = {},
     createAccount,
     updateAccount,
     deleteAccount,
     updateRates,
   } = useStore();
-
   const [busy, setBusy] = useState(false);
   const [form, setForm] = useState(INITIAL_STATE);
 
@@ -75,18 +74,17 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
     setBusy(false);
   };
 
+  const headerTitle = firstAccount ? L10N.FIRST_ACCOUNT : editMode ? L10N.SETTINGS : `${L10N.NEW} ${L10N.ACCOUNT}`;
+
   return (
-    <Modal onClose={firstAccount ? undefined : goBack}>
-      <View style={style.title}>
-        <Text bold secondary subtitle>
-          {firstAccount ? L10N.FIRST_ACCOUNT : editMode ? L10N.SETTINGS : `${L10N.NEW} ${L10N.ACCOUNT}`}
-        </Text>
-        {firstAccount && (
+    <Panel offset title={headerTitle} onBack={firstAccount ? undefined : goBack}>
+      {firstAccount && (
+        <View style={style.title}>
           <Text caption color="contentLight">
             {L10N.FIRST_ACCOUNT_CAPTION}
           </Text>
-        )}
-      </View>
+        </View>
+      )}
 
       <SliderCurrencies
         selected={form.currency}
@@ -120,11 +118,11 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
             {L10N.CLOSE}
           </Button>
         )}
-        <Button disabled={busy || !form.currency || !form.title} flex secondary={!colorCurrency} onPress={handleSubmit}>
+        <Button disabled={busy || !form.currency || !form.title} flex onPress={handleSubmit}>
           {L10N.SAVE}
         </Button>
       </View>
-    </Modal>
+    </Panel>
   );
 };
 

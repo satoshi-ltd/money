@@ -5,6 +5,10 @@ const style = StyleSheet.create({
     height: '$cardAccountSize',
     width: '$cardAccountSize',
   },
+  content: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
 
   color: {
     borderRadius: '50%',
@@ -15,7 +19,7 @@ const style = StyleSheet.create({
 
   chart: {
     bottom: '$spaceXS',
-    left: 0,
+    left: '$spaceS * -1',
     opacity: 0.66,
     position: 'absolute',
   },

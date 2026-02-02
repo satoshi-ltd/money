@@ -1,4 +1,4 @@
-import { Icon, Pressable, Text, View } from '@satoshi-ltd/nano-design';
+import { Icon, Pressable, Text, View } from '../../design-system';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -7,12 +7,12 @@ import { useStore } from '../../contexts';
 import { C, exchange, getProgressionPercentage, ICON, L10N } from '../../modules';
 import { PriceFriendly } from '../PriceFriendly';
 
-const { COLOR, CURRENCY } = C;
+const { CURRENCY } = C;
 
-const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth = {}, title }) => {
+const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth = {}, title, noPadding = false }) => {
   const {
     rates,
-    settings: { baseCurrency, colorCurrency, maskAmount },
+    settings: { baseCurrency, maskAmount },
     updateSettings,
   } = useStore();
 
@@ -28,43 +28,45 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
     currentBalance,
     currency === baseCurrency ? progression : progressionCurrency,
   );
+  const accentColor = 'accent';
 
-  const color = (colorCurrency && COLOR[currency]) || 'accent';
 
   return (
-    <View style={style.container}>
+    <View style={[style.container, noPadding ? style.noPadding : null]}>
       <View row spaceBetween>
         <View row>
-          {colorCurrency && title && <View style={[style.color, { backgroundColor: COLOR[currency] }]} />}
           <Text bold secondary subtitle>
             {!title ? L10N.TOTAL_BALANCE : `${title} ${L10N.BALANCE}`}
           </Text>
         </View>
       </View>
 
-      <Pressable onPress={() => updateSettings({ maskAmount: !maskAmount })}>
-        <PriceFriendly bold currency={currency} title value={currentBalance} />
-      </Pressable>
-
-      {baseCurrency !== currency && (
-        <PriceFriendly
-          bold
-          color="contentLight"
-          currency={baseCurrency}
-          value={exchange(Math.abs(currentBalance), currency, baseCurrency, rates)}
-        />
-      )}
+      <View row style={style.balanceRow}>
+        <Pressable onPress={() => updateSettings({ maskAmount: !maskAmount })}>
+          <PriceFriendly bold currency={currency} title value={currentBalance} />
+        </Pressable>
+        {baseCurrency !== currency && (
+          <PriceFriendly
+            bold
+            color="contentLight"
+            currency={baseCurrency}
+            label="≈"
+            tiny
+            value={exchange(Math.abs(currentBalance), currency, baseCurrency, rates)}
+          />
+        )}
+      </View>
 
       {progressionPercentage !== 0 && (
         <View row style={style.progression}>
           <Icon
-            color={progressionPercentage > 0 ? color : undefined}
+            color={progressionPercentage > 0 ? accentColor : undefined}
             caption
             name={`trending-${progressionPercentage > 0 ? 'up' : 'down'}`}
           />
           <PriceFriendly
             bold
-            color={progressionPercentage > 0 ? color : undefined}
+            color={progressionPercentage > 0 ? accentColor : undefined}
             currency="%"
             fixed={progressionPercentage >= 100 ? 0 : undefined}
             operator
@@ -79,14 +81,13 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
           <View row style={style.tags}>
             {(incomes > 0 || incomesBase > 0) && (
               <View row style={style.tag}>
-                <View style={[style.income, { backgroundColor: colorCurrency ? C.COLOR[currency] : undefined }]} />
-                <Icon color={color} name={ICON.INCOME} tiny />
-                <PriceFriendly bold color={color} currency={currency} tiny value={incomesBase || incomes} />
+                <Icon color={accentColor} name={ICON.INCOME} small />
+                <PriceFriendly bold color={accentColor} currency={currency} tiny value={incomesBase || incomes} />
               </View>
             )}
             {(expenses > 0 || expensesBase > 0) && (
               <View row style={style.tag}>
-                <Icon name={ICON.EXPENSE} tiny />
+                <Icon name={ICON.EXPENSE} small />
                 <PriceFriendly bold currency={currency} tiny value={expensesBase || expenses} />
               </View>
             )}
@@ -105,6 +106,7 @@ Summary.propTypes = {
   currentBalance: PropTypes.number,
   currentMonth: PropTypes.shape({}),
   detail: PropTypes.bool,
+  noPadding: PropTypes.bool,
   title: PropTypes.string,
 };
 

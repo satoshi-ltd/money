@@ -1,16 +1,3 @@
-import { CommonTheme } from './common.theme';
+import { buildTheme } from './buildTheme';
 
-export const DarkTheme = {
-  $theme: 'dark',
-
-  ...CommonTheme,
-
-  // -- palette ----------------------------------------------------------------
-  $colorBase: '#000000',
-  $colorBorder: '#222222',
-  $colorContent: '#ffffff',
-  $colorContentLight: '#999999',
-
-  // -- <Button> ---------------------------------------------------------------
-  $buttonChildrenColorSecondary: '$colorBase',
-};
+export const DarkTheme = buildTheme('dark');

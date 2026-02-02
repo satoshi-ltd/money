@@ -1,31 +1,24 @@
-import { Text, View } from '@satoshi-ltd/nano-design';
+import { Icon, Text, View } from '../../design-system';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { style } from './CurrencyLogo.style';
-import { useStore } from '../../contexts';
-import { C, getCurrencySymbol } from '../../modules';
+import { getCurrencySymbol, ICON } from '../../modules';
 
-const CurrencyLogo = ({ currency, highlight, ...others }) => {
-  const { settings: { colorCurrency } = {} } = useStore();
-
+const CurrencyLogo = ({ currency, muted, ...others }) => {
   const symbol = getCurrencySymbol(currency);
-  const color = colorCurrency ? C.COLOR[currency] : undefined;
+  const showGoldIcon = currency === 'XAU' && !symbol;
+  const showSilverIcon = currency === 'XAG' && !symbol;
+  const color = muted ? 'contentLight' : 'content';
 
   return (
     <View style={[style.container, others.style]}>
-      <View
-        style={[
-          style.coin,
-          colorCurrency ? style.colorCurrency : highlight ? style.highlight : undefined,
-          colorCurrency ? { backgroundColor: color } : undefined,
-        ]}
-      />
+      {showGoldIcon ? <Icon name={ICON.GOLD} small color={color} /> : null}
+      {showSilverIcon ? <Icon name={ICON.SILVER} small color={color} /> : null}
       {symbol ? (
         <Text
           bold
-          //
-          color={colorCurrency ? color : !highlight ? 'base' : undefined}
+          color={color}
           caption={symbol.length === 1}
           tiny={symbol.length > 1}
         >
@@ -37,10 +30,8 @@ const CurrencyLogo = ({ currency, highlight, ...others }) => {
 };
 
 CurrencyLogo.propTypes = {
-  color: PropTypes.string,
   currency: PropTypes.string,
-  highlight: PropTypes.bool,
-  secondary: PropTypes.bool,
+  muted: PropTypes.bool,
 };
 
 export { CurrencyLogo };

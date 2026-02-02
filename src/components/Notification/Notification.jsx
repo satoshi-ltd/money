@@ -1,11 +1,39 @@
-import { Notification as NotificationBase } from '@satoshi-ltd/nano-design';
 import React, { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { C, eventEmitter, L10N } from '../../modules';
+import { style } from './Notification.style';
+import { Icon, Pressable, Text, View } from '../../design-system';
+import { C, eventEmitter, ICON, L10N } from '../../modules';
 
 const { EVENT } = C;
+
+const NotificationBase = ({ error, onClose, text, title, visible, style: containerStyle }) => {
+  if (!visible) return null;
+
+  const textColor = error ? 'base' : 'content';
+
+  return (
+    <Pressable onPress={onClose} style={[style.notification, error ? style.alert : style.accent, containerStyle]}>
+      <SafeAreaView edges={['top']} style={style.safeAreaView}>
+        <Icon name={error ? ICON.ALERT : ICON.INFO} color={textColor} />
+        <View flex style={style.text}>
+          <Text bold color={textColor}>
+            {title}
+          </Text>
+          {text ? (
+            <Text tiny color={textColor}>
+              {text}
+            </Text>
+          ) : null}
+        </View>
+        <Pressable onPress={onClose}>
+          <Icon name={ICON.CLOSE} color={textColor} />
+        </Pressable>
+      </SafeAreaView>
+    </Pressable>
+  );
+};
 
 export const Notification = () => {
   const { top } = useSafeAreaInsets();

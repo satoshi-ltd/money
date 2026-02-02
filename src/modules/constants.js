@@ -10,28 +10,6 @@ const MS_IN_WEEK = MS_IN_DAY * 7;
 export const C = {
   BUSY_PRESS_MS: 2500,
 
-  COLOR: {
-    USD: '#4CAF50',
-    EUR: '#1E90FF',
-    JPY: '#FF6347',
-    GBP: '#FFD700',
-    CNY: '#DC143C',
-    CAD: '#FF4500',
-    AUD: '#32CD32',
-    SGD: '#4682B4',
-    HKD: '#8A2BE2',
-    BTC: '#FF8C00',
-    ETH: '#6A5ACD',
-    KRW: '#00CED1',
-    MXN: '#228B22',
-    MYR: '#8B0000',
-    RUB: '#B22222',
-    THB: '#FF1493',
-    VND: '#FF69B4',
-    XAU: '#DAA520',
-    XAG: '#C0C0C0',
-  },
-
   CURRENCY: 'USD',
 
   DEFAULT_THEME: 'light',

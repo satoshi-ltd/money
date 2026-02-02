@@ -1,4 +1,4 @@
-import { Text, View } from '@satoshi-ltd/nano-design';
+import { Text, View } from '../../design-system';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Keyboard, TextInput } from 'react-native';

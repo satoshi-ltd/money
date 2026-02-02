@@ -1,4 +1,4 @@
-import { Card, Pressable, Screen, ScrollView, Text, View } from '@satoshi-ltd/nano-design';
+import { Card, Pressable, Screen, ScrollView, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
@@ -49,14 +49,22 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
             <Pressable key={account.hash} onPress={() => navigate('transactions', { account })}>
               <View row style={style.item}>
                 <Card small style={style.cardCurrency}>
-                  <CurrencyLogo currency={currency} />
+                  <CurrencyLogo currency={currency} muted={!hasBalance || currentBalance < 0} />
                 </Card>
 
-                <View>
-                  <Text bold color={color} numberOfLines={1}>
-                    {title}
-                  </Text>
-                  <PriceFriendly color="contentLight" currency={currency} caption value={currentBalance} />
+                <View flex>
+                  <View gap row spaceBetween>
+                    <Text bold color={color} numberOfLines={1} style={style.text}>
+                      {title}
+                    </Text>
+                    <PriceFriendly bold color={color || 'content'} currency={currency} caption value={currentBalance} />
+                  </View>
+
+                  <View gap row spaceBetween>
+                    <Text tiny color="contentLight" style={style.text}>
+                      {L10N.CURRENCY_NAME[currency] || currency}
+                    </Text>
+                  </View>
                 </View>
               </View>
             </Pressable>

@@ -1,4 +1,4 @@
-import { Pressable, Text, View } from '@satoshi-ltd/nano-design';
+import { Pressable, Text, View } from '../../../../components';
 import PropTypes from 'prop-types';
 import React from 'react';
 

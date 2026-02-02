@@ -1,4 +1,4 @@
-import { Action, Input, ScrollView } from '@satoshi-ltd/nano-design';
+import { Button, Input, ScrollView } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
@@ -7,7 +7,7 @@ import { style } from './Dashboard.style';
 import { queryAccounts } from './helpers';
 import { CardAccount, Heading, Summary } from '../../components';
 import { useStore } from '../../contexts';
-import { getProgressionPercentage, L10N } from '../../modules';
+import { getProgressionPercentage, ICON, L10N } from '../../modules';
 
 let timeoutId;
 
@@ -38,12 +38,15 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
 
   return (
     <>
-      <Summary {...overall} currency={baseCurrency} detail />
+      <Summary {...overall} currency={baseCurrency} detail style={style.summary} />
 
-      <Heading value={L10N.ACCOUNTS}>
-        <Action color="content" caption onPress={() => navigate('account', { create: true })}>
-          {`${L10N.NEW} ${L10N.ACCOUNT}`}
-        </Action>
+      <Heading value={L10N.ACCOUNTS} style={style.accountsHeading}>
+        <Button
+          icon={ICON.NEW}
+          outlined
+          small
+          onPress={() => navigate('account', { create: true })}
+        />
       </Heading>
 
       <ScrollView horizontal snap={StyleSheet.value('$cardAccountSnap')} style={[style.scrollView]}>
@@ -76,10 +79,13 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
           );
         })}
       </ScrollView>
-      <Heading value={L10N.LAST_TRANSACTIONS}>
-        <Action caption color="content" onPress={handleSearch}>
-          {!search ? L10N.SEARCH : L10N.CLOSE}
-        </Action>
+      <Heading value={L10N.LAST_TRANSACTIONS} style={style.headingTight}>
+        <Button
+          icon={!search ? ICON.SEARCH : ICON.CLOSE}
+          outlined
+          small
+          onPress={handleSearch}
+        />
       </Heading>
       {search && (
         <Input

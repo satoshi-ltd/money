@@ -1,4 +1,4 @@
-import { Action, Input, View } from '@satoshi-ltd/nano-design';
+import { Button, Input, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useWindowDimensions } from 'react-native';
@@ -53,39 +53,44 @@ const TransactionsListHeader = ({ chartBalanceBase, dataSource, navigation, onSe
 
   return (
     <>
-      <Summary {...rest} currency={currency} title={rest?.title}>
-        <LineChart
-          currency={currency}
-          height={128}
-          showPointer
-          values={chartBalanceBase}
-          width={width - StyleSheet.value('$viewOffset') * 2}
-        />
+      <View style={style.headerWrap}>
+        <Summary {...rest} currency={currency} title={rest?.title} noPadding>
+          <LineChart
+            currency={currency}
+            height={128}
+            showPointer
+            values={chartBalanceBase}
+            width={width - StyleSheet.value('$viewOffset') * 2}
+          />
 
-        <View row style={style.buttons}>
-          <ButtonSummary icon={ICON.INCOME} text={L10N.INCOME} onPress={() => handleTransaction(INCOME)} />
-          <ButtonSummary icon={ICON.EXPENSE} text={L10N.EXPENSE} onPress={() => handleTransaction(EXPENSE)} />
-          {accounts.length > 1 && (
-            <ButtonSummary icon={ICON.SWAP} text={L10N.SWAP} onPress={() => handleTransaction(TRANSFER)} />
-          )}
-          <ButtonSummary icon={ICON.SETTINGS} text={L10N.SETTINGS} onPress={handleEdit} />
-        </View>
-      </Summary>
+          <View row style={style.buttons}>
+            <ButtonSummary icon={ICON.INCOME} text={L10N.INCOME} onPress={() => handleTransaction(INCOME)} />
+            <ButtonSummary icon={ICON.EXPENSE} text={L10N.EXPENSE} onPress={() => handleTransaction(EXPENSE)} />
+            {accounts.length > 1 && (
+              <ButtonSummary icon={ICON.SWAP} text={L10N.SWAP} onPress={() => handleTransaction(TRANSFER)} />
+            )}
+            <ButtonSummary icon={ICON.SETTINGS} text={L10N.SETTINGS} onPress={handleEdit} />
+          </View>
+        </Summary>
 
-      <Heading value={L10N.TRANSACTIONS}>
-        <Action caption color="content" onPress={handleSearch}>
-          {!search ? L10N.SEARCH : L10N.CLOSE}
-        </Action>
-      </Heading>
-      {search && (
-        <Input
-          autoFocus
-          placeholder={`${L10N.SEARCH}...`}
-          value={query}
-          onChange={onQueryChange}
-          style={style.inputSearch}
-        />
-      )}
+        <Heading value={L10N.TRANSACTIONS} style={style.headingTight}>
+          <Button
+            icon={!search ? ICON.SEARCH : ICON.CLOSE}
+            outlined
+            small
+            onPress={handleSearch}
+          />
+        </Heading>
+        {search && (
+          <Input
+            autoFocus
+            placeholder={`${L10N.SEARCH}...`}
+            value={query}
+            onChange={onQueryChange}
+            style={style.inputSearch}
+          />
+        )}
+      </View>
     </>
   );
 };

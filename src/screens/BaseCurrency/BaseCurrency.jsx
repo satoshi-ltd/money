@@ -1,9 +1,8 @@
-import { Button, Modal, Text, View } from '@satoshi-ltd/nano-design';
+import { Card, CurrencyLogo, Icon, Panel, Pressable, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
 import { style } from './BaseCurrency.style';
-import { SliderCurrencies } from '../../components';
 import { useStore } from '../../contexts';
 import { C, eventEmitter, L10N } from '../../modules';
 import { ServiceRates } from '../../services';
@@ -12,51 +11,56 @@ const { EVENT } = C;
 
 const BaseCurrency = ({ navigation: { goBack } = {} }) => {
   const store = useStore();
-
-  const { settings: { baseCurrency, colorCurrency } = {}, updateRates } = store;
-
-  const [activity, setActivity] = useState(false);
+  const { settings: { baseCurrency } = {}, updateRates } = store;
   const [currency, setCurrency] = useState();
 
   useEffect(() => {
     setCurrency(baseCurrency);
   }, [baseCurrency]);
 
-  const handleSubmit = async () => {
-    setActivity(true);
+  const handleSelect = async (nextCurrency) => {
+    if (!nextCurrency || nextCurrency === baseCurrency) {
+      setCurrency(nextCurrency);
+      goBack();
+      return;
+    }
 
-    const rates = await ServiceRates.get({ baseCurrency: currency, latest: false }).catch(() =>
+    setCurrency(nextCurrency);
+    const rates = await ServiceRates.get({ baseCurrency: nextCurrency, latest: false }).catch(() =>
       eventEmitter.emit(EVENT.NOTIFICATION, { error: true, title: L10N.ERROR_SERVICE_RATES }),
     );
-    if (rates) await updateRates({ ...rates, currency });
-
+    if (rates) await updateRates({ ...rates, currency: nextCurrency });
     goBack();
-    setActivity(false);
   };
 
+  const currencies = Object.keys(C.SYMBOL);
+
   return (
-    <Modal title="Clone" onClose={goBack}>
-      <Text bold secondary subtitle style={style.title}>
-        {L10N.CHOOSE_CURRENCY}
-      </Text>
+    <Panel offset title={L10N.CHOOSE_CURRENCY} onBack={goBack}>
+      <View style={style.list}>
+        {currencies.map((item) => {
+          const title = L10N.CURRENCY_NAME[item] || item;
 
-      <SliderCurrencies selected={currency} onChange={setCurrency} style={style.slider} />
+          return (
+            <Pressable key={item} onPress={() => handleSelect(item)}>
+              <View row style={style.item}>
+                <Card small style={style.iconCard}>
+                  <CurrencyLogo currency={item} />
+                </Card>
 
-      <View row style={style.buttons}>
-        <Button flex outlined onPress={goBack}>
-          {L10N.CLOSE}
-        </Button>
-        <Button
-          activity={activity}
-          disabled={currency === baseCurrency}
-          flex
-          secondary={!colorCurrency}
-          onPress={handleSubmit}
-        >
-          {L10N.SAVE}
-        </Button>
+                <View flex>
+                  <Text bold={currency === item} numberOfLines={1}>
+                    {title}
+                  </Text>
+                </View>
+
+                {currency === item ? <Icon name="check" color="accent" /> : <View style={style.rightPlaceholder} />}
+              </View>
+            </Pressable>
+          );
+        })}
       </View>
-    </Modal>
+    </Panel>
   );
 };
 

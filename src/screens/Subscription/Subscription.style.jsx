@@ -7,6 +7,7 @@ export const style = StyleSheet.create({
 
   items: {
     marginBottom: '$viewOffset',
+    gap: '$viewOffset',
   },
 
   lifetime: {

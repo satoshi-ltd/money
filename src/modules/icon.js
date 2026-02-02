@@ -57,6 +57,7 @@ export const ICON = {
   INVESTMENT: 'trending-up',
   // INVESTMENT: 'stack-overflow',
   GOLD: 'gold',
+  SILVER: 'gold',
   BITCOIN: 'bitcoin',
   // entertainment
   ENTERTAINMENT: 'movie-open-outline',
@@ -90,7 +91,7 @@ export const ICON = {
   SPOTIFY: 'spotify',
   ICLOUD: 'apple-icloud',
   PAYPAL: 'alpha-p-box',
-  LAUNDRY: 'local-laundry-service',
+  LAUNDRY: 'washing-machine',
   // Transfer
   TRANSFER: 'bank-transfer',
   // Category: transportation
@@ -132,7 +133,6 @@ export const ICON = {
   //
   UNKNOWN: 'block-helper',
   // Settings
-  COLOR_FILL: 'format-color-fill',
   THEME: 'theme-light-dark',
   FILE: 'file-document-outline',
   STAR: 'star',

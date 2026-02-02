@@ -23,5 +23,7 @@ export const style = StyleSheet.create({
     height: '$spaceXXL + $spaceS',
     width: '$spaceXXL + $spaceS',
     marginRight: '$viewOffset / 2',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

@@ -1,4 +1,4 @@
-import { Icon, Pressable, ScrollView, Text } from '@satoshi-ltd/nano-design';
+import { Icon, Pressable, ScrollView, Text } from '../../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';

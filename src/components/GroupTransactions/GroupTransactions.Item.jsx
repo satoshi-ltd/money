@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import { Card, Icon, Pressable, Text, View } from '@satoshi-ltd/nano-design';
+import Card from '../Card';
+import { Icon, Pressable, Text, View } from '../../design-system';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -37,7 +38,7 @@ const Item = ({ category = INTERNAL_TRANSFER, currency, timestamp, title, type =
   return (
     <Pressable onPress={handlePress}>
       <View row style={style.content}>
-        <Card align="center" small style={style.cardIcon}>
+        <Card small style={style.cardIcon}>
           <Icon name={getIcon({ category, type, title })} />
         </Card>
 
