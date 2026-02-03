@@ -18,15 +18,4 @@ export const style = StyleSheet.create({
   lastOption: {
     marginRight: '$viewOffset',
   },
-
-  inputCurrency: {
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-  },
-
-  inputTitle: {
-    marginTop: '$borderWidth * -1',
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
-  },
 });

@@ -8,7 +8,12 @@ export const style = StyleSheet.create({
     height: '$inputTextHeight',
     paddingLeft: '$inputPaddingHorizontal',
     paddingRight: '$inputPaddingHorizontal',
-    paddingTop: '$inputPaddingVertical',
+  },
+  rowContent: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: '$spaceS',
+    flex: 1,
   },
   text: {
     color: '$inputColor',
@@ -17,5 +22,32 @@ export const style = StyleSheet.create({
     fontWeight: '$fontWeightBold',
     ...Platform.select({ web: { outlineWidth: 0 } }),
   },
+  selectedValue: {
+    fontSize: '$fontSizeDefault',
+  },
+  iconCard: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '$spaceXL',
+    width: '$spaceXL',
+  },
+  iconCardDropdown: {
+    backgroundColor: '$colorBorder',
+  },
+  option: {
+    paddingVertical: '$viewOffset / 2',
+    paddingHorizontal: '$spaceS',
+  },
+  optionRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: '$spaceS',
+    width: '100%',
+  },
+  optionTextContainer: {
+    justifyContent: 'center',
+  },
+  optionText: {
+    color: '$colorContent',
+  },
 });
-

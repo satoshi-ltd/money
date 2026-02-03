@@ -9,9 +9,17 @@ const {
   },
 } = C;
 
-export default ({ accounts = [], overall = {}, rates = {}, settings: { baseCurrency } = {}, txs = [] }, index) => {
+export default (
+  { accounts = [], overall = {}, rates = {}, settings: { baseCurrency } = {}, txs = [] },
+  index,
+  monthsLimit = STATS_MONTHS_LIMIT,
+) => {
+  let effectiveLimit = monthsLimit === 0 ? 0 : monthsLimit || STATS_MONTHS_LIMIT;
+  if (effectiveLimit <= 0) {
+    effectiveLimit = overall?.chartBalance?.length || STATS_MONTHS_LIMIT;
+  }
   const today = new Date();
-  today.setMonth(today.getMonth() - (STATS_MONTHS_LIMIT - index - 1));
+  today.setMonth(today.getMonth() - (effectiveLimit - index - 1));
   const month = today.getMonth();
   const year = today.getFullYear();
 
@@ -19,7 +27,7 @@ export default ({ accounts = [], overall = {}, rates = {}, settings: { baseCurre
   const rangeTxs = [];
   const currencies = {};
 
-  filterTxs(txs)
+  filterTxs(txs, effectiveLimit)
     .filter((tx) => !isInternalTransfer(tx))
     .forEach((tx) => {
       const { category, timestamp, type, value, title } = tx;

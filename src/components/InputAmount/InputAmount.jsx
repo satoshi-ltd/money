@@ -15,6 +15,7 @@ const isNumber = /^[0-9]+([,.][0-9]+)?$|^[0-9]+([,.][0-9]+)?[.,]$/;
 
 const InputAmount = ({
   account: { currency } = {},
+  editable = true,
   first,
   label = '',
   last,
@@ -46,7 +47,7 @@ const InputAmount = ({
           autoComplete="off"
           autoCorrect={false}
           blurOnSubmit
-          editable
+          editable={editable}
           keyboardType="numeric"
           placeholder={!focus ? '...' : undefined}
           placeholderTextColor={StyleSheet.value('$inputPlaceholderColor')}
@@ -74,6 +75,7 @@ const InputAmount = ({
 
 InputAmount.propTypes = {
   account: PropTypes.shape({}),
+  editable: PropTypes.bool,
   first: PropTypes.bool,
   label: PropTypes.string,
   last: PropTypes.bool,

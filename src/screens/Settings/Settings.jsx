@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Alert, Linking } from 'react-native';
 
 import { getLatestRates } from './helpers';
-import { ABOUT, OPTIONS, PREFERENCES, REMINDER_BACKUP_OPTIONS } from './Settings.constants';
+import { ABOUT, OPTIONS, PREFERENCES } from './Settings.constants';
 import { style } from './Settings.style';
 import { useStore } from '../../contexts';
 import { verboseDate } from '../../modules';
@@ -111,10 +111,12 @@ const Settings = ({ navigation = {} }) => {
     updateSettings({ theme: nextTheme });
   };
 
-  const handleChangeReminder = (item) => {
-    NotificationsService.reminders([item.value]);
-    updateSettings({ reminders: [item.value] });
+  const handleChangeReminder = (next) => {
+    const value = typeof next === 'object' ? next.value : next ? 1 : 0;
+    NotificationsService.reminders([value]);
+    updateSettings({ reminders: [value] });
   };
+
 
   const settingProps = {};
 
@@ -165,7 +167,9 @@ const Settings = ({ navigation = {} }) => {
         {PREFERENCES.map(({ disabled, icon, text, ...rest }, index) => (
           <Setting
             {...settingProps}
-            caption={rest.screen === 'baseCurrency' ? L10N.CURRENCY_NAME[baseCurrency] : undefined}
+            caption={
+              rest.screen === 'baseCurrency' ? L10N.CURRENCY_NAME[baseCurrency] : undefined
+            }
             activity={activity && activity[rest.callback]}
             key={`preference-${index}`}
             {...{ disabled, icon, text }}
@@ -176,10 +180,9 @@ const Settings = ({ navigation = {} }) => {
           {...settingProps}
           caption={L10N.REMINDER_BACKUP_CAPTION}
           icon={ICON.BELL}
-          onChange={(value = 0) => handleChangeReminder(value)}
-          onPress={() => {}}
-          options={REMINDER_BACKUP_OPTIONS}
-          selected={reminders?.[0] || 1}
+          type="toggle"
+          value={(reminders?.[0] ?? 1) === 1}
+          onValueChange={handleChangeReminder}
           text={L10N.REMINDER_BACKUP}
         />
       </View>

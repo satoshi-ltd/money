@@ -1,11 +1,12 @@
 import React from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, Switch } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 import { Icon, Pressable, Text, View } from '../../design-system';
 import Card from '../Card';
 import { resolveColor } from '../utils/resolveColor';
 import { ICON } from '../../modules';
+import { useApp } from '../../contexts';
 import { styles } from './Setting.styles';
 
 const resolveOptionLabel = (option) => option?.text || option?.label || option?.caption || option?.value;
@@ -23,14 +24,23 @@ const Setting = ({
   selected,
   style,
   text,
+  type = 'navigation',
+  value,
+  onValueChange,
   ...props
 }) => {
+  const { colors } = useApp();
   const resolvedBackground = resolveColor(color);
   const selectedIndex = options?.findIndex((option) => option?.id === selected || option?.value === selected);
   const selectedOption = selectedIndex >= 0 ? options[selectedIndex] : options?.[0];
+  const isToggle = type === 'toggle';
 
   const handlePress = () => {
     if (disabled) return;
+    if (isToggle && onValueChange) {
+      onValueChange(!value);
+      return;
+    }
     if (options?.length && onChange) {
       const nextIndex = selectedIndex >= 0 ? (selectedIndex + 1) % options.length : 0;
       onChange(options[nextIndex]);
@@ -42,7 +52,7 @@ const Setting = ({
     <Pressable
       {...props}
       disabled={disabled}
-      onPress={handlePress}
+      onPress={isToggle ? undefined : handlePress}
       style={[styles.container, resolvedBackground ? { backgroundColor: resolvedBackground } : null, disabled && styles.disabled, style]}
     >
       <View style={styles.row}>
@@ -63,6 +73,15 @@ const Setting = ({
         </View>
         {activity ? (
           <ActivityIndicator size="small" color={StyleSheet.value('$colorContentLight')} />
+        ) : isToggle ? (
+          <Switch
+            disabled={disabled}
+            thumbColor={colors.background}
+            trackColor={{ false: colors.border, true: colors.accent }}
+            style={styles.switch}
+            value={!!value}
+            onValueChange={onValueChange}
+          />
         ) : options?.length ? (
           <Text caption color="contentLight" style={styles.rightText}>
             {resolveOptionLabel(selectedOption)}

@@ -2,11 +2,12 @@ import { C } from '../../../modules';
 
 const { STATS_MONTHS_LIMIT } = C;
 
-export default ({ MONTHS }) => {
+export default ({ MONTHS }, monthsLimit = STATS_MONTHS_LIMIT) => {
+  if (!monthsLimit || monthsLimit <= 0) return [];
   const now = new Date();
-  const originDate = new Date(now.getFullYear(), now.getMonth() - STATS_MONTHS_LIMIT, 1, 0, 0);
+  const originDate = new Date(now.getFullYear(), now.getMonth() - monthsLimit, 1, 0, 0);
 
-  return new Array(STATS_MONTHS_LIMIT).fill('').map((caption, index) => {
+  return new Array(monthsLimit).fill('').map((caption, index) => {
     const date = new Date(originDate.getFullYear(), originDate.getMonth() + index + 1, 1, 0, 0);
 
     return MONTHS[date.getMonth()];

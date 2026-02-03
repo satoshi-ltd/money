@@ -11,6 +11,7 @@ const DEFAULTS = {
     onboarded: false,
     pin: undefined,
     reminders: [1],
+    statsRangeMonths: 12,
     theme: 'light',
   },
   rates: {},

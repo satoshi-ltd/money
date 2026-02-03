@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Animated, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { theme } from '../../config/theme';
@@ -15,13 +15,19 @@ const Dropdown = ({
   renderOption,
   position = 'bottom',
   maxItems = 6,
+  itemHeight: itemHeightProp,
+  optionStyle,
   width = 200,
 }) => {
   const { colors } = useApp();
   const { animateValue, createValue } = useMotion();
+  const scrollRef = useRef(null);
+  const [measuredItemHeight, setMeasuredItemHeight] = useState();
 
   const fadeAnim = createValue(0);
   const scaleAnim = createValue(0.95);
+  const fallbackItemHeight = 42;
+  const itemHeight = itemHeightProp || measuredItemHeight || fallbackItemHeight;
 
   useEffect(() => {
     if (visible) {
@@ -33,22 +39,21 @@ const Dropdown = ({
     }
   }, [visible, animateValue, fadeAnim, scaleAnim]);
 
-  if (!visible) return null;
+  const renderDefaultOption = (option, isSelected) => (
+    <View style={styles.optionContent}>
+      <Text caption color={isSelected ? 'accent' : undefined} bold={isSelected}>
+        {option.label}
+      </Text>
+      {isSelected ? <Icon name="check" color="accent" /> : null}
+    </View>
+  );
 
-  const renderDefaultOption = (option) => {
+  const renderOptionContent = (option) => {
     const isSelected = option.id === selected;
-    return (
-      <View style={styles.optionContent}>
-        <Text caption color={isSelected ? 'accent' : undefined} bold={isSelected}>
-          {option.label}
-        </Text>
-        {isSelected ? <Icon name="check" color="accent" /> : null}
-      </View>
-    );
+    return renderOption ? renderOption(option, isSelected) : renderDefaultOption(option, isSelected);
   };
 
   const getDropdownStyle = () => {
-    const itemHeight = 36;
     const calculatedMaxHeight = Math.min(options.length, maxItems) * itemHeight;
 
     const baseStyle = {
@@ -73,23 +78,49 @@ const Dropdown = ({
     return [styles.dropdownRelative, baseStyle, positionStyle, { backgroundColor: colors.surface, borderColor: colors.border }];
   };
 
+  useEffect(() => {
+    if (!visible || !options.length || selected === undefined || selected === null) return;
+    const selectedIndex = options.findIndex((option) => option.id === selected);
+    if (selectedIndex < 0) return;
+    const offset = Math.max(0, (selectedIndex - 1) * itemHeight);
+    requestAnimationFrame(() => {
+      scrollRef.current?.scrollTo({ y: offset, animated: false });
+    });
+  }, [itemHeight, options, selected, visible]);
+
+  if (!visible) return null;
+
   return (
     <>
       <TouchableOpacity activeOpacity={1} onPress={onClose} style={styles.backdrop} />
       <Animated.View style={getDropdownStyle()}>
         <ScrollView
           bounces={false}
+          ref={scrollRef}
           showsVerticalScrollIndicator={options.length > maxItems}
-          style={[styles.scrollView, { maxHeight: Math.min(options.length, maxItems) * 36 }]}
+          style={[styles.scrollView, { maxHeight: Math.min(options.length, maxItems) * itemHeight }]}
         >
           {options.map((option, index) => (
             <TouchableOpacity
               activeOpacity={0.7}
               key={option.id || index}
+              onLayout={
+                index === 0
+                  ? (event) => {
+                      const height = event.nativeEvent.layout.height;
+                      if (height && height !== measuredItemHeight) setMeasuredItemHeight(height);
+                    }
+                  : undefined
+              }
               onPress={() => onSelect(option)}
-              style={[styles.option, index === options.length - 1 && styles.lastOption, { borderBottomColor: colors.border }]}
+              style={[
+                styles.option,
+                optionStyle,
+                index === options.length - 1 && styles.lastOption,
+                { borderBottomColor: colors.border },
+              ]}
             >
-              {renderOption ? renderOption(option) : renderDefaultOption(option)}
+              {renderOptionContent(option)}
             </TouchableOpacity>
           ))}
         </ScrollView>

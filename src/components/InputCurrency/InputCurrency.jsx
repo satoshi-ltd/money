@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import React, { useMemo, useState } from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
 
+import Card from '../Card';
+import { CurrencyLogo } from '../CurrencyLogo';
 import Dropdown from '../Dropdown';
 import { Field } from '../Field';
 import { L10N } from '../../modules';
@@ -23,25 +25,53 @@ const InputCurrency = ({ first, label = L10N.CURRENCY, last, onChange, options, 
 
   const selectedLabel = value ? L10N.CURRENCY_NAME[value] || value : '...';
 
+  const renderCurrencyOption = (option, isSelected) => (
+    <View row style={style.optionRow}>
+      <Card small style={[style.iconCard, style.iconCardDropdown]}>
+        <CurrencyLogo currency={option.value} />
+      </Card>
+      <View flex style={style.optionTextContainer}>
+        <Text bold numberOfLines={1} style={style.optionText}>
+          {option.label}
+        </Text>
+      </View>
+      {isSelected ? <Icon name="check" color="accent" /> : null}
+    </View>
+  );
+
   return (
-    <Field focused={open} label={label} first={first} last={last}>
+    <Field focused={open} first={first} last={last}>
       <Pressable onPress={() => setOpen(true)}>
         <View row spaceBetween style={style.row}>
-          <Text bold numberOfLines={1} style={style.text}>
-            {selectedLabel}
-          </Text>
+          <View row style={style.rowContent}>
+            {value ? (
+              <Card small style={style.iconCard}>
+                <CurrencyLogo currency={value} />
+              </Card>
+            ) : null}
+            <View>
+              <Text caption color="contentLight">
+                {label}
+              </Text>
+              <Text bold numberOfLines={1} style={[style.text, style.selectedValue]}>
+                {selectedLabel}
+              </Text>
+            </View>
+          </View>
           <Icon name="chevron-down" color="contentLight" />
         </View>
       </Pressable>
 
       <Dropdown
-        maxItems={8}
+        maxItems={6}
         onClose={() => setOpen(false)}
         onSelect={(option) => {
           onChange(option.value);
           setOpen(false);
         }}
         options={currencyOptions}
+        optionStyle={style.option}
+        renderOption={renderCurrencyOption}
         selected={value}
         visible={open}
         width={StyleSheet.value('$optionSize') * 2.8}
@@ -60,4 +90,3 @@ InputCurrency.propTypes = {
 };
 
 export { InputCurrency };
-

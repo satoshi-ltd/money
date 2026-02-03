@@ -1,4 +1,4 @@
-import { Heading, InputDate, ScrollView } from '../../../components';
+import { Heading, InputAccount, InputDate, ScrollView } from '../../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import { useWindowDimensions } from 'react-native';
@@ -11,7 +11,17 @@ import { queryCategories } from '../helpers';
 
 const EXPENSE = C?.TX?.TYPE?.EXPENSE ?? 0;
 
-const FormTransaction = ({ account = {}, form, onChange, showCategory = true, showDate = true, type = EXPENSE }) => {
+const FormTransaction = ({
+  account = {},
+  accountsList = [],
+  form,
+  onChange,
+  onSelectAccount,
+  showAccount = false,
+  showCategory = true,
+  showDate = true,
+  type = EXPENSE,
+} = {}) => {
   const scrollview = useRef(null);
   const { width } = useWindowDimensions();
   const safeForm = form || {};
@@ -36,10 +46,10 @@ const FormTransaction = ({ account = {}, form, onChange, showCategory = true, sh
 
   const optionSnap = StyleSheet.value('$optionSnap');
   const categories = queryCategories({ type: safeType });
-  const totals = account.txs?.reduce(
+  const totals = account?.txs?.reduce(
     (total, { category }) => ((total[category] = (total[category] || 0) + 1), total),
     {},
-  );
+  ) || {};
 
   let sortedCategories = [...categories]
     .filter((category) => !!totals[category.key.toString()])
@@ -49,6 +59,7 @@ const FormTransaction = ({ account = {}, form, onChange, showCategory = true, sh
     ...sortedCategories,
     ...categories.filter(({ key }) => !sortedCategories.find((item) => item.key === key)),
   ];
+  const showAccountInput = showAccount && accountsList.length && onSelectAccount;
 
   return (
     <>
@@ -77,21 +88,24 @@ const FormTransaction = ({ account = {}, form, onChange, showCategory = true, sh
 
       <Heading value={L10N.DETAILS} />
 
+      {showAccountInput ? (
+        <InputAccount accounts={accountsList} first onSelect={onSelectAccount} selected={account} />
+      ) : null}
+
       {showDate && (
         <InputDate
-          first
+          first={!showAccountInput}
           value={safeForm.timestamp ? new Date(safeForm.timestamp) : new Date()}
           onChange={(value) => handleField('timestamp', value.getTime())}
         />
       )}
 
       <InputAmount
-        first={!showDate}
+        first={!showDate && !showAccountInput}
         account={account}
         currency={account.currency}
         value={safeForm.value}
         onChange={(value) => handleField('value', value)}
-        style={style.inputCurrency}
       />
 
       <InputText
@@ -99,7 +113,6 @@ const FormTransaction = ({ account = {}, form, onChange, showCategory = true, sh
         label={L10N.CONCEPT}
         value={safeForm.title}
         onChange={(value) => handleField('title', value)}
-        style={style.inputTitle}
       />
     </>
   );
@@ -107,11 +120,14 @@ const FormTransaction = ({ account = {}, form, onChange, showCategory = true, sh
 
 FormTransaction.propTypes = {
   account: PropTypes.shape({}).isRequired,
+  accountsList: PropTypes.arrayOf(PropTypes.shape({})),
   form: PropTypes.shape({}).isRequired,
   showCategory: PropTypes.bool,
   showDate: PropTypes.bool,
   type: PropTypes.number,
   onChange: PropTypes.func.isRequired,
+  onSelectAccount: PropTypes.func,
+  showAccount: PropTypes.bool,
 };
 
 export default FormTransaction;

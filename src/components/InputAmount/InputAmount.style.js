@@ -18,7 +18,10 @@ export const style = StyleSheet.create({
     height: '$inputTextHeight',
     paddingTop: '$inputPaddingVertical',
     flex: 1,
-    ...Platform.select({ web: { outlineWidth: 0 } }),
+    ...Platform.select({
+      web: { outlineWidth: 0 },
+      android: { paddingTop: '$inputPaddingVertical + $spaceXS' },
+    }),
   },
   exchange: {
     alignItems: 'flex-end',

@@ -9,6 +9,17 @@ export const style = StyleSheet.create({
     marginBottom: '$spaceS',
     position: 'relative',
   },
+  stacked: {
+    marginBottom: 0,
+  },
+  dropdownOption: {
+    paddingVertical: '$viewOffset / 2',
+    paddingHorizontal: '$spaceS',
+  },
+  dropdownRow: {
+    alignItems: 'center',
+    width: '100%',
+  },
   item: {
     alignItems: 'center',
     backgroundColor: '$colorBase',
@@ -21,6 +32,19 @@ export const style = StyleSheet.create({
     minHeight: '$inputTextHeight',
     width: '100%',
   },
+  first: {
+    borderTopLeftRadius: '$inputBorderRadius',
+    borderTopRightRadius: '$inputBorderRadius',
+  },
+  last: {
+    borderBottomLeftRadius: '$inputBorderRadius',
+    borderBottomRightRadius: '$inputBorderRadius',
+  },
+  noBottom: {
+    borderBottomWidth: 0,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+  },
   focus: {
     borderColor: '$inputBorderColorFocus',
   },
@@ -30,6 +54,15 @@ export const style = StyleSheet.create({
     height: '$spaceXL',
     width: '$spaceXL',
     marginRight: '$viewOffset / 2',
+  },
+  iconCardDropdown: {
+    backgroundColor: '$colorBorder',
+  },
+  textContainer: {
+    justifyContent: 'center',
+  },
+  text: {
+    color: '$colorContent',
   },
   subline: {
     gap: '$spaceXXS',

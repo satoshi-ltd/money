@@ -9,6 +9,9 @@ export const style = StyleSheet.create({
     borderWidth: '$inputBorderWidth',
     minHeight: '$inputTextHeight',
   },
+  noBottom: {
+    borderBottomWidth: 0,
+  },
   first: {
     borderTopLeftRadius: '$inputBorderRadius',
     borderTopRightRadius: '$inputBorderRadius',

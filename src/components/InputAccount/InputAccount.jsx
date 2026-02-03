@@ -11,11 +11,16 @@ import { style } from './InputAccount.style';
 import { L10N } from '../../modules';
 import { sortAccounts } from '../../modules/sortAccounts';
 
-const InputAccount = ({ accounts = [], inlineMax = 4, onSelect, selected }) => {
+const sortAccountsByName = (accounts = []) =>
+  [...accounts].sort(({ title = '' }, { title: nextTitle = '' }) =>
+    title.localeCompare(nextTitle, undefined, { sensitivity: 'base' }),
+  );
+
+const InputAccount = ({ accounts = [], first, last, onSelect, selected }) => {
   const [showSelect, setShowSelect] = useState(false);
-  const useInline = accounts.length > 0 && accounts.length <= inlineMax;
 
   const sortedAccounts = useMemo(() => sortAccounts(accounts), [accounts]);
+  const sortedAccountsByName = useMemo(() => sortAccountsByName(accounts), [accounts]);
 
   useEffect(() => {
     if (!selected && sortedAccounts.length) {
@@ -24,8 +29,8 @@ const InputAccount = ({ accounts = [], inlineMax = 4, onSelect, selected }) => {
   }, [onSelect, selected, sortedAccounts]);
 
   const options = useMemo(
-    () => sortedAccounts.map((item) => ({ id: item.hash, label: item.title, account: item })),
-    [sortedAccounts],
+    () => sortedAccountsByName.map((item) => ({ id: item.hash, label: item.title, account: item })),
+    [sortedAccountsByName],
   );
 
   const handleSelect = (next) => {
@@ -33,43 +38,50 @@ const InputAccount = ({ accounts = [], inlineMax = 4, onSelect, selected }) => {
     onSelect(next);
   };
 
-  if (useInline) {
+  const renderAccountOption = (option, isSelected) => {
+    const accountOption = option.account || {};
     return (
-      <View style={style.list}>
-        {sortedAccounts.map((item) => (
-          <Pressable key={item.hash} onPress={() => handleSelect(item)}>
-            <View row style={style.item}>
-              <Card small style={style.iconCard}>
-                <CurrencyLogo currency={item.currency} muted={!item?.currentBalance || item.currentBalance < 0} />
-              </Card>
-              <View flex style={style.textContainer}>
-                <Text bold numberOfLines={2} style={style.text}>
-                  {item.title}
-                </Text>
-                <View row style={style.subline}>
-                  <Text caption color="contentLight">
-                    {L10N.BALANCE}
-                  </Text>
-                  <PriceFriendly
-                    caption
-                    color="contentLight"
-                    currency={item.currency}
-                    value={item.currentBalance || 0}
-                  />
-                </View>
-              </View>
-              {item.hash === selected?.hash ? <Icon name="check" color="accent" /> : <View style={style.rightPlaceholder} />}
-            </View>
-          </Pressable>
-        ))}
+      <View row style={style.dropdownRow}>
+        <Card small style={[style.iconCard, style.iconCardDropdown]}>
+          <CurrencyLogo
+            currency={accountOption.currency}
+            muted={!accountOption?.currentBalance || accountOption.currentBalance < 0}
+          />
+        </Card>
+        <View flex style={style.textContainer}>
+          <Text bold numberOfLines={2} style={style.text}>
+            {accountOption.title}
+          </Text>
+          <View row style={style.subline}>
+            <Text caption color="contentLight">
+              {L10N.BALANCE}
+            </Text>
+            <PriceFriendly
+              caption
+              color="contentLight"
+              currency={accountOption.currency}
+              value={accountOption.currentBalance || 0}
+            />
+          </View>
+        </View>
+        {isSelected ? <Icon name="check" color="accent" /> : <View style={style.rightPlaceholder} />}
       </View>
     );
-  }
+  };
 
   return (
-    <View style={style.select}>
+    <View style={[style.select, first && !last && style.stacked]}>
       <Pressable onPress={() => setShowSelect(true)}>
-        <View row style={[style.item, showSelect && style.focus]}>
+        <View
+          row
+          style={[
+            style.item,
+            first && style.first,
+            first && !last && style.noBottom,
+            last && style.last,
+            showSelect && style.focus,
+          ]}
+        >
           <Card small style={style.iconCard}>
             <CurrencyLogo
               currency={selected?.currency}
@@ -104,6 +116,8 @@ const InputAccount = ({ accounts = [], inlineMax = 4, onSelect, selected }) => {
           setShowSelect(false);
         }}
         options={options}
+        optionStyle={style.dropdownOption}
+        renderOption={renderAccountOption}
         selected={selected?.hash}
         visible={showSelect}
         width={StyleSheet.value('$optionSize') * 2.8}
@@ -114,7 +128,8 @@ const InputAccount = ({ accounts = [], inlineMax = 4, onSelect, selected }) => {
 
 InputAccount.propTypes = {
   accounts: PropTypes.arrayOf(PropTypes.shape({})),
-  inlineMax: PropTypes.number,
+  first: PropTypes.bool,
+  last: PropTypes.bool,
   onSelect: PropTypes.func.isRequired,
   selected: PropTypes.shape({}),
 };

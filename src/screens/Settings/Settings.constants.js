@@ -37,11 +37,6 @@ const OPTIONS = (isPremium, subscription) => [
   },
 ];
 
-const REMINDER_BACKUP_OPTIONS = [
-  { text: L10N.OFF, value: 0 },
-  { text: L10N.ON, value: 1 },
-];
-
 const PREFERENCES = [
   {
     icon: ICON.SWAP,
@@ -81,4 +76,4 @@ const ABOUT = (isPremium) => [
   },
 ];
 
-export { ABOUT, OPTIONS, PREFERENCES, REMINDER_BACKUP_OPTIONS };
+export { ABOUT, OPTIONS, PREFERENCES };

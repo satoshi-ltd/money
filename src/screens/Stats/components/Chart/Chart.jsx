@@ -13,6 +13,8 @@ const Chart = ({
   color,
   currency,
   multipleData,
+  headingRight,
+  monthsLimit,
   pointerIndex,
   title,
   values = [],
@@ -32,7 +34,7 @@ const Chart = ({
 
   // eslint-disable-next-line react/prop-types
   const Scale = ({ color, dataSource }) => (
-    <View row style={[style.scale, multipleData && style.multiScale]}>
+    <View row style={style.scale}>
       {Object.entries(calcScales(dataSource)).map(([key, value]) => (
         <View key={key} row style={style.scale}>
           <PriceFriendly {...{ color, currency, value }} bold fixed={0} tiny label={`${L10N.SCALE_KEY[key]} `} />
@@ -48,9 +50,7 @@ const Chart = ({
 
   return (
     <View offset style={styleContainer}>
-      <View style={style.title}>
-        <Heading value={title} />
-      </View>
+      <Heading value={title}>{headingRight}</Heading>
 
       <Scale color={color1} dataSource={normalizedData1} />
 
@@ -59,6 +59,7 @@ const Chart = ({
           currency,
           color,
           multipleData,
+          monthsLimit,
           values: multipleData ? [normalizedData1, normalizedData2] : normalizedData1,
           onPointerChange,
         }}
@@ -81,6 +82,8 @@ Chart.propTypes = {
   color: PropTypes.any,
   currency: PropTypes.string,
   multipleData: PropTypes.bool,
+  headingRight: PropTypes.node,
+  monthsLimit: PropTypes.number,
   pointerIndex: PropTypes.number,
   title: PropTypes.string,
   values: PropTypes.any,

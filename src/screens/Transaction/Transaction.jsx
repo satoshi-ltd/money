@@ -1,4 +1,4 @@
-import { Button, Heading, InputAccount, Panel, Text, View } from '../../components';
+import { Button, Panel, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect, useMemo, useState } from 'react';
 
@@ -64,13 +64,22 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
 
   return (
     <Panel offset title={title} onBack={goBack} disableScroll>
-      {type === TRANSFER ? <Heading value={L10N.FROM_ACCOUNT} /> : <Heading value={L10N.ACCOUNT} />}
-
-      <InputAccount accounts={sortedAccounts} onSelect={setAccount} selected={currentAccount} />
-
       {currentAccount ? (
         <Form
           {...{ account: currentAccount, type }}
+          {...(type !== TRANSFER
+            ? {
+                accountsList: sortedAccounts,
+                onSelectAccount: setAccount,
+                showAccount: true,
+              }
+            : {})}
+          {...(type === TRANSFER
+            ? {
+                accountsList: sortedAccounts,
+                onSelectAccount: setAccount,
+              }
+            : {})}
           {...state}
           debounce={200}
           onChange={(value) => setState({ ...state, ...value })}

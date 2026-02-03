@@ -14,6 +14,7 @@ const LineChart = ({
   currency,
   height,
   multipleData = false,
+  monthsLimit,
   pointerConfig = {},
   showPointer = false,
   values = [],
@@ -42,7 +43,7 @@ const LineChart = ({
   const maxValue = hasData ? max + range * 0.05 : 0;
   const minValue = hasData ? min - range * 0.15 : 0;
 
-  const months = getLastMonths();
+  const months = getLastMonths(monthsLimit);
 
   return (
     <View style={{ height, opacity: 1, width: '100%', ...propStyle }}>
@@ -118,6 +119,7 @@ LineChart.propTypes = {
   currency: PropTypes.string,
   height: PropTypes.number,
   multipleData: PropTypes.bool,
+  monthsLimit: PropTypes.number,
   pointerConfig: PropTypes.shape({}),
   showPointer: PropTypes.bool,
   values: PropTypes.any,

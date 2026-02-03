@@ -28,4 +28,7 @@ export const styles = StyleSheet.create({
   rightText: {
     textAlign: 'right',
   },
+  switch: {
+    transform: [{ scaleX: 0.85 }, { scaleY: 0.85 }],
+  },
 });

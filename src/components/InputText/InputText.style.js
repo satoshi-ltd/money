@@ -11,6 +11,9 @@ export const style = StyleSheet.create({
     paddingLeft: '$inputPaddingHorizontal',
     paddingRight: '$inputPaddingHorizontal',
     paddingTop: '$inputPaddingVertical',
-    ...Platform.select({ web: { outlineWidth: 0 } }),
+    ...Platform.select({
+      web: { outlineWidth: 0 },
+      android: { paddingTop: '$inputPaddingVertical + $spaceXS' },
+    }),
   },
 });

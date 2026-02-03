@@ -10,6 +10,7 @@ const Field = ({ children, first, focused, label, last, style: styleProp, ...pro
     style={[
       style.container,
       first && style.first,
+      !last && style.noBottom,
       last && style.last,
       focused && style.focus,
       styleProp,

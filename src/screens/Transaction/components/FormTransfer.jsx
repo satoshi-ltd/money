@@ -2,19 +2,19 @@ import { Heading, InputAccount, InputAmount } from '../../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 
-import { style } from './FormTransfer.style';
 import { useStore } from '../../../contexts';
 import { currencyDecimals, L10N } from '../../../modules';
 import { getAccount, queryAvailableAccounts } from '../helpers';
 
-const FormTransaction = ({ account = {}, form = {}, onChange }) => {
+const FormTransaction = ({ account = {}, accountsList = [], form = {}, onChange, onSelectAccount }) => {
   const {
     accounts = [],
     settings: { baseCurrency },
     rates,
   } = useStore();
 
-  const availableAccounts = queryAvailableAccounts(accounts, account);
+  const resolvedAccounts = accountsList.length ? accountsList : accounts;
+  const availableAccounts = queryAvailableAccounts(resolvedAccounts, account);
 
   const fallback = availableAccounts[1] || availableAccounts[0];
 
@@ -27,8 +27,8 @@ const FormTransaction = ({ account = {}, form = {}, onChange }) => {
 
   const handleField = (field, fieldValue) => {
     const next = { ...form, [field]: fieldValue };
-    const from = getAccount(account.hash, accounts);
-    const to = getAccount(next.destination, accounts);
+    const from = getAccount(account.hash, resolvedAccounts);
+    const to = getAccount(next.destination, resolvedAccounts);
     let { exchange = 0, value = 0 } = next;
 
     if (next.destination && (exchange === form.exchange || !exchange)) {
@@ -49,22 +49,43 @@ const FormTransaction = ({ account = {}, form = {}, onChange }) => {
     });
   };
 
+  const destinationAccount = getAccount(form.destination, resolvedAccounts) || fallback;
+
   return (
     <>
-      <Heading value={L10N.DESTINATION} />
-      <InputAccount
-        accounts={availableAccounts}
-        onSelect={(item) => handleField('destination', item.hash)}
-        selected={getAccount(form.destination, accounts) || fallback}
-      />
+      <Heading value={L10N.FROM_ACCOUNT} />
 
-      <Heading value={L10N.DETAILS} />
+      <InputAccount
+        accounts={resolvedAccounts}
+        first
+        onSelect={(item) => onSelectAccount?.(item)}
+        selected={account}
+      />
 
       <InputAmount
         account={account}
+        last
+        label={L10N.SEND}
         value={form.value}
         onChange={(value) => handleField('value', value)}
-        style={style.inputCurrency}
+      />
+
+      <Heading value={L10N.DESTINATION} />
+
+      <InputAccount
+        accounts={availableAccounts}
+        first
+        onSelect={(item) => handleField('destination', item.hash)}
+        selected={destinationAccount}
+      />
+
+      <InputAmount
+        account={destinationAccount}
+        last
+        label={L10N.RECEIVE}
+        value={form.exchange}
+        onChange={(value) => handleField('exchange', value)}
+        editable={false}
       />
     </>
   );
@@ -72,8 +93,10 @@ const FormTransaction = ({ account = {}, form = {}, onChange }) => {
 
 FormTransaction.propTypes = {
   account: PropTypes.shape({}).isRequired,
+  accountsList: PropTypes.arrayOf(PropTypes.shape({})),
   form: PropTypes.shape({}).isRequired,
   onChange: PropTypes.func.isRequired,
+  onSelectAccount: PropTypes.func,
 };
 
 export default FormTransaction;

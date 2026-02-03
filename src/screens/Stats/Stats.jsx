@@ -1,30 +1,63 @@
 import { Screen, View } from '../../components';
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
 
-import { Chart, ItemGroupCategories } from './components';
+import { Chart, ItemGroupCategories, StatsRangeToggle } from './components';
 import { queryMonth, queryChart } from './modules';
 import { style } from './Stats.style';
 import { useStore } from '../../contexts';
-import { C, L10N } from '../../modules';
+import { C, getMonthDiff, L10N } from '../../modules';
 
 const {
   STATS_MONTHS_LIMIT,
   TX: { TYPE: { EXPENSE, INCOME } = {} },
 } = C;
+const MAX_STATS_MONTHS = 48;
 
 let debounceTimeout;
 
 const Stats = () => {
   const store = useStore();
-  const { settings: { baseCurrency } = {}, txs = [] } = store;
+  const {
+    settings: { baseCurrency, statsRangeMonths = STATS_MONTHS_LIMIT } = {},
+    overall = {},
+    txs = [],
+    updateSettings,
+  } = store;
 
   const [chart, setChart] = useState({});
-  const [pointerIndex, setPointerIndex] = useState(STATS_MONTHS_LIMIT - 1);
+  const monthsLimit = useMemo(() => {
+    if (statsRangeMonths && statsRangeMonths > 0) return Math.min(statsRangeMonths, MAX_STATS_MONTHS);
+    const chartLength = overall?.chartBalance?.length || 0;
+    if (chartLength > 0) return Math.min(chartLength, MAX_STATS_MONTHS);
+    if (txs.length > 0) {
+      const firstTimestamp = Math.min(...txs.map(({ timestamp }) => timestamp || Date.now()));
+      return Math.min(MAX_STATS_MONTHS, Math.max(1, getMonthDiff(new Date(firstTimestamp), new Date()) + 1));
+    }
+    return Math.min(STATS_MONTHS_LIMIT, MAX_STATS_MONTHS);
+  }, [overall?.chartBalance?.length, statsRangeMonths, txs]);
+
+  const [pointerIndex, setPointerIndex] = useState(Math.max(0, monthsLimit - 1));
+
+  useEffect(() => {
+    setPointerIndex(Math.max(0, monthsLimit - 1));
+  }, [monthsLimit]);
+
+  const rangeOptions = useMemo(
+    () => [
+      { label: L10N.STATS_RANGE_1Y, value: 12 },
+      { label: L10N.STATS_RANGE_2Y, value: 24 },
+      { label: L10N.STATS_RANGE_4Y, value: 48 },
+    ],
+    [],
+  );
+
+  const selectedRange = statsRangeMonths === 0 ? MAX_STATS_MONTHS : Math.min(statsRangeMonths, MAX_STATS_MONTHS);
+  const handleRangeChange = (value) => updateSettings({ statsRangeMonths: value });
   useLayoutEffect(() => {
-    setChart(queryChart(store));
+    setChart(queryChart(store, monthsLimit));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [baseCurrency, txs]);
+  }, [baseCurrency, monthsLimit, txs]);
 
   const handlePointerIndex = (next) => {
     clearTimeout(debounceTimeout);
@@ -33,8 +66,8 @@ const Stats = () => {
     }, 100);
   };
 
-  const { expenses = {}, incomes = {} } = queryMonth(store, pointerIndex) || {};
-  const chartProps = { currency: baseCurrency, pointerIndex };
+  const { expenses = {}, incomes = {} } = queryMonth(store, pointerIndex, monthsLimit) || {};
+  const chartProps = { currency: baseCurrency, monthsLimit, pointerIndex };
   const color = StyleSheet.value('$colorAccent');
   const colorExpense = StyleSheet.value('$colorContent');
 
@@ -43,6 +76,9 @@ const Stats = () => {
       <Chart
         {...chartProps}
         color={color}
+        headingRight={
+          <StatsRangeToggle onChange={handleRangeChange} options={rangeOptions} value={selectedRange} />
+        }
         title={L10N.OVERALL_BALANCE}
         values={chart.balance}
         onPointerChange={handlePointerIndex}
@@ -59,12 +95,13 @@ const Stats = () => {
         onPointerChange={handlePointerIndex}
       />
 
-      {Object.keys(incomes).length > 0 && (
-        <View style={style.sectionGap}>
+      {Object.keys(incomes).length > 0 || Object.keys(expenses).length > 0 ?
+      <View style={style.sectionGap}>
+        {Object.keys(incomes).length > 0 && (
           <ItemGroupCategories color={color} type={INCOME} dataSource={incomes} />
-        </View>
-      )}
-      {Object.keys(expenses).length > 0 && <ItemGroupCategories type={EXPENSE} dataSource={expenses} />}
+        )}
+        {Object.keys(expenses).length > 0 && <ItemGroupCategories type={EXPENSE} dataSource={expenses} />}
+      </View> : null}
 
       <Chart
         {...chartProps}
