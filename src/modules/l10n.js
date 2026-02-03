@@ -175,7 +175,7 @@ export const L10N = {
   PURCHASE_RESTORED: 'Purchase restored.',
 
   REMINDER_BACKUP: 'Backup Reminder',
-  REMINDER_BACKUP_CAPTION: 'Keep your data safe with regular backups.',
+  REMINDER_BACKUP_CAPTION: 'Get backup alerts.',
   RECEIVE: 'Receive',
   RESTORE_PURCHASES: 'Restore purchases',
   SEND: 'Send',
