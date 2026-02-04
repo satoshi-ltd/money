@@ -5,8 +5,9 @@ export const EN = {
   AMOUNT: 'Amount',
   ANNUALY: 'Annualy',
 
-  APPERANCE_DARK: 'Switch to dark mode',
-  APPERANCE_LIGHT: 'Switch to light mode',
+  APPEARANCE: 'Appearance',
+  APPERANCE_DARK: 'Dark mode',
+  APPERANCE_LIGHT: 'Light mode',
 
   BALANCE: 'Balance',
 
@@ -279,8 +280,9 @@ export const PT = {
   AMOUNT: 'Valor',
   ANNUALY: 'Anual',
 
-  APPERANCE_DARK: 'Mudar para modo escuro',
-  APPERANCE_LIGHT: 'Mudar para modo claro',
+  APPEARANCE: 'Aparência',
+  APPERANCE_DARK: 'Modo escuro',
+  APPERANCE_LIGHT: 'Modo claro',
 
   BALANCE: 'Saldo',
 
@@ -552,8 +554,9 @@ export const FR = {
   AMOUNT: 'Montant',
   ANNUALY: 'Annuel',
 
-  APPERANCE_DARK: 'Passer en mode sombre',
-  APPERANCE_LIGHT: 'Passer en mode clair',
+  APPEARANCE: 'Apparence',
+  APPERANCE_DARK: 'Mode sombre',
+  APPERANCE_LIGHT: 'Mode clair',
 
   BALANCE: 'Solde',
 
@@ -825,8 +828,9 @@ export const DE = {
   AMOUNT: 'Betrag',
   ANNUALY: 'Jährlich',
 
-  APPERANCE_DARK: 'In den Dunkelmodus wechseln',
-  APPERANCE_LIGHT: 'In den Hellmodus wechseln',
+  APPEARANCE: 'Erscheinungsbild',
+  APPERANCE_DARK: 'Dunkelmodus',
+  APPERANCE_LIGHT: 'Hellmodus',
 
   BALANCE: 'Saldo',
 
@@ -1098,8 +1102,9 @@ export const ES = {
   AMOUNT: 'Importe',
   ANNUALY: 'Anual',
 
-  APPERANCE_DARK: 'Cambiar a modo oscuro',
-  APPERANCE_LIGHT: 'Cambiar a modo claro',
+  APPEARANCE: 'Apariencia',
+  APPERANCE_DARK: 'Modo oscuro',
+  APPERANCE_LIGHT: 'Modo claro',
 
   BALANCE: 'Saldo',
 

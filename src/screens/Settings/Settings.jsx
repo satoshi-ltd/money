@@ -159,7 +159,7 @@ const Settings = ({ navigation = {} }) => {
             key={`option-${id}`}
             {...{
               activity: rest.callback === 'handleUpdateRates' && activity?.updateRates,
-              caption:
+              subtitle:
                 rest.callback === 'handleUpdateRates'
                   ? `${L10N.SYNC_RATES_SENTENCE} ${verboseDate(new Date(lastRatesUpdate), {
                       day: 'numeric',
@@ -171,7 +171,7 @@ const Settings = ({ navigation = {} }) => {
                   : caption,
               disabled,
               icon,
-              text,
+              title: text,
             }}
             onPress={rest.callback ? () => handleOption(rest) : undefined}
           />
@@ -185,15 +185,18 @@ const Settings = ({ navigation = {} }) => {
         <Setting
           {...settingProps}
           icon={ICON.THEME}
-          text={theme === 'dark' ? L10N.APPERANCE_LIGHT : L10N.APPERANCE_DARK}
+          title={L10N.APPEARANCE}
+          subtitle={theme === 'dark' ? L10N.APPERANCE_DARK : L10N.APPERANCE_LIGHT}
+          type="action"
           onPress={handleTheme}
         />
         <View style={style.dropdownWrap}>
           <Setting
             {...settingProps}
-            caption={currentLanguageLabel}
+            subtitle={currentLanguageLabel}
             icon={ICON.LANGUAGE}
-            text={L10N.LANGUAGE}
+            title={L10N.LANGUAGE}
+            type="navigation"
             onPress={() => setShowLanguage(true)}
           />
           <Dropdown
@@ -211,23 +214,23 @@ const Settings = ({ navigation = {} }) => {
         {PREFERENCES().map(({ disabled, icon, text, ...rest }, index) => (
           <Setting
             {...settingProps}
-            caption={
+            subtitle={
               rest.screen === 'baseCurrency' ? L10N.CURRENCY_NAME[baseCurrency] : undefined
             }
             activity={activity && activity[rest.callback]}
             key={`preference-${index}`}
-            {...{ disabled, icon, text }}
+            {...{ disabled, icon, title: text }}
             onPress={() => handleOption(rest)}
           />
         ))}
         <Setting
           {...settingProps}
-          caption={L10N.REMINDER_BACKUP_CAPTION}
+          subtitle={L10N.REMINDER_BACKUP_CAPTION}
           icon={ICON.BELL}
           type="toggle"
           value={(reminders?.[0] ?? 1) === 1}
           onValueChange={handleChangeReminder}
-          text={L10N.REMINDER_BACKUP}
+          title={L10N.REMINDER_BACKUP}
         />
       </View>
 
@@ -240,7 +243,7 @@ const Settings = ({ navigation = {} }) => {
             {...settingProps}
             activity={activity && activity[rest.callback]}
             key={`about-${index}`}
-            {...{ disabled, icon, text }}
+            {...{ disabled, icon, title: text }}
             onPress={() => handleOption(rest)}
           />
         ))}
