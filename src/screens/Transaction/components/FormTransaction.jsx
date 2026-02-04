@@ -5,7 +5,7 @@ import { useWindowDimensions } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './FormTransaction.style';
-import { CardOption, InputAmount, InputText } from '../../../components';
+import { CardOption, InputAmount, InputField } from '../../../components';
 import { C, getIcon, L10N, suggestCategory } from '../../../modules';
 import { queryCategories } from '../helpers';
 import { useStore } from '../../../contexts';
@@ -115,7 +115,7 @@ const FormTransaction = ({
         onChange={(value) => handleField('value', value)}
       />
 
-      <InputText
+      <InputField
         last
         label={L10N.CONCEPT}
         value={safeForm.title}

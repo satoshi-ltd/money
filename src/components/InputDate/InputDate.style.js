@@ -9,16 +9,16 @@ export const style = StyleSheet.create({
   },
   pressable: {
     height: '$inputTextHeight',
+    justifyContent: 'center',
     paddingLeft: '$inputPaddingHorizontal',
     paddingRight: '$inputPaddingHorizontal',
-    paddingTop: '$inputPaddingVertical',
-    justifyContent: 'center',
+    paddingVertical: '$inputPaddingVertical',
   },
   value: {
     color: '$inputColor',
-    fontFamily: '$fontBold',
-    fontSize: '$inputTextFontSize',
-    fontWeight: '$fontWeightBold',
+  },
+  valueWithLabel: {
+    marginTop: '$inputPaddingVertical / 2',
   },
   inputWeb: {
     position: 'absolute',

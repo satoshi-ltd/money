@@ -1,4 +1,4 @@
-import { Button, Card, Icon, Input, LineChart, MetricBar, PriceFriendly, ScrollView, Text, View } from '../../components';
+import { Button, Card, Icon, InputField, LineChart, MetricBar, PriceFriendly, ScrollView, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useMemo, useState } from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
@@ -244,8 +244,9 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
         </Heading>
       </View>
       {search && (
-        <Input
-          autoFocus
+        <InputField
+          first
+          last
           placeholder={`${L10N.SEARCH}...`}
           value={query}
           onChange={onQueryChange}

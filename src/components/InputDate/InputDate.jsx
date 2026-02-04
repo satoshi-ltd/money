@@ -30,7 +30,7 @@ const InputDate = ({ first, label = L10N.DATE, last, value = new Date(), onChang
     <>
       <Field focused={open} label={label} first={first} last={last}>
         <Pressable onPress={handlePress} style={style.pressable}>
-          <Text bold style={style.value}>
+          <Text bold style={[style.value, label ? style.valueWithLabel : null]}>
             {verboseDate(value, { locale, ...DATE_FORMAT })}
           </Text>
         </Pressable>

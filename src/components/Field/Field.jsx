@@ -4,7 +4,7 @@ import React from 'react';
 
 import { style } from './Field.style';
 
-const Field = ({ children, first, focused, label, last, style: styleProp, ...props }) => (
+const Field = ({ children, first, focused, label, last, style: styleProp, suffix, ...props }) => (
   <View
     {...props}
     style={[
@@ -26,7 +26,14 @@ const Field = ({ children, first, focused, label, last, style: styleProp, ...pro
         {label}
       </Text>
     ) : null}
-    {children}
+    {suffix ? (
+      <View row align="center" style={style.content}>
+        <View flex>{children}</View>
+        <View style={style.suffix}>{suffix}</View>
+      </View>
+    ) : (
+      children
+    )}
   </View>
 );
 
@@ -36,6 +43,7 @@ Field.propTypes = {
   focused: PropTypes.bool,
   label: PropTypes.string,
   last: PropTypes.bool,
+  suffix: PropTypes.node,
   style: PropTypes.any,
 };
 

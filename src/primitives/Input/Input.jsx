@@ -9,6 +9,7 @@ const Input = React.forwardRef(
     {
       blurOnSubmit = true,
       editable = true,
+      grow = false,
       multiline = false,
       onBlur,
       onChange,
@@ -58,7 +59,12 @@ const Input = React.forwardRef(
         onChangeText={handleChangeText}
         onFocus={handleFocus}
         {...props}
-        style={[styles.base, multiline ? styles.multiline : null, style]}
+        style={[
+          styles.base,
+          grow ? styles.grow : null,
+          multiline ? styles.multiline : null,
+          style,
+        ]}
       />
     );
   },

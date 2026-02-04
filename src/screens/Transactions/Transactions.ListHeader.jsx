@@ -1,4 +1,4 @@
-import { Button, Input, View } from '../../components';
+import { Button, InputField, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useWindowDimensions } from 'react-native';
@@ -82,8 +82,9 @@ const TransactionsListHeader = ({ chartBalanceBase, dataSource, navigation, onSe
           />
         </Heading>
         {search && (
-          <Input
-            autoFocus
+          <InputField
+            first
+            last
             placeholder={`${L10N.SEARCH}...`}
             value={query}
             onChange={onQueryChange}

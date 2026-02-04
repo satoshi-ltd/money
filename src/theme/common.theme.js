@@ -52,7 +52,7 @@ export const CommonTheme = {
   $iconSizeTitle: 28,
 
   // -- <InputText> ------------------------------------------------------------
-  $inputTextFontSize: '$fontSizeSubtitle',
+  $inputTextFontSize: 16,
   $inputTextHeight: '$spaceM * 4',
   $inputBorderColor: '$colorBorder',
   $inputBorderColorFocus: '$colorAccent',
@@ -60,8 +60,8 @@ export const CommonTheme = {
   $inputBorderStyle: 'solid',
   $inputBorderWidth: 1,
   $inputColor: '$colorContent',
-  $inputFontFamily: '$fontDefault',
-  $inputFontWeight: '$fontWeightDefault',
+  $inputFontFamily: '$fontBold',
+  $inputFontWeight: '$fontWeightBold',
   $inputPaddingHorizontal: '$spaceS',
   $inputPaddingVertical: '$spaceS',
   $inputPlaceholderColor: '$colorContentLight',

@@ -1,4 +1,4 @@
-import { Input, View } from '../../primitives';
+import { View } from '../../primitives';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Keyboard } from 'react-native';
@@ -8,7 +8,7 @@ import { style } from './InputAmount.style';
 import { useStore } from '../../contexts';
 import { L10N } from '../../modules';
 import { PriceFriendly } from '../PriceFriendly';
-import { Field } from '../Field';
+import { InputField } from '../InputField';
 
 const isNumber = /^[0-9]+([,.][0-9]+)?$|^[0-9]+([,.][0-9]+)?[.,]$/;
 
@@ -25,8 +25,6 @@ const InputAmount = ({
   const { settings: { baseCurrency } = {}, rates } = useStore();
 
   const [exchange, setExchange] = useState();
-  const [focus, setFocus] = useState(false);
-
   useEffect(() => {
     if (currency && currency !== baseCurrency) {
       const latestRates = getLastRates(rates);
@@ -39,32 +37,31 @@ const InputAmount = ({
     onChange(value.replace(',', '.'));
   };
 
+  const suffix = exchange ? (
+    <View style={style.exchange}>
+      <PriceFriendly
+        size="s"
+        tone="secondary"
+        currency={baseCurrency}
+        value={parseFloat(value || 0, 10) / exchange}
+      />
+    </View>
+  ) : null;
+
   return (
-    <Field focused={focus} label={label || L10N.AMOUNT} first={first} last={last} style={others.style}>
-      <View row style={style.row}>
-        <Input
-          autoComplete="off"
-          editable={!disabled}
-          keyboardType="numeric"
-          value={value !== undefined && value !== null ? value.toString() : ''}
-          onBlur={() => setFocus(false)}
-          onChange={handleChange}
-          onFocus={() => setFocus(true)}
-          onSubmitEditing={Keyboard.dismiss}
-          style={style.input}
-        />
-        {exchange && (
-          <View style={style.exchange}>
-            <PriceFriendly
-              size="s"
-              tone="secondary"
-              currency={baseCurrency}
-              value={parseFloat(value || 0, 10) / exchange}
-            />
-          </View>
-        )}
-      </View>
-    </Field>
+    <InputField
+      {...others}
+      disabled={disabled}
+      first={first}
+      label={label || L10N.AMOUNT}
+      last={last}
+      suffix={suffix}
+      value={value !== undefined && value !== null ? value.toString() : ''}
+      keyboardType="numeric"
+      autoComplete="off"
+      onSubmitEditing={Keyboard.dismiss}
+      onChange={handleChange}
+    />
   );
 };
 

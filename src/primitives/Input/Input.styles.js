@@ -10,6 +10,9 @@ export const styles = StyleSheet.create({
     paddingVertical: '$inputPaddingVertical',
     minHeight: '$inputTextHeight',
   },
+  grow: {
+    flex: 1,
+  },
   multiline: {
     textAlignVertical: 'top',
   },

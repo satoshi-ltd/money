@@ -91,9 +91,5 @@ export const style = StyleSheet.create({
   inputSearch: {
     marginHorizontal: '$viewOffset',
     marginBottom: '$viewOffset',
-    borderWidth: '$inputBorderWidth',
-    borderColor: '$inputBorderColor',
-    borderRadius: '$inputBorderRadius',
-    backgroundColor: '$colorBase',
   },
 });

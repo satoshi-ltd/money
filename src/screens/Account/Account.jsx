@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
 
 import { style } from './Account.style';
-import { InputAmount, InputCurrency, InputText } from '../../components';
+import { InputAmount, InputCurrency, InputField } from '../../components';
 import { useStore } from '../../contexts';
 import { C, eventEmitter, L10N } from '../../modules';
 import { ServiceRates } from '../../services';
@@ -104,7 +104,7 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
         onChange={(value) => handleChange('balance', value)}
       />
 
-      <InputText
+      <InputField
         last
         label={L10N.NAME}
         value={form.title}
