@@ -10,7 +10,7 @@ import { Field } from '../Field';
 import { L10N } from '../../modules';
 import { style } from './InputCurrency.style';
 
-const InputCurrency = ({ first, label = L10N.CURRENCY, last, onChange, options, value }) => {
+const InputCurrency = ({ disabled, first, label = L10N.CURRENCY, last, onChange, options, value }) => {
   const [open, setOpen] = useState(false);
 
   const currencyOptions = useMemo(() => {
@@ -40,8 +40,8 @@ const InputCurrency = ({ first, label = L10N.CURRENCY, last, onChange, options, 
   );
 
   return (
-    <Field focused={open} first={first} last={last}>
-      <Pressable onPress={() => setOpen(true)}>
+    <Field focused={open} first={first} last={last} label={label}>
+      <Pressable disabled={disabled} onPress={() => setOpen(true)}>
         <View row spaceBetween style={style.row}>
           <View row style={style.rowContent}>
             {value ? (
@@ -50,15 +50,12 @@ const InputCurrency = ({ first, label = L10N.CURRENCY, last, onChange, options, 
               </Card>
             ) : null}
             <View>
-              <Text tone="secondary" size="s">
-                {label}
-              </Text>
               <Text bold numberOfLines={1} style={[style.text, style.selectedValue]}>
                 {selectedLabel}
               </Text>
             </View>
           </View>
-          <Icon name="chevron-down" tone="secondary" />
+          {!disabled ? <Icon name="chevron-down" tone="secondary" /> : null}
         </View>
       </Pressable>
 
@@ -81,6 +78,7 @@ const InputCurrency = ({ first, label = L10N.CURRENCY, last, onChange, options, 
 };
 
 InputCurrency.propTypes = {
+  disabled: PropTypes.bool,
   first: PropTypes.bool,
   label: PropTypes.string,
   last: PropTypes.bool,

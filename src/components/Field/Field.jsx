@@ -17,7 +17,12 @@ const Field = ({ children, first, focused, label, last, style: styleProp, ...pro
     ]}
   >
     {label ? (
-      <Text color={!focused ? 'contentLight' : undefined} pointerEvents="none" style={style.label} size="s">
+      <Text
+        tone={!focused ? 'secondary' : 'primary'}
+        pointerEvents="none"
+        style={style.label}
+        size="s"
+      >
         {label}
       </Text>
     ) : null}

@@ -11,12 +11,10 @@ export const style = StyleSheet.create({
   },
 
   input: {
-    color: '$inputColor',
     fontFamily: '$fontBold',
     fontSize: '$inputTextFontSize',
     fontWeight: '$fontWeightBold',
-    height: '$inputTextHeight',
-    paddingTop: '$inputPaddingVertical',
+    paddingHorizontal: 0,
     flex: 1,
     ...Platform.select({
       web: { outlineWidth: 0 },
@@ -27,9 +25,4 @@ export const style = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'center',
   },
-
-  value: {
-    color: '$inputColor',
-  },
-
 });

@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { Keyboard, TextInput } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
+import { Keyboard } from 'react-native';
 
 import { Field } from '../Field';
+import { Input } from '../../primitives';
 import { style } from './InputText.style';
 
-const InputText = ({ first, keyboard = 'default', label, last, value = '', onChange, ...others }) => {
+const InputText = ({ disabled, first, keyboardType = 'default', label, last, value = '', onChange, ...others }) => {
   const [focus, setFocus] = useState(false);
 
   const handleChange = (next = '') => {
@@ -15,18 +15,13 @@ const InputText = ({ first, keyboard = 'default', label, last, value = '', onCha
 
   return (
     <Field focused={focus} label={label} first={first} last={last} style={others.style}>
-      <TextInput
-        autoCapitalize="none"
+      <Input
         autoCorrect
-        blurOnSubmit
-        editable
-        keyboardType={keyboard}
-        placeholder={!focus ? '...' : undefined}
-        placeholderTextColor={StyleSheet.value('$inputPlaceholderColor')}
-        underlineColorAndroid="transparent"
+        keyboardType={keyboardType}
         value={value}
+        editable={!disabled}
         onBlur={() => setFocus(false)}
-        onChangeText={handleChange}
+        onChange={handleChange}
         onFocus={() => setFocus(true)}
         onSubmitEditing={Keyboard.dismiss}
         style={style.input}
@@ -36,8 +31,9 @@ const InputText = ({ first, keyboard = 'default', label, last, value = '', onCha
 };
 
 InputText.propTypes = {
+  disabled: PropTypes.bool,
   first: PropTypes.bool,
-  keyboard: PropTypes.string,
+  keyboardType: PropTypes.string,
   label: PropTypes.string.isRequired,
   last: PropTypes.bool,
   value: PropTypes.string,

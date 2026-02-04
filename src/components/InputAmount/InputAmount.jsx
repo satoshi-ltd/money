@@ -1,8 +1,7 @@
-import { View } from '../../primitives';
+import { Input, View } from '../../primitives';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { Keyboard, TextInput } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
+import { Keyboard } from 'react-native';
 
 import { getLastRates } from './helpers/getLastRates';
 import { style } from './InputAmount.style';
@@ -15,11 +14,12 @@ const isNumber = /^[0-9]+([,.][0-9]+)?$|^[0-9]+([,.][0-9]+)?[.,]$/;
 
 const InputAmount = ({
   account: { currency } = {},
-  editable = true,
+  disabled = false,
   first,
   label = '',
   last,
   onChange,
+  value,
   ...others
 }) => {
   const { settings: { baseCurrency } = {}, rates } = useStore();
@@ -42,18 +42,13 @@ const InputAmount = ({
   return (
     <Field focused={focus} label={label || L10N.AMOUNT} first={first} last={last} style={others.style}>
       <View row style={style.row}>
-        <TextInput
-          autoCapitalize="none"
+        <Input
           autoComplete="off"
-          autoCorrect={false}
-          blurOnSubmit
-          editable={editable}
+          editable={!disabled}
           keyboardType="numeric"
-          placeholder={!focus ? '...' : undefined}
-          placeholderTextColor={StyleSheet.value('$inputPlaceholderColor')}
-          value={others.value ? others.value.toString() : ''}
+          value={value !== undefined && value !== null ? value.toString() : ''}
           onBlur={() => setFocus(false)}
-          onChangeText={handleChange}
+          onChange={handleChange}
           onFocus={() => setFocus(true)}
           onSubmitEditing={Keyboard.dismiss}
           style={style.input}
@@ -62,9 +57,9 @@ const InputAmount = ({
           <View style={style.exchange}>
             <PriceFriendly
               size="s"
-              color="contentLight"
+              tone="secondary"
               currency={baseCurrency}
-              value={parseFloat(others.value || 0, 10) / exchange}
+              value={parseFloat(value || 0, 10) / exchange}
             />
           </View>
         )}
@@ -75,11 +70,12 @@ const InputAmount = ({
 
 InputAmount.propTypes = {
   account: PropTypes.shape({}),
-  editable: PropTypes.bool,
+  disabled: PropTypes.bool,
   first: PropTypes.bool,
   label: PropTypes.string,
   last: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
+  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
 export { InputAmount };

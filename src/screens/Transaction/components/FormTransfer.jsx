@@ -85,7 +85,7 @@ const FormTransaction = ({ account = {}, accountsList = [], form = {}, onChange,
         label={L10N.RECEIVE}
         value={form.exchange}
         onChange={(value) => handleField('exchange', value)}
-        editable={false}
+        disabled
       />
     </>
   );
