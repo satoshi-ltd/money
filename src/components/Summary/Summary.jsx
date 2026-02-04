@@ -29,7 +29,7 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
     currentBalance,
     currency === baseCurrency ? progression : progressionCurrency,
   );
-  const accentColor = 'accent';
+  const accentTone = 'accent';
 
 
   return (
@@ -45,7 +45,7 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
         {baseCurrency !== currency && (
           <PriceFriendly
             bold
-            color="contentLight"
+            tone="secondary"
             currency={baseCurrency}
             label="≈"
             size="xs"
@@ -57,13 +57,13 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
       {progressionPercentage !== 0 && (
         <View row style={style.progression}>
           <Icon
-            color={progressionPercentage > 0 ? accentColor : undefined}
+            tone={progressionPercentage > 0 ? accentTone : undefined}
             size="s"
             name={`trending-${progressionPercentage > 0 ? 'up' : 'down'}`}
           />
           <PriceFriendly
             bold
-            color={progressionPercentage > 0 ? accentColor : undefined}
+            tone={progressionPercentage > 0 ? accentTone : undefined}
             currency="%"
             fixed={progressionPercentage >= 100 ? 0 : undefined}
             operator
@@ -78,8 +78,8 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
           <View row style={style.tags}>
             {(incomes > 0 || incomesBase > 0) && (
             <View row style={style.tag}>
-              <Icon color={accentColor} name={ICON.INCOME} size="xs" />
-              <PriceFriendly bold color={accentColor} currency={currency} size="xs" value={incomesBase || incomes} />
+              <Icon tone={accentTone} name={ICON.INCOME} size="xs" />
+              <PriceFriendly bold tone={accentTone} currency={currency} size="xs" value={incomesBase || incomes} />
             </View>
           )}
           {(expenses > 0 || expensesBase > 0) && (

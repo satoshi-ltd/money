@@ -50,7 +50,7 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
     const showChart = !!insight.chart?.values?.length;
     const topItems = (insight.items || []).slice(0, 3);
     const toneColor =
-      insight.tone === 'negative' ? 'error' : insight.tone === 'positive' ? 'accent' : 'content';
+      insight.tone === 'negative' ? 'danger' : insight.tone === 'positive' ? 'accent' : 'primary';
 
     return (
       <Card style={style.insightCard}>
@@ -72,7 +72,7 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
               </View>
             ) : null}
             {insight.type === 'trend' && insight.valueLabel ? (
-              <Text bold color={toneColor} style={style.insightTrendValue} size="xl">
+              <Text bold tone={toneColor} style={style.insightTrendValue} size="xl">
                 {formatSignedPercent(insight.value)}
               </Text>
             ) : null}
@@ -86,7 +86,7 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
             ) : null}
             {insight.type === 'mover' && insight.valueLabel ? (
               <View row style={style.insightValueRow}>
-                <Text bold color={toneColor} size="xl">
+                <Text bold tone={toneColor} size="xl">
                   {formatSignedPercent(insight.value)}
                 </Text>
               </View>
@@ -98,14 +98,14 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
                   percent={(insight.meta.current / Math.max(1, insight.meta.current + insight.meta.avg)) * 100}
                   title={L10N.INSIGHT_THIS_MONTH}
                   value={
-                    <PriceFriendly size="xs" color="contentLight" currency={baseCurrency} value={insight.meta.current} />
+                    <PriceFriendly size="xs" tone="secondary" currency={baseCurrency} value={insight.meta.current} />
                   }
                 />
                 <MetricBar
                   color="content"
                   percent={(insight.meta.avg / Math.max(1, insight.meta.current + insight.meta.avg)) * 100}
                   title={L10N.INSIGHT_3MO_AVG}
-                  value={<PriceFriendly size="xs" color="contentLight" currency={baseCurrency} value={insight.meta.avg} />}
+                  value={<PriceFriendly size="xs" tone="secondary" currency={baseCurrency} value={insight.meta.avg} />}
                 />
               </View>
             ) : null}
@@ -116,7 +116,7 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
                   percent={(insight.meta.incomes / Math.max(1, insight.meta.incomes + insight.meta.expenses)) * 100}
                   title={L10N.INCOME}
                   value={
-                    <PriceFriendly size="xs" color="contentLight" currency={baseCurrency} value={insight.meta.incomes} />
+                    <PriceFriendly size="xs" tone="secondary" currency={baseCurrency} value={insight.meta.incomes} />
                   }
                 />
                 <MetricBar
@@ -124,7 +124,7 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
                   percent={(insight.meta.expenses / Math.max(1, insight.meta.incomes + insight.meta.expenses)) * 100}
                   title={L10N.EXPENSE}
                   value={
-                    <PriceFriendly size="xs" color="contentLight" currency={baseCurrency} value={insight.meta.expenses} />
+                    <PriceFriendly size="xs" tone="secondary" currency={baseCurrency} value={insight.meta.expenses} />
                   }
                 />
               </View>

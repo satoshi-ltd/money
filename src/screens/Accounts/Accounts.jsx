@@ -43,7 +43,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
           const hasBalance =
             currentBalance !== undefined && currentBalance !== null && parseFloat(currentBalance.toFixed(2)) > 0;
 
-          const color = !hasBalance ? 'contentLight' : undefined;
+          const tone = !hasBalance ? 'secondary' : 'primary';
 
           return (
             <Pressable key={account.hash} onPress={() => navigate('transactions', { account })}>
@@ -54,10 +54,10 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
 
                 <View flex>
                   <View gap row spaceBetween>
-                    <Text bold color={color} numberOfLines={1} style={style.text}>
+                    <Text bold tone={tone} numberOfLines={1} style={style.text}>
                       {title}
                     </Text>
-                    <PriceFriendly bold color={color || 'content'} currency={currency} size="s" value={currentBalance} />
+                    <PriceFriendly bold tone={tone} currency={currency} size="s" value={currentBalance} />
                   </View>
 
                   <View gap row spaceBetween>

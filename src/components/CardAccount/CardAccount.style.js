@@ -18,9 +18,8 @@ const style = StyleSheet.create({
   },
 
   chart: {
-    bottom: '$spaceXS',
+    bottom: '$spaceXXS',
     left: '$spaceS * -1',
-    opacity: 0.66,
     position: 'absolute',
   },
   percentage: {

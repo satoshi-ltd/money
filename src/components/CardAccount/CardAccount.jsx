@@ -26,15 +26,17 @@ const CardAccount = ({
     rates,
   } = useStore();
   const hasBalance = balance !== null && parseFloat(balance.toFixed(2)) > 0;
-  const textColor = highlight ? 'base' : !hasBalance ? 'contentLight' : undefined;
-
   const color = hasBalance ? StyleSheet.value('$colorAccent') : StyleSheet.value('$colorContentLight');
-  const percentageColor = highlight ? StyleSheet.value('$colorBase') : color;
   const chartColor = highlight
     ? StyleSheet.value('$colorBase')
     : !hasBalance
       ? StyleSheet.value('$colorContentLight')
       : StyleSheet.value('$colorAccent');
+
+  const baseTone = !hasBalance ? 'secondary' : 'primary';
+  const mainTone = highlight ? 'inverse' : baseTone;
+  const exchangeTone = highlight ? 'inverse' : 'secondary';
+  const percentageTone = highlight ? 'inverse' : 'accent';
 
   const showPercentage = Math.abs(percentage) >= 3;
 
@@ -45,17 +47,17 @@ const CardAccount = ({
           {currency && (
             <View>
               <View row>
-                <Text bold color={textColor} ellipsizeMode="tail" numberOfLines={1} size="xs">
+                <Text bold ellipsizeMode="tail" numberOfLines={1} size="xs" tone={mainTone}>
                   {title.toUpperCase()}
                 </Text>
               </View>
 
-              <PriceFriendly bold color={textColor} currency={currency} size="l" value={Math.abs(balance)} />
+              <PriceFriendly bold currency={currency} size="l" tone={mainTone} value={Math.abs(balance)} />
 
               {showExchange && currency !== baseCurrency && (
                 <PriceFriendly
                   size="s"
-                  color={textColor || 'contentLight'}
+                  tone={exchangeTone}
                   currency={baseCurrency}
                   value={exchange(Math.abs(balance), currency, baseCurrency, rates)}
                 />
@@ -66,11 +68,11 @@ const CardAccount = ({
             <PriceFriendly
               bold
               size="s"
-              color={percentageColor}
               currency="%"
               fixed={2}
               operator
               style={style.percentage}
+              tone={percentageTone}
               value={percentage}
             />
           )}

@@ -58,7 +58,7 @@ const InputAccount = ({ accounts = [], first, last, onSelect, selected }) => {
             </Text>
             <PriceFriendly
               size="s"
-              color="contentLight"
+              tone="secondary"
               currency={accountOption.currency}
               value={accountOption.currentBalance || 0}
             />
@@ -98,7 +98,7 @@ const InputAccount = ({ accounts = [], first, last, onSelect, selected }) => {
               </Text>
             <PriceFriendly
               size="s"
-              color="contentLight"
+              tone="secondary"
               currency={selected?.currency}
               value={selected?.currentBalance || 0}
             />

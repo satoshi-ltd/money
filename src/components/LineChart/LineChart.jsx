@@ -92,7 +92,7 @@ const LineChart = ({
                         {L10N.MONTHS[months[index]?.month || 0]} {months[index]?.year || ''}
                       </Text>
                       <View style={style.pointerValue}>
-                        <PriceFriendly bold size="s" color="base" {...{ currency, value }} />
+                        <PriceFriendly bold size="s" tone="inverse" {...{ currency, value }} />
                       </View>
                     </View>
                   ) : null;

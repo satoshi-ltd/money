@@ -51,7 +51,7 @@ const TransactionItem = ({
             </Text>
             <PriceFriendly
               bold
-              color={type !== EXPENSE ? 'accent' : undefined}
+              tone={type !== EXPENSE ? 'accent' : undefined}
               currency={currency}
               operator
               value={value * operator}
@@ -65,7 +65,7 @@ const TransactionItem = ({
             {baseCurrency !== currency && (
               <PriceFriendly
                 size="xs"
-                color="contentLight"
+                tone="secondary"
                 currency={baseCurrency}
                 value={exchange(value, currency, baseCurrency, rates, timestamp)}
               />

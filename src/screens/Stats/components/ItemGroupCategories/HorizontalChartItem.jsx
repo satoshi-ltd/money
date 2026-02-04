@@ -24,7 +24,7 @@ const HorizontalChartItem = ({ color, currency, detail, icon, title, value, widt
 
   const textProps = {
     bold: !detail,
-    color: detail ? 'contentLight' : 'content',
+    tone: detail ? 'secondary' : 'primary',
     size: detail ? 'xs' : 's',
   };
 

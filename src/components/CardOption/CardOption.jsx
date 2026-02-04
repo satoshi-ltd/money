@@ -17,24 +17,25 @@ const CardOption = ({
   onPress,
   ...others
 }) => {
-  const { colors, theme } = useApp();
-  const textColor = highlight ? (theme === 'dark' ? colors.background : 'content') : undefined;
+  const { theme } = useApp();
+  const contentTone = highlight ? 'inverse' : 'primary';
+  const legendTone = highlight ? 'inverse' : 'secondary';
 
   return (
     <Pressable {...others} onPress={onPress}>
       <Card active={highlight} style={style.card} size="s">
-        {icon && <Icon color={textColor} name={icon} />}
+        {icon && <Icon tone={contentTone} name={icon} />}
 
         {currency && <CurrencyLogo currency={currency} highlight={highlight} />}
 
         {!!caption && (
-          <Text align="center" bold color={textColor} numberOfLines={1} size="s">
+          <Text align="center" bold tone={contentTone} numberOfLines={1} size="s">
             {caption}
           </Text>
         )}
 
         {legend && (
-          <Text align="center" color={textColor || 'contentLight'} numberOfLines={1} size="xs">
+          <Text align="center" tone={legendTone} numberOfLines={1} size="xs">
             {legend}
           </Text>
         )}

@@ -13,12 +13,13 @@ const LEFT_SYMBOLS = ['$', '£'];
 
 const PriceFriendly = ({
   bold = false,
-  color: propColor,
+  color,
   currency,
   fixed,
   label,
   maskAmount: propMaskAmount,
   operator,
+  tone,
   value = 0,
   ...others
 }) => {
@@ -26,14 +27,15 @@ const PriceFriendly = ({
   const maskedAmount = propMaskAmount || maskAmount;
   const operatorEnhanced = (operator && parseFloat(value, 10) !== 0) || value < 0 ? (value > 0 ? '+' : '-') : undefined;
   const symbol = SYMBOL[currency] || currency;
-  const color = propColor;
+  const resolvedStyle = color ? [others.style, { color }] : others.style;
+  const resolvedTone = color ? undefined : tone;
 
   const symbolProps = {
     ...others,
     bold,
-    color,
+    tone: resolvedTone,
     children: symbol,
-    style: [style.symbol, others.style],
+    style: [style.symbol, resolvedStyle],
   };
 
   const formatedValue = format({
@@ -47,23 +49,23 @@ const PriceFriendly = ({
   return (
     <View row style={style.container}>
       {label && (
-        <Text {...others} {...{ color }}>
+        <Text {...others} tone={resolvedTone} style={resolvedStyle}>
           {label}
         </Text>
       )}
       {maskedAmount ? (
-        <Text {...others} {...{ bold, color }}>
+        <Text {...others} {...{ bold }} tone={resolvedTone} style={resolvedStyle}>
           {formatedValue}
         </Text>
       ) : (
         <>
           {operatorEnhanced && (
-            <Text {...others} color={color}>
+            <Text {...others} tone={resolvedTone} style={resolvedStyle}>
               {operatorEnhanced}
             </Text>
           )}
           {LEFT_SYMBOLS.includes(symbol) && <Text {...symbolProps} />}
-          <Text {...others} {...{ bold, color }}>
+          <Text {...others} {...{ bold }} tone={resolvedTone} style={resolvedStyle}>
             {formatedValue}
           </Text>
           {!LEFT_SYMBOLS.includes(symbol) && <Text {...symbolProps} />}
@@ -81,6 +83,7 @@ PriceFriendly.propTypes = {
   label: PropTypes.string,
   maskAmount: PropTypes.bool,
   operator: PropTypes.bool,
+  tone: PropTypes.string,
   value: PropTypes.number,
 };
 
