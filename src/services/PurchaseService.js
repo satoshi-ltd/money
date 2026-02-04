@@ -1,9 +1,7 @@
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
-import { C, L10N } from '../modules';
-
-const { IS_WEB } = C;
+import { L10N } from '../modules';
 const APIKEY = {
   ios: 'appl_aGBSQTaLCQAEJevVIvbQKAkNKpZ',
   android: 'goog_bzzicUKLHqrXEdrltqKGmdXgyyI',
@@ -35,7 +33,7 @@ export const PurchaseService = {
   getProducts: async () =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
-      if (Constants.appOwnership === 'expo' || IS_WEB) return resolve([]);
+      if (Constants.appOwnership === 'expo') return resolve([]);
 
       try {
         const Purchases = await initializePurchases();
@@ -66,7 +64,7 @@ export const PurchaseService = {
   buy: async (plan) =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
-      if (Constants.appOwnership === 'expo' || IS_WEB) return resolve(PREMIUM_MOCK);
+      if (Constants.appOwnership === 'expo') return resolve(PREMIUM_MOCK);
 
       try {
         const Purchases = await initializePurchases();
@@ -87,7 +85,7 @@ export const PurchaseService = {
   restore: async () =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
-      if (Constants.appOwnership === 'expo' || IS_WEB) return resolve(PREMIUM_MOCK);
+      if (Constants.appOwnership === 'expo') return resolve(PREMIUM_MOCK);
 
       try {
         const Purchases = await initializePurchases();
@@ -106,7 +104,7 @@ export const PurchaseService = {
   checkSubscription: async (subscription) =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
-      if (Constants.appOwnership === 'expo' || IS_WEB || subscription.productIdentifier === 'lifetime')
+      if (Constants.appOwnership === 'expo' || subscription.productIdentifier === 'lifetime')
         return resolve(true);
 
       try {

@@ -14,7 +14,6 @@ export const NotificationsService = {
   },
 
   permission: async () => {
-    if (Platform.OS === 'web') return false;
     if (Platform.OS === 'android') {
       Notifications.setNotificationChannelAsync('default', {
         name: 'default',

@@ -1,12 +1,8 @@
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
-import { Platform } from 'react-native';
-
 import { L10N } from '../modules';
 import { SCHEMA_VERSION } from '../contexts/store.constants';
-
-const IS_WEB = Platform.OS === 'web';
 
 export const BackupService = {
   export: async ({ accounts = [], settings = {}, txs = [] } = {}) =>
@@ -16,13 +12,6 @@ export const BackupService = {
         const fileName = `money-${new Date().toISOString()}.json`;
         const schemaVersion = settings?.schemaVersion || SCHEMA_VERSION;
         const data = JSON.stringify({ schemaVersion, accounts, settings, txs });
-
-        if (IS_WEB) {
-          const el = document.createElement('a');
-          el.href = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
-          el.download = fileName;
-          return el.click();
-        }
 
         const isSharingAvailable = await Sharing.isAvailableAsync();
         if (!isSharingAvailable) return reject(L10N.ERROR_EXPORT);
@@ -66,13 +55,6 @@ export const BackupService = {
 
         const data = rows.join('\\n');
 
-        if (IS_WEB) {
-          const el = document.createElement('a');
-          el.href = URL.createObjectURL(new Blob([data], { type: 'text/csv' }));
-          el.download = fileName;
-          return el.click();
-        }
-
         const isSharingAvailable = await Sharing.isAvailableAsync();
         if (!isSharingAvailable) return reject(L10N.ERROR_EXPORT);
 
@@ -99,12 +81,8 @@ export const BackupService = {
         if (!cancelled && file.uri) {
           let jsonData = {};
 
-          if (IS_WEB) {
-            jsonData = await fetch(file.uri).then((res) => res.json());
-          } else {
-            const fileData = await FileSystem.readAsStringAsync(file.uri);
-            jsonData = JSON.parse(fileData);
-          }
+          const fileData = await FileSystem.readAsStringAsync(file.uri);
+          jsonData = JSON.parse(fileData);
 
           const { accounts = [], schemaVersion, settings = {}, txs = [] } = jsonData;
 

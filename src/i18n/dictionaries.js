@@ -55,7 +55,7 @@ export const EN = {
   CONFIRM_ACCOUNT_DELETION_CAPTION:
     'Confirm permanent deletion of this account and all its transactions? This action is irreversible.',
   CONFIRM_DELETION_SUCCESS: 'Deleted successfully.',
-  CONFIRM_EXPORT_SUCCESS: 'Export successful! Your data has been saved.',
+  CONFIRM_EXPORT_SUCCESS: 'Export ready.',
   CONFIRM_IMPORT: 'Confirm import',
   CONFIRM_IMPORT_CAPTION: ({ accounts = [], txs = [] }) =>
     `Import the JSON file to update your ${accounts.length} accounts and ${txs.length} transactions. This action is irreversible.`,
@@ -309,7 +309,7 @@ export const PT = {
   CONFIRM_ACCOUNT_DELETION_CAPTION:
     'Confirmar exclusão permanente desta conta e de todas as transações? Esta ação é irreversível.',
   CONFIRM_DELETION_SUCCESS: 'Excluído com sucesso.',
-  CONFIRM_EXPORT_SUCCESS: 'Exportação concluída! Seus dados foram salvos.',
+  CONFIRM_EXPORT_SUCCESS: 'Exportação pronta.',
   CONFIRM_IMPORT: 'Confirmar importação',
   CONFIRM_IMPORT_CAPTION: ({ accounts = [], txs = [] }) =>
     `Importar o JSON para atualizar ${accounts.length} contas e ${txs.length} transações. Esta ação é irreversível.`,
@@ -562,7 +562,7 @@ export const FR = {
   CONFIRM_ACCOUNT_DELETION_CAPTION:
     'Confirmer la suppression permanente de ce compte et de toutes ses transactions ? Cette action est irréversible.',
   CONFIRM_DELETION_SUCCESS: 'Supprimé avec succès.',
-  CONFIRM_EXPORT_SUCCESS: 'Export réussi ! Vos données ont été enregistrées.',
+  CONFIRM_EXPORT_SUCCESS: 'Export prêt.',
   CONFIRM_IMPORT: 'Confirmer l’import',
   CONFIRM_IMPORT_CAPTION: ({ accounts = [], txs = [] }) =>
     `Importer le JSON pour mettre à jour ${accounts.length} comptes et ${txs.length} transactions. Cette action est irréversible.`,
@@ -815,7 +815,7 @@ export const DE = {
   CONFIRM_ACCOUNT_DELETION_CAPTION:
     'Möchten Sie dieses Konto und alle Transaktionen dauerhaft löschen? Diese Aktion ist irreversibel.',
   CONFIRM_DELETION_SUCCESS: 'Erfolgreich gelöscht.',
-  CONFIRM_EXPORT_SUCCESS: 'Export erfolgreich! Ihre Daten wurden gespeichert.',
+  CONFIRM_EXPORT_SUCCESS: 'Export bereit.',
   CONFIRM_IMPORT: 'Import bestätigen',
   CONFIRM_IMPORT_CAPTION: ({ accounts = [], txs = [] }) =>
     `Importiere die JSON-Datei, um ${accounts.length} Konten und ${txs.length} Transaktionen zu aktualisieren. Diese Aktion ist irreversibel.`,
@@ -1068,7 +1068,7 @@ export const ES = {
   CONFIRM_ACCOUNT_DELETION_CAPTION:
     '¿Eliminar permanentemente esta cuenta y todas sus transacciones? Esta acción es irreversible.',
   CONFIRM_DELETION_SUCCESS: 'Eliminado correctamente.',
-  CONFIRM_EXPORT_SUCCESS: 'Exportación correcta. Tus datos se han guardado.',
+  CONFIRM_EXPORT_SUCCESS: 'Exportación lista.',
   CONFIRM_IMPORT: 'Confirmar importación',
   CONFIRM_IMPORT_CAPTION: ({ accounts = [], txs = [] }) =>
     `Importar el JSON para actualizar ${accounts.length} cuentas y ${txs.length} transacciones. Esta acción es irreversible.`,

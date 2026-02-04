@@ -30,9 +30,6 @@
       "versionCode": 16,
       "windowSoftInputMode": "adjustResize"
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
     "plugins": [
       [
         "expo-splash-screen",

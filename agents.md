@@ -4,6 +4,7 @@
 - Local‑first personal finance ledger app built with Expo + React Native.
 - All data is stored on device (AsyncStorage). Export/Import via JSON backup.
 - Navigation: React Navigation v6 with stack + tabs.
+- Mobile only (iOS/Android); no web targets.
 
 ## Context cheatsheet
 - App entry: `App.js` -> `src/App.jsx`

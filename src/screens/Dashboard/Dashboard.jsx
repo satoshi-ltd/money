@@ -10,8 +10,6 @@ import { TransactionItem, TransactionsHeader } from '../../components';
 import { useStore } from '../../contexts';
 import { C } from '../../modules';
 
-const { IS_WEB } = C;
-
 const Dashboard = ({ navigation: { navigate } = {} }) => {
   const { accounts = [], txs = [] } = useStore();
 
@@ -31,7 +29,7 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
   }, [accounts, page, txs]);
 
   return (
-    <Screen disableScroll={!IS_WEB}>
+    <Screen disableScroll>
       <SectionList
         initialNumToRender={C.TRANSACTIONS_PER_PAGE}
         keyExtractor={(item, index) => `${item.hash || item.timestamp}-${index}`}
@@ -40,7 +38,7 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
         renderSectionHeader={({ section }) => <TransactionsHeader {...section} />}
         sections={querySearchTxs({ accounts, page, query, txs }) || lastTxs}
         stickySectionHeadersEnabled={false}
-        onEndReached={!IS_WEB ? () => setPage((prevPage) => prevPage + 1) : undefined}
+        onEndReached={() => setPage((prevPage) => prevPage + 1)}
         style={style.screen}
       />
     </Screen>

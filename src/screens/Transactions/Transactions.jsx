@@ -10,8 +10,6 @@ import { Banner, TransactionItem, TransactionsHeader } from '../../components';
 import { useStore } from '../../contexts';
 import { C, L10N } from '../../modules';
 
-const { IS_WEB } = C;
-
 const Transactions = (props = {}) => {
   const { route = {}, navigation = {} } = props;
   const { goBack } = navigation;
@@ -54,7 +52,7 @@ const Transactions = (props = {}) => {
         renderSectionHeader={({ section }) => <TransactionsHeader {...section} />}
         sections={querySearchTxs({ account: dataSource, page, query }) || txs}
         stickySectionHeadersEnabled={false}
-        onEndReached={!IS_WEB ? () => setPage((prevPage) => prevPage + 1) : undefined}
+        onEndReached={() => setPage((prevPage) => prevPage + 1)}
         style={style.screen}
       />
     </Panel>

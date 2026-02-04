@@ -12,7 +12,7 @@ import { C, eventEmitter, ICON, L10N } from '../../modules';
 import { setLanguage } from '../../i18n';
 import { BackupService, NotificationsService, PurchaseService } from '../../services';
 
-const { EVENT, IS_WEB } = C;
+const { EVENT } = C;
 
 const Settings = ({ navigation = {} }) => {
   const store = useStore();
@@ -53,21 +53,19 @@ const Settings = ({ navigation = {} }) => {
   };
 
   const handleExport = async () => {
-    if (!IS_WEB && !isPremium) return handleSubscription('export');
+    if (!isPremium) return handleSubscription('export');
 
-    const exported = await BackupService.export({ accounts, settings, txs });
-    if (exported) eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.CONFIRM_EXPORT_SUCCESS });
+    await BackupService.export({ accounts, settings, txs });
   };
 
   const handleExportCsv = async () => {
-    if (!IS_WEB && !isPremium) return handleSubscription('export');
+    if (!isPremium) return handleSubscription('export');
 
-    const exported = await BackupService.exportCsv({ accounts, settings, txs });
-    if (exported) eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.CONFIRM_EXPORT_SUCCESS });
+    await BackupService.exportCsv({ accounts, settings, txs });
   };
 
   const handleImport = async () => {
-    if (!IS_WEB && !isPremium) return handleSubscription('import');
+    if (!isPremium) return handleSubscription('import');
 
     const backup = await BackupService.import().catch(handleError);
 
