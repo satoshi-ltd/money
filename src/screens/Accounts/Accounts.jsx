@@ -48,7 +48,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
           return (
             <Pressable key={account.hash} onPress={() => navigate('transactions', { account })}>
               <View row style={style.item}>
-                <Card small style={style.iconSpacing}>
+                <Card style={style.iconSpacing} size="s">
                   <CurrencyLogo currency={currency} muted={!hasBalance || currentBalance < 0} />
                 </Card>
 

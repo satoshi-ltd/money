@@ -27,7 +27,7 @@ const InputCurrency = ({ first, label = L10N.CURRENCY, last, onChange, options, 
 
   const renderCurrencyOption = (option, isSelected) => (
     <View row style={style.optionRow}>
-      <Card small style={[style.iconCard, style.iconCardDropdown]}>
+      <Card style={[style.iconCard, style.iconCardDropdown]} size="s">
         <CurrencyLogo currency={option.value} />
       </Card>
       <View flex style={style.optionTextContainer}>
@@ -45,7 +45,7 @@ const InputCurrency = ({ first, label = L10N.CURRENCY, last, onChange, options, 
         <View row spaceBetween style={style.row}>
           <View row style={style.rowContent}>
             {value ? (
-              <Card small style={style.iconCard}>
+              <Card style={style.iconCard} size="s">
                 <CurrencyLogo currency={value} />
               </Card>
             ) : null}

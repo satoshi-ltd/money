@@ -58,7 +58,7 @@ const Setting = ({
       <View style={styles.row}>
         <View style={styles.left}>
           {icon ? (
-            <Card small style={styles.iconCard}>
+            <Card style={styles.iconCard} size="s">
               <Icon name={icon} color={iconColor || 'content'} />
             </Card>
           ) : null}

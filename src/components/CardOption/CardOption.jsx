@@ -22,7 +22,7 @@ const CardOption = ({
 
   return (
     <Pressable {...others} onPress={onPress}>
-      <Card active={highlight} small style={style.card}>
+      <Card active={highlight} style={style.card} size="s">
         {icon && <Icon color={textColor} name={icon} />}
 
         {currency && <CurrencyLogo currency={currency} highlight={highlight} />}

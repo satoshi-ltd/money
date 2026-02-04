@@ -42,7 +42,7 @@ const InputAccount = ({ accounts = [], first, last, onSelect, selected }) => {
     const accountOption = option.account || {};
     return (
       <View row style={style.dropdownRow}>
-        <Card small style={[style.iconCard, style.iconCardDropdown]}>
+        <Card style={[style.iconCard, style.iconCardDropdown]} size="s">
           <CurrencyLogo
             currency={accountOption.currency}
             muted={!accountOption?.currentBalance || accountOption.currentBalance < 0}
@@ -82,7 +82,7 @@ const InputAccount = ({ accounts = [], first, last, onSelect, selected }) => {
             showSelect && style.focus,
           ]}
         >
-          <Card small style={style.iconCard}>
+          <Card style={style.iconCard} size="s">
             <CurrencyLogo
               currency={selected?.currency}
               muted={!selected?.currentBalance || selected?.currentBalance < 0}

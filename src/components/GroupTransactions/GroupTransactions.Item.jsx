@@ -38,7 +38,7 @@ const Item = ({ category = INTERNAL_TRANSFER, currency, timestamp, title, type =
   return (
     <Pressable onPress={handlePress}>
       <View row style={style.content}>
-        <Card small style={style.cardIcon}>
+        <Card style={style.cardIcon} size="s">
           <Icon name={getIcon({ category, type, title })} />
         </Card>
 
