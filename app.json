@@ -12,9 +12,14 @@
     "newArchEnabled": true,
     "assetBundlePatterns": ["**/*"],
     "ios": {
+      "icon": {
+        "dark": "./assets/ios-dark.png",
+        "light": "./assets/ios-light.png",
+        "tinted": "./assets/ios-tinted.png"
+      },
       "supportsTablet": true,
       "bundleIdentifier": "com.satoshi-limited.money",
-      "buildNumber": "17",
+      "buildNumber": "18",
       "usesIcloudStorage": true,
       "infoPlist": {
         "LSMinimumSystemVersion": "12.0",
@@ -27,7 +32,7 @@
         "backgroundColor": "#FFFEFE"
       },
       "package": "com.satoshilimited.money",
-      "versionCode": 17,
+      "versionCode": 18,
       "windowSoftInputMode": "adjustResize"
     },
     "plugins": [
