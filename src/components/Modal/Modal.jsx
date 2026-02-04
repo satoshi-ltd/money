@@ -4,7 +4,7 @@ import { Animated, KeyboardAvoidingView, Modal as RNModal, Platform } from 'reac
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useIsFocused } from '@react-navigation/native';
 
-import { Pressable, View } from '../../design-system';
+import { Pressable, View } from '../../primitives';
 import { styles } from './Modal.styles';
 
 const Modal = ({ children, onClose }) => {

@@ -4,7 +4,7 @@ import { Animated, StyleSheet, TouchableOpacity } from 'react-native';
 import { theme } from '../../config/theme';
 import { useApp } from '../../contexts';
 import { useMotion } from '../../hooks/useMotion';
-import { Icon, ScrollView, Text, View } from '../../design-system';
+import { Icon, ScrollView, Text, View } from '../../primitives';
 
 const Dropdown = ({
   visible,
@@ -41,10 +41,10 @@ const Dropdown = ({
 
   const renderDefaultOption = (option, isSelected) => (
     <View style={styles.optionContent}>
-      <Text caption color={isSelected ? 'accent' : undefined} bold={isSelected}>
+      <Text color={isSelected ? 'accent' : undefined} bold={isSelected} size="s">
         {option.label}
       </Text>
-      {isSelected ? <Icon name="check" color="accent" /> : null}
+      {isSelected ? <Icon name="check" tone="accent" /> : null}
     </View>
   );
 

@@ -1,11 +1,8 @@
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
-import { Platform } from 'react-native';
-
 import { L10N } from '../modules';
-
-const IS_WEB = Platform.OS === 'web';
+import { SCHEMA_VERSION } from '../contexts/store.constants';
 
 export const BackupService = {
   export: async ({ accounts = [], settings = {}, txs = [] } = {}) =>
@@ -13,14 +10,50 @@ export const BackupService = {
     new Promise(async (resolve, reject) => {
       try {
         const fileName = `money-${new Date().toISOString()}.json`;
-        const data = JSON.stringify({ accounts, settings, txs });
+        const schemaVersion = settings?.schemaVersion || SCHEMA_VERSION;
+        const data = JSON.stringify({ schemaVersion, accounts, settings, txs });
 
-        if (IS_WEB) {
-          const el = document.createElement('a');
-          el.href = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
-          el.download = fileName;
-          return el.click();
-        }
+        const isSharingAvailable = await Sharing.isAvailableAsync();
+        if (!isSharingAvailable) return reject(L10N.ERROR_EXPORT);
+
+        const fileUri = FileSystem.documentDirectory + fileName;
+        await FileSystem.writeAsStringAsync(fileUri, data);
+        await Sharing.shareAsync(fileUri);
+
+        resolve(true);
+      } catch (error) {
+        reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);
+      }
+    }),
+
+  exportCsv: async ({ accounts = [], settings = {}, txs = [] } = {}) =>
+    // eslint-disable-next-line no-undef, no-async-promise-executor
+    new Promise(async (resolve, reject) => {
+      try {
+        const fileName = `money-${new Date().toISOString()}.csv`;
+        const accountMap = new Map(accounts.map((account) => [account.hash, account]));
+        const rows = [
+          ['date', 'type', 'amount', 'currency', 'category', 'title', 'account'].join(','),
+        ];
+
+        txs.forEach(({ timestamp, type, value, category, title, account }) => {
+          const date = new Date(timestamp || Date.now()).toISOString();
+          const accountInfo = accountMap.get(account);
+          const accountTitle = accountInfo?.title || account || '';
+          const accountCurrency = accountInfo?.currency || settings.baseCurrency || '';
+          const safeTitle = `${title || ''}`.replace(/\"/g, '\"\"');
+          rows.push([
+            date,
+            type,
+            value,
+            accountCurrency,
+            category ?? '',
+            `"${safeTitle}"`,
+            `"${accountTitle}"`,
+          ].join(','));
+        });
+
+        const data = rows.join('\\n');
 
         const isSharingAvailable = await Sharing.isAvailableAsync();
         if (!isSharingAvailable) return reject(L10N.ERROR_EXPORT);
@@ -48,18 +81,14 @@ export const BackupService = {
         if (!cancelled && file.uri) {
           let jsonData = {};
 
-          if (IS_WEB) {
-            jsonData = await fetch(file.uri).then((res) => res.json());
-          } else {
-            const fileData = await FileSystem.readAsStringAsync(file.uri);
-            jsonData = JSON.parse(fileData);
-          }
+          const fileData = await FileSystem.readAsStringAsync(file.uri);
+          jsonData = JSON.parse(fileData);
 
-          const { accounts = [], settings = {}, txs = [] } = jsonData;
+          const { accounts = [], schemaVersion, settings = {}, txs = [] } = jsonData;
 
           if (!accounts.length || !Object.keys(settings).length) return reject(L10N.ERROR_IMPORT);
 
-          resolve({ accounts, settings, txs });
+          resolve({ accounts, schemaVersion, settings, txs });
         }
       } catch (error) {
         reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);

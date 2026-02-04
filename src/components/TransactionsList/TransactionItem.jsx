@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import Card from '../Card';
-import { Icon, Pressable, Text, View } from '../../design-system';
+import { Icon, Pressable, Text, View } from '../../primitives';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -40,7 +40,7 @@ const TransactionItem = ({
   return (
     <Pressable onPress={handlePress}>
       <View row style={style.content}>
-        <Card small>
+        <Card size="s">
           <Icon name={getIcon({ category, type, title })} />
         </Card>
 
@@ -59,12 +59,12 @@ const TransactionItem = ({
           </View>
 
           <View gap row spaceBetween>
-            <Text tiny color="contentLight" style={style.text}>
+            <Text tone="secondary" style={style.text} size="xs">
               {`${verboseTime(new Date(timestamp))} - ${L10N.CATEGORIES[type][category]}`}
             </Text>
             {baseCurrency !== currency && (
               <PriceFriendly
-                tiny
+                size="xs"
                 color="contentLight"
                 currency={baseCurrency}
                 value={exchange(value, currency, baseCurrency, rates, timestamp)}

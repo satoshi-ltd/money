@@ -1,4 +1,4 @@
-import { Pressable, Text, View } from '../../../../design-system';
+import { Pressable, Text, View } from '../../../../primitives';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -14,7 +14,7 @@ const StatsRangeToggle = ({ onChange, options = [], value }) => (
           onPress={() => onChange?.(option.value)}
           style={[style.item, selected && style.itemActive]}
         >
-          <Text caption bold color={selected ? 'base' : 'contentLight'}>
+          <Text bold color={selected ? 'base' : 'contentLight'} size="s">
             {option.label}
           </Text>
         </Pressable>

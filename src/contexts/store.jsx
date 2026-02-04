@@ -2,7 +2,9 @@ import PropTypes from 'prop-types';
 import React, { createContext, useContext, useLayoutEffect, useState } from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
 
-import { consolidate } from './modules';
+import { consolidate, migrateState } from './modules';
+import { detectDeviceLanguage, setLanguage } from '../i18n';
+import { buildAutoCategoryCatalog } from '../modules';
 import {
   // -- account
   createAccount,
@@ -31,16 +33,48 @@ const StoreProvider = ({ children }) => {
     (async () => {
       const store = await new StorageService({ defaults: DEFAULTS, filename: FILENAME });
 
-      const settings = (await store.get('settings')?.value) || {};
-      updateTheme(settings.theme, settings);
+      const rawState = {
+        accounts: await store.get('accounts')?.value,
+        settings: await store.get('settings')?.value,
+        txs: await store.get('txs')?.value,
+      };
+      let migrated = migrateState(rawState);
+      updateTheme(migrated.settings.theme, migrated.settings);
+
+      const resolvedLanguage = migrated.settings.language || detectDeviceLanguage();
+      if (resolvedLanguage !== migrated.settings.language) {
+        const nextSettings = { ...migrated.settings, language: resolvedLanguage };
+        await store.get('settings').save(nextSettings);
+        migrated = { ...migrated, settings: nextSettings };
+      }
+      await setLanguage(migrated.settings.language);
+
+      const autoCategory = migrated.settings?.autoCategory || {};
+      const hasRules = Object.keys(autoCategory.rules || {}).length > 0;
+      if (!hasRules && (migrated.txs || []).length > 0) {
+        const catalog = buildAutoCategoryCatalog(migrated.txs);
+        const nextSettings = {
+          ...migrated.settings,
+          autoCategory: {
+            ...autoCategory,
+            ...catalog,
+          },
+        };
+        await store.get('settings').save(nextSettings);
+        migrated = { ...migrated, settings: nextSettings };
+      }
+
+      if (migrated.settings.schemaVersion !== rawState?.settings?.schemaVersion) {
+        await store.get('settings').save(migrated.settings);
+      }
 
       setState({
         store,
-        accounts: await store.get('accounts')?.value,
-        settings,
+        accounts: migrated.accounts,
+        settings: migrated.settings,
         subscription: await store.get('subscription')?.value,
         rates: await store.get('rates')?.value,
-        txs: await store.get('txs')?.value,
+        txs: migrated.txs,
       });
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps

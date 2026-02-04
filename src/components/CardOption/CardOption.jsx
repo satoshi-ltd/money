@@ -1,5 +1,5 @@
 import Card from '../Card';
-import { Icon, Pressable, Text } from '../../design-system';
+import { Icon, Pressable, Text } from '../../primitives';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -22,19 +22,19 @@ const CardOption = ({
 
   return (
     <Pressable {...others} onPress={onPress}>
-      <Card active={highlight} small style={style.card}>
+      <Card active={highlight} style={style.card} size="s">
         {icon && <Icon color={textColor} name={icon} />}
 
         {currency && <CurrencyLogo currency={currency} highlight={highlight} />}
 
         {!!caption && (
-          <Text align="center" bold caption color={textColor} numberOfLines={1}>
+          <Text align="center" bold color={textColor} numberOfLines={1} size="s">
             {caption}
           </Text>
         )}
 
         {legend && (
-          <Text align="center" color={textColor || 'contentLight'} numberOfLines={1} tiny>
+          <Text align="center" color={textColor || 'contentLight'} numberOfLines={1} size="xs">
             {legend}
           </Text>
         )}

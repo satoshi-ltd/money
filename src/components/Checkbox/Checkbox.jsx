@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 
 import { theme } from '../../config/theme';
 import { useApp } from '../../contexts';
-import { Icon, Pressable, Text, View } from '../../design-system';
+import { Icon, Pressable, Text, View } from '../../primitives';
 
 const Checkbox = ({ checked, label, onChange, disabled }) => {
   const { colors } = useApp();
@@ -21,7 +21,7 @@ const Checkbox = ({ checked, label, onChange, disabled }) => {
           { borderColor: colors.border, backgroundColor: checked ? colors.accent : 'transparent' },
         ]}
       >
-        {checked ? <Icon name="check" color="inverse" /> : null}
+        {checked ? <Icon name="check" tone="inverse" /> : null}
       </View>
       {label ? <Text>{label}</Text> : null}
     </Pressable>

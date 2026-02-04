@@ -1,4 +1,4 @@
-import { Text, View } from '../../design-system';
+import { Text, View } from '../../primitives';
 import PropTypes from 'prop-types';
 import React from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
@@ -88,11 +88,11 @@ const LineChart = ({
 
                   return !multipleData ? (
                     <View align="center">
-                      <Text bold tiny style={style.pointerCaption}>
+                      <Text bold style={style.pointerCaption} size="xs">
                         {L10N.MONTHS[months[index]?.month || 0]} {months[index]?.year || ''}
                       </Text>
                       <View style={style.pointerValue}>
-                        <PriceFriendly bold caption color="base" {...{ currency, value }} />
+                        <PriceFriendly bold size="s" color="base" {...{ currency, value }} />
                       </View>
                     </View>
                   ) : null;

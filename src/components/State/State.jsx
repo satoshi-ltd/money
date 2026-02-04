@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 
 import { theme } from '../../config/theme';
 import { useApp } from '../../contexts';
-import { Text, View } from '../../design-system';
+import { Text, View } from '../../primitives';
 
 const State = ({ title, caption, icon, children }) => {
   const { colors } = useApp();
@@ -12,11 +12,11 @@ const State = ({ title, caption, icon, children }) => {
   return (
     <View style={[styles.container, { backgroundColor: colors.surface }]}>
       {icon ? <View style={styles.icon}>{icon}</View> : null}
-      <Text bold subtitle>
+      <Text bold size="l">
         {title}
       </Text>
       {caption ? (
-        <Text caption color="contentLight">
+        <Text tone="secondary" size="s">
           {caption}
         </Text>
       ) : null}

@@ -60,10 +60,10 @@ const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation:
       </View>
 
       <View style={style.title}>
-        <Text bold title>
+        <Text bold size="xl">
           {L10N.SUBSCRIPTION_TITLE}
         </Text>
-        <Text bold caption color="contentLight">
+        <Text bold tone="secondary" size="s">
           {isLifetime ? L10N.SUBSCRIPTION_LIFETIME_DESCRIPTION : L10N.SUBSCRIPTION_DESCRIPTION}
         </Text>
       </View>
@@ -71,12 +71,12 @@ const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation:
       <Card style={style.items}>
         {L10N.SUBSCRIPTION_ITEMS.map(({ icon, description, title }, index) => (
           <View gap row key={`item-${index}`} style={style.item}>
-            <Icon name={icon} title />
+            <Icon name={icon} size="xl" />
             <View flex>
-              <Text caption bold>
+              <Text bold size="s">
                 {title}
               </Text>
-              <Text tiny color="contentLight">
+              <Text tone="secondary" size="xs">
                 {description}
               </Text>
             </View>
@@ -86,38 +86,36 @@ const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation:
 
       <View align="center">
         {isLifetime ? (
-          <Text align="center" bold caption style={style.lifetime}>
-            {`${planData?.price || 'THB 3,990thb'} ${L10N.LIFETIME}`}
+          <Text align="center" bold style={style.lifetime} size="s">
+            {`${planData?.price || L10N.SUBSCRIPTION_PRICE_FALLBACK_ANNUAL} ${L10N.LIFETIME}`}
           </Text>
         ) : (
           <>
-            <Text align="center" bold caption>
-              {`${planData?.price || 'THB 3,990thb'} ${L10N.ANNUALY} (${planData?.pricePerMonth || 'THB 332.50'}/${
-                L10N.MONTH
-              })`}
+            <Text align="center" bold size="s">
+              {`${planData?.price || L10N.SUBSCRIPTION_PRICE_FALLBACK_ANNUAL} ${L10N.ANNUALY} (${planData?.pricePerMonth || L10N.SUBSCRIPTION_PRICE_FALLBACK_MONTH}/${L10N.MONTH})`}
             </Text>
-            <Text align="center" bold caption>
+            <Text align="center" bold size="s">
               {L10N.CANCEL_ANYTIME}
             </Text>
           </>
         )}
       </View>
 
-      <Button activity={busy === 'purchase'} secondary={isLifetime} onPress={handleStart}>
+      <Button loading={busy === 'purchase'} variant={isLifetime ? 'secondary' : 'primary'} onPress={handleStart}>
         {plan === PLAN.LIFETIME ? L10N.PURCHASE : L10N.START_TRIAL}
       </Button>
 
-      <Text align="center" tiny>
+      <Text align="center" size="xs">
         {L10N.SUBSCRIPTION_TERMS_CAPTION}
         {` `}
         <Pressable onPress={handleTermsAndConditions}>
-          <Text bold tiny style={style.pressableTerms}>
+          <Text bold style={style.pressableTerms} size="xs">
             {L10N.SUBSCRIPTION_TERMS}
           </Text>
         </Pressable>
         {` ${L10N.SUBSCRIPTION_AND} `}
         <Pressable onPress={handlePrivacy}>
-          <Text bold tiny style={style.pressableTerms}>
+          <Text bold style={style.pressableTerms} size="xs">
             {L10N.SUBSCRIPTION_PRIVACY}
           </Text>
         </Pressable>

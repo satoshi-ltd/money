@@ -1,4 +1,4 @@
-import { ScrollView } from '../../design-system';
+import { ScrollView } from '../../primitives';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import { useWindowDimensions } from 'react-native';

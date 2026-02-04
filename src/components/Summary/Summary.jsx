@@ -1,4 +1,4 @@
-import { Icon, Pressable, Text, View } from '../../design-system';
+import { Icon, Pressable, Text, View } from '../../primitives';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -40,7 +40,7 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
 
       <View row style={style.balanceRow}>
         <Pressable onPress={() => updateSettings({ maskAmount: !maskAmount })}>
-          <PriceFriendly bold currency={currency} title value={currentBalance} />
+          <PriceFriendly bold currency={currency} size="xl" value={currentBalance} />
         </Pressable>
         {baseCurrency !== currency && (
           <PriceFriendly
@@ -48,7 +48,7 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
             color="contentLight"
             currency={baseCurrency}
             label="≈"
-            tiny
+            size="xs"
             value={exchange(Math.abs(currentBalance), currency, baseCurrency, rates)}
           />
         )}
@@ -58,7 +58,7 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
         <View row style={style.progression}>
           <Icon
             color={progressionPercentage > 0 ? accentColor : undefined}
-            caption
+            size="s"
             name={`trending-${progressionPercentage > 0 ? 'up' : 'down'}`}
           />
           <PriceFriendly
@@ -67,27 +67,27 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
             currency="%"
             fixed={progressionPercentage >= 100 ? 0 : undefined}
             operator
-            tiny
+            size="xs"
             value={progressionPercentage}
           />
-          <Text color="contentLight" tiny>
+          <Text tone="secondary" size="xs">
             {L10N.IN_THIS_PAST_MONTH}
           </Text>
           <View flex />
 
           <View row style={style.tags}>
             {(incomes > 0 || incomesBase > 0) && (
-              <View row style={style.tag}>
-                <Icon color={accentColor} name={ICON.INCOME} small />
-                <PriceFriendly bold color={accentColor} currency={currency} tiny value={incomesBase || incomes} />
-              </View>
-            )}
-            {(expenses > 0 || expensesBase > 0) && (
-              <View row style={style.tag}>
-                <Icon name={ICON.EXPENSE} small />
-                <PriceFriendly bold currency={currency} tiny value={expensesBase || expenses} />
-              </View>
-            )}
+            <View row style={style.tag}>
+              <Icon color={accentColor} name={ICON.INCOME} size="xs" />
+              <PriceFriendly bold color={accentColor} currency={currency} size="xs" value={incomesBase || incomes} />
+            </View>
+          )}
+          {(expenses > 0 || expensesBase > 0) && (
+            <View row style={style.tag}>
+              <Icon name={ICON.EXPENSE} size="xs" />
+              <PriceFriendly bold currency={currency} size="xs" value={expensesBase || expenses} />
+            </View>
+          )}
           </View>
         </View>
       )}

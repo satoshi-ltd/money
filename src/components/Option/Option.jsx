@@ -3,7 +3,7 @@ import { StyleSheet, Switch, TouchableOpacity } from 'react-native';
 
 import { theme } from '../../config/theme';
 import { useApp } from '../../contexts';
-import { Icon, Text, View } from '../../design-system';
+import { Icon, Text, View } from '../../primitives';
 
 const Option = ({
   icon,
@@ -37,7 +37,7 @@ const Option = ({
           />
         );
       case 'navigation':
-        return selected ? <Icon color="accent" name="check" /> : <Icon color="contentLight" name="chevron-right" />;
+        return selected ? <Icon tone="accent" name="check" /> : <Icon tone="secondary" name="chevron-right" />;
       default:
         return null;
     }
@@ -58,21 +58,21 @@ const Option = ({
           </Text>
           {counter !== undefined && counter !== null ? (
             <View style={[styles.counterBadge, { backgroundColor: colors.accent }]}>
-              <Text tiny bold color="inverse">
+              <Text bold tone="inverse" size="xs">
                 {counter}
               </Text>
             </View>
           ) : null}
           {badge ? (
             <View style={[styles.badge, { backgroundColor: `${colors.textSecondary}20` }]}>
-              <Text tiny bold color="contentLight">
+              <Text bold tone="secondary" size="xs">
                 {badge}
               </Text>
             </View>
           ) : null}
         </View>
         {subtitle ? (
-          <Text caption color="contentLight" numberOfLines={1}>
+          <Text tone="secondary" numberOfLines={1} size="s">
             {subtitle}
           </Text>
         ) : null}

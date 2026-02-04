@@ -76,8 +76,8 @@ const TransactionsListHeader = ({ chartBalanceBase, dataSource, navigation, onSe
         <Heading value={L10N.TRANSACTIONS}>
           <Button
             icon={!search ? ICON.SEARCH : ICON.CLOSE}
-            outlined
-            small
+            variant="outlined"
+            size="s"
             onPress={handleSearch}
           />
         </Heading>

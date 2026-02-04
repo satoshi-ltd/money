@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { style } from './Notification.style';
-import { Icon, Pressable, Text, View } from '../../design-system';
+import { Icon, Pressable, Text, View } from '../../primitives';
 import { C, eventEmitter, ICON, L10N } from '../../modules';
 
 const { EVENT } = C;
@@ -22,7 +22,7 @@ const NotificationBase = ({ error, onClose, text, title, visible, style: contain
             {title}
           </Text>
           {text ? (
-            <Text tiny color={textColor}>
+            <Text color={textColor} size="xs">
               {text}
             </Text>
           ) : null}
@@ -67,7 +67,7 @@ export const Notification = () => {
   return (
     <NotificationBase
       {...{ error, text, visible }}
-      title={title || (error ? L10N.ERROR : 'Info')}
+      title={title || (error ? L10N.ERROR : L10N.INFO)}
       onClose={handleClose}
       style={Platform.OS === 'android' ? { marginTop: top } : undefined}
     />

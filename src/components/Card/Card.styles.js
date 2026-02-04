@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
   active: {
     backgroundColor: '$colorAccent',
   },
-  small: {
+  sizeS: {
     height: '$spaceXL + $spaceXS',
     width: '$spaceXL + $spaceXS',
     padding: 0,

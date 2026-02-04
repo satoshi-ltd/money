@@ -48,7 +48,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
           return (
             <Pressable key={account.hash} onPress={() => navigate('transactions', { account })}>
               <View row style={style.item}>
-                <Card small style={style.iconSpacing}>
+                <Card style={style.iconSpacing} size="s">
                   <CurrencyLogo currency={currency} muted={!hasBalance || currentBalance < 0} />
                 </Card>
 
@@ -57,11 +57,11 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
                     <Text bold color={color} numberOfLines={1} style={style.text}>
                       {title}
                     </Text>
-                    <PriceFriendly bold color={color || 'content'} currency={currency} caption value={currentBalance} />
+                    <PriceFriendly bold color={color || 'content'} currency={currency} size="s" value={currentBalance} />
                   </View>
 
                   <View gap row spaceBetween>
-                    <Text tiny color="contentLight" style={style.text}>
+                    <Text tone="secondary" style={style.text} size="xs">
                       {L10N.CURRENCY_NAME[currency] || currency}
                     </Text>
                   </View>

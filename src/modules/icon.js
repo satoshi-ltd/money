@@ -141,4 +141,5 @@ export const ICON = {
   UPLOAD: 'file-upload',
   BELL: 'bell',
   UPDATE: 'update',
+  LANGUAGE: 'translate',
 };

@@ -23,10 +23,10 @@ const NumKeyboard = ({ onPress }) => (
         <View style={style.key}>
           {typeof key === 'number' && (
             <>
-              <Text bold subtitle>
+              <Text bold size="l">
                 {key}
               </Text>
-              <Text color="contentLight" tiny>
+              <Text tone="secondary" size="xs">
                 {LETTERS[key] || ' '}
               </Text>
             </>

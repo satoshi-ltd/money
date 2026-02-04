@@ -1,4 +1,4 @@
-import { Text, View } from '../../design-system';
+import { Text, View } from '../../primitives';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Image } from 'react-native';
@@ -11,12 +11,12 @@ const Banner = ({ align = 'center', caption, image = DEFAULT_BANNER, title, ...o
   <View style={[style.banner, style[align], others.style]}>
     <Image resizeMode="contain" source={image} style={style.image} />
     {title && (
-      <Text align={align} bold title>
+      <Text align={align} bold size="xl">
         {title}
       </Text>
     )}
     {caption && (
-      <Text align={align} color="contentLight">
+      <Text align={align} tone="secondary">
         {caption}
       </Text>
     )}

@@ -40,7 +40,6 @@ export const C = {
   IS_DEV,
   IS_ANDROID: Platform.OS === 'android',
   IS_IOS: Platform.OS === 'ios',
-  IS_WEB: Platform.OS === 'web',
 
   LANGUAGE: 'en-EN',
 

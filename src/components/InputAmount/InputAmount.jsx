@@ -1,4 +1,4 @@
-import { View } from '../../design-system';
+import { View } from '../../primitives';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Keyboard, TextInput } from 'react-native';
@@ -61,7 +61,7 @@ const InputAmount = ({
         {exchange && (
           <View style={style.exchange}>
             <PriceFriendly
-              caption
+              size="s"
               color="contentLight"
               currency={baseCurrency}
               value={parseFloat(others.value || 0, 10) / exchange}

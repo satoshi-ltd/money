@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { View } from '../../design-system';
+import { View } from '../../primitives';
 import { styles } from './Pagination.styles';
 
 const Pagination = ({ currentIndex = 0, length = 0, style }) => (

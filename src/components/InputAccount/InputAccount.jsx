@@ -1,7 +1,7 @@
 import Card from '../Card';
 import { CurrencyLogo } from '../CurrencyLogo';
 import Dropdown from '../Dropdown';
-import { Icon, Pressable, Text, View } from '../../design-system';
+import { Icon, Pressable, Text, View } from '../../primitives';
 import { PriceFriendly } from '../PriceFriendly';
 import PropTypes from 'prop-types';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -42,7 +42,7 @@ const InputAccount = ({ accounts = [], first, last, onSelect, selected }) => {
     const accountOption = option.account || {};
     return (
       <View row style={style.dropdownRow}>
-        <Card small style={[style.iconCard, style.iconCardDropdown]}>
+        <Card style={[style.iconCard, style.iconCardDropdown]} size="s">
           <CurrencyLogo
             currency={accountOption.currency}
             muted={!accountOption?.currentBalance || accountOption.currentBalance < 0}
@@ -53,18 +53,18 @@ const InputAccount = ({ accounts = [], first, last, onSelect, selected }) => {
             {accountOption.title}
           </Text>
           <View row style={style.subline}>
-            <Text caption color="contentLight">
+            <Text tone="secondary" size="s">
               {L10N.BALANCE}
             </Text>
             <PriceFriendly
-              caption
+              size="s"
               color="contentLight"
               currency={accountOption.currency}
               value={accountOption.currentBalance || 0}
             />
           </View>
         </View>
-        {isSelected ? <Icon name="check" color="accent" /> : <View style={style.rightPlaceholder} />}
+        {isSelected ? <Icon name="check" tone="accent" /> : <View style={style.rightPlaceholder} />}
       </View>
     );
   };
@@ -82,7 +82,7 @@ const InputAccount = ({ accounts = [], first, last, onSelect, selected }) => {
             showSelect && style.focus,
           ]}
         >
-          <Card small style={style.iconCard}>
+          <Card style={style.iconCard} size="s">
             <CurrencyLogo
               currency={selected?.currency}
               muted={!selected?.currentBalance || selected?.currentBalance < 0}
@@ -93,18 +93,18 @@ const InputAccount = ({ accounts = [], first, last, onSelect, selected }) => {
               {selected?.title}
             </Text>
             <View row style={style.subline}>
-              <Text caption color="contentLight">
+              <Text tone="secondary" size="s">
                 {L10N.BALANCE}
               </Text>
-              <PriceFriendly
-                caption
-                color="contentLight"
-                currency={selected?.currency}
-                value={selected?.currentBalance || 0}
-              />
+            <PriceFriendly
+              size="s"
+              color="contentLight"
+              currency={selected?.currency}
+              value={selected?.currentBalance || 0}
+            />
             </View>
           </View>
-          <Icon name="chevron-down" color="contentLight" />
+          <Icon name="chevron-down" tone="secondary" />
         </View>
       </Pressable>
 

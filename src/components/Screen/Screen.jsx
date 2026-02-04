@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ScrollView, View } from '../../design-system';
+import { ScrollView, View } from '../../primitives';
 import { styles } from './Screen.styles';
 
 const Screen = ({ children, disableScroll, gap, offset, style, ...props }) => {

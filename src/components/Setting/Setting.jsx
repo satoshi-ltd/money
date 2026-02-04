@@ -2,9 +2,8 @@ import React from 'react';
 import { ActivityIndicator, Switch } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
-import { Icon, Pressable, Text, View } from '../../design-system';
+import { Icon, Pressable, Text, View } from '../../primitives';
 import Card from '../Card';
-import { resolveColor } from '../utils/resolveColor';
 import { ICON } from '../../modules';
 import { useApp } from '../../contexts';
 import { styles } from './Setting.styles';
@@ -13,24 +12,22 @@ const resolveOptionLabel = (option) => option?.text || option?.label || option?.
 
 const Setting = ({
   activity,
-  caption,
-  color,
   disabled,
   icon,
-  iconColor,
   onChange,
   onPress,
   options,
+  right,
   selected,
   style,
-  text,
+  subtitle,
+  title,
   type = 'navigation',
   value,
   onValueChange,
   ...props
 }) => {
   const { colors } = useApp();
-  const resolvedBackground = resolveColor(color);
   const selectedIndex = options?.findIndex((option) => option?.id === selected || option?.value === selected);
   const selectedOption = selectedIndex >= 0 ? options[selectedIndex] : options?.[0];
   const isToggle = type === 'toggle';
@@ -53,25 +50,27 @@ const Setting = ({
       {...props}
       disabled={disabled}
       onPress={isToggle ? undefined : handlePress}
-      style={[styles.container, resolvedBackground ? { backgroundColor: resolvedBackground } : null, disabled && styles.disabled, style]}
+      style={[styles.container, disabled && styles.disabled, style]}
     >
       <View style={styles.row}>
         <View style={styles.left}>
           {icon ? (
-            <Card small style={styles.iconCard}>
-              <Icon name={icon} color={iconColor || 'content'} />
+            <Card style={styles.iconCard} size="s">
+              <Icon name={icon} tone="primary" />
             </Card>
           ) : null}
           <View flex>
-            <Text bold>{text}</Text>
-            {caption ? (
-              <Text caption color="contentLight">
-                {caption}
+            <Text bold>{title}</Text>
+            {subtitle ? (
+              <Text tone="secondary" size="s">
+                {subtitle}
               </Text>
             ) : null}
           </View>
         </View>
-        {activity ? (
+        {right ? (
+          right
+        ) : activity ? (
           <ActivityIndicator size="small" color={StyleSheet.value('$colorContentLight')} />
         ) : isToggle ? (
           <Switch
@@ -83,12 +82,12 @@ const Setting = ({
             onValueChange={onValueChange}
           />
         ) : options?.length ? (
-          <Text caption color="contentLight" style={styles.rightText}>
+          <Text tone="secondary" style={styles.rightText} size="s">
             {resolveOptionLabel(selectedOption)}
           </Text>
-        ) : (
-          <Icon name={ICON.RIGHT} color="contentLight" />
-        )}
+        ) : type === 'navigation' ? (
+          <Icon name={ICON.RIGHT} tone="secondary" />
+        ) : null}
       </View>
     </Pressable>
   );

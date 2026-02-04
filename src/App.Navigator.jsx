@@ -62,7 +62,7 @@ const Tabs = ({ navigation = {} }) => {
       return !subscription?.productIdentifier ? (
         <Button
           icon={ICON.STAR}
-          small
+          size="s"
           onPress={handleSubscription}
           style={{ marginRight: StyleSheet.value('$viewOffset') }}
         >
@@ -74,10 +74,10 @@ const Tabs = ({ navigation = {} }) => {
     },
   };
 
-  const tabBarIcon = ({ color, icon }) => <Icon name={icon} subtitle style={{ color }} />;
+  const tabBarIcon = ({ color, icon }) => <Icon name={icon} size="l" style={{ color }} />;
 
   const tabBarLabel = ({ color, text }) => (
-    <Text tiny style={{ color, marginBottom: 4 }}>
+    <Text style={{ color, marginBottom: 4 }} size="xs">
       {text}
     </Text>
   );
@@ -114,7 +114,7 @@ const Tabs = ({ navigation = {} }) => {
           tabBarButton: () => (
             <Button
               icon={ICON.EXPENSE}
-              large
+              size="l"
               onPress={() => navigation.navigate('transaction', { type: EXPENSE })}
               style={{
                 marginHorizontal: StyleSheet.value('$spaceM'),

@@ -37,9 +37,9 @@ const Chart = ({
     <View row style={style.scale}>
       {Object.entries(calcScales(dataSource)).map(([key, value]) => (
         <View key={key} row style={style.scale}>
-          <PriceFriendly {...{ color, currency, value }} bold fixed={0} tiny label={`${L10N.SCALE_KEY[key]} `} />
+          <PriceFriendly {...{ color, currency, value }} bold fixed={0} size="xs" label={`${L10N.SCALE_KEY[key]} `} />
           {key !== 'max' && (
-            <Text tiny color={color}>
+            <Text color={color} size="xs">
               |
             </Text>
           )}

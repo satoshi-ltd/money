@@ -46,10 +46,10 @@ const Onboarding = ({ navigation: { navigate } }) => {
               source={image}
               style={[style.image, slideSize <= IMAGE_SIZE ? { height: slideSize * 1.2, width: slideSize } : undefined]}
             />
-            <Text bold title>
+            <Text bold size="xl">
               {title}
             </Text>
-            <Text color="contentLight">{message}</Text>
+            <Text tone="secondary">{message}</Text>
           </View>
         ))}
       </ScrollView>

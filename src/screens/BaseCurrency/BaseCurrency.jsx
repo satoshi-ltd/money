@@ -44,7 +44,7 @@ const BaseCurrency = ({ navigation: { goBack } = {} }) => {
           return (
             <Pressable key={item} onPress={() => handleSelect(item)}>
               <View row style={style.item}>
-                <Card small style={style.iconCard}>
+                <Card style={style.iconCard} size="s">
                   <CurrencyLogo currency={item} />
                 </Card>
 
@@ -54,7 +54,7 @@ const BaseCurrency = ({ navigation: { goBack } = {} }) => {
                   </Text>
                 </View>
 
-                {currency === item ? <Icon name="check" color="accent" /> : <View style={style.rightPlaceholder} />}
+                {currency === item ? <Icon name="check" tone="accent" /> : <View style={style.rightPlaceholder} />}
               </View>
             </Pressable>
           );

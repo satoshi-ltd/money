@@ -1,10 +1,36 @@
-import { L10N } from '../modules/l10n';
+import { EN, ES, PT, FR, DE } from './dictionaries';
 
 let currentLanguage = 'en';
-const dictionaries = { en: L10N };
+const dictionaries = { en: EN, es: ES, pt: PT, fr: FR, de: DE };
+
+const normalizeLanguage = (language) => {
+  if (!language) return 'en';
+  const value = `${language}`.toLowerCase();
+  return value.includes('-') ? value.split('-')[0] : value;
+};
+
+export const getDictionary = (language = currentLanguage) => {
+  const normalized = normalizeLanguage(language);
+  return dictionaries[normalized] || dictionaries.en;
+};
+
+export const getFallbackDictionary = () => dictionaries.en;
+
+export const L10N = new Proxy(
+  {},
+  {
+    get: (_, key) => {
+      if (typeof key !== 'string') return undefined;
+      const dict = getDictionary(currentLanguage);
+      if (dict && dict[key] !== undefined) return dict[key];
+      const fallback = getFallbackDictionary();
+      return fallback[key] !== undefined ? fallback[key] : key;
+    },
+  },
+);
 
 export const setLanguage = async (language) => {
-  currentLanguage = language || 'en';
+  currentLanguage = normalizeLanguage(language);
 };
 
 export const detectDeviceLanguage = () => {
@@ -21,7 +47,7 @@ const interpolate = (value, params = {}) => {
 };
 
 export const translate = (key, params = {}) => {
-  const dict = dictionaries[currentLanguage] || dictionaries.en || {};
+  const dict = getDictionary(currentLanguage) || {};
   const value = dict[key];
   if (typeof value === 'function') return value(params);
   if (value === undefined) return key;

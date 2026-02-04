@@ -1,4 +1,4 @@
-import { Text, View } from '../../design-system';
+import { Text, View } from '../../primitives';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -17,7 +17,7 @@ const Field = ({ children, first, focused, label, last, style: styleProp, ...pro
     ]}
   >
     {label ? (
-      <Text caption color={!focused ? 'contentLight' : undefined} pointerEvents="none" style={style.label}>
+      <Text color={!focused ? 'contentLight' : undefined} pointerEvents="none" style={style.label} size="s">
         {label}
       </Text>
     ) : null}

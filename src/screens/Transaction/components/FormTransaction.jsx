@@ -6,8 +6,9 @@ import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './FormTransaction.style';
 import { CardOption, InputAmount, InputText } from '../../../components';
-import { C, getIcon, L10N } from '../../../modules';
+import { C, getIcon, L10N, suggestCategory } from '../../../modules';
 import { queryCategories } from '../helpers';
+import { useStore } from '../../../contexts';
 
 const EXPENSE = C?.TX?.TYPE?.EXPENSE ?? 0;
 
@@ -24,6 +25,7 @@ const FormTransaction = ({
 } = {}) => {
   const scrollview = useRef(null);
   const { width } = useWindowDimensions();
+  const { settings = {} } = useStore();
   const safeForm = form || {};
   const safeType = type ?? EXPENSE;
 
@@ -36,7 +38,12 @@ const FormTransaction = ({
   }, [safeForm]);
 
   const handleField = (field, fieldValue) => {
-    const next = { ...safeForm, [field]: fieldValue };
+    let next = { ...safeForm, [field]: fieldValue };
+
+    if (field === 'title' && showCategory && next.category === undefined) {
+      const suggested = suggestCategory(settings.autoCategory, { title: fieldValue, type: safeType });
+      if (suggested !== undefined) next = { ...next, category: suggested };
+    }
 
     onChange({
       form: next,

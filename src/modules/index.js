@@ -1,4 +1,5 @@
 export * from './constants';
+export * from './autoCategory';
 export * from './currencyDecimals';
 export * from './eventEmitter';
 export * from './exchange';
@@ -9,6 +10,7 @@ export * from './getMonthDiff';
 export * from './getNavigationTheme';
 export * from './groupTxsByDate';
 export * from './icon';
+export * from './insights';
 export * from './isInternalTransfer';
 export * from './l10n';
 export * from './verboseDate';

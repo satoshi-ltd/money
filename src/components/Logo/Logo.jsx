@@ -1,4 +1,4 @@
-import { Text, View } from '../../design-system';
+import { Text, View } from '../../primitives';
 import React from 'react';
 
 import { style } from './Logo.style';

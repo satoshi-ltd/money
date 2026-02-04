@@ -1,4 +1,4 @@
-import { Icon, Text, View } from '../../design-system';
+import { Icon, Text, View } from '../../primitives';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -13,8 +13,8 @@ const CurrencyLogo = ({ currency, muted, ...others }) => {
 
   return (
     <View style={[style.container, others.style]}>
-      {showGoldIcon ? <Icon name={ICON.GOLD} small color={color} /> : null}
-      {showSilverIcon ? <Icon name={ICON.SILVER} small color={color} /> : null}
+      {showGoldIcon ? <Icon name={ICON.GOLD} size="xs" color={color} /> : null}
+      {showSilverIcon ? <Icon name={ICON.SILVER} size="xs" color={color} /> : null}
       {symbol ? (
         <Text
           bold

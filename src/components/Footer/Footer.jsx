@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../config/theme';
 import { useApp } from '../../contexts';
 import { ICON } from '../../modules';
-import { Button, Icon, View } from '../../design-system';
+import { Button, Icon, View } from '../../primitives';
 
 const TAB_SIZE = theme.spacing.xxl + theme.spacing.md;
 
@@ -32,6 +32,8 @@ const Footer = ({ state, navigation, onActionPress }) => {
   return (
     <View pointerEvents="box-none" style={[styles.root, { bottom: insets.bottom }]}>
       <BlurView
+        experimentalBlurMethod="dimezisBlurView"
+        blurReductionFactor={0.6}
         intensity={60}
         tint={mode === 'dark' ? 'dark' : 'light'}
         style={[styles.blurView, { width: (state.routes.length + 1.5) * 56, borderColor: colors.border }]}
@@ -44,7 +46,7 @@ const Footer = ({ state, navigation, onActionPress }) => {
               onPress={() => handleTabPress(route, isFocused)}
               style={styles.tab}
             >
-              <Icon color={isFocused ? 'accent' : 'contentLight'} name={routeIcon(route.name)} subtitle />
+              <Icon color={isFocused ? 'accent' : 'contentLight'} name={routeIcon(route.name)} size="l" />
             </TouchableOpacity>
           );
         })}
@@ -52,8 +54,7 @@ const Footer = ({ state, navigation, onActionPress }) => {
 
       <Button
         icon={ICON.EXPENSE}
-        large
-        rounded
+        size="l"
         onPress={onActionPress}
         style={[styles.actionButton, { borderColor: colors.border }]}
       />

@@ -1,12 +1,9 @@
-import { Platform } from 'react-native';
-
 const LOCALES = {
   default: { decimal: ',', thousands: '.' },
   'en-US': { decimal: '.', thousands: ',' },
   'en-EN': { decimal: '.', thousands: ',' },
 };
 
-const IS_WEB = Platform.OS === 'web';
 const LEFT_SYMBOLS = ['$', '£'];
 
 const MASK_SYMBOL = '*';
@@ -21,7 +18,7 @@ export const format = ({ currency, fixed = 2, locale, mask, operator = '', symbo
     rightSide = !LEFT_SYMBOLS.includes(symbol) ? symbol : '';
   } else if (currency && currency.length > 0) leftSide = `${currency}`;
 
-  if (IS_WEB && Number.prototype.toLocaleString) {
+  if (Number.prototype.toLocaleString) {
     value = parseFloat(amount.toFixed(fixed)).toLocaleString(locale, {
       minimumFractionDigits: 0,
       maximumFractionDigits: fixed,

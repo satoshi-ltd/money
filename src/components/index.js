@@ -1,5 +1,5 @@
 export * from './Banner';
-export { Button, Icon, Input, Pressable, ScrollView, Text, View } from '../design-system';
+export { Button, Icon, Input, Pressable, ScrollView, Text, View } from '../primitives';
 export { default as Action } from './Action';
 export { default as InputAccount } from './InputAccount';
 export { default as Card } from './Card';
@@ -21,6 +21,7 @@ export * from './InputText';
 export * from './LineChart';
 export * from './Logo';
 export { default as Modal } from './Modal';
+export * from './MetricBar';
 export * from './Notification';
 export { default as Option } from './Option';
 export { default as Pagination } from './Pagination';

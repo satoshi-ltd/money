@@ -1,13 +1,13 @@
 import React from 'react';
-import { View } from '../../design-system';
+import { View } from '../../primitives';
 import { styles } from './Card.styles';
 
-const Card = ({ active, small, style, ...props }) => (
+const Card = ({ active, size = 'm', style, ...props }) => (
   <View
     {...props}
     style={[
       styles.base,
-      small && styles.small,
+      size === 's' && styles.sizeS,
       active && styles.active,
       style,
     ]}

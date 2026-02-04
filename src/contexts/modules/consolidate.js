@@ -14,11 +14,13 @@ export const consolidate = ({
   let accounts = [];
 
   if (storeAccounts.length > 0) {
-    const { timestamp: blockTimestamp, data: { timestamp } = {} } =
-      //  storeAccounts[0].balance ? storeAccounts[0] : storeAccounts[1];
-      storeAccounts[0].balance !== undefined ? storeAccounts[0] : storeAccounts[1] || {};
-    const genesisDate = new Date(timestamp || blockTimestamp);
-    const months = getMonthDiff(genesisDate, new Date());
+    const accountTimestamps = storeAccounts
+      .map((account) => account?.timestamp ?? account?.data?.timestamp)
+      .filter((value) => Number.isFinite(value));
+    const txTimestamps = txs.map((tx) => tx?.timestamp).filter((value) => Number.isFinite(value));
+    const minTimestamp = Math.min(...[...accountTimestamps, ...txTimestamps].filter((value) => value > 0));
+    const genesisDate = Number.isFinite(minTimestamp) ? new Date(minTimestamp) : new Date();
+    const months = Math.max(0, getMonthDiff(genesisDate, new Date()));
 
     accounts = storeAccounts.map(({ hash, timestamp, data = {}, ...others }) =>
       calcAccount({

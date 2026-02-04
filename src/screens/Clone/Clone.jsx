@@ -46,6 +46,10 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
     const accountHash = account?.hash || dataSource.account;
     const payload = { ...tx, ...state.form, account: accountHash };
 
+    if (clone && state.form?.timestamp === baseline.form?.timestamp) {
+      payload.timestamp = new Date().getTime();
+    }
+
     if (edit) await updateTx({ hash: dataSource.hash, ...payload });
     else if (clone) await createTx(payload);
     else if (remove) {
@@ -98,13 +102,13 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
       )}
 
       <View row style={style.buttons}>
-        <Button flex outlined onPress={() => handleSubmit({ remove: true })}>
+        <Button variant="outlined" onPress={() => handleSubmit({ remove: true })} grow>
           {L10N.DELETE}
         </Button>
-        <Button disabled={disableClone} flex outlined onPress={() => handleSubmit({ clone: true })}>
+        <Button disabled={disableClone} variant="outlined" onPress={() => handleSubmit({ clone: true })} grow>
           {L10N.CLONE}
         </Button>
-        <Button disabled={!state.valid} flex onPress={() => handleSubmit({ edit: true })}>
+        <Button disabled={!state.valid} onPress={() => handleSubmit({ edit: true })} grow>
           {L10N.SAVE}
         </Button>
       </View>

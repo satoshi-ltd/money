@@ -14,4 +14,8 @@ export const style = StyleSheet.create({
     marginHorizontal: '$viewOffset',
     width: 'auto',
   },
+
+  dropdownWrap: {
+    position: 'relative',
+  },
 });

@@ -1,8 +1,9 @@
-import { Text, View } from '../../design-system';
+import { Text, View } from '../../primitives';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { style } from './TransactionsList.style';
+import { L10N } from '../../modules';
 
 // ! TODO: Refacto
 const verboseDate = (date = new Date(), { locale = 'en-US', ...props } = {}) => {
@@ -13,9 +14,9 @@ const verboseDate = (date = new Date(), { locale = 'en-US', ...props } = {}) => 
   yesterday = yesterday.toDateString();
 
   return day === today
-    ? 'Today'
+    ? L10N.TODAY
     : day === yesterday
-    ? 'Yesterday'
+    ? L10N.YESTERDAY
     : date.toLocaleDateString
     ? date.toLocaleDateString(locale, props)
     : date;
@@ -23,7 +24,7 @@ const verboseDate = (date = new Date(), { locale = 'en-US', ...props } = {}) => 
 
 const TransactionsHeader = ({ title = new Date() }) => (
   <View style={style.headerContainer}>
-    <Text bold caption color="contentLight" secondary style={style.date}>
+    <Text bold tone="secondary" style={style.date} size="s">
       {verboseDate(new Date(title), { day: 'numeric', month: 'long', year: 'numeric' })}
     </Text>
   </View>

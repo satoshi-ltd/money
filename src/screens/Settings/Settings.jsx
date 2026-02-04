@@ -1,4 +1,4 @@
-import { Heading, Screen, Setting, Text, View } from '../../components';
+import { Dropdown, Heading, Screen, Setting, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { Alert, Linking } from 'react-native';
@@ -9,14 +9,16 @@ import { style } from './Settings.style';
 import { useStore } from '../../contexts';
 import { verboseDate } from '../../modules';
 import { C, eventEmitter, ICON, L10N } from '../../modules';
+import { setLanguage } from '../../i18n';
 import { BackupService, NotificationsService, PurchaseService } from '../../services';
 
-const { EVENT, IS_WEB } = C;
+const { EVENT } = C;
 
 const Settings = ({ navigation = {} }) => {
   const store = useStore();
 
   const [activity, setActivity] = useState();
+  const [showLanguage, setShowLanguage] = useState(false);
 
   const {
     accounts = [],
@@ -29,7 +31,7 @@ const Settings = ({ navigation = {} }) => {
     txs = [],
   } = store;
 
-  const { baseCurrency, lastRatesUpdate = '', reminders, theme } = settings;
+  const { baseCurrency, language = 'en', lastRatesUpdate = '', reminders, theme } = settings;
 
   const isPremium = !!subscription?.productIdentifier;
 
@@ -44,20 +46,26 @@ const Settings = ({ navigation = {} }) => {
     if (screen) navigation.navigate(screen);
     else if (callback === 'handleSubscription') handleSubscription();
     else if (callback === 'handleExport') handleExport();
+    else if (callback === 'handleExportCsv') handleExportCsv();
     else if (callback === 'handleImport') handleImport();
     else if (callback === 'handleUpdateRates') handleUpdateRates();
     else if (callback === 'handleRestorePurchases') handleRestorePurchases();
   };
 
   const handleExport = async () => {
-    if (!IS_WEB && !isPremium) return handleSubscription('export');
+    if (!isPremium) return handleSubscription('export');
 
-    const exported = await BackupService.export({ accounts, settings, txs });
-    if (exported) eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.CONFIRM_EXPORT_SUCCESS });
+    await BackupService.export({ accounts, settings, txs });
+  };
+
+  const handleExportCsv = async () => {
+    if (!isPremium) return handleSubscription('export');
+
+    await BackupService.exportCsv({ accounts, settings, txs });
   };
 
   const handleImport = async () => {
-    if (!IS_WEB && !isPremium) return handleSubscription('import');
+    if (!isPremium) return handleSubscription('import');
 
     const backup = await BackupService.import().catch(handleError);
 
@@ -111,13 +119,29 @@ const Settings = ({ navigation = {} }) => {
     updateSettings({ theme: nextTheme });
   };
 
+  const handleLanguage = (next) => {
+    if (!next) return;
+    updateSettings({ language: next.id });
+    setLanguage(next.id);
+  };
+
   const handleChangeReminder = (next) => {
     const value = typeof next === 'object' ? next.value : next ? 1 : 0;
     NotificationsService.reminders([value]);
     updateSettings({ reminders: [value] });
   };
 
+  const languageOptions = [
+    { id: 'en', label: L10N.LANGUAGE_EN },
+    { id: 'es', label: L10N.LANGUAGE_ES },
+    { id: 'pt', label: L10N.LANGUAGE_PT },
+    { id: 'fr', label: L10N.LANGUAGE_FR },
+    { id: 'de', label: L10N.LANGUAGE_DE },
+  ];
+  const currentLanguageLabel =
+    languageOptions.find((option) => option.id === language)?.label || L10N.LANGUAGE_EN;
 
+  
   const settingProps = {};
 
   return (
@@ -125,17 +149,17 @@ const Settings = ({ navigation = {} }) => {
       <Heading value={L10N.SETTINGS} />
 
       <View style={style.group}>
-        <Text bold caption>
+        <Text bold size="s">
           {L10N.GENERAL.toUpperCase()}
         </Text>
         {OPTIONS(isPremium, subscription).map(({ caption, disabled, icon, id, text, ...rest }) => (
           <Setting
             {...settingProps}
-            activity={rest.callback && [rest.callback].sync}
+            activity={activity && rest.callback ? activity[rest.callback] : undefined}
             key={`option-${id}`}
             {...{
               activity: rest.callback === 'handleUpdateRates' && activity?.updateRates,
-              caption:
+              subtitle:
                 rest.callback === 'handleUpdateRates'
                   ? `${L10N.SYNC_RATES_SENTENCE} ${verboseDate(new Date(lastRatesUpdate), {
                       day: 'numeric',
@@ -147,7 +171,7 @@ const Settings = ({ navigation = {} }) => {
                   : caption,
               disabled,
               icon,
-              text,
+              title: text,
             }}
             onPress={rest.callback ? () => handleOption(rest) : undefined}
           />
@@ -155,40 +179,63 @@ const Settings = ({ navigation = {} }) => {
       </View>
 
       <View style={style.group}>
-        <Text bold caption>
+        <Text bold size="s">
           {L10N.PREFERENCES.toUpperCase()}
         </Text>
         <Setting
           {...settingProps}
           icon={ICON.THEME}
-          text={theme === 'dark' ? L10N.APPERANCE_LIGHT : L10N.APPERANCE_DARK}
+          title={L10N.APPEARANCE}
+          subtitle={theme === 'dark' ? L10N.APPERANCE_DARK : L10N.APPERANCE_LIGHT}
+          type="action"
           onPress={handleTheme}
         />
-        {PREFERENCES.map(({ disabled, icon, text, ...rest }, index) => (
+        <View style={style.dropdownWrap}>
           <Setting
             {...settingProps}
-            caption={
+            subtitle={currentLanguageLabel}
+            icon={ICON.LANGUAGE}
+            title={L10N.LANGUAGE}
+            type="navigation"
+            onPress={() => setShowLanguage(true)}
+          />
+          <Dropdown
+            visible={showLanguage}
+            onClose={() => setShowLanguage(false)}
+            options={languageOptions}
+            selected={language}
+            onSelect={(option) => {
+              handleLanguage(option);
+              setShowLanguage(false);
+            }}
+            width={260}
+          />
+        </View>
+        {PREFERENCES().map(({ disabled, icon, text, ...rest }, index) => (
+          <Setting
+            {...settingProps}
+            subtitle={
               rest.screen === 'baseCurrency' ? L10N.CURRENCY_NAME[baseCurrency] : undefined
             }
             activity={activity && activity[rest.callback]}
             key={`preference-${index}`}
-            {...{ disabled, icon, text }}
+            {...{ disabled, icon, title: text }}
             onPress={() => handleOption(rest)}
           />
         ))}
         <Setting
           {...settingProps}
-          caption={L10N.REMINDER_BACKUP_CAPTION}
+          subtitle={L10N.REMINDER_BACKUP_CAPTION}
           icon={ICON.BELL}
           type="toggle"
           value={(reminders?.[0] ?? 1) === 1}
           onValueChange={handleChangeReminder}
-          text={L10N.REMINDER_BACKUP}
+          title={L10N.REMINDER_BACKUP}
         />
       </View>
 
       <View style={style.group}>
-        <Text bold caption>
+        <Text bold size="s">
           {L10N.ABOUT.toUpperCase()}
         </Text>
         {ABOUT(isPremium).map(({ disabled, icon, text, ...rest }, index) => (
@@ -196,7 +243,7 @@ const Settings = ({ navigation = {} }) => {
             {...settingProps}
             activity={activity && activity[rest.callback]}
             key={`about-${index}`}
-            {...{ disabled, icon, text }}
+            {...{ disabled, icon, title: text }}
             onPress={() => handleOption(rest)}
           />
         ))}

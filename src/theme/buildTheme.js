@@ -15,6 +15,5 @@ export const buildTheme = (mode = 'light') => {
     $colorAccent: colors.accent,
     $colorError: colors.danger,
     $colorDisabled: colors.textSecondary,
-    $buttonChildrenColorSecondary: colors.inverse,
   };
 };

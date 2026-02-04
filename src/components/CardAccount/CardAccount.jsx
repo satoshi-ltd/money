@@ -1,5 +1,5 @@
 import Card from '../Card';
-import { Pressable, Text, View } from '../../design-system';
+import { Pressable, Text, View } from '../../primitives';
 import PropTypes from 'prop-types';
 import React from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';
@@ -36,6 +36,8 @@ const CardAccount = ({
       ? StyleSheet.value('$colorContentLight')
       : StyleSheet.value('$colorAccent');
 
+  const showPercentage = Math.abs(percentage) >= 3;
+
   return (
     <Pressable onPress={onPress} style={others.style}>
       <Card {...others} active={highlight} style={style.card}>
@@ -43,16 +45,16 @@ const CardAccount = ({
           {currency && (
             <View>
               <View row>
-                <Text bold tiny color={textColor} ellipsizeMode="tail" numberOfLines={1}>
+                <Text bold color={textColor} ellipsizeMode="tail" numberOfLines={1} size="xs">
                   {title.toUpperCase()}
                 </Text>
               </View>
 
-              <PriceFriendly bold color={textColor} currency={currency} subtitle value={Math.abs(balance)} />
+              <PriceFriendly bold color={textColor} currency={currency} size="l" value={Math.abs(balance)} />
 
               {showExchange && currency !== baseCurrency && (
                 <PriceFriendly
-                  caption
+                  size="s"
                   color={textColor || 'contentLight'}
                   currency={baseCurrency}
                   value={exchange(Math.abs(balance), currency, baseCurrency, rates)}
@@ -60,8 +62,17 @@ const CardAccount = ({
               )}
             </View>
           )}
-          {!!percentage && (
-            <PriceFriendly bold tiny color={percentageColor} currency="%" detail fixed={2} operator value={percentage} />
+          {showPercentage && (
+            <PriceFriendly
+              bold
+              size="s"
+              color={percentageColor}
+              currency="%"
+              fixed={2}
+              operator
+              style={style.percentage}
+              value={percentage}
+            />
           )}
 
           <LineChart

@@ -83,7 +83,7 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
     <Panel offset title={headerTitle} onBack={firstAccount ? undefined : goBack}>
       {firstAccount && (
         <View style={style.title}>
-          <Text caption color="contentLight">
+          <Text tone="secondary" size="s">
             {L10N.FIRST_ACCOUNT_CAPTION}
           </Text>
         </View>
@@ -113,16 +113,16 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
 
       <View row style={style.buttons}>
         {hash && (
-          <Button disabled={busy} flex outlined onPress={handleDelete}>
+          <Button disabled={busy} variant="outlined" onPress={handleDelete} grow>
             {L10N.DELETE}
           </Button>
         )}
         {!firstAccount && (
-          <Button disabled={busy} flex outlined onPress={goBack}>
+          <Button disabled={busy} variant="outlined" onPress={goBack} grow>
             {L10N.CLOSE}
           </Button>
         )}
-        <Button disabled={busy || !form.currency || !form.title} flex onPress={handleSubmit}>
+        <Button disabled={busy || !form.currency || !form.title} onPress={handleSubmit} grow>
           {L10N.SAVE}
         </Button>
       </View>

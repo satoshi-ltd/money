@@ -1,4 +1,4 @@
-import { Icon, Pressable, Text, View } from '../../../../design-system';
+import { Icon, Pressable, Text, View } from '../../../../primitives';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -9,7 +9,7 @@ const ButtonSummary = ({ icon, text, onPress }) => (
     <View style={style.iconWrap}>
       <Icon name={icon} />
     </View>
-    <Text bold tiny>
+    <Text bold size="xs">
       {text}
     </Text>
   </Pressable>
