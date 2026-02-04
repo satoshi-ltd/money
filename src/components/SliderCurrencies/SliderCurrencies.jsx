@@ -22,7 +22,7 @@ const SliderCurrencies = ({ selected, onChange, ...others }) => {
   const optionSnap = StyleSheet.value('$optionSnap');
 
   return (
-    <ScrollView {...others} horizontal ref={scrollview} snap={optionSnap} width={width}>
+    <ScrollView {...others} horizontal ref={scrollview} snapTo={optionSnap} style={{ width }}>
       {currencies.map((currency, index) => (
         <CardOption
           key={index}

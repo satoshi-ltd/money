@@ -171,7 +171,11 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
           <View style={style.insightsHeading}>
             <Heading value={L10N.INSIGHTS} offset />
           </View>
-          <ScrollView horizontal style={style.insightsScroll}>
+          <ScrollView
+            horizontal
+            snapTo={StyleSheet.value('$cardAccountSnap')}
+            style={style.insightsScroll}
+          >
             {previewInsights.map((insight, index) => (
               <View
                 key={insight.id}
@@ -199,7 +203,7 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
         </Heading>
       </View>
 
-      <ScrollView horizontal snap={StyleSheet.value('$cardAccountSnap')} style={[style.scrollView]}>
+      <ScrollView horizontal snapTo={StyleSheet.value('$cardAccountSnap')} style={[style.scrollView]}>
         {sortedAccounts.map((account, index) => {
           const {
             chartBalanceBase = [],

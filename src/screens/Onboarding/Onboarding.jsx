@@ -38,7 +38,7 @@ const Onboarding = ({ navigation: { navigate } }) => {
 
   return (
     <SafeAreaView style={style.screen}>
-      <ScrollView horizontal ref={scrollview} snap={width} onScroll={handleScroll}>
+      <ScrollView horizontal ref={scrollview} snapTo={width} onScroll={handleScroll}>
         {SLIDES.map(({ image, message, title }, index) => (
           <View key={index} style={[style.slide, { width }]}>
             <Image

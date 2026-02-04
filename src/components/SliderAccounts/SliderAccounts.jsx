@@ -25,7 +25,13 @@ const SliderAccounts = ({ account, selected, onChange, ...others }) => {
   const availableAccounts = queryAvailableAccounts(accounts, account);
 
   return (
-    <ScrollView {...others} horizontal ref={scrollview} snap={optionSnap} width={width} style={style.scrollview}>
+    <ScrollView
+      {...others}
+      horizontal
+      ref={scrollview}
+      snapTo={optionSnap}
+      style={[{ width }, style.scrollview]}
+    >
       {availableAccounts.map(({ currency, hash, title, ...rest } = {}, index) => (
         <CardOption
           key={hash}

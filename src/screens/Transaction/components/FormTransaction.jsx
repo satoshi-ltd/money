@@ -74,7 +74,7 @@ const FormTransaction = ({
         <>
           <Heading value={L10N.CATEGORY} />
 
-          <ScrollView horizontal ref={scrollview} snap={optionSnap} width={width} style={style.scrollView}>
+          <ScrollView horizontal ref={scrollview} snapTo={optionSnap} style={[{ width }, style.scrollView]}>
             {sortedCategories.map((item, index) => (
               <CardOption
                 key={item.key}

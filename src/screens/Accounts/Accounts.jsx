@@ -19,7 +19,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
   return (
     <Screen style={style.screen}>
       <Heading value={L10N.CURRENCIES} offset />
-      <ScrollView horizontal snap={StyleSheet.value('$cardAccountSnap')} style={style.scrollView}>
+      <ScrollView horizontal snapTo={StyleSheet.value('$cardAccountSnap')} style={style.scrollView}>
         {currencies.map(({ base, currency, ...item }, index) => (
           <CardAccount
             {...item}
