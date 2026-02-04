@@ -18,7 +18,6 @@ const Input = React.forwardRef(
       placeholderWhenBlur = '...',
       style,
       value,
-      variant,
       ...props
     },
     ref,
@@ -59,7 +58,7 @@ const Input = React.forwardRef(
         onChangeText={handleChangeText}
         onFocus={handleFocus}
         {...props}
-        style={[styles.base, variant === 'search' ? styles.search : null, multiline ? styles.multiline : null, style]}
+        style={[styles.base, multiline ? styles.multiline : null, style]}
       />
     );
   },

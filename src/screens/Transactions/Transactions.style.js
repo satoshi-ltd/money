@@ -21,5 +21,9 @@ export const style = StyleSheet.create({
   inputSearch: {
     marginHorizontal: 0,
     marginBottom: '$viewOffset',
+    borderWidth: '$inputBorderWidth',
+    borderColor: '$inputBorderColor',
+    borderRadius: '$inputBorderRadius',
+    backgroundColor: '$colorBase',
   },
 });
