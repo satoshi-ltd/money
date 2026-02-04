@@ -113,16 +113,16 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
 
       <View row style={style.buttons}>
         {hash && (
-          <Button disabled={busy} flex outlined onPress={handleDelete}>
+          <Button disabled={busy} variant="outlined" onPress={handleDelete} grow>
             {L10N.DELETE}
           </Button>
         )}
         {!firstAccount && (
-          <Button disabled={busy} flex outlined onPress={goBack}>
+          <Button disabled={busy} variant="outlined" onPress={goBack} grow>
             {L10N.CLOSE}
           </Button>
         )}
-        <Button disabled={busy || !form.currency || !form.title} flex onPress={handleSubmit}>
+        <Button disabled={busy || !form.currency || !form.title} onPress={handleSubmit} grow>
           {L10N.SAVE}
         </Button>
       </View>

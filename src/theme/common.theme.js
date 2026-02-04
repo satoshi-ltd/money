@@ -39,7 +39,6 @@ export const CommonTheme = {
 
   $scolorAccent: '#FFC431',
   $colorAccent: '$scolorAccent',
-  $buttonChildrenColorSecondary: '$colorBase',
 
   // -- border ----------------------------------------------------------------
   $borderRadius: '$spaceXS',

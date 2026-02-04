@@ -192,8 +192,8 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
         <Heading value={L10N.ACCOUNTS} offset>
           <Button
             icon={ICON.NEW}
-            outlined
-            small
+            variant="outlined"
+            size="s"
             onPress={() => navigate('account', { create: true })}
           />
         </Heading>
@@ -233,8 +233,8 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
         <Heading value={L10N.LAST_TRANSACTIONS} offset>
           <Button
             icon={!search ? ICON.SEARCH : ICON.CLOSE}
-            outlined
-            small
+            variant="outlined"
+            size="s"
             onPress={handleSearch}
           />
         </Heading>

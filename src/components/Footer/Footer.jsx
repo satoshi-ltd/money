@@ -54,8 +54,7 @@ const Footer = ({ state, navigation, onActionPress }) => {
 
       <Button
         icon={ICON.EXPENSE}
-        large
-        rounded
+        size="l"
         onPress={onActionPress}
         style={[styles.actionButton, { borderColor: colors.border }]}
       />

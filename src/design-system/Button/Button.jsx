@@ -1,6 +1,5 @@
 import React from 'react';
 import { ActivityIndicator } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
 
 import Icon from '../Icon';
 import Pressable from '../Pressable';
@@ -9,55 +8,88 @@ import { resolveColor } from '../../components/utils/resolveColor';
 import { styles } from './Button.styles';
 
 const Button = ({
-  activity,
   children,
   disabled,
-  flex,
+  grow,
   icon,
-  large,
+  loading,
   onPress,
-  outlined,
-  secondary,
-  small,
-  rounded,
+  size,
   style,
+  variant,
   ...props
 }) => {
-  const isDisabled = disabled || activity;
+  const isDisabled = disabled || loading;
   const iconOnly = !!icon && !children;
 
-  const textColor = outlined
-    ? resolveColor('content')
-    : secondary
-      ? StyleSheet.value('$buttonChildrenColorSecondary') || resolveColor('base')
+  const resolvedVariant = variant || 'primary';
+  const resolvedSize = size || 'm';
+
+  const textColor = isDisabled
+    ? resolveColor('contentLight')
+    : resolvedVariant === 'secondary'
+      ? resolveColor('base')
       : resolveColor('content');
+
+  const sizeStyle = resolvedSize === 's' ? styles.small : resolvedSize === 'l' ? styles.large : null;
+  const iconSizeStyle =
+    iconOnly && resolvedSize === 's'
+      ? styles.iconOnlySmall
+      : iconOnly && resolvedSize === 'l'
+        ? styles.iconOnlyLarge
+        : iconOnly
+          ? styles.iconOnly
+          : null;
+
+  const variantStyle =
+    resolvedVariant === 'outlined'
+      ? styles.outlined
+      : resolvedVariant === 'secondary'
+        ? styles.secondary
+        : resolvedVariant === 'ghost'
+          ? styles.ghost
+          : styles.primary;
+
+  const disabledVariantStyle =
+    isDisabled && resolvedVariant === 'outlined'
+      ? styles.disabledOutlined
+      : isDisabled && resolvedVariant === 'secondary'
+        ? styles.disabledSecondary
+        : isDisabled && resolvedVariant === 'ghost'
+          ? styles.disabledGhost
+          : isDisabled
+            ? styles.disabledPrimary
+            : null;
+
+  const iconProps =
+    icon && iconOnly
+      ? { title: resolvedSize !== 's', subtitle: resolvedSize === 'm', small: resolvedSize === 's' }
+      : { title: resolvedSize === 'l', subtitle: resolvedSize === 'm', small: resolvedSize === 's' };
 
   return (
     <Pressable
       {...props}
       disabled={isDisabled}
       onPress={onPress}
-      style={[
+      style={({ pressed }) => [
         styles.base,
-        small && styles.small,
-        large && styles.large,
+        sizeStyle,
         iconOnly && styles.iconOnly,
-        iconOnly && small && styles.iconOnlySmall,
-        iconOnly && large && styles.iconOnlyLarge,
-        outlined ? styles.outlined : secondary ? styles.secondary : styles.primary,
-        rounded ? styles.rounded : null,
-        flex ? { flex: typeof flex === 'number' ? flex : 1 } : null,
-        isDisabled && styles.disabled,
+        iconSizeStyle,
+        variantStyle,
+        grow && styles.grow,
+        disabledVariantStyle,
+        pressed && !isDisabled && styles.pressed,
         style,
       ]}
     >
-      {activity ? (
+      {loading ? (
         <ActivityIndicator size="small" color={textColor} />
       ) : (
         <>
-          {icon ? <Icon name={icon} color={textColor} small={small} subtitle={!small && !large} title={large} /> : null}
+          {icon ? <Icon name={icon} color={textColor} {...iconProps} /> : null}
           {children ? (
-            <Text bold caption={small} color={textColor}>
+            <Text bold caption={resolvedSize === 's'} color={textColor}>
               {children}
             </Text>
           ) : null}

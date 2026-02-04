@@ -101,7 +101,7 @@ const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation:
         )}
       </View>
 
-      <Button activity={busy === 'purchase'} secondary={isLifetime} onPress={handleStart}>
+      <Button loading={busy === 'purchase'} variant={isLifetime ? 'secondary' : 'primary'} onPress={handleStart}>
         {plan === PLAN.LIFETIME ? L10N.PURCHASE : L10N.START_TRIAL}
       </Button>
 

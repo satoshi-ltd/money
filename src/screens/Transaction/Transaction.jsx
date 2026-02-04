@@ -87,10 +87,10 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
       ) : null}
 
       <View row style={style.footer}>
-        <Button disabled={busy} flex outlined onPress={goBack}>
+        <Button disabled={busy} variant="outlined" onPress={goBack} grow>
           {L10N.CLOSE}
         </Button>
-        <Button disabled={busy || !valid} flex onPress={handleSubmit}>
+        <Button disabled={busy || !valid} onPress={handleSubmit} grow>
           {L10N.SAVE}
         </Button>
       </View>
