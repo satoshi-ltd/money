@@ -27,7 +27,9 @@ export const calcAccount = ({ account = {}, baseCurrency, genesisDate, months = 
     const monthIndex = getMonthDiff(genesisDate, date);
 
     currentBalance += isExpense ? -value : value;
-    chartBalance[monthIndex] += isExpense ? -value : value;
+    if (monthIndex >= 0 && monthIndex <= months) {
+      chartBalance[monthIndex] += isExpense ? -value : value;
+    }
 
     // ! @TODO: Should revisit this algo
     if (monthIndex === months) {

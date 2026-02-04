@@ -39,7 +39,7 @@ const Transactions = (props = {}) => {
     <Panel title={L10N.TRANSACTIONS} onBack={goBack} disableScroll>
       <SectionList
         initialNumToRender={C.TRANSACTIONS_PER_PAGE}
-        keyExtractor={(item, index) => item.hash || `${item.timestamp}-${index}`}
+        keyExtractor={(item, index) => `${item.hash || item.timestamp}-${index}`}
         ListEmptyComponent={() => <Banner align="center" title={L10N.NO_TRANSACTIONS} />}
         ListHeaderComponent={
           <TransactionsListHeader

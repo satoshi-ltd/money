@@ -87,14 +87,12 @@ const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation:
       <View align="center">
         {isLifetime ? (
           <Text align="center" bold caption style={style.lifetime}>
-            {`${planData?.price || 'THB 3,990thb'} ${L10N.LIFETIME}`}
+            {`${planData?.price || L10N.SUBSCRIPTION_PRICE_FALLBACK_ANNUAL} ${L10N.LIFETIME}`}
           </Text>
         ) : (
           <>
             <Text align="center" bold caption>
-              {`${planData?.price || 'THB 3,990thb'} ${L10N.ANNUALY} (${planData?.pricePerMonth || 'THB 332.50'}/${
-                L10N.MONTH
-              })`}
+              {`${planData?.price || L10N.SUBSCRIPTION_PRICE_FALLBACK_ANNUAL} ${L10N.ANNUALY} (${planData?.pricePerMonth || L10N.SUBSCRIPTION_PRICE_FALLBACK_MONTH}/${L10N.MONTH})`}
             </Text>
             <Text align="center" bold caption>
               {L10N.CANCEL_ANYTIME}

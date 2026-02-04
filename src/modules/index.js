@@ -1,4 +1,5 @@
 export * from './constants';
+export * from './autoCategory';
 export * from './currencyDecimals';
 export * from './eventEmitter';
 export * from './exchange';

@@ -13,7 +13,7 @@ export const parseTx = ({
   hash: hash || UUID({ entity: 'tx', category, timestamp, title, type, value, account }),
   category,
   timestamp,
-  title: title.trim(),
+  title: typeof title === 'string' ? title.trim() : 'Transaction',
   type,
-  value: parseFloat(value, 10),
+  value: Number.isFinite(Number(value)) ? Math.abs(Number(value)) : 0,
 });

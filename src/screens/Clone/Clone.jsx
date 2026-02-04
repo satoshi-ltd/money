@@ -46,6 +46,10 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
     const accountHash = account?.hash || dataSource.account;
     const payload = { ...tx, ...state.form, account: accountHash };
 
+    if (clone && state.form?.timestamp === baseline.form?.timestamp) {
+      payload.timestamp = new Date().getTime();
+    }
+
     if (edit) await updateTx({ hash: dataSource.hash, ...payload });
     else if (clone) await createTx(payload);
     else if (remove) {

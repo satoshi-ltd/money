@@ -34,7 +34,7 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
     <Screen disableScroll={!IS_WEB}>
       <SectionList
         initialNumToRender={C.TRANSACTIONS_PER_PAGE}
-        keyExtractor={(item, index) => item.hash || `${item.timestamp}-${index}`}
+        keyExtractor={(item, index) => `${item.hash || item.timestamp}-${index}`}
         ListHeaderComponent={<DashboardListHeader navigate={navigate} onSearch={setQuery} setPage={setPage} />}
         renderItem={({ item }) => <TransactionItem {...item} />}
         renderSectionHeader={({ section }) => <TransactionsHeader {...section} />}

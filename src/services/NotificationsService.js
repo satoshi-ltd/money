@@ -4,6 +4,9 @@ import { Platform } from 'react-native';
 import { L10N } from '../modules';
 
 const GRANTED = 'granted';
+const NOTIFICATION_KIND = {
+  BACKUP: 'backup-reminder',
+};
 
 export const NotificationsService = {
   init: async () => {
@@ -37,11 +40,22 @@ export const NotificationsService = {
   reminders: async ([backup = 1] = []) => {
     if (!(await NotificationsService.permission())) return;
 
-    await Notifications.cancelAllScheduledNotificationsAsync();
+    const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+    const backupNotifications = scheduled.filter(
+      (item) => item?.content?.data?.kind === NOTIFICATION_KIND.BACKUP,
+    );
+    await Promise.all(
+      backupNotifications.map((item) => Notifications.cancelScheduledNotificationAsync(item.identifier)),
+    );
 
     if (backup) {
       await Notifications.scheduleNotificationAsync({
-        content: { title: L10N.SCHEDULE_BACKUP, body: L10N.SCHEDULE_BACKUP_CAPTION, sound: true },
+        content: {
+          title: L10N.SCHEDULE_BACKUP,
+          body: L10N.SCHEDULE_BACKUP_CAPTION,
+          sound: true,
+          data: { kind: NOTIFICATION_KIND.BACKUP },
+        },
         trigger: { hour: 8, minute: 0, weekday: 7, type: Notifications.SchedulableTriggerInputTypes.WEEKLY },
       });
     }

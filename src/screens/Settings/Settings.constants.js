@@ -37,7 +37,7 @@ const OPTIONS = (isPremium, subscription) => [
   },
 ];
 
-const PREFERENCES = [
+const PREFERENCES = () => [
   {
     icon: ICON.SWAP,
     screen: 'baseCurrency',

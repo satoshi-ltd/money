@@ -67,7 +67,7 @@ export const Notification = () => {
   return (
     <NotificationBase
       {...{ error, text, visible }}
-      title={title || (error ? L10N.ERROR : 'Info')}
+      title={title || (error ? L10N.ERROR : L10N.INFO)}
       onClose={handleClose}
       style={Platform.OS === 'android' ? { marginTop: top } : undefined}
     />

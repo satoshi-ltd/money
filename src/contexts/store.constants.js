@@ -3,14 +3,23 @@ import { C } from '../modules';
 
 const { CURRENCY } = C;
 
+const SCHEMA_VERSION = 2;
+
 const DEFAULTS = {
   settings: {
     baseCurrency: CURRENCY,
     fingerprint: getFingerprint(),
+    language: undefined,
     maskAmount: false,
     onboarded: false,
     pin: undefined,
     reminders: [1],
+    autoCategory: {
+      rules: {},
+      stats: {},
+      updatedAt: undefined,
+    },
+    schemaVersion: SCHEMA_VERSION,
     statsRangeMonths: 12,
     theme: 'light',
   },
@@ -22,4 +31,4 @@ const DEFAULTS = {
 
 const FILENAME = 'com.satoshi-ltd.money';
 
-export { DEFAULTS, FILENAME };
+export { DEFAULTS, FILENAME, SCHEMA_VERSION };

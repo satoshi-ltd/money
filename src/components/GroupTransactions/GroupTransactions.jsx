@@ -4,6 +4,7 @@ import React from 'react';
 
 import { style } from './GroupTransaction.style';
 import { Item } from './GroupTransactions.Item';
+import { L10N } from '../../modules';
 
 // ! TODO: Refacto
 export const verboseDate = (date = new Date(), { locale = 'en-US', ...props } = {}) => {
@@ -14,9 +15,9 @@ export const verboseDate = (date = new Date(), { locale = 'en-US', ...props } = 
   yesterday = yesterday.toDateString();
 
   return day === today
-    ? 'Today'
+    ? L10N.TODAY
     : day === yesterday
-    ? 'Yesterday'
+    ? L10N.YESTERDAY
     : date.toLocaleDateString
     ? date.toLocaleDateString(locale, props)
     : date;
@@ -28,8 +29,8 @@ const GroupTransactions = ({ currency, timestamp = new Date(), txs = [] }) => (
       {verboseDate(new Date(timestamp), { day: 'numeric', month: 'long', year: 'numeric' })}
     </Text>
 
-    {txs.map((tx) => (
-      <Item key={tx.hash} currency={currency} {...tx} />
+    {txs.map((tx, index) => (
+      <Item key={`${tx.hash}-${index}`} currency={currency} {...tx} />
     ))}
   </View>
 );

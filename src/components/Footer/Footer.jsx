@@ -32,6 +32,8 @@ const Footer = ({ state, navigation, onActionPress }) => {
   return (
     <View pointerEvents="box-none" style={[styles.root, { bottom: insets.bottom }]}>
       <BlurView
+        experimentalBlurMethod="dimezisBlurView"
+        blurReductionFactor={0.6}
         intensity={60}
         tint={mode === 'dark' ? 'dark' : 'light'}
         style={[styles.blurView, { width: (state.routes.length + 1.5) * 56, borderColor: colors.border }]}

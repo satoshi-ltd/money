@@ -1,62 +1,75 @@
-# Project Context: Money
+# Money — guide for AI agents
 
-## Overview
-**Môney** is a private finance ledger application built with **Expo** and **React Native**. It focuses on privacy ("running on your own blockchain" metaphor) and local data persistence using `AsyncStorage` and iCloud/Backup services.
+## Quick context
+- Local‑first personal finance ledger app built with Expo + React Native.
+- All data is stored on device (AsyncStorage). Export/Import via JSON backup.
+- Navigation: React Navigation v6 with stack + tabs.
 
-## Tech Stack
-- **Framework:** Expo SDK 53, React Native 0.79, React 19.
-- **Language:** JavaScript (ES6+), JSX.
-- **Navigation:** React Navigation v6 (Native Stack, Bottom Tabs, Material Top Tabs).
-- **Styling:** `react-native-extended-stylesheet` (EStyleSheet).
-- **State Management:** React Context API + `useReducer`.
-- **Persistence:** `@react-native-async-storage/async-storage`.
-- **Charts:** `react-native-gifted-charts`.
-- **Monetization:** `react-native-purchases`.
+## Context cheatsheet
+- App entry: `App.js` -> `src/App.jsx`
+- Navigation: `src/App.Navigator.jsx`
+- Global state: `src/contexts/store.jsx` (+ reducers in `src/contexts/reducers/`)
+- Persistence: `src/services/StorageService.js`
+- Backups: `src/services/BackupService.js`
+- Notifications: `src/services/NotificationsService.js`
+- Themes: `src/config/theme.js`, `src/theme/*`
+- UI primitives: `src/design-system/*` (prefer these over native)
 
-## Project Structure
-The source code is located in the `src/` directory:
+## Project structure
+- `src/screens/`: feature screens and navigation destinations
+- `src/components/`: higher‑level UI pieces
+- `src/design-system/`: low‑level primitives (View/Text/Button/Icon/Pressable)
+- `src/contexts/`: global store, reducers, and helpers
+- `src/services/`: persistence, backups, notifications, rates
+- `src/modules/`: shared business logic utilities
+- `src/theme/`: themes and tokens
+- `assets/`: fonts and static assets
 
-- **`src/screens/`**: Application screens, organized by feature/route.
-- **`src/components/`**: Feature-specific UI components.
-  - Structure: `Component/Component.jsx`, `Component.styles.js`, `index.js`.
-- **`src/design-system/`**: Low-level reusable UI primitives (View, Text, Button, Icon).
-  - **Always prefer using these over raw React Native components.**
-- **`src/services/`**: logic for external services (Storage, Backup, Notifications, Rates).
-- **`src/contexts/`**: Global state management (App context, Store context).
-- **`src/modules/`**: Helper functions, business logic, formatting utilities.
-- **`src/theme/`**: Theme definitions (Light/Dark).
-- **`src/assets/`**: Static assets (fonts, images).
+## Data model (local)
+- `settings`: includes `schemaVersion`, `theme`, `baseCurrency`, `pin`, `reminders`, `autoCategory`
+- `accounts`: list of account objects (`hash`, `balance`, `currency`, `timestamp`, `title`)
+- `txs`: list of transactions (`hash`, `account`, `category`, `type`, `value`, `timestamp`, `title`)
+- `subscription`: purchases state
+- `rates`: cached exchange rates
 
-## Development Guidelines
+## Schema & migrations
+- Storage defaults + schema version live in `src/contexts/store.constants.js`.
+- Migrations/normalization live in `src/contexts/modules/migrateState.js`.
+- Backups include `schemaVersion` and the top‑level data model.
 
-### 1. Component Architecture
-- **Atomic Design:** Use `design-system` components for building blocks.
-- **Styling:**
-  - Use `react-native-extended-stylesheet`.
-  - Define styles in a separate `*.styles.js` file alongside the component.
-  - Use global theme variables (e.g., `$spaceS`, colors) defined in the theme.
-- **Imports:** Prefer named imports or index imports where established.
+## Key flows
+- App boot: `StoreProvider` hydrates AsyncStorage -> consolidates state.
+- New transaction: `createTx` -> `parseTx` -> store -> state update.
+- Auto‑categorization learns on each save; initial catalog builds once if empty.
+- Backup: `BackupService.export` / `BackupService.import`.
+- Notifications: weekly backup reminder via `NotificationsService.reminders`.
 
-### 2. State Management
-- Use `src/contexts` for global state.
-- Use local `useState`/`useReducer` for component-specific state.
-- Persistent data handles via `StorageService`.
+## Coding standards
+- Use `src/design-system` primitives instead of raw `react-native` when possible.
+- Styles live in `*.styles.js` with EStyleSheet tokens.
+- Avoid hardcoded colors; use theme variables or `resolveColor`.
+- Prefer named/index imports where established.
+- Keep components small; share logic in `src/modules` or `src/contexts/modules`.
 
-### 3. Naming Conventions
-- **Files:** PascalCase for React components (`MyComponent.jsx`), camelCase for utilities (`myUtility.js`).
-- **Folders:** PascalCase for Component folders.
+## Safety & privacy
+- Keep data local by default.
+- Any remote/AI feature must be opt‑in, explicit, and clearly labeled.
+- Avoid sending raw transaction data off device without user confirmation.
 
-### 4. Scripts
-- `yarn start`: Run the Expo development server.
-- `yarn lint`: Run ESLint.
-- `yarn test`: Run Jest tests.
+## Notifications rules
+- Do not use `cancelAllScheduledNotificationsAsync` for new features.
+- Use stable identifiers or scoped metadata to cancel only related notifications.
 
-## Key Files
-- `App.js`: Entry point.
-- `src/App.Navigator.jsx`: Main navigation setup.
-- `src/config/theme.js` & `src/theme/`: Theme configuration.
+## UX rules
+- Use tokens for spacing/typography from theme.
+- Maintain existing layout patterns (headers, modals, list cards).
 
-## "Do's and Don'ts"
-- **DO** use the `design-system` components (`View`, `Text`, `Button`) instead of `react-native` primitives when possible.
-- **DO** check `package.json` before installing new libraries.
-- **DON'T** hardcode colors. Use theme variables or the `resolveColor` utility.
+## Tests & scripts
+- `yarn start`: run Expo dev server
+- `yarn lint`: ESLint
+- `yarn test`: Jest
+
+## Product direction (2026)
+- Local‑first always (privacy and offline usability).
+- Notifications should be scoped per feature (avoid global cancel).
+- Maintain schema/migrations in backups and storage.

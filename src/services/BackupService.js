@@ -4,6 +4,7 @@ import * as Sharing from 'expo-sharing';
 import { Platform } from 'react-native';
 
 import { L10N } from '../modules';
+import { SCHEMA_VERSION } from '../contexts/store.constants';
 
 const IS_WEB = Platform.OS === 'web';
 
@@ -13,7 +14,8 @@ export const BackupService = {
     new Promise(async (resolve, reject) => {
       try {
         const fileName = `money-${new Date().toISOString()}.json`;
-        const data = JSON.stringify({ accounts, settings, txs });
+        const schemaVersion = settings?.schemaVersion || SCHEMA_VERSION;
+        const data = JSON.stringify({ schemaVersion, accounts, settings, txs });
 
         if (IS_WEB) {
           const el = document.createElement('a');
@@ -55,11 +57,11 @@ export const BackupService = {
             jsonData = JSON.parse(fileData);
           }
 
-          const { accounts = [], settings = {}, txs = [] } = jsonData;
+          const { accounts = [], schemaVersion, settings = {}, txs = [] } = jsonData;
 
           if (!accounts.length || !Object.keys(settings).length) return reject(L10N.ERROR_IMPORT);
 
-          resolve({ accounts, settings, txs });
+          resolve({ accounts, schemaVersion, settings, txs });
         }
       } catch (error) {
         reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);

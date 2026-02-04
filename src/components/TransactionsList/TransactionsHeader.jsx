@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { style } from './TransactionsList.style';
+import { L10N } from '../../modules';
 
 // ! TODO: Refacto
 const verboseDate = (date = new Date(), { locale = 'en-US', ...props } = {}) => {
@@ -13,9 +14,9 @@ const verboseDate = (date = new Date(), { locale = 'en-US', ...props } = {}) => 
   yesterday = yesterday.toDateString();
 
   return day === today
-    ? 'Today'
+    ? L10N.TODAY
     : day === yesterday
-    ? 'Yesterday'
+    ? L10N.YESTERDAY
     : date.toLocaleDateString
     ? date.toLocaleDateString(locale, props)
     : date;
