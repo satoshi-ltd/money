@@ -9,6 +9,12 @@ export const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.35)',
   },
+  backdropPressable: {
+    flex: 1,
+  },
+  keyboardAvoid: {
+    justifyContent: 'flex-end',
+  },
   sheet: {
     borderTopLeftRadius: '$borderRadius',
     borderTopRightRadius: '$borderRadius',
@@ -23,29 +29,14 @@ export const styles = StyleSheet.create({
     borderRadius: 2,
     backgroundColor: '$colorBorder',
     marginTop: '$spaceS',
-    marginBottom: '$spaceXS',
+    marginBottom: '$spaceS',
   },
   container: {
     paddingHorizontal: '$viewOffset',
     paddingBottom: '$viewOffset',
     alignSelf: 'stretch',
   },
-  scrollContent: {
-    paddingBottom: '$viewOffset',
-  },
-  gap: {
-    gap: '$viewOffset',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingTop: '$viewOffset',
-  },
-  title: {
-    flex: 1,
-  },
-  close: {
-    padding: '$spaceXS',
+  content: {
+    gap: '$spaceS',
   },
 });

@@ -6,7 +6,6 @@ export { default as Card } from './Card';
 export * from './CardAccount';
 export * from './CardOption';
 export * from './CurrencyLogo';
-export * from './Dialog';
 export { default as Dropdown } from './Dropdown';
 export * from './Field';
 export { default as Footer } from './Footer';

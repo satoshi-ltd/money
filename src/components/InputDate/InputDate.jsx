@@ -37,7 +37,7 @@ const InputDate = ({ first, label = L10N.DATE, last, value = new Date(), onChang
       </Field>
 
       {open ? (
-        <Modal onClose={() => setOpen(false)} hideClose>
+        <Modal onClose={() => setOpen(false)}>
           <DateTimePicker
             accentColor={StyleSheet.value('$colorAccent')}
             is24Hour
