@@ -94,8 +94,10 @@ export const EN = {
   ERROR_TRY_AGAIN: 'Something wrong happened. Try again.',
   EXPENSE: 'Expense',
   EXPENSES: 'Expenses',
-  EXPORT_DATA: 'Export Data',
-  EXPORT_DATA_CAPTION: 'JSON archive',
+  EXPORT_DATA: 'Backup Data',
+  EXPORT_DATA_CAPTION: 'JSON backup',
+  EXPORT_CSV: 'Export CSV',
+  EXPORT_CSV_CAPTION: 'CSV file',
 
   FIRST_ACCOUNT: 'Your first account',
   FIRST_ACCOUNT_CAPTION: 'Choose your main currency. Add more accounts later, each supporting different currencies.',
@@ -105,8 +107,8 @@ export const EN = {
 
   HOME: 'Home',
 
-  IMPORT_DATA: 'Import Data',
-  IMPORT_DATA_CAPTION: 'JSON archive',
+  IMPORT_DATA: 'Restore Data',
+  IMPORT_DATA_CAPTION: 'From JSON backup',
   INCOME: 'Income',
   INCOMES: 'Incomes',
   INITIAL_BALANCE: 'Initial balance',
@@ -346,8 +348,10 @@ export const PT = {
   ERROR_TRY_AGAIN: 'Algo deu errado. Tente novamente.',
   EXPENSE: 'Despesa',
   EXPENSES: 'Despesas',
-  EXPORT_DATA: 'Exportar dados',
-  EXPORT_DATA_CAPTION: 'Arquivo JSON',
+  EXPORT_DATA: 'Backup de dados',
+  EXPORT_DATA_CAPTION: 'Backup JSON',
+  EXPORT_CSV: 'Exportar CSV',
+  EXPORT_CSV_CAPTION: 'Arquivo CSV',
 
   FIRST_ACCOUNT: 'Sua primeira conta',
   FIRST_ACCOUNT_CAPTION: 'Escolha sua moeda principal. Adicione mais contas depois.',
@@ -357,8 +361,8 @@ export const PT = {
 
   HOME: 'Início',
 
-  IMPORT_DATA: 'Importar dados',
-  IMPORT_DATA_CAPTION: 'Arquivo JSON',
+  IMPORT_DATA: 'Restaurar dados',
+  IMPORT_DATA_CAPTION: 'De backup JSON',
   INCOME: 'Receita',
   INCOMES: 'Receitas',
   INITIAL_BALANCE: 'Saldo inicial',
@@ -597,8 +601,10 @@ export const FR = {
   ERROR_TRY_AGAIN: 'Une erreur est survenue. Réessayez.',
   EXPENSE: 'Dépense',
   EXPENSES: 'Dépenses',
-  EXPORT_DATA: 'Exporter les données',
-  EXPORT_DATA_CAPTION: 'Fichier JSON',
+  EXPORT_DATA: 'Sauvegarder les données',
+  EXPORT_DATA_CAPTION: 'Sauvegarde JSON',
+  EXPORT_CSV: 'Exporter en CSV',
+  EXPORT_CSV_CAPTION: 'Fichier CSV',
 
   FIRST_ACCOUNT: 'Votre première compte',
   FIRST_ACCOUNT_CAPTION: 'Choisissez votre devise principale. Ajoutez d’autres comptes ensuite.',
@@ -608,8 +614,8 @@ export const FR = {
 
   HOME: 'Accueil',
 
-  IMPORT_DATA: 'Importer des données',
-  IMPORT_DATA_CAPTION: 'Fichier JSON',
+  IMPORT_DATA: 'Restaurer les données',
+  IMPORT_DATA_CAPTION: 'Depuis une sauvegarde JSON',
   INCOME: 'Revenu',
   INCOMES: 'Revenus',
   INITIAL_BALANCE: 'Solde initial',
@@ -848,8 +854,10 @@ export const DE = {
   ERROR_TRY_AGAIN: 'Etwas ist schiefgelaufen. Bitte erneut versuchen.',
   EXPENSE: 'Ausgabe',
   EXPENSES: 'Ausgaben',
-  EXPORT_DATA: 'Daten exportieren',
-  EXPORT_DATA_CAPTION: 'JSON-Datei',
+  EXPORT_DATA: 'Daten sichern',
+  EXPORT_DATA_CAPTION: 'JSON-Backup',
+  EXPORT_CSV: 'CSV exportieren',
+  EXPORT_CSV_CAPTION: 'CSV-Datei',
 
   FIRST_ACCOUNT: 'Ihr erstes Konto',
   FIRST_ACCOUNT_CAPTION: 'Wählen Sie Ihre Hauptwährung. Fügen Sie später weitere Konten hinzu.',
@@ -859,8 +867,8 @@ export const DE = {
 
   HOME: 'Start',
 
-  IMPORT_DATA: 'Daten importieren',
-  IMPORT_DATA_CAPTION: 'JSON-Datei',
+  IMPORT_DATA: 'Daten wiederherstellen',
+  IMPORT_DATA_CAPTION: 'Aus JSON-Backup',
   INCOME: 'Einnahme',
   INCOMES: 'Einnahmen',
   INITIAL_BALANCE: 'Startsaldo',
@@ -1099,8 +1107,10 @@ export const ES = {
   ERROR_TRY_AGAIN: 'Ocurrió un error. Inténtalo de nuevo.',
   EXPENSE: 'Gasto',
   EXPENSES: 'Gastos',
-  EXPORT_DATA: 'Exportar datos',
-  EXPORT_DATA_CAPTION: 'Archivo JSON',
+  EXPORT_DATA: 'Backup de datos',
+  EXPORT_DATA_CAPTION: 'Backup JSON',
+  EXPORT_CSV: 'Exportar CSV',
+  EXPORT_CSV_CAPTION: 'Archivo CSV',
 
   FIRST_ACCOUNT: 'Tu primera cuenta',
   FIRST_ACCOUNT_CAPTION: 'Elige tu moneda principal. Añade más cuentas después.',
@@ -1110,8 +1120,8 @@ export const ES = {
 
   HOME: 'Inicio',
 
-  IMPORT_DATA: 'Importar datos',
-  IMPORT_DATA_CAPTION: 'Archivo JSON',
+  IMPORT_DATA: 'Restaurar datos',
+  IMPORT_DATA_CAPTION: 'Desde backup JSON',
   INCOME: 'Ingreso',
   INCOMES: 'Ingresos',
   INITIAL_BALANCE: 'Saldo inicial',

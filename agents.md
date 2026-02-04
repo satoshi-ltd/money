@@ -26,7 +26,7 @@
 - `assets/`: fonts and static assets
 
 ## Data model (local)
-- `settings`: includes `schemaVersion`, `theme`, `baseCurrency`, `pin`, `reminders`, `autoCategory`
+- `settings`: includes `schemaVersion`, `theme`, `baseCurrency`, `pin`, `reminders`, `language`, `autoCategory`
 - `accounts`: list of account objects (`hash`, `balance`, `currency`, `timestamp`, `title`)
 - `txs`: list of transactions (`hash`, `account`, `category`, `type`, `value`, `timestamp`, `title`)
 - `subscription`: purchases state
@@ -42,7 +42,9 @@
 - New transaction: `createTx` -> `parseTx` -> store -> state update.
 - Auto‑categorization learns on each save; initial catalog builds once if empty.
 - Backup: `BackupService.export` / `BackupService.import`.
+- CSV export: `BackupService.exportCsv`.
 - Notifications: weekly backup reminder via `NotificationsService.reminders`.
+- i18n: `settings.language` drives `L10N` proxy, with EN/ES/PT/FR/DE dictionaries.
 
 ## Coding standards
 - Use `src/design-system` primitives instead of raw `react-native` when possible.

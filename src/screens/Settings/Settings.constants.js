@@ -35,6 +35,13 @@ const OPTIONS = (isPremium, subscription) => [
     id: 4,
     text: L10N.IMPORT_DATA,
   },
+  {
+    callback: 'handleExportCsv',
+    caption: L10N.EXPORT_CSV_CAPTION,
+    icon: ICON.DOWNLOAD,
+    id: 5,
+    text: L10N.EXPORT_CSV,
+  },
 ];
 
 const PREFERENCES = () => [

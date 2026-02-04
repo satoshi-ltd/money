@@ -46,6 +46,7 @@ const Settings = ({ navigation = {} }) => {
     if (screen) navigation.navigate(screen);
     else if (callback === 'handleSubscription') handleSubscription();
     else if (callback === 'handleExport') handleExport();
+    else if (callback === 'handleExportCsv') handleExportCsv();
     else if (callback === 'handleImport') handleImport();
     else if (callback === 'handleUpdateRates') handleUpdateRates();
     else if (callback === 'handleRestorePurchases') handleRestorePurchases();
@@ -55,6 +56,13 @@ const Settings = ({ navigation = {} }) => {
     if (!IS_WEB && !isPremium) return handleSubscription('export');
 
     const exported = await BackupService.export({ accounts, settings, txs });
+    if (exported) eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.CONFIRM_EXPORT_SUCCESS });
+  };
+
+  const handleExportCsv = async () => {
+    if (!IS_WEB && !isPremium) return handleSubscription('export');
+
+    const exported = await BackupService.exportCsv({ accounts, settings, txs });
     if (exported) eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.CONFIRM_EXPORT_SUCCESS });
   };
 
