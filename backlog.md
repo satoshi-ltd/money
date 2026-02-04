@@ -1,7 +1,7 @@
 # Backlog
 
 ## Product
-- Local insights (no cloud): trends, unusual spend alerts, subscription detection.
+- Insights V2 (low priority): day-of-week patterns, largest transaction summaries, subscription detection.
 - Category budgets with monthly rollover.
 - Savings goals with monthly progress.
 - Split transactions across multiple categories.

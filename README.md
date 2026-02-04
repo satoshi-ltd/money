@@ -10,6 +10,7 @@ Private, local‑first finance ledger for people who want their data to stay on 
 **Core features**
 - Multi‑currency accounts and transactions
 - Spending and income analytics
+- Local insights (trends, unusual spend alerts, and monthly pace)
 - Manual export/import backup
 - CSV export
 - Optional weekly backup reminders

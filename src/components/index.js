@@ -21,6 +21,7 @@ export * from './InputText';
 export * from './LineChart';
 export * from './Logo';
 export { default as Modal } from './Modal';
+export * from './MetricBar';
 export * from './Notification';
 export { default as Option } from './Option';
 export { default as Pagination } from './Pagination';

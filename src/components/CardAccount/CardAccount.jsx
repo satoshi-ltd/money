@@ -36,6 +36,8 @@ const CardAccount = ({
       ? StyleSheet.value('$colorContentLight')
       : StyleSheet.value('$colorAccent');
 
+  const showPercentage = Math.abs(percentage) >= 3;
+
   return (
     <Pressable onPress={onPress} style={others.style}>
       <Card {...others} active={highlight} style={style.card}>
@@ -60,8 +62,17 @@ const CardAccount = ({
               )}
             </View>
           )}
-          {!!percentage && (
-            <PriceFriendly bold tiny color={percentageColor} currency="%" detail fixed={2} operator value={percentage} />
+          {showPercentage && (
+            <PriceFriendly
+              bold
+              caption
+              color={percentageColor}
+              currency="%"
+              fixed={2}
+              operator
+              style={style.percentage}
+              value={percentage}
+            />
           )}
 
           <LineChart

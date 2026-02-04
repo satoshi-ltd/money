@@ -13,6 +13,7 @@
 - Persistence: `src/services/StorageService.js`
 - Backups: `src/services/BackupService.js`
 - Notifications: `src/services/NotificationsService.js`
+- Insights: computed in `src/modules/insights.js` and rendered on Dashboard cards
 - Themes: `src/config/theme.js`, `src/theme/*`
 - UI primitives: `src/design-system/*` (prefer these over native)
 
@@ -42,6 +43,7 @@
 - App boot: `StoreProvider` hydrates AsyncStorage -> consolidates state.
 - New transaction: `createTx` -> `parseTx` -> store -> state update.
 - Auto‑categorization learns on each save; initial catalog builds once if empty.
+- Insights are computed locally from transactions via `buildInsights`.
 - Backup: `BackupService.export` / `BackupService.import`.
 - CSV export: `BackupService.exportCsv`.
 - Notifications: weekly backup reminder via `NotificationsService.reminders`.

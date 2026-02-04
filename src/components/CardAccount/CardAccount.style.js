@@ -23,6 +23,9 @@ const style = StyleSheet.create({
     opacity: 0.66,
     position: 'absolute',
   },
+  percentage: {
+
+  },
 });
 
 export { style };
