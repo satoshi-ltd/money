@@ -24,7 +24,7 @@ const verboseDate = (date = new Date(), { locale = 'en-US', ...props } = {}) => 
 
 const TransactionsHeader = ({ title = new Date() }) => (
   <View style={style.headerContainer}>
-    <Text bold caption color="contentLight" secondary style={style.date}>
+    <Text bold tone="secondary" style={style.date} size="s">
       {verboseDate(new Date(title), { day: 'numeric', month: 'long', year: 'numeric' })}
     </Text>
   </View>

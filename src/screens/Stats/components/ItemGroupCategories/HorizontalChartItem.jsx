@@ -24,9 +24,8 @@ const HorizontalChartItem = ({ color, currency, detail, icon, title, value, widt
 
   const textProps = {
     bold: !detail,
-    caption: !detail,
     color: detail ? 'contentLight' : 'content',
-    tiny: detail,
+    size: detail ? 'xs' : 's',
   };
 
   return (
@@ -36,7 +35,7 @@ const HorizontalChartItem = ({ color, currency, detail, icon, title, value, widt
       )}
 
       <View row style={[style.content, detail && style.detail]}>
-        <Icon name={icon} small />
+        <Icon name={icon} size="xs" />
         <View flex>
           <Text {...textProps}>{title}</Text>
         </View>

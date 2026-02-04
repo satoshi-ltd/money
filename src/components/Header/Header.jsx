@@ -29,7 +29,7 @@ const Header = ({ title, onBack, leftElement, rightElement, showBorder = false, 
         <View style={styles.side} />
       )}
 
-      <Text bold subtitle>
+      <Text bold size="l">
         {title}
       </Text>
 

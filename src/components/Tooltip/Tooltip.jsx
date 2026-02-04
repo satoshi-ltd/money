@@ -57,7 +57,7 @@ const Tooltip = ({ visible, text, position = 'top', align = 'center', offset, ch
     <View pointerEvents="box-none" style={styles.wrap}>
       <View style={[styles.bubble, { width: windowWidth * 0.6 }]}>
         {text ? (
-          <Text caption color="inverse">
+          <Text tone="inverse" size="s">
             {text}
           </Text>
         ) : (

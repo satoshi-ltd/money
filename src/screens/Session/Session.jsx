@@ -50,7 +50,7 @@ const Session = ({ navigation: { reset } = {} }) => {
     <SafeAreaView style={style.safeAreaView}>
       <View style={style.content}>
         <Logo />
-        <Text detail>{signup ? L10N.PIN_CHOOSE : L10N.PIN}</Text>
+        <Text size="m">{signup ? L10N.PIN_CHOOSE : L10N.PIN}</Text>
         <View style={style.pinCode}>
           {['•', '•', '•', '•'].map((letter, index) => (
             <View key={index} style={[style.pin, pin.length > index ? style.pinActive : undefined]} />
@@ -59,7 +59,7 @@ const Session = ({ navigation: { reset } = {} }) => {
 
         <NumKeyboard onPress={(number) => setPin(`${pin}${number}`)} />
 
-        <Text tiny>{`v${VERSION}`}</Text>
+        <Text size="xs">{`v${VERSION}`}</Text>
       </View>
     </SafeAreaView>
   );

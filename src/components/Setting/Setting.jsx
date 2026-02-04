@@ -65,7 +65,7 @@ const Setting = ({
           <View flex>
             <Text bold>{text}</Text>
             {caption ? (
-              <Text caption color="contentLight">
+              <Text tone="secondary" size="s">
                 {caption}
               </Text>
             ) : null}
@@ -83,11 +83,11 @@ const Setting = ({
             onValueChange={onValueChange}
           />
         ) : options?.length ? (
-          <Text caption color="contentLight" style={styles.rightText}>
+          <Text tone="secondary" style={styles.rightText} size="s">
             {resolveOptionLabel(selectedOption)}
           </Text>
         ) : (
-          <Icon name={ICON.RIGHT} color="contentLight" />
+          <Icon name={ICON.RIGHT} tone="secondary" />
         )}
       </View>
     </Pressable>

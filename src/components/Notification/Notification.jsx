@@ -22,7 +22,7 @@ const NotificationBase = ({ error, onClose, text, title, visible, style: contain
             {title}
           </Text>
           {text ? (
-            <Text tiny color={textColor}>
+            <Text color={textColor} size="xs">
               {text}
             </Text>
           ) : null}

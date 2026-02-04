@@ -6,7 +6,7 @@ import { style } from './Heading.style';
 
 const Heading = ({ children, offset, value = '', ...others }) => (
   <View {...others} row spaceBetween style={[style.heading, offset && style.offset, others.style]}>
-    <Text bold secondary subtitle>
+    <Text bold size="l">
       {value}
     </Text>
     {children && <View row>{children}</View>}

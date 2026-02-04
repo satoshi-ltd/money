@@ -25,7 +25,7 @@ export const verboseDate = (date = new Date(), { locale = 'en-US', ...props } = 
 
 const GroupTransactions = ({ currency, timestamp = new Date(), txs = [] }) => (
   <View style={style.container}>
-    <Text bold caption color="contentLight" secondary style={style.date}>
+    <Text bold tone="secondary" style={style.date} size="s">
       {verboseDate(new Date(timestamp), { day: 'numeric', month: 'long', year: 'numeric' })}
     </Text>
 

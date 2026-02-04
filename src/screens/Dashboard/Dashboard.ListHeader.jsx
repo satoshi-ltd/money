@@ -56,11 +56,11 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
       <Card style={style.insightCard}>
         <View style={style.insightCardContent}>
           <View style={style.insightHeader}>
-            <Text align="left" bold tiny uppercase numberOfLines={2}>
+            <Text align="left" bold uppercase numberOfLines={2} size="xs">
               {insight.title}
             </Text>
             {insight.caption ? (
-              <Text tiny color="contentLight" numberOfLines={2}>
+              <Text tone="secondary" numberOfLines={2} size="xs">
                 {insight.caption}
               </Text>
             ) : null}
@@ -68,25 +68,25 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
           <View flex style={style.insightContent}>
             {isAmount ? (
               <View style={style.insightValue}>
-                <PriceFriendly bold subtitle currency={baseCurrency} operator value={insight.value} />
+                <PriceFriendly bold size="l" currency={baseCurrency} operator value={insight.value} />
               </View>
             ) : null}
             {insight.type === 'trend' && insight.valueLabel ? (
-              <Text bold title color={toneColor} style={style.insightTrendValue}>
+              <Text bold color={toneColor} style={style.insightTrendValue} size="xl">
                 {formatSignedPercent(insight.value)}
               </Text>
             ) : null}
             {insight.type === 'alert' && insight.valueLabel ? (
               <View row style={style.insightValueRow}>
-                <Icon name={ICON.ALERT} color="error" small />
-                <Text bold title color="error">
+                <Icon name={ICON.ALERT} tone="danger" size="xs" />
+                <Text bold tone="danger" size="xl">
                   {insight.valueLabel}
                 </Text>
               </View>
             ) : null}
             {insight.type === 'mover' && insight.valueLabel ? (
               <View row style={style.insightValueRow}>
-                <Text bold title color={toneColor}>
+                <Text bold color={toneColor} size="xl">
                   {formatSignedPercent(insight.value)}
                 </Text>
               </View>
@@ -98,14 +98,14 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
                   percent={(insight.meta.current / Math.max(1, insight.meta.current + insight.meta.avg)) * 100}
                   title={L10N.INSIGHT_THIS_MONTH}
                   value={
-                    <PriceFriendly tiny color="contentLight" currency={baseCurrency} value={insight.meta.current} />
+                    <PriceFriendly size="xs" color="contentLight" currency={baseCurrency} value={insight.meta.current} />
                   }
                 />
                 <MetricBar
                   color="content"
                   percent={(insight.meta.avg / Math.max(1, insight.meta.current + insight.meta.avg)) * 100}
                   title={L10N.INSIGHT_3MO_AVG}
-                  value={<PriceFriendly tiny color="contentLight" currency={baseCurrency} value={insight.meta.avg} />}
+                  value={<PriceFriendly size="xs" color="contentLight" currency={baseCurrency} value={insight.meta.avg} />}
                 />
               </View>
             ) : null}
@@ -116,7 +116,7 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
                   percent={(insight.meta.incomes / Math.max(1, insight.meta.incomes + insight.meta.expenses)) * 100}
                   title={L10N.INCOME}
                   value={
-                    <PriceFriendly tiny color="contentLight" currency={baseCurrency} value={insight.meta.incomes} />
+                    <PriceFriendly size="xs" color="contentLight" currency={baseCurrency} value={insight.meta.incomes} />
                   }
                 />
                 <MetricBar
@@ -124,7 +124,7 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
                   percent={(insight.meta.expenses / Math.max(1, insight.meta.incomes + insight.meta.expenses)) * 100}
                   title={L10N.EXPENSE}
                   value={
-                    <PriceFriendly tiny color="contentLight" currency={baseCurrency} value={insight.meta.expenses} />
+                    <PriceFriendly size="xs" color="contentLight" currency={baseCurrency} value={insight.meta.expenses} />
                   }
                 />
               </View>

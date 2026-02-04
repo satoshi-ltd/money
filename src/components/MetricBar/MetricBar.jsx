@@ -23,13 +23,13 @@ const MetricBar = ({
       {title || value ? (
         <View style={style.header}>
           {title ? (
-            <Text tiny color="content">
+            <Text tone="primary" size="xs">
               {title}
             </Text>
           ) : null}
           {value !== undefined && value !== null ? (
             typeof value === 'string' || typeof value === 'number' ? (
-              <Text tiny color="contentLight">
+              <Text tone="secondary" size="xs">
                 {value}
               </Text>
             ) : (

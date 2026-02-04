@@ -61,10 +61,12 @@ const Button = ({
             ? styles.disabledPrimary
             : null;
 
-  const iconProps =
-    icon && iconOnly
-      ? { title: resolvedSize !== 's', subtitle: resolvedSize === 'm', small: resolvedSize === 's' }
-      : { title: resolvedSize === 'l', subtitle: resolvedSize === 'm', small: resolvedSize === 's' };
+  const iconSize =
+    resolvedSize === 's'
+      ? 'xs'
+      : resolvedSize === 'm'
+        ? 'l'
+        : 'xl';
 
   return (
     <Pressable
@@ -87,9 +89,9 @@ const Button = ({
         <ActivityIndicator size="small" color={textColor} />
       ) : (
         <>
-          {icon ? <Icon name={icon} color={textColor} {...iconProps} /> : null}
+          {icon ? <Icon name={icon} color={textColor} size={iconSize} /> : null}
           {children ? (
-            <Text bold caption={resolvedSize === 's'} color={textColor}>
+            <Text bold size={resolvedSize === 's' ? 's' : 'm'} color={textColor}>
               {children}
             </Text>
           ) : null}

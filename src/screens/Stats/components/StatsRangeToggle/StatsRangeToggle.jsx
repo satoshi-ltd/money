@@ -14,7 +14,7 @@ const StatsRangeToggle = ({ onChange, options = [], value }) => (
           onPress={() => onChange?.(option.value)}
           style={[style.item, selected && style.itemActive]}
         >
-          <Text caption bold color={selected ? 'base' : 'contentLight'}>
+          <Text bold color={selected ? 'base' : 'contentLight'} size="s">
             {option.label}
           </Text>
         </Pressable>

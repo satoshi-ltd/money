@@ -41,10 +41,10 @@ const Dropdown = ({
 
   const renderDefaultOption = (option, isSelected) => (
     <View style={styles.optionContent}>
-      <Text caption color={isSelected ? 'accent' : undefined} bold={isSelected}>
+      <Text color={isSelected ? 'accent' : undefined} bold={isSelected} size="s">
         {option.label}
       </Text>
-      {isSelected ? <Icon name="check" color="accent" /> : null}
+      {isSelected ? <Icon name="check" tone="accent" /> : null}
     </View>
   );
 

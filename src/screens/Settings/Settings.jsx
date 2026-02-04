@@ -149,7 +149,7 @@ const Settings = ({ navigation = {} }) => {
       <Heading value={L10N.SETTINGS} />
 
       <View style={style.group}>
-        <Text bold caption>
+        <Text bold size="s">
           {L10N.GENERAL.toUpperCase()}
         </Text>
         {OPTIONS(isPremium, subscription).map(({ caption, disabled, icon, id, text, ...rest }) => (
@@ -179,7 +179,7 @@ const Settings = ({ navigation = {} }) => {
       </View>
 
       <View style={style.group}>
-        <Text bold caption>
+        <Text bold size="s">
           {L10N.PREFERENCES.toUpperCase()}
         </Text>
         <Setting
@@ -232,7 +232,7 @@ const Settings = ({ navigation = {} }) => {
       </View>
 
       <View style={style.group}>
-        <Text bold caption>
+        <Text bold size="s">
           {L10N.ABOUT.toUpperCase()}
         </Text>
         {ABOUT(isPremium).map(({ disabled, icon, text, ...rest }, index) => (

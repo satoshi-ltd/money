@@ -35,7 +35,7 @@ const InputCurrency = ({ first, label = L10N.CURRENCY, last, onChange, options, 
           {option.label}
         </Text>
       </View>
-      {isSelected ? <Icon name="check" color="accent" /> : null}
+      {isSelected ? <Icon name="check" tone="accent" /> : null}
     </View>
   );
 
@@ -50,7 +50,7 @@ const InputCurrency = ({ first, label = L10N.CURRENCY, last, onChange, options, 
               </Card>
             ) : null}
             <View>
-              <Text caption color="contentLight">
+              <Text tone="secondary" size="s">
                 {label}
               </Text>
               <Text bold numberOfLines={1} style={[style.text, style.selectedValue]}>
@@ -58,7 +58,7 @@ const InputCurrency = ({ first, label = L10N.CURRENCY, last, onChange, options, 
               </Text>
             </View>
           </View>
-          <Icon name="chevron-down" color="contentLight" />
+          <Icon name="chevron-down" tone="secondary" />
         </View>
       </Pressable>
 

@@ -2,41 +2,49 @@ import React from 'react';
 import { Text as RNText } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
-import { resolveColor } from '../../components/utils/resolveColor';
 import { styles } from './Text.styles';
 
 const Text = ({
   align,
   bold,
-  caption,
-  color,
-  detail,
+  tone,
   flex,
-  secondary,
-  subtitle,
-  tiny,
-  title,
+  size,
   uppercase,
   style,
   ...props
 }) => {
   const sizeStyle =
-    (title && styles.title) ||
-    (subtitle && styles.subtitle) ||
-    (detail && styles.detail) ||
-    (caption && styles.caption) ||
-    (tiny && styles.tiny) ||
-    styles.base;
+    size === 'xl'
+      ? styles.title
+      : size === 'l'
+        ? styles.subtitle
+        : size === 'm'
+          ? styles.detail
+          : size === 's'
+            ? styles.caption
+            : size === 'xs'
+              ? styles.tiny
+              : null;
 
-  const familyToken = secondary
-    ? bold
-      ? '$fontBoldSecondary'
-      : '$fontDefaultSecondary'
-    : bold
-      ? '$fontBold'
-      : '$fontDefault';
+  const familyToken = bold ? '$fontBold' : '$fontDefault';
 
-  const resolvedColor = resolveColor(color, StyleSheet.value('$colorContent'));
+  const toneColor =
+    tone === 'primary'
+      ? StyleSheet.value('$colorContent')
+      : tone === 'secondary' || tone === 'muted'
+        ? StyleSheet.value('$colorContentLight')
+        : tone === 'accent'
+          ? StyleSheet.value('$colorAccent')
+          : tone === 'danger'
+            ? StyleSheet.value('$colorError')
+            : tone === 'warning'
+              ? StyleSheet.value('$colorWarning')
+              : tone === 'inverse'
+                ? StyleSheet.value('$colorBase')
+                : undefined;
+
+  const resolvedColor = toneColor || StyleSheet.value('$colorContent');
 
   return (
     <RNText

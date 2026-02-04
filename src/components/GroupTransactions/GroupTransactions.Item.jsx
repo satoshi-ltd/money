@@ -57,12 +57,12 @@ const Item = ({ category = INTERNAL_TRANSFER, currency, timestamp, title, type =
           </View>
 
           <View gap row spaceBetween>
-            <Text caption color="contentLight">
+            <Text tone="secondary" size="s">
               {`${verboseTime(new Date(timestamp))} - ${L10N.CATEGORIES[type][category]}`}
             </Text>
             {baseCurrency !== currency && (
               <PriceFriendly
-                caption
+                size="s"
                 color="contentLight"
                 currency={baseCurrency}
                 value={exchange(value, currency, baseCurrency, rates, timestamp)}

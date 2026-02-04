@@ -20,7 +20,7 @@ const Tabs = ({ accent, caption, onChange, options = [], selected = 0, style }) 
             onPress={() => onChange?.(option, index)}
             style={[styles.tab, isActive && activeStyle]}
           >
-            <Text bold caption={caption} color={isActive ? textColor : 'content'}>
+            <Text bold size={caption ? 's' : 'm'} color={isActive ? textColor : 'content'}>
               {option.text}
             </Text>
           </Pressable>

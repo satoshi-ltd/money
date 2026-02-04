@@ -88,11 +88,11 @@ const LineChart = ({
 
                   return !multipleData ? (
                     <View align="center">
-                      <Text bold tiny style={style.pointerCaption}>
+                      <Text bold style={style.pointerCaption} size="xs">
                         {L10N.MONTHS[months[index]?.month || 0]} {months[index]?.year || ''}
                       </Text>
                       <View style={style.pointerValue}>
-                        <PriceFriendly bold caption color="base" {...{ currency, value }} />
+                        <PriceFriendly bold size="s" color="base" {...{ currency, value }} />
                       </View>
                     </View>
                   ) : null;

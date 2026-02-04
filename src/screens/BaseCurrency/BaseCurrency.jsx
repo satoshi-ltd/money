@@ -54,7 +54,7 @@ const BaseCurrency = ({ navigation: { goBack } = {} }) => {
                   </Text>
                 </View>
 
-                {currency === item ? <Icon name="check" color="accent" /> : <View style={style.rightPlaceholder} />}
+                {currency === item ? <Icon name="check" tone="accent" /> : <View style={style.rightPlaceholder} />}
               </View>
             </Pressable>
           );

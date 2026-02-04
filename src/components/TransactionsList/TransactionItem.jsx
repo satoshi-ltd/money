@@ -59,12 +59,12 @@ const TransactionItem = ({
           </View>
 
           <View gap row spaceBetween>
-            <Text tiny color="contentLight" style={style.text}>
+            <Text tone="secondary" style={style.text} size="xs">
               {`${verboseTime(new Date(timestamp))} - ${L10N.CATEGORIES[type][category]}`}
             </Text>
             {baseCurrency !== currency && (
               <PriceFriendly
-                tiny
+                size="xs"
                 color="contentLight"
                 currency={baseCurrency}
                 value={exchange(value, currency, baseCurrency, rates, timestamp)}

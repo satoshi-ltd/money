@@ -12,7 +12,7 @@ const Pill = ({ text, color = 'surface', style }) => {
 
   return (
     <View style={[styles.container, { backgroundColor }, style]}>
-      <Text caption>{text}</Text>
+      <Text size="s">{text}</Text>
     </View>
   );
 };

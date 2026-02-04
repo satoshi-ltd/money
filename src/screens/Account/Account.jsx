@@ -83,7 +83,7 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
     <Panel offset title={headerTitle} onBack={firstAccount ? undefined : goBack}>
       {firstAccount && (
         <View style={style.title}>
-          <Text caption color="contentLight">
+          <Text tone="secondary" size="s">
             {L10N.FIRST_ACCOUNT_CAPTION}
           </Text>
         </View>

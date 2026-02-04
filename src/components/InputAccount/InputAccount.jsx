@@ -53,18 +53,18 @@ const InputAccount = ({ accounts = [], first, last, onSelect, selected }) => {
             {accountOption.title}
           </Text>
           <View row style={style.subline}>
-            <Text caption color="contentLight">
+            <Text tone="secondary" size="s">
               {L10N.BALANCE}
             </Text>
             <PriceFriendly
-              caption
+              size="s"
               color="contentLight"
               currency={accountOption.currency}
               value={accountOption.currentBalance || 0}
             />
           </View>
         </View>
-        {isSelected ? <Icon name="check" color="accent" /> : <View style={style.rightPlaceholder} />}
+        {isSelected ? <Icon name="check" tone="accent" /> : <View style={style.rightPlaceholder} />}
       </View>
     );
   };
@@ -93,18 +93,18 @@ const InputAccount = ({ accounts = [], first, last, onSelect, selected }) => {
               {selected?.title}
             </Text>
             <View row style={style.subline}>
-              <Text caption color="contentLight">
+              <Text tone="secondary" size="s">
                 {L10N.BALANCE}
               </Text>
-              <PriceFriendly
-                caption
-                color="contentLight"
-                currency={selected?.currency}
-                value={selected?.currentBalance || 0}
-              />
+            <PriceFriendly
+              size="s"
+              color="contentLight"
+              currency={selected?.currency}
+              value={selected?.currentBalance || 0}
+            />
             </View>
           </View>
-          <Icon name="chevron-down" color="contentLight" />
+          <Icon name="chevron-down" tone="secondary" />
         </View>
       </Pressable>
 

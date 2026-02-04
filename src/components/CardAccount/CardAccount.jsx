@@ -45,16 +45,16 @@ const CardAccount = ({
           {currency && (
             <View>
               <View row>
-                <Text bold tiny color={textColor} ellipsizeMode="tail" numberOfLines={1}>
+                <Text bold color={textColor} ellipsizeMode="tail" numberOfLines={1} size="xs">
                   {title.toUpperCase()}
                 </Text>
               </View>
 
-              <PriceFriendly bold color={textColor} currency={currency} subtitle value={Math.abs(balance)} />
+              <PriceFriendly bold color={textColor} currency={currency} size="l" value={Math.abs(balance)} />
 
               {showExchange && currency !== baseCurrency && (
                 <PriceFriendly
-                  caption
+                  size="s"
                   color={textColor || 'contentLight'}
                   currency={baseCurrency}
                   value={exchange(Math.abs(balance), currency, baseCurrency, rates)}
@@ -65,7 +65,7 @@ const CardAccount = ({
           {showPercentage && (
             <PriceFriendly
               bold
-              caption
+              size="s"
               color={percentageColor}
               currency="%"
               fixed={2}

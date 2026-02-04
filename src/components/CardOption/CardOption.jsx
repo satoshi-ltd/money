@@ -28,13 +28,13 @@ const CardOption = ({
         {currency && <CurrencyLogo currency={currency} highlight={highlight} />}
 
         {!!caption && (
-          <Text align="center" bold caption color={textColor} numberOfLines={1}>
+          <Text align="center" bold color={textColor} numberOfLines={1} size="s">
             {caption}
           </Text>
         )}
 
         {legend && (
-          <Text align="center" color={textColor || 'contentLight'} numberOfLines={1} tiny>
+          <Text align="center" color={textColor || 'contentLight'} numberOfLines={1} size="xs">
             {legend}
           </Text>
         )}

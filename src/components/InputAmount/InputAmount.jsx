@@ -61,7 +61,7 @@ const InputAmount = ({
         {exchange && (
           <View style={style.exchange}>
             <PriceFriendly
-              caption
+              size="s"
               color="contentLight"
               currency={baseCurrency}
               value={parseFloat(others.value || 0, 10) / exchange}

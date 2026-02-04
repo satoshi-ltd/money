@@ -6,10 +6,10 @@ import { style } from './Dialog.style';
 
 const Dialog = ({ accept, cancel, text, onAccept, onCancel, title, ...others }) => (
   <View {...others} swipeable onClose={onCancel}>
-    <Text bold subtitle style={style.title}>
+    <Text bold style={style.title} size="xl">
       {title}
     </Text>
-    {text && <Text color="contentLight">{text}</Text>}
+    {text && <Text tone="secondary">{text}</Text>}
     <View style={style.buttons}>
       {cancel && onCancel && <Button onPress={onCancel}>{cancel}</Button>}
       <Button onPress={onAccept}>{accept}</Button>

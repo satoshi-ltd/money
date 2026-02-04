@@ -57,11 +57,11 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
                     <Text bold color={color} numberOfLines={1} style={style.text}>
                       {title}
                     </Text>
-                    <PriceFriendly bold color={color || 'content'} currency={currency} caption value={currentBalance} />
+                    <PriceFriendly bold color={color || 'content'} currency={currency} size="s" value={currentBalance} />
                   </View>
 
                   <View gap row spaceBetween>
-                    <Text tiny color="contentLight" style={style.text}>
+                    <Text tone="secondary" style={style.text} size="xs">
                       {L10N.CURRENCY_NAME[currency] || currency}
                     </Text>
                   </View>

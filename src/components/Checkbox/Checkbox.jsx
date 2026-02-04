@@ -21,7 +21,7 @@ const Checkbox = ({ checked, label, onChange, disabled }) => {
           { borderColor: colors.border, backgroundColor: checked ? colors.accent : 'transparent' },
         ]}
       >
-        {checked ? <Icon name="check" color="inverse" /> : null}
+        {checked ? <Icon name="check" tone="inverse" /> : null}
       </View>
       {label ? <Text>{label}</Text> : null}
     </Pressable>

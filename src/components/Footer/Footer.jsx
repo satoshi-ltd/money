@@ -46,7 +46,7 @@ const Footer = ({ state, navigation, onActionPress }) => {
               onPress={() => handleTabPress(route, isFocused)}
               style={styles.tab}
             >
-              <Icon color={isFocused ? 'accent' : 'contentLight'} name={routeIcon(route.name)} subtitle />
+              <Icon color={isFocused ? 'accent' : 'contentLight'} name={routeIcon(route.name)} size="l" />
             </TouchableOpacity>
           );
         })}

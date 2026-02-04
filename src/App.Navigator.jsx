@@ -74,10 +74,10 @@ const Tabs = ({ navigation = {} }) => {
     },
   };
 
-  const tabBarIcon = ({ color, icon }) => <Icon name={icon} subtitle style={{ color }} />;
+  const tabBarIcon = ({ color, icon }) => <Icon name={icon} size="l" style={{ color }} />;
 
   const tabBarLabel = ({ color, text }) => (
-    <Text tiny style={{ color, marginBottom: 4 }}>
+    <Text style={{ color, marginBottom: 4 }} size="xs">
       {text}
     </Text>
   );

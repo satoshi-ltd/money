@@ -9,7 +9,7 @@ const ButtonSummary = ({ icon, text, onPress }) => (
     <View style={style.iconWrap}>
       <Icon name={icon} />
     </View>
-    <Text bold tiny>
+    <Text bold size="xs">
       {text}
     </Text>
   </Pressable>
