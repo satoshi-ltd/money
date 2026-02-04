@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Pressable, Text, View } from '../../design-system';
+import { Pressable, Text, View } from '../../primitives';
 import { resolveColor } from '../utils/resolveColor';
 import { styles } from './Tabs.styles';
 

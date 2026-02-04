@@ -1,5 +1,5 @@
 import Card from '../Card';
-import { Icon, Pressable, Text } from '../../design-system';
+import { Icon, Pressable, Text } from '../../primitives';
 import PropTypes from 'prop-types';
 import React from 'react';
 

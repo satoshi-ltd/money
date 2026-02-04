@@ -1,5 +1,5 @@
 export * from './Banner';
-export { Button, Icon, Input, Pressable, ScrollView, Text, View } from '../design-system';
+export { Button, Icon, Input, Pressable, ScrollView, Text, View } from '../primitives';
 export { default as Action } from './Action';
 export { default as InputAccount } from './InputAccount';
 export { default as Card } from './Card';

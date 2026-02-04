@@ -1,4 +1,4 @@
-import { Icon, Pressable, Text, View } from '../../design-system';
+import { Icon, Pressable, Text, View } from '../../primitives';
 import PropTypes from 'prop-types';
 import React, { useMemo, useState } from 'react';
 import StyleSheet from 'react-native-extended-stylesheet';

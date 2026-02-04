@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 
 import { theme } from '../../config/theme';
 import { useApp } from '../../contexts';
-import { Icon, Pressable, Text, View } from '../../design-system';
+import { Icon, Pressable, Text, View } from '../../primitives';
 
 const Checkbox = ({ checked, label, onChange, disabled }) => {
   const { colors } = useApp();

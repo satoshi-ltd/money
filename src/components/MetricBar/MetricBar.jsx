@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { Text, View } from '../../design-system';
+import { Text, View } from '../../primitives';
 import { resolveColor } from '../utils/resolveColor';
 import { style } from './MetricBar.style';
 

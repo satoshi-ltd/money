@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from '../../design-system';
+import { View } from '../../primitives';
 import { styles } from './Card.styles';
 
 const Card = ({ active, small, style, ...props }) => (

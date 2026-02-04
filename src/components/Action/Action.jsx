@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Pressable, Text } from '../../design-system';
+import { Pressable, Text } from '../../primitives';
 
 const Action = ({ caption, children, color, onPress, style, ...props }) => (
   <Pressable {...props} onPress={onPress} style={style}>

@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { style } from './Notification.style';
-import { Icon, Pressable, Text, View } from '../../design-system';
+import { Icon, Pressable, Text, View } from '../../primitives';
 import { C, eventEmitter, ICON, L10N } from '../../modules';
 
 const { EVENT } = C;

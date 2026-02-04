@@ -1,4 +1,4 @@
-import { Icon, Text, View } from '../../design-system';
+import { Icon, Text, View } from '../../primitives';
 import PropTypes from 'prop-types';
 import React from 'react';
 

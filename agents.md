@@ -15,12 +15,12 @@
 - Notifications: `src/services/NotificationsService.js`
 - Insights: computed in `src/modules/insights.js` and rendered on Dashboard cards
 - Themes: `src/config/theme.js`, `src/theme/*`
-- UI primitives: `src/design-system/*` (prefer these over native)
+- UI primitives: `src/primitives/*` (prefer these over native)
 
 ## Project structure
 - `src/screens/`: feature screens and navigation destinations
 - `src/components/`: higher‑level UI pieces
-- `src/design-system/`: low‑level primitives (View/Text/Button/Icon/Pressable)
+- `src/primitives/`: low‑level primitives (View/Text/Button/Icon/Pressable)
 - `src/contexts/`: global store, reducers, and helpers
 - `src/services/`: persistence, backups, notifications, rates
 - `src/modules/`: shared business logic utilities
@@ -50,7 +50,7 @@
 - i18n: `settings.language` drives `L10N` proxy, with EN/ES/PT/FR/DE dictionaries.
 
 ## Coding standards
-- Use `src/design-system` primitives instead of raw `react-native` when possible.
+- Use `src/primitives` primitives instead of raw `react-native` when possible.
 - Styles live in `*.styles.js` with EStyleSheet tokens.
 - Avoid hardcoded colors; use theme variables or `resolveColor`.
 - Prefer named/index imports where established.

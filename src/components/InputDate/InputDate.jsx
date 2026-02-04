@@ -1,5 +1,5 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Pressable, Text } from '../../design-system';
+import { Pressable, Text } from '../../primitives';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { Platform } from 'react-native';

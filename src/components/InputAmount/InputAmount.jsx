@@ -1,4 +1,4 @@
-import { View } from '../../design-system';
+import { View } from '../../primitives';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Keyboard, TextInput } from 'react-native';

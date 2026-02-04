@@ -1,7 +1,7 @@
 import Card from '../Card';
 import { CurrencyLogo } from '../CurrencyLogo';
 import Dropdown from '../Dropdown';
-import { Icon, Pressable, Text, View } from '../../design-system';
+import { Icon, Pressable, Text, View } from '../../primitives';
 import { PriceFriendly } from '../PriceFriendly';
 import PropTypes from 'prop-types';
 import React, { useEffect, useMemo, useState } from 'react';

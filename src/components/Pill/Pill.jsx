@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 
 import { theme } from '../../config/theme';
 import { useApp } from '../../contexts';
-import { Text, View } from '../../design-system';
+import { Text, View } from '../../primitives';
 
 const Pill = ({ text, color = 'surface', style }) => {
   const { colors } = useApp();

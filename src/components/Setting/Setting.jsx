@@ -2,7 +2,7 @@ import React from 'react';
 import { ActivityIndicator, Switch } from 'react-native';
 import StyleSheet from 'react-native-extended-stylesheet';
 
-import { Icon, Pressable, Text, View } from '../../design-system';
+import { Icon, Pressable, Text, View } from '../../primitives';
 import Card from '../Card';
 import { resolveColor } from '../utils/resolveColor';
 import { ICON } from '../../modules';

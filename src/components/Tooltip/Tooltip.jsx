@@ -4,7 +4,7 @@ import { StyleSheet, useWindowDimensions } from 'react-native';
 
 import { theme } from '../../config/theme';
 import { useApp } from '../../contexts';
-import { Text, View } from '../../design-system';
+import { Text, View } from '../../primitives';
 
 const getStyles = (colors, position = 'top', align = 'center', offset) => {
   const alignStyles =

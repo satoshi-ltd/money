@@ -4,7 +4,7 @@ import { Animated, StyleSheet, TouchableOpacity } from 'react-native';
 import { theme } from '../../config/theme';
 import { useApp } from '../../contexts';
 import { useMotion } from '../../hooks/useMotion';
-import { Icon, ScrollView, Text, View } from '../../design-system';
+import { Icon, ScrollView, Text, View } from '../../primitives';
 
 const Dropdown = ({
   visible,

@@ -3,7 +3,7 @@ import { StyleSheet, Switch, TouchableOpacity } from 'react-native';
 
 import { theme } from '../../config/theme';
 import { useApp } from '../../contexts';
-import { Icon, Text, View } from '../../design-system';
+import { Icon, Text, View } from '../../primitives';
 
 const Option = ({
   icon,

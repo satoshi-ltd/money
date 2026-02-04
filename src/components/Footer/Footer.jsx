@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../config/theme';
 import { useApp } from '../../contexts';
 import { ICON } from '../../modules';
-import { Button, Icon, View } from '../../design-system';
+import { Button, Icon, View } from '../../primitives';
 
 const TAB_SIZE = theme.spacing.xxl + theme.spacing.md;
 
