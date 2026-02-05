@@ -19,7 +19,7 @@ const StatsRangeToggle = ({ onChange, options = [], value }) => {
             onPress={() => onChange?.(option.value)}
             style={[style.item, selected && style.itemActive]}
           >
-            <Text bold tone={selected ? 'inverse' : 'secondary'} size="s">
+            <Text bold tone={selected ? 'onAccent' : 'secondary'} size="s">
               {option.label}
             </Text>
           </Pressable>

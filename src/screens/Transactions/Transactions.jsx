@@ -34,16 +34,17 @@ const Transactions = (props = {}) => {
   }, [accounts, hash, page]);
 
   const { currency = baseCurrency } = dataSource;
+  const title = dataSource?.title || L10N.TRANSACTIONS;
 
   return (
-    <Panel title={L10N.TRANSACTIONS} onBack={goBack} disableScroll>
+    <Panel title={title} onBack={goBack} disableScroll>
       <SectionList
         initialNumToRender={C.TRANSACTIONS_PER_PAGE}
         keyExtractor={(item, index) => `${item.hash || item.timestamp}-${index}`}
         ListEmptyComponent={() => <Banner align="center" title={L10N.NO_TRANSACTIONS} />}
         ListHeaderComponent={
           <TransactionsListHeader
-            chartBalanceBase={chartBalanceBase}
+            chartBalanceBase={dataSource?.chartBalanceBase || chartBalanceBase}
             dataSource={dataSource}
             navigation={navigation}
             onSearch={setQuery}

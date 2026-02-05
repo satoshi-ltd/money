@@ -108,7 +108,7 @@ const Tabs = ({ navigation = {} }) => {
         options={{
           tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.HOME }),
           tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.HOME }),
-          title: L10N.OVERALL_BALANCE,
+          title: L10N.TOTAL_BALANCE,
         }}
       />
       <Tab.Screen

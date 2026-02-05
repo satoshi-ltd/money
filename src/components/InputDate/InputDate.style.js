@@ -17,10 +17,9 @@ export const styles = StyleSheet.create({
     paddingVertical: inputPaddingVertical,
   },
   pressableWithLabel: {
-    paddingTop: inputPaddingVertical * 2,
+    paddingTop: inputPaddingVertical,
     paddingBottom: inputPaddingVertical / 2,
   },
   valueWithLabel: {
-    marginTop: inputPaddingVertical / 2,
   },
 });

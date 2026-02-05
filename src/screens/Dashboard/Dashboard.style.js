@@ -13,11 +13,8 @@ export const style = StyleSheet.create({
     marginBottom: theme.spacing.md,
     paddingRight: viewOffset,
   },
-  summary: {
-    marginBottom: theme.spacing.lg,
-  },
   insightsHeading: {
-    marginTop: theme.spacing.sm,
+    marginTop: 0,
   },
   insightsScroll: {
     marginBottom: theme.spacing.xxs,
@@ -26,6 +23,24 @@ export const style = StyleSheet.create({
   insightCard: {
     width: cardAccountSize,
     height: cardAccountSize,
+  },
+  balanceCardContent: {
+    flex: 1,
+  },
+  balanceOverlay: {
+    flex: 1,
+    justifyContent: 'space-between',
+    zIndex: 1,
+  },
+  balanceChart: {
+    bottom: theme.spacing.xxs,
+    left: theme.spacing.sm * -1,
+    right: theme.spacing.sm * -1,
+    position: 'absolute',
+    zIndex: 0,
+  },
+  balancePercentage: {
+    alignSelf: 'flex-start',
   },
   insightCardContent: {
     flex: 1,

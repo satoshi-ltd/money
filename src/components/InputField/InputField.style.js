@@ -4,7 +4,7 @@ import { inputPaddingVertical } from '../../theme/layout';
 
 export const styles = StyleSheet.create({
   inputWithLabel: {
-    paddingTop: inputPaddingVertical * 2,
+    paddingTop: inputPaddingVertical,
     paddingBottom: inputPaddingVertical / 2,
   },
 });

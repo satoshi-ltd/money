@@ -36,3 +36,4 @@ export * from './Summary';
 export { default as Tabs } from './Tabs';
 export * from './TransactionsList';
 export { default as Tooltip } from './Tooltip';
+export * from './Insights';

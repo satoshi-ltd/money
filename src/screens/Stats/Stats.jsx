@@ -77,7 +77,7 @@ const Stats = () => {
         {...chartProps}
         color={color}
         headingRight={<StatsRangeToggle onChange={handleRangeChange} options={rangeOptions} value={selectedRange} />}
-        title={L10N.OVERALL_BALANCE}
+        title={L10N.TOTAL_BALANCE}
         values={chart.balance}
         onPointerChange={handlePointerIndex}
       />

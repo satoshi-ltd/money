@@ -1,14 +1,12 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
-import { useWindowDimensions } from 'react-native';
+import React, { useMemo, useState } from 'react';
 
 import { ButtonSummary } from './components';
 import { getStyles } from './Transactions.style';
 import { Button, InputField, View } from '../../components';
-import { Heading, LineChart, Summary } from '../../components';
+import { Heading, InsightsCarousel } from '../../components';
 import { useApp, useStore } from '../../contexts';
-import { C, ICON, L10N } from '../../modules';
-import { viewOffset } from '../../theme/layout';
+import { buildInsights, getProgressionPercentage, C, ICON, L10N } from '../../modules';
 
 const {
   TX: {
@@ -18,13 +16,10 @@ const {
 let timeoutId;
 
 const TransactionsListHeader = ({ chartBalanceBase, dataSource, navigation, onSearch, setPage }) => {
-  const { accounts = [], settings: { baseCurrency } = {} } = useStore();
+  const { accounts = [], rates = {}, settings: { baseCurrency } = {} } = useStore();
   const { colors } = useApp();
   const style = React.useMemo(() => getStyles(colors), [colors]);
   const { currency = baseCurrency, ...rest } = dataSource;
-
-  const { width } = useWindowDimensions();
-  const chartWidth = width - viewOffset * 2;
 
   const [search, setSearch] = useState(false);
   const [query, setQuery] = useState();
@@ -54,21 +49,51 @@ const TransactionsListHeader = ({ chartBalanceBase, dataSource, navigation, onSe
     navigation.navigate('transaction', { account: dataSource, type });
   };
 
+  const accountInsights = useMemo(() => {
+    if (!dataSource?.hash) return [];
+    return buildInsights({
+      accounts: [dataSource],
+      rates,
+      settings: { baseCurrency: currency },
+      txs: dataSource.txs || [],
+    });
+  }, [currency, dataSource, rates]);
+
+  const progressionPercentage = useMemo(() => {
+    const next = getProgressionPercentage(rest?.currentBalance, rest?.currentMonth?.progressionCurrency);
+    return Number.isFinite(next) ? next : undefined;
+  }, [rest?.currentBalance, rest?.currentMonth?.progressionCurrency]);
+
+  const balanceCard = useMemo(
+    () => ({
+      title: L10N.TOTAL_BALANCE,
+      value: rest?.currentBalance || 0,
+      chartValues: Array.isArray(chartBalanceBase) ? chartBalanceBase.slice(-6) : [],
+      progressionPercentage,
+    }),
+    [chartBalanceBase, progressionPercentage, rest?.currentBalance],
+  );
+
   return (
     <>
-      <View style={style.headerWrap}>
-        <Summary {...rest} currency={currency} title={rest?.title} noPadding>
-          <LineChart currency={currency} height={128} showPointer values={chartBalanceBase} width={chartWidth} />
-
-          <View row style={style.buttons}>
-            <ButtonSummary icon={ICON.INCOME} text={L10N.INCOME} onPress={() => handleTransaction(INCOME)} />
-            <ButtonSummary icon={ICON.EXPENSE} text={L10N.EXPENSE} onPress={() => handleTransaction(EXPENSE)} />
-            {accounts.length > 1 && (
-              <ButtonSummary icon={ICON.SWAP} text={L10N.SWAP} onPress={() => handleTransaction(TRANSFER)} />
-            )}
-            <ButtonSummary icon={ICON.SETTINGS} text={L10N.SETTINGS} onPress={handleEdit} />
+      {dataSource?.hash ? (
+        <>
+          <View style={style.insightsTop}>
+            <Heading value={L10N.INSIGHTS} offset />
           </View>
-        </Summary>
+          <InsightsCarousel balanceCard={balanceCard} currency={currency} insights={accountInsights} />
+        </>
+      ) : null}
+
+      <View style={style.headerWrap}>
+        <View row style={style.buttons}>
+          <ButtonSummary icon={ICON.INCOME} text={L10N.INCOME} onPress={() => handleTransaction(INCOME)} />
+          <ButtonSummary icon={ICON.EXPENSE} text={L10N.EXPENSE} onPress={() => handleTransaction(EXPENSE)} />
+          {accounts.length > 1 && (
+            <ButtonSummary icon={ICON.SWAP} text={L10N.SWAP} onPress={() => handleTransaction(TRANSFER)} />
+          )}
+          <ButtonSummary icon={ICON.SETTINGS} text={L10N.SETTINGS} onPress={handleEdit} />
+        </View>
 
         <Heading value={L10N.TRANSACTIONS}>
           <Button icon={!search ? ICON.SEARCH : ICON.CLOSE} variant="outlined" size="s" onPress={handleSearch} />

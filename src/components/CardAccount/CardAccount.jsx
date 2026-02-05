@@ -35,6 +35,7 @@ const CardAccount = ({
   const percentageTone = highlight ? 'onAccent' : 'accent';
 
   const showPercentage = Math.abs(percentage) >= 3;
+  const chartValues = Array.isArray(chart) ? chart.slice(-6) : [];
 
   return (
     <Pressable onPress={onPress} style={others.style}>
@@ -45,7 +46,7 @@ const CardAccount = ({
             currency={currency}
             height={cardAccountSize / 2}
             isAnimated={false}
-            values={chart}
+            values={chartValues}
             width={cardAccountSize}
             style={style.chart}
           />

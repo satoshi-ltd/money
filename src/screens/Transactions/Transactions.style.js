@@ -19,6 +19,9 @@ export const getStyles = (colors) =>
     },
     headerWrap: {
       paddingHorizontal: viewOffset,
+      paddingTop: theme.spacing.sm,
+    },
+    insightsTop: {
       paddingTop: theme.spacing.md,
     },
 
