@@ -1,13 +1,25 @@
-import { Button, Card, Icon, InputField, LineChart, MetricBar, PriceFriendly, ScrollView, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useMemo, useState } from 'react';
-import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './Dashboard.style';
 import { queryAccounts } from './helpers';
+import {
+  Button,
+  Card,
+  Icon,
+  InputField,
+  LineChart,
+  MetricBar,
+  PriceFriendly,
+  ScrollView,
+  Text,
+  View,
+} from '../../components';
 import { CardAccount, Heading, Summary } from '../../components';
 import { useStore } from '../../contexts';
 import { buildInsights, getProgressionPercentage, ICON, L10N } from '../../modules';
+import { theme } from '../../theme';
+import { cardAccountSize, cardAccountSnap } from '../../theme/layout';
 
 let timeoutId;
 
@@ -49,8 +61,7 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
     const showCategories = insight.type === 'categories';
     const showChart = !!insight.chart?.values?.length;
     const topItems = (insight.items || []).slice(0, 3);
-    const toneColor =
-      insight.tone === 'negative' ? 'danger' : insight.tone === 'positive' ? 'accent' : 'primary';
+    const toneColor = insight.tone === 'negative' ? 'danger' : insight.tone === 'positive' ? 'accent' : 'primary';
 
     return (
       <Card style={style.insightCard}>
@@ -140,11 +151,11 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
             ) : null}
             {showChart ? (
               <LineChart
-                height={StyleSheet.value('$spaceM * 3.5')}
+                height={cardAccountSize * 0.35}
                 monthsLimit={insight.chart.monthsLimit}
                 values={insight.chart.values}
                 style={insight.type === 'trend' ? style.insightChartTrend : style.insightChart}
-                width={StyleSheet.value('$cardAccountSize')}
+                width={insight.type === 'trend' ? cardAccountSize : cardAccountSize - theme.spacing.sm * 2}
               />
             ) : null}
             {showCategories ? (
@@ -171,11 +182,7 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
           <View style={style.insightsHeading}>
             <Heading value={L10N.INSIGHTS} offset />
           </View>
-          <ScrollView
-            horizontal
-            snapTo={StyleSheet.value('$cardAccountSnap')}
-            style={style.insightsScroll}
-          >
+          <ScrollView horizontal snapTo={cardAccountSnap} style={style.insightsScroll}>
             {previewInsights.map((insight, index) => (
               <View
                 key={insight.id}
@@ -194,16 +201,11 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
 
       <View style={style.accountsHeading}>
         <Heading value={L10N.ACCOUNTS} offset>
-          <Button
-            icon={ICON.NEW}
-            variant="outlined"
-            size="s"
-            onPress={() => navigate('account', { create: true })}
-          />
+          <Button icon={ICON.NEW} variant="outlined" size="s" onPress={() => navigate('account', { create: true })} />
         </Heading>
       </View>
 
-      <ScrollView horizontal snapTo={StyleSheet.value('$cardAccountSnap')} style={[style.scrollView]}>
+      <ScrollView horizontal snapTo={cardAccountSnap} style={[style.scrollView]}>
         {sortedAccounts.map((account, index) => {
           const {
             chartBalanceBase = [],
@@ -235,12 +237,7 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
       </ScrollView>
       <View style={style.headingTight}>
         <Heading value={L10N.LAST_TRANSACTIONS} offset>
-          <Button
-            icon={!search ? ICON.SEARCH : ICON.CLOSE}
-            variant="outlined"
-            size="s"
-            onPress={handleSearch}
-          />
+          <Button icon={!search ? ICON.SEARCH : ICON.CLOSE} variant="outlined" size="s" onPress={handleSearch} />
         </Heading>
       </View>
       {search && (

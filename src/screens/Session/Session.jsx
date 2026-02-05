@@ -1,12 +1,12 @@
-import { Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native';
 
 import { NumKeyboard } from './components';
-import { style } from './Session.style';
+import { getStyles } from './Session.style';
+import { Text, View } from '../../components';
 import { Logo } from '../../components';
-import { useStore } from '../../contexts';
+import { useApp, useStore } from '../../contexts';
 import { C, eventEmitter, L10N } from '../../modules';
 import { NotificationsService, ServiceRates } from '../../services';
 
@@ -14,6 +14,8 @@ const { EVENT, VERSION } = C;
 
 const Session = ({ navigation: { reset } = {} }) => {
   const { accounts = [], settings = {}, updateRates, updateSettings } = useStore();
+  const { colors } = useApp();
+  const style = React.useMemo(() => getStyles(colors), [colors]);
 
   const [pin, setPin] = useState('');
 

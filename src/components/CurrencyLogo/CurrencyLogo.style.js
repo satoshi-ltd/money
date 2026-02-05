@@ -1,11 +1,12 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
 
-export const style = StyleSheet.create({
+import { theme } from '../../theme';
+
+export const styles = StyleSheet.create({
   container: {
-    height: '$spaceL',
-    width: '$spaceL',
+    height: theme.spacing.lg,
+    width: theme.spacing.lg,
     alignItems: 'center',
     justifyContent: 'center',
   },
-
 });

@@ -1,14 +1,14 @@
-import { View } from '../../primitives';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Keyboard } from 'react-native';
 
+import { View } from '../../primitives';
 import { getLastRates } from './helpers/getLastRates';
-import { style } from './InputAmount.style';
+import { styles } from './InputAmount.style';
 import { useStore } from '../../contexts';
 import { L10N } from '../../modules';
-import { PriceFriendly } from '../PriceFriendly';
 import { InputField } from '../InputField';
+import { PriceFriendly } from '../PriceFriendly';
 
 const isNumber = /^[0-9]+([,.][0-9]+)?$|^[0-9]+([,.][0-9]+)?[.,]$/;
 
@@ -38,13 +38,8 @@ const InputAmount = ({
   };
 
   const suffix = exchange ? (
-    <View style={style.exchange}>
-      <PriceFriendly
-        size="s"
-        tone="secondary"
-        currency={baseCurrency}
-        value={parseFloat(value || 0, 10) / exchange}
-      />
+    <View style={styles.exchange}>
+      <PriceFriendly size="s" tone="secondary" currency={baseCurrency} value={parseFloat(value || 0, 10) / exchange} />
     </View>
   ) : null;
 

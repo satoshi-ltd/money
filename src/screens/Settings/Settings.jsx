@@ -1,4 +1,3 @@
-import { Dropdown, Heading, Screen, Setting, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { Alert, Linking } from 'react-native';
@@ -6,10 +5,11 @@ import { Alert, Linking } from 'react-native';
 import { getLatestRates } from './helpers';
 import { ABOUT, OPTIONS, PREFERENCES } from './Settings.constants';
 import { style } from './Settings.style';
+import { Dropdown, Heading, Screen, Setting, Text, View } from '../../components';
 import { useStore } from '../../contexts';
-import { verboseDate } from '../../modules';
-import { C, eventEmitter, ICON, L10N } from '../../modules';
 import { setLanguage } from '../../i18n';
+import { C, eventEmitter, ICON, L10N } from '../../modules';
+import { verboseDate } from '../../modules';
 import { BackupService, NotificationsService, PurchaseService } from '../../services';
 
 const { EVENT } = C;
@@ -138,10 +138,8 @@ const Settings = ({ navigation = {} }) => {
     { id: 'fr', label: L10N.LANGUAGE_FR },
     { id: 'de', label: L10N.LANGUAGE_DE },
   ];
-  const currentLanguageLabel =
-    languageOptions.find((option) => option.id === language)?.label || L10N.LANGUAGE_EN;
+  const currentLanguageLabel = languageOptions.find((option) => option.id === language)?.label || L10N.LANGUAGE_EN;
 
-  
   const settingProps = {};
 
   return (
@@ -214,9 +212,7 @@ const Settings = ({ navigation = {} }) => {
         {PREFERENCES().map(({ disabled, icon, text, ...rest }, index) => (
           <Setting
             {...settingProps}
-            subtitle={
-              rest.screen === 'baseCurrency' ? L10N.CURRENCY_NAME[baseCurrency] : undefined
-            }
+            subtitle={rest.screen === 'baseCurrency' ? L10N.CURRENCY_NAME[baseCurrency] : undefined}
             activity={activity && activity[rest.callback]}
             key={`preference-${index}`}
             {...{ disabled, icon, title: text }}

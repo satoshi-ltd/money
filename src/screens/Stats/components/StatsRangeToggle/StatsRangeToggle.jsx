@@ -1,27 +1,33 @@
-import { Pressable, Text, View } from '../../../../primitives';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 
-import { style } from './StatsRangeToggle.style';
+import { getStyles } from './StatsRangeToggle.style';
+import { useApp } from '../../../../contexts';
+import { Pressable, Text, View } from '../../../../primitives';
 
-const StatsRangeToggle = ({ onChange, options = [], value }) => (
-  <View row align="center" style={style.container}>
-    {options.map((option) => {
-      const selected = option.value === value;
-      return (
-        <Pressable
-          key={option.value}
-          onPress={() => onChange?.(option.value)}
-          style={[style.item, selected && style.itemActive]}
-        >
-          <Text bold color={selected ? 'base' : 'contentLight'} size="s">
-            {option.label}
-          </Text>
-        </Pressable>
-      );
-    })}
-  </View>
-);
+const StatsRangeToggle = ({ onChange, options = [], value }) => {
+  const { colors } = useApp();
+  const style = useMemo(() => getStyles(colors), [colors]);
+
+  return (
+    <View row align="center" style={style.container}>
+      {options.map((option) => {
+        const selected = option.value === value;
+        return (
+          <Pressable
+            key={option.value}
+            onPress={() => onChange?.(option.value)}
+            style={[style.item, selected && style.itemActive]}
+          >
+            <Text bold tone={selected ? 'inverse' : 'secondary'} size="s">
+              {option.label}
+            </Text>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+};
 
 StatsRangeToggle.propTypes = {
   onChange: PropTypes.func,

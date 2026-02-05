@@ -40,9 +40,7 @@ export const NotificationsService = {
     if (!(await NotificationsService.permission())) return;
 
     const scheduled = await Notifications.getAllScheduledNotificationsAsync();
-    const backupNotifications = scheduled.filter(
-      (item) => item?.content?.data?.kind === NOTIFICATION_KIND.BACKUP,
-    );
+    const backupNotifications = scheduled.filter((item) => item?.content?.data?.kind === NOTIFICATION_KIND.BACKUP);
     await Promise.all(
       backupNotifications.map((item) => Notifications.cancelScheduledNotificationAsync(item.identifier)),
     );

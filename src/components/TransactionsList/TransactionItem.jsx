@@ -1,12 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
-import Card from '../Card';
-import { Icon, Pressable, Text, View } from '../../primitives';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 
-import { style } from './TransactionsList.style';
-import { useStore } from '../../contexts';
+import { getStyles } from './TransactionsList.style';
+import { useApp, useStore } from '../../contexts';
 import { C, exchange, getIcon, L10N, verboseTime } from '../../modules';
+import { Icon, Pressable, Text, View } from '../../primitives';
+import Card from '../Card';
 import { PriceFriendly } from '../PriceFriendly';
 
 const {
@@ -26,6 +26,8 @@ const TransactionItem = ({
   ...others
 }) => {
   const { navigate } = useNavigation();
+  const { colors } = useApp();
+  const style = useMemo(() => getStyles(colors), [colors]);
   const {
     settings: { baseCurrency },
     rates,

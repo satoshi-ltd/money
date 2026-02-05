@@ -1,15 +1,17 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
+
+import { cardGap, viewOffset } from '../../theme/layout';
 
 export const style = StyleSheet.create({
   option: {
-    marginLeft: '$cardGap',
+    marginLeft: cardGap,
   },
 
   firstOption: {
-    marginLeft: '$viewOffset',
+    marginLeft: viewOffset,
   },
 
   lastOption: {
-    marginRight: '$viewOffset',
+    marginRight: viewOffset,
   },
 });

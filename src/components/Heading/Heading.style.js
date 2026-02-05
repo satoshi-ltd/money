@@ -1,11 +1,13 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
 
-export const style = StyleSheet.create({
+import { viewOffset } from '../../theme/layout';
+
+export const styles = StyleSheet.create({
   heading: {
     alignItems: 'center',
-    marginVertical: '$viewOffset / 2',
+    marginVertical: viewOffset / 2,
   },
   offset: {
-    marginHorizontal: '$viewOffset',
+    marginHorizontal: viewOffset,
   },
 });

@@ -1,8 +1,10 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
 
-export const style = StyleSheet.create({
-  input: {},
+import { inputPaddingVertical } from '../../theme/layout';
+
+export const styles = StyleSheet.create({
   inputWithLabel: {
-    paddingBottom: '$inputPaddingVertical / 2',
+    paddingTop: inputPaddingVertical * 2,
+    paddingBottom: inputPaddingVertical / 2,
   },
 });

@@ -1,12 +1,12 @@
-import { Heading, Text, View } from '../../../../components';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useWindowDimensions } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './Chart.style';
+import { Heading, Text, View } from '../../../../components';
 import { LineChart, PriceFriendly } from '../../../../components';
 import { L10N } from '../../../../modules';
+import { viewOffset } from '../../../../theme/layout';
 import { calcScales } from '../../modules';
 
 const Chart = ({
@@ -24,13 +24,10 @@ const Chart = ({
   const [color1, color2] = multipleData ? color : [color];
   const [data1 = [], data2 = []] = multipleData ? values : [values];
   const normalize = (data = []) =>
-    data.map((val) => (typeof val === 'number' && !isNaN(val) ? Math.max(0, val) : val));
+    data.filter((val) => typeof val === 'number' && !isNaN(val)).map((val) => Math.max(0, val));
   const normalizedData1 = normalize(data1);
   const normalizedData2 = normalize(data2);
   const { width } = useWindowDimensions();
-  const getValue = (token, fallback) =>
-    StyleSheet && typeof StyleSheet.value === 'function' ? StyleSheet.value(token) : fallback;
-  const viewOffset = getValue('$viewOffset', 16);
 
   // eslint-disable-next-line react/prop-types
   const Scale = ({ color, dataSource }) => (
@@ -39,7 +36,7 @@ const Chart = ({
         <View key={key} row style={style.scale}>
           <PriceFriendly {...{ color, currency, value }} bold fixed={0} size="xs" label={`${L10N.SCALE_KEY[key]} `} />
           {key !== 'max' && (
-            <Text color={color} size="xs">
+            <Text tone="secondary" size="xs">
               |
             </Text>
           )}

@@ -1,6 +1,8 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
 
 import { IMAGE_SIZE } from './Onboarding.constants';
+import { theme } from '../../theme';
+import { viewOffset } from '../../theme/layout';
 
 export const style = StyleSheet.create({
   screen: {
@@ -14,22 +16,22 @@ export const style = StyleSheet.create({
   slide: {
     alignItems: 'flex-start',
     flex: 1,
-    gap: '$spaceL',
+    gap: theme.spacing.lg,
     justifyContent: 'flex-end',
-    padding: '$spaceXL',
+    padding: theme.spacing.xl,
   },
 
   image: {
     height: IMAGE_SIZE * 1.2,
-    marginBottom: '$viewOffset',
+    marginBottom: viewOffset,
     width: IMAGE_SIZE,
   },
 
   footer: {
     alignItems: 'center',
-    paddingBottom: '$spaceXL',
-    paddingHorizontal: '$spaceXL',
-    paddingTop: '$viewOffset',
+    paddingBottom: theme.spacing.xl,
+    paddingHorizontal: theme.spacing.xl,
+    paddingTop: viewOffset,
     justifyContent: 'space-between',
   },
 

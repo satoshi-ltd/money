@@ -1,50 +1,42 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Text as RNText } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
 
-import { styles } from './Text.styles';
+import { getStyles } from './Text.styles';
+import { useApp } from '../../contexts';
 
-const Text = ({
-  align,
-  bold,
-  tone,
-  flex,
-  size,
-  uppercase,
-  style,
-  ...props
-}) => {
+const Text = ({ align, bold, tone, flex, size, uppercase, style, ...props }) => {
+  const { colors } = useApp();
+  const styles = useMemo(() => getStyles(colors), [colors]);
   const sizeStyle =
     size === 'xl'
       ? styles.title
       : size === 'l'
-        ? styles.subtitle
-        : size === 'm'
-          ? styles.detail
-          : size === 's'
-            ? styles.caption
-            : size === 'xs'
-              ? styles.tiny
-              : null;
+      ? styles.subtitle
+      : size === 'm'
+      ? styles.body
+      : size === 's'
+      ? styles.caption
+      : size === 'xs'
+      ? styles.tiny
+      : null;
 
-  const familyToken = bold ? '$fontBold' : '$fontDefault';
+  const toneStyle =
+    tone === 'secondary' || tone === 'muted'
+      ? styles.toneSecondary
+      : tone === 'accent'
+      ? styles.toneAccent
+      : tone === 'danger'
+      ? styles.toneDanger
+      : tone === 'warning'
+      ? styles.toneWarning
+      : tone === 'onAccent'
+      ? styles.toneOnAccent
+      : tone === 'onInverse'
+      ? styles.toneOnInverse
+      : styles.tonePrimary;
 
-  const toneColor =
-    tone === 'primary'
-      ? StyleSheet.value('$colorContent')
-      : tone === 'secondary' || tone === 'muted'
-        ? StyleSheet.value('$colorContentLight')
-        : tone === 'accent'
-          ? StyleSheet.value('$colorAccent')
-          : tone === 'danger'
-            ? StyleSheet.value('$colorError')
-            : tone === 'warning'
-              ? StyleSheet.value('$colorWarning')
-              : tone === 'inverse'
-                ? StyleSheet.value('$colorBase')
-                : undefined;
-
-  const resolvedColor = toneColor || StyleSheet.value('$colorContent');
+  const alignStyle =
+    align === 'center' ? styles.alignCenter : align === 'right' ? styles.alignRight : align ? styles.alignLeft : null;
 
   return (
     <RNText
@@ -52,10 +44,11 @@ const Text = ({
       style={[
         styles.base,
         sizeStyle,
-        { color: resolvedColor, fontFamily: StyleSheet.value(familyToken) },
-        align ? { textAlign: align } : null,
-        flex ? { flex: typeof flex === 'number' ? flex : 1 } : null,
-        uppercase ? { textTransform: 'uppercase' } : null,
+        bold ? styles.bold : null,
+        toneStyle,
+        alignStyle,
+        flex ? styles.flex : null,
+        uppercase ? styles.uppercase : null,
         style,
       ]}
     />

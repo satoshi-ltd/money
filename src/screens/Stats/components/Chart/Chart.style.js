@@ -1,7 +1,9 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
+
+import { viewOffset } from '../../../../theme/layout';
 
 export const style = StyleSheet.create({
   scale: {
-    gap: '$viewOffset / 2',
+    gap: viewOffset / 2,
   },
 });

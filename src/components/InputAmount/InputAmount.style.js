@@ -1,10 +1,6 @@
-import { Platform } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
 
-export const style = StyleSheet.create({
-  input: {
-    flex: 1,
-  },
+export const styles = StyleSheet.create({
   exchange: {
     alignItems: 'flex-end',
     justifyContent: 'center',

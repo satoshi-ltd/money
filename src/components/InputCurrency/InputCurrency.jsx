@@ -1,16 +1,19 @@
-import { Icon, Pressable, Text, View } from '../../primitives';
 import PropTypes from 'prop-types';
 import React, { useMemo, useState } from 'react';
-import StyleSheet from 'react-native-extended-stylesheet';
 
+import { useApp } from '../../contexts';
+import { L10N } from '../../modules';
+import { Icon, Pressable, Text, View } from '../../primitives';
+import { optionSize } from '../../theme/layout';
 import Card from '../Card';
 import { CurrencyLogo } from '../CurrencyLogo';
 import Dropdown from '../Dropdown';
 import { Field } from '../Field';
-import { L10N } from '../../modules';
-import { style } from './InputCurrency.style';
+import { getStyles } from './InputCurrency.style';
 
 const InputCurrency = ({ disabled, first, label = L10N.CURRENCY, last, onChange, options, value }) => {
+  const { colors } = useApp();
+  const style = useMemo(() => getStyles(colors), [colors]);
   const [open, setOpen] = useState(false);
 
   const currencyOptions = useMemo(() => {
@@ -31,7 +34,7 @@ const InputCurrency = ({ disabled, first, label = L10N.CURRENCY, last, onChange,
         <CurrencyLogo currency={option.value} />
       </Card>
       <View flex style={style.optionTextContainer}>
-        <Text bold numberOfLines={1} style={style.optionText}>
+        <Text bold numberOfLines={1} style={style.optionTextWeb}>
           {option.label}
         </Text>
       </View>
@@ -50,7 +53,7 @@ const InputCurrency = ({ disabled, first, label = L10N.CURRENCY, last, onChange,
               </Card>
             ) : null}
             <View>
-              <Text bold numberOfLines={1} style={[style.text, style.selectedValue]}>
+              <Text bold numberOfLines={1} style={style.selectedValue}>
                 {selectedLabel}
               </Text>
             </View>
@@ -71,7 +74,7 @@ const InputCurrency = ({ disabled, first, label = L10N.CURRENCY, last, onChange,
         renderOption={renderCurrencyOption}
         selected={value}
         visible={open}
-        width={StyleSheet.value('$optionSize') * 2.8}
+        width={optionSize * 2.8}
       />
     </Field>
   );

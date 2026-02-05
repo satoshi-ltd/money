@@ -1,8 +1,9 @@
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
-import { L10N } from '../modules';
+
 import { SCHEMA_VERSION } from '../contexts/store.constants';
+import { L10N } from '../modules';
 
 export const BackupService = {
   export: async ({ accounts = [], settings = {}, txs = [] } = {}) =>
@@ -32,25 +33,17 @@ export const BackupService = {
       try {
         const fileName = `money-${new Date().toISOString()}.csv`;
         const accountMap = new Map(accounts.map((account) => [account.hash, account]));
-        const rows = [
-          ['date', 'type', 'amount', 'currency', 'category', 'title', 'account'].join(','),
-        ];
+        const rows = [['date', 'type', 'amount', 'currency', 'category', 'title', 'account'].join(',')];
 
         txs.forEach(({ timestamp, type, value, category, title, account }) => {
           const date = new Date(timestamp || Date.now()).toISOString();
           const accountInfo = accountMap.get(account);
           const accountTitle = accountInfo?.title || account || '';
           const accountCurrency = accountInfo?.currency || settings.baseCurrency || '';
-          const safeTitle = `${title || ''}`.replace(/\"/g, '\"\"');
-          rows.push([
-            date,
-            type,
-            value,
-            accountCurrency,
-            category ?? '',
-            `"${safeTitle}"`,
-            `"${accountTitle}"`,
-          ].join(','));
+          const safeTitle = `${title || ''}`.replace(/\"/g, '""');
+          rows.push(
+            [date, type, value, accountCurrency, category ?? '', `"${safeTitle}"`, `"${accountTitle}"`].join(','),
+          );
         });
 
         const data = rows.join('\\n');

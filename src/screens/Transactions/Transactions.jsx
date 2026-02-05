@@ -1,13 +1,13 @@
-import { Panel } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { SectionList } from 'react-native';
 
 import { queryLastTxs, querySearchTxs } from './modules';
 import { TransactionsListHeader } from './Transactions.ListHeader';
-import { style } from './Transactions.style';
+import { getStyles } from './Transactions.style';
+import { Panel } from '../../components';
 import { Banner, TransactionItem, TransactionsHeader } from '../../components';
-import { useStore } from '../../contexts';
+import { useApp, useStore } from '../../contexts';
 import { C, L10N } from '../../modules';
 
 const Transactions = (props = {}) => {
@@ -15,6 +15,8 @@ const Transactions = (props = {}) => {
   const { goBack } = navigation;
   const { params: { account: { hash, chartBalanceBase = [] } = {} } = {} } = route;
   const { accounts = [], settings: { baseCurrency } = {} } = useStore();
+  const { colors } = useApp();
+  const style = React.useMemo(() => getStyles(colors), [colors]);
 
   const [dataSource, setDataSource] = useState({});
   const [query, setQuery] = useState();

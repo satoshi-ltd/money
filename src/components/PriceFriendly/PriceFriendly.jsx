@@ -1,11 +1,11 @@
-import { Text, View } from '../../primitives';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { format } from './helpers';
-import { style } from './PriceFriendly.style';
+import { styles } from './PriceFriendly.style';
 import { useStore } from '../../contexts';
 import { C, currencyDecimals } from '../../modules';
+import { Text, View } from '../../primitives';
 
 const { SYMBOL } = C;
 
@@ -35,7 +35,7 @@ const PriceFriendly = ({
     bold,
     tone: resolvedTone,
     children: symbol,
-    style: [style.symbol, resolvedStyle],
+    style: [styles.symbol, resolvedStyle],
   };
 
   const formatedValue = format({
@@ -47,7 +47,7 @@ const PriceFriendly = ({
   });
 
   return (
-    <View row style={style.container}>
+    <View row style={styles.container}>
       {label && (
         <Text {...others} tone={resolvedTone} style={resolvedStyle}>
           {label}

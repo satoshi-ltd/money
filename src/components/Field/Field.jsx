@@ -1,41 +1,42 @@
-import { Text, View } from '../../primitives';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 
-import { style } from './Field.style';
+import { getStyles } from './Field.style';
+import { useApp } from '../../contexts';
+import { Text, View } from '../../primitives';
 
-const Field = ({ children, first, focused, label, last, style: styleProp, suffix, ...props }) => (
-  <View
-    {...props}
-    style={[
-      style.container,
-      first && style.first,
-      !last && style.noBottom,
-      last && style.last,
-      focused && style.focus,
-      styleProp,
-    ]}
-  >
-    {label ? (
-      <Text
-        tone={!focused ? 'secondary' : 'primary'}
-        pointerEvents="none"
-        style={style.label}
-        size="s"
-      >
-        {label}
-      </Text>
-    ) : null}
-    {suffix ? (
-      <View row align="center" style={style.content}>
-        <View flex>{children}</View>
-        <View style={style.suffix}>{suffix}</View>
-      </View>
-    ) : (
-      children
-    )}
-  </View>
-);
+const Field = ({ children, first, focused, label, last, style: styleProp, suffix, ...props }) => {
+  const { colors } = useApp();
+  const styles = useMemo(() => getStyles(colors), [colors]);
+
+  return (
+    <View
+      {...props}
+      style={[
+        styles.container,
+        first ? styles.first : null,
+        !last ? styles.noBottom : null,
+        last ? styles.last : null,
+        focused ? styles.focus : null,
+        styleProp,
+      ]}
+    >
+      {label ? (
+        <Text tone={!focused ? 'secondary' : 'primary'} pointerEvents="none" style={styles.label} size="s">
+          {label}
+        </Text>
+      ) : null}
+      {suffix ? (
+        <View row align="center" style={styles.content}>
+          <View flex>{children}</View>
+          <View style={styles.suffix}>{suffix}</View>
+        </View>
+      ) : (
+        children
+      )}
+    </View>
+  );
+};
 
 Field.propTypes = {
   children: PropTypes.node,

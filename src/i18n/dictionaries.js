@@ -445,14 +445,12 @@ export const PT = {
   NO_TRANSACTIONS: 'Você não tem nenhuma transação.',
 
   ONBOARDING_FINANCES: 'Suas finanças em qualquer lugar',
-  ONBOARDING_FINANCES_CAPTION:
-    'Acesse suas contas e registre transações pelo celular, onde estiver.',
+  ONBOARDING_FINANCES_CAPTION: 'Acesse suas contas e registre transações pelo celular, onde estiver.',
   ONBOARDING_PRIVACY: 'Privacidade em primeiro lugar',
   ONBOARDING_PRIVACY_CAPTION:
     'Proteja seus dados pessoais com o Money, que não coleta nem compartilha informações com terceiros.',
   ONBOARDING_SIMPLIFY: 'Simplifique suas finanças',
-  ONBOARDING_SIMPLIFY_CAPTION:
-    'A inteligência do Money ajuda você a entender seus gastos e tomar melhores decisões.',
+  ONBOARDING_SIMPLIFY_CAPTION: 'A inteligência do Money ajuda você a entender seus gastos e tomar melhores decisões.',
   ONBOARDING_WELCOME: 'Bem-vindo ao Money!',
   ONBOARDING_WELCOME_CAPTION: 'Gerencie suas contas multicurrency de forma simples e segura.',
   OVERALL_BALANCE: 'Saldo total',
@@ -999,8 +997,7 @@ export const DE = {
   ONBOARDING_PRIVACY_CAPTION:
     'Schützen Sie Ihre persönlichen Daten mit Money, das keine Informationen sammelt oder mit Dritten teilt.',
   ONBOARDING_SIMPLIFY: 'Vereinfachen Sie Ihre Finanzen',
-  ONBOARDING_SIMPLIFY_CAPTION:
-    'Money hilft Ihnen, Ihre Ausgaben zu verstehen und bessere Entscheidungen zu treffen.',
+  ONBOARDING_SIMPLIFY_CAPTION: 'Money hilft Ihnen, Ihre Ausgaben zu verstehen und bessere Entscheidungen zu treffen.',
   ONBOARDING_WELCOME: 'Willkommen bei Money!',
   ONBOARDING_WELCOME_CAPTION: 'Verwalten Sie Ihre Multicurrency-Konten einfach und sicher.',
   OVERALL_BALANCE: 'Gesamtsaldo',
@@ -1268,8 +1265,7 @@ export const ES = {
   NO_TRANSACTIONS: 'No tienes ninguna transacción.',
 
   ONBOARDING_FINANCES: 'Tus finanzas en cualquier lugar',
-  ONBOARDING_FINANCES_CAPTION:
-    'Accede a tus cuentas y registra transacciones desde tu móvil, estés donde estés.',
+  ONBOARDING_FINANCES_CAPTION: 'Accede a tus cuentas y registra transacciones desde tu móvil, estés donde estés.',
   ONBOARDING_PRIVACY: 'Privacidad primero',
   ONBOARDING_PRIVACY_CAPTION:
     'Protege tus datos personales con Money, que no recopila ni comparte información con terceros.',

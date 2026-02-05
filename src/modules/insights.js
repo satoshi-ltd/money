@@ -90,8 +90,8 @@ export const buildInsights = ({ accounts = [], rates = {}, settings = {}, txs = 
       delta > 5
         ? L10N.INSIGHT_SPENDING_MORE_TITLE
         : delta < -5
-          ? L10N.INSIGHT_SPENDING_LESS_TITLE
-          : L10N.INSIGHT_SPENDING_FLAT_TITLE;
+        ? L10N.INSIGHT_SPENDING_LESS_TITLE
+        : L10N.INSIGHT_SPENDING_FLAT_TITLE;
     insights.push({
       id: 'spending_trend',
       title,
@@ -119,8 +119,7 @@ export const buildInsights = ({ accounts = [], rates = {}, settings = {}, txs = 
     .slice(0, 3)
     .map(([category, amount]) => {
       const avg = previousKeys.length
-        ? previousKeys.reduce((sum, key) => sum + (totals.categories[key]?.[category] || 0), 0) /
-          previousKeys.length
+        ? previousKeys.reduce((sum, key) => sum + (totals.categories[key]?.[category] || 0), 0) / previousKeys.length
         : 0;
       const delta = avg > 0 ? ((amount - avg) / avg) * 100 : 0;
       const label = L10N.CATEGORIES?.[0]?.[category] || `${category}`;
@@ -139,24 +138,23 @@ export const buildInsights = ({ accounts = [], rates = {}, settings = {}, txs = 
     });
   }
 
-  const topMover = topCategories
-    .filter(({ avg }) => avg > 0)
-    .sort((a, b) => b.delta - a.delta)[0];
-  const topMoverInsight = topMover && Number.isFinite(topMover.delta)
-    ? {
-        id: 'top_mover',
-        title: L10N.INSIGHT_TOP_MOVER_TITLE,
-        caption: `${topMover.label} ${L10N.INSIGHT_VS_LAST_3_MONTHS}`,
-        type: 'mover',
-        value: topMover.delta,
-        valueLabel: formatPercentAbs(topMover.delta),
-        meta: {
-          current: topMover.amount,
-          avg: topMover.avg,
-        },
-        tone: topMover.delta >= 0 ? 'positive' : 'negative',
-      }
-    : null;
+  const topMover = topCategories.filter(({ avg }) => avg > 0).sort((a, b) => b.delta - a.delta)[0];
+  const topMoverInsight =
+    topMover && Number.isFinite(topMover.delta)
+      ? {
+          id: 'top_mover',
+          title: L10N.INSIGHT_TOP_MOVER_TITLE,
+          caption: `${topMover.label} ${L10N.INSIGHT_VS_LAST_3_MONTHS}`,
+          type: 'mover',
+          value: topMover.delta,
+          valueLabel: formatPercentAbs(topMover.delta),
+          meta: {
+            current: topMover.amount,
+            avg: topMover.avg,
+          },
+          tone: topMover.delta >= 0 ? 'positive' : 'negative',
+        }
+      : null;
 
   if (currentExpenses > 0 || currentIncomes > 0) {
     insights.push({
@@ -169,7 +167,12 @@ export const buildInsights = ({ accounts = [], rates = {}, settings = {}, txs = 
         incomes: currentIncomes,
         expenses: currentExpenses,
       },
-      tone: currentIncomes - currentExpenses > 0 ? 'positive' : currentIncomes - currentExpenses < 0 ? 'negative' : 'neutral',
+      tone:
+        currentIncomes - currentExpenses > 0
+          ? 'positive'
+          : currentIncomes - currentExpenses < 0
+          ? 'negative'
+          : 'neutral',
     });
   }
 

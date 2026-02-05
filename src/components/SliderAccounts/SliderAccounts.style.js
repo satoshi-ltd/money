@@ -1,20 +1,22 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
+
+import { cardGap, viewOffset } from '../../theme/layout';
 
 export const style = StyleSheet.create({
   scrollview: {
-    marginLeft: '$viewOffset * -1',
-    marginRight: '$viewOffset * -1',
+    marginLeft: viewOffset * -1,
+    marginRight: viewOffset * -1,
   },
 
   option: {
-    marginLeft: '$cardGap',
+    marginLeft: cardGap,
   },
 
   firstOption: {
-    marginLeft: '$viewOffset',
+    marginLeft: viewOffset,
   },
 
   lastOption: {
-    marginRight: '$viewOffset',
+    marginRight: viewOffset,
   },
 });

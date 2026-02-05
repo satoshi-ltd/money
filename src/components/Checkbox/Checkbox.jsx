@@ -1,13 +1,23 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 
-import { theme } from '../../config/theme';
 import { useApp } from '../../contexts';
 import { Icon, Pressable, Text, View } from '../../primitives';
+import { theme } from '../../theme';
 
 const Checkbox = ({ checked, label, onChange, disabled }) => {
   const { colors } = useApp();
+  const dynamic = useMemo(
+    () =>
+      StyleSheet.create({
+        box: {
+          borderColor: colors.border,
+          backgroundColor: checked ? colors.accent : 'transparent',
+        },
+      }),
+    [checked, colors.accent, colors.border],
+  );
 
   return (
     <Pressable
@@ -15,14 +25,7 @@ const Checkbox = ({ checked, label, onChange, disabled }) => {
       onPress={() => onChange?.(!checked)}
       style={[styles.container, disabled && styles.disabled]}
     >
-      <View
-        style={[
-          styles.box,
-          { borderColor: colors.border, backgroundColor: checked ? colors.accent : 'transparent' },
-        ]}
-      >
-        {checked ? <Icon name="check" tone="inverse" /> : null}
-      </View>
+      <View style={[styles.box, dynamic.box]}>{checked ? <Icon name="check" tone="onAccent" /> : null}</View>
       {label ? <Text>{label}</Text> : null}
     </Pressable>
   );

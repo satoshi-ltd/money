@@ -1,10 +1,10 @@
-import { Text, View } from '../../primitives';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { style } from './GroupTransaction.style';
+import { styles as style } from './GroupTransaction.style';
 import { Item } from './GroupTransactions.Item';
 import { L10N } from '../../modules';
+import { Text, View } from '../../primitives';
 
 // ! TODO: Refacto
 export const verboseDate = (date = new Date(), { locale = 'en-US', ...props } = {}) => {

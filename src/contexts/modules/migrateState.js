@@ -2,12 +2,7 @@ import { DEFAULTS, SCHEMA_VERSION } from '../store.constants';
 
 const ensureArray = (value) => (Array.isArray(value) ? value : []);
 
-export const migrateState = ({
-  accounts,
-  schemaVersion,
-  settings,
-  txs,
-} = {}) => {
+export const migrateState = ({ accounts, schemaVersion, settings, txs } = {}) => {
   const resolvedSettings = {
     ...DEFAULTS.settings,
     ...(settings || {}),
@@ -16,8 +11,9 @@ export const migrateState = ({
       ...(settings?.autoCategory || {}),
     },
   };
-  const resolvedSchemaVersion =
-    Number.isFinite(resolvedSettings.schemaVersion) ? resolvedSettings.schemaVersion : schemaVersion;
+  const resolvedSchemaVersion = Number.isFinite(resolvedSettings.schemaVersion)
+    ? resolvedSettings.schemaVersion
+    : schemaVersion;
 
   let nextSchemaVersion = Number.isFinite(resolvedSchemaVersion) ? resolvedSchemaVersion : 0;
 

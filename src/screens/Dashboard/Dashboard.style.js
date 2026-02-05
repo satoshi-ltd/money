@@ -1,29 +1,31 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
+
+import { theme } from '../../theme';
+import { cardAccountSize, cardGap, viewOffset } from '../../theme/layout';
 
 export const style = StyleSheet.create({
   screen: {
-    paddingBottom: '$spaceXXL * 2',
-    paddingTop: '$viewOffset',
+    paddingBottom: theme.spacing.xxl * 2,
+    paddingTop: viewOffset,
   },
 
   scrollView: {
-    marginBottom: '$spaceM',
-    paddingRight: '$viewOffset',
+    marginBottom: theme.spacing.md,
+    paddingRight: viewOffset,
   },
   summary: {
-    marginBottom: '$spaceL',
+    marginBottom: theme.spacing.lg,
   },
   insightsHeading: {
-    marginTop: '$spaceS',
+    marginTop: theme.spacing.sm,
   },
   insightsScroll: {
-    marginBottom: '$spaceXXS',
-    paddingRight: '$viewOffset',
+    marginBottom: theme.spacing.xxs,
+    paddingRight: viewOffset,
   },
   insightCard: {
-    width: '$cardAccountSize',
-    height: '$cardAccountSize',
-    padding: '$spaceS',
+    width: cardAccountSize,
+    height: cardAccountSize,
   },
   insightCardContent: {
     flex: 1,
@@ -31,65 +33,63 @@ export const style = StyleSheet.create({
   },
   insightContent: {
     flex: 0,
-    gap: '$spaceXXS',
+    gap: theme.spacing.xxs,
   },
   insightHeader: {
-    gap: '$spaceXXS',
+    gap: theme.spacing.xxs,
   },
   insightValueRow: {
     alignItems: 'center',
-    gap: '$spaceXS',
+    gap: theme.spacing.xs,
   },
   insightChart: {
-    marginTop: '$spaceXS',
+    marginTop: theme.spacing.xs,
   },
   insightChartTrend: {
     marginTop: 0,
-    marginLeft: '$spaceS * -1',
+    marginLeft: theme.spacing.sm * -1,
   },
   insightTrendValue: {
     position: 'absolute',
     left: 0,
     bottom: 0,
     zIndex: 1,
-
   },
-  insightValue: {
-  },
+  insightValue: {},
   insightCategories: {
-    gap: '$spaceXXS',
+    gap: theme.spacing.xxs,
   },
   insightCategoryItem: {
-    gap: '$spaceXXS',
+    gap: theme.spacing.xxs,
   },
   insightMetrics: {
-    gap: '$spaceXXS',
+    gap: theme.spacing.xxs,
   },
   insightEmpty: {
-    marginBottom: '$spaceM',
-    marginHorizontal: '$viewOffset',
+    marginBottom: theme.spacing.md,
+    marginHorizontal: viewOffset,
   },
   accountsHeading: {
-    marginTop: '$spaceM',
+    marginTop: theme.spacing.md,
   },
   headingTight: {
-    marginTop: '$spaceXS',
+    marginTop: theme.spacing.xs,
   },
 
   card: {
-    marginLeft: '$cardGap',
+    marginLeft: cardGap,
   },
 
   firstCard: {
-    marginLeft: '$viewOffset',
+    marginLeft: viewOffset,
   },
 
   lastCard: {
-    marginRight: '$viewOffset',
+    marginRight: viewOffset,
   },
 
   inputSearch: {
-    marginHorizontal: '$viewOffset',
-    marginBottom: '$viewOffset',
+    marginHorizontal: viewOffset,
+    marginBottom: viewOffset,
   },
 });

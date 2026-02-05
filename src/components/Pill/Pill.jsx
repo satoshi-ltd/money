@@ -1,17 +1,18 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 
-import { theme } from '../../config/theme';
 import { useApp } from '../../contexts';
 import { Text, View } from '../../primitives';
+import { theme } from '../../theme';
 
 const Pill = ({ text, color = 'surface', style }) => {
   const { colors } = useApp();
   const backgroundColor = colors[color] || colors.surface;
+  const dynamic = useMemo(() => StyleSheet.create({ bg: { backgroundColor } }), [backgroundColor]);
 
   return (
-    <View style={[styles.container, { backgroundColor }, style]}>
+    <View style={[styles.container, dynamic.bg, style]}>
       <Text size="s">{text}</Text>
     </View>
   );

@@ -1,9 +1,10 @@
-import { Text, View } from '../../primitives';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 
-import { style } from './TransactionsList.style';
+import { getStyles } from './TransactionsList.style';
+import { useApp } from '../../contexts';
 import { L10N } from '../../modules';
+import { Text, View } from '../../primitives';
 
 // ! TODO: Refacto
 const verboseDate = (date = new Date(), { locale = 'en-US', ...props } = {}) => {
@@ -22,13 +23,18 @@ const verboseDate = (date = new Date(), { locale = 'en-US', ...props } = {}) => 
     : date;
 };
 
-const TransactionsHeader = ({ title = new Date() }) => (
-  <View style={style.headerContainer}>
-    <Text bold tone="secondary" style={style.date} size="s">
-      {verboseDate(new Date(title), { day: 'numeric', month: 'long', year: 'numeric' })}
-    </Text>
-  </View>
-);
+const TransactionsHeader = ({ title = new Date() }) => {
+  const { colors } = useApp();
+  const style = useMemo(() => getStyles(colors), [colors]);
+
+  return (
+    <View style={style.headerContainer}>
+      <Text bold tone="secondary" style={style.date} size="s">
+        {verboseDate(new Date(title), { day: 'numeric', month: 'long', year: 'numeric' })}
+      </Text>
+    </View>
+  );
+};
 
 TransactionsHeader.propTypes = {
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,

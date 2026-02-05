@@ -1,14 +1,17 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
-  base: {
-    backgroundColor: '$colorBase',
-    paddingBottom: '$viewOffset',
-  },
-  offset: {
-    paddingHorizontal: '$viewOffset',
-  },
-  gap: {
-    gap: '$viewOffset',
-  },
-});
+import { viewOffset } from '../../theme/layout';
+
+export const getStyles = (colors) =>
+  StyleSheet.create({
+    base: {
+      backgroundColor: colors.background,
+      paddingBottom: viewOffset,
+    },
+    offset: {
+      paddingHorizontal: viewOffset,
+    },
+    gap: {
+      gap: viewOffset,
+    },
+  });

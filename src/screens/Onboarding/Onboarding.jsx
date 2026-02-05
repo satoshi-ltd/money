@@ -1,14 +1,14 @@
-import { Button, Pagination, ScrollView, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useRef, useState } from 'react';
 import { SafeAreaView, useWindowDimensions } from 'react-native';
 import { Image } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
 
 import { IMAGE_SIZE, SLIDES } from './Onboarding.constants';
 import { style } from './Onboarding.style';
+import { Button, Pagination, ScrollView, Text, View } from '../../components';
 import { useStore } from '../../contexts';
 import { L10N } from '../../modules';
+import { theme } from '../../theme';
 
 const Onboarding = ({ navigation: { navigate } }) => {
   const scrollview = useRef(null);
@@ -32,7 +32,7 @@ const Onboarding = ({ navigation: { navigate } }) => {
     }
   };
 
-  const spaceXL = StyleSheet.value('$spaceXL');
+  const spaceXL = theme.spacing.xl;
   const lastSlide = currentIndex === SLIDES.length - 1;
   const slideSize = width - spaceXL * 2;
 

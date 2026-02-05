@@ -1,11 +1,11 @@
-import { ScrollView } from '../../primitives';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import { useWindowDimensions } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './SliderCurrencies.style';
 import { C } from '../../modules';
+import { ScrollView } from '../../primitives';
+import { optionSnap } from '../../theme/layout';
 import { CardOption } from '../CardOption';
 
 const SliderCurrencies = ({ selected, onChange, ...others }) => {
@@ -19,7 +19,6 @@ const SliderCurrencies = ({ selected, onChange, ...others }) => {
 
   const currencies = Object.keys(C.SYMBOL);
   const index = currencies.findIndex((item) => item === selected);
-  const optionSnap = StyleSheet.value('$optionSnap');
 
   return (
     <ScrollView {...others} horizontal ref={scrollview} snapTo={optionSnap} style={{ width }}>

@@ -3,9 +3,9 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 
 import { useApp } from '../../contexts';
-import { Icon, Pressable, Text, View } from '../../primitives';
 import { ICON } from '../../modules';
-import { theme } from '../../config/theme';
+import { Icon, Pressable, Text, View } from '../../primitives';
+import { theme } from '../../theme';
 
 const Header = ({ title, onBack, leftElement, rightElement, showBorder = false, transparent = false, style }) => {
   const { colors } = useApp();

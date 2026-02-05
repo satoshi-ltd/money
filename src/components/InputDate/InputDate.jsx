@@ -1,20 +1,20 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Pressable, Text } from '../../primitives';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { Platform } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
 
-import { style } from './InputDate.style';
+import { styles } from './InputDate.style';
+import { useApp, useStore } from '../../contexts';
+import { L10N, verboseDate } from '../../modules';
+import { Pressable, Text } from '../../primitives';
 import { Field } from '../Field';
 import Modal from '../Modal';
-import { useStore } from '../../contexts';
-import { L10N, verboseDate } from '../../modules';
 
 const DATE_FORMAT = { day: 'numeric', month: 'long', year: 'numeric' };
 
 const InputDate = ({ first, label = L10N.DATE, last, value = new Date(), onChange = () => {} }) => {
   const { session: { locale } = {}, settings: { theme } = {} } = useStore();
+  const { colors } = useApp();
 
   const [open, setOpen] = useState(false);
 
@@ -29,8 +29,8 @@ const InputDate = ({ first, label = L10N.DATE, last, value = new Date(), onChang
   return (
     <>
       <Field focused={open} label={label} first={first} last={last}>
-        <Pressable onPress={handlePress} style={style.pressable}>
-          <Text bold style={[style.value, label ? style.valueWithLabel : null]}>
+        <Pressable onPress={handlePress} style={[styles.pressable, label ? styles.pressableWithLabel : null]}>
+          <Text bold style={[label ? styles.valueWithLabel : null]}>
             {verboseDate(value, { locale, ...DATE_FORMAT })}
           </Text>
         </Pressable>
@@ -39,16 +39,16 @@ const InputDate = ({ first, label = L10N.DATE, last, value = new Date(), onChang
       {open ? (
         <Modal onClose={() => setOpen(false)}>
           <DateTimePicker
-            accentColor={StyleSheet.value('$colorAccent')}
+            accentColor={colors.accent}
             is24Hour
             maximumDate={new Date()}
             mode="date"
             display={Platform.OS === 'ios' ? 'inline' : 'calendar'}
-            textColor={StyleSheet.value('$colorContent')}
+            textColor={colors.text}
             themeVariant={theme}
             value={value}
             onChange={handleChange}
-            style={style.dateTimePicker}
+            style={styles.dateTimePicker}
           />
         </Modal>
       ) : null}

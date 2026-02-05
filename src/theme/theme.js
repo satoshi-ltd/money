@@ -3,41 +3,36 @@ export const theme = {
     light: {
       text: '#473729',
       textSecondary: '#A09485',
-
       accent: '#FFBC2d',
-
+      onAccent: '#473729',
       background: '#f3f2ee',
       surface: '#EDE9E4',
       border: '#E8E2D8',
-
       danger: '#8B4513',
       success: '#388E3C',
       warning: '#D2691E',
-
       overlay: 'rgba(0, 0, 0, 0.5)',
-
-      inverse: '#ffffff',
+      // "Inverse surface" is a flipped surface used for tooltips/secondary buttons.
+      inverse: '#473729',
+      // Content on top of the inverse surface.
+      onInverse: '#ffffff',
     },
     dark: {
       text: '#F5F2ED',
       textSecondary: '#D4C4B7',
-
       accent: '#FFD700',
-
+      onAccent: '#1A1613',
       background: '#2A2520',
       surface: '#3A332E',
       border: '#5A524D',
-
       danger: '#CD853F',
       success: '#6B8E23',
       warning: '#DAA520',
-
       overlay: 'rgba(0, 0, 0, 0.7)',
-
-      inverse: '#1A1613',
+      inverse: '#F5F2ED',
+      onInverse: '#1A1613',
     },
   },
-
   typography: {
     families: {
       primary: 'font-default',
@@ -107,7 +102,6 @@ export const theme = {
       title: 28,
     },
   },
-
   spacing: {
     xxs: 4,
     xs: 8,
@@ -117,7 +111,6 @@ export const theme = {
     xl: 32,
     xxl: 48,
   },
-
   borderRadius: {
     sm: 4,
     md: 8,
@@ -125,7 +118,6 @@ export const theme = {
     xl: 24,
     full: 9999,
   },
-
   shadows: {
     sm: {
       shadowColor: '#000',
@@ -149,7 +141,6 @@ export const theme = {
       elevation: 5,
     },
   },
-
   animations: {
     duration: {
       standard: 350,

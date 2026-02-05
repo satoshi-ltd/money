@@ -1,25 +1,14 @@
-import Card from '../Card';
-import { Icon, Pressable, Text } from '../../primitives';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import { style } from './CardOption.style';
-import { useApp } from '../../contexts';
+import { Icon, Pressable, Text } from '../../primitives';
+import Card from '../Card';
 import { CurrencyLogo } from '../CurrencyLogo';
 
-const CardOption = ({
-  caption,
-  children,
-  currency,
-  highlight,
-  icon,
-  legend,
-  onPress,
-  ...others
-}) => {
-  const { theme } = useApp();
-  const contentTone = highlight ? 'inverse' : 'primary';
-  const legendTone = highlight ? 'inverse' : 'secondary';
+const CardOption = ({ caption, children, currency, highlight, icon, legend, onPress, ...others }) => {
+  const contentTone = highlight ? 'onAccent' : 'primary';
+  const legendTone = highlight ? 'onAccent' : 'secondary';
 
   return (
     <Pressable {...others} onPress={onPress}>

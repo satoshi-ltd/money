@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { createContext, useContext, useLayoutEffect, useState } from 'react';
-import StyleSheet from 'react-native-extended-stylesheet';
 
 import { consolidate, migrateState } from './modules';
 import { detectDeviceLanguage, setLanguage } from '../i18n';
@@ -22,7 +21,6 @@ import {
 } from './reducers';
 import { DEFAULTS, FILENAME } from './store.constants';
 import { StorageService } from '../services';
-import { DarkTheme, LightTheme } from '../theme';
 
 const StoreContext = createContext(`context:store`);
 
@@ -39,7 +37,6 @@ const StoreProvider = ({ children }) => {
         txs: await store.get('txs')?.value,
       };
       let migrated = migrateState(rawState);
-      updateTheme(migrated.settings.theme, migrated.settings);
 
       const resolvedLanguage = migrated.settings.language || detectDeviceLanguage();
       if (resolvedLanguage !== migrated.settings.language) {
@@ -80,10 +77,6 @@ const StoreProvider = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const updateTheme = (theme) => {
-    StyleSheet.build(theme === 'light' ? LightTheme : DarkTheme);
-  };
-
   return (
     <StoreContext.Provider
       value={{
@@ -100,7 +93,7 @@ const StoreProvider = ({ children }) => {
         updateSettings: (...props) => updateSettings(...props, [state, setState]),
         updateRates: (...props) => updateRates(...props, [state, setState]),
         updateSubscription: (...props) => updateSubscription(...props, [state, setState]),
-        updateTheme,
+        updateTheme: (theme) => updateSettings({ theme }, [state, setState]),
         importBackup: (...props) => importBackup(...props, [state, setState]),
       }}
     >

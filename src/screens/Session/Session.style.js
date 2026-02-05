@@ -1,30 +1,34 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
 
-export const style = StyleSheet.create({
-  safeAreaView: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
+import { theme } from '../../theme';
+import { viewOffset } from '../../theme/layout';
 
-  content: {
-    alignItems: 'center',
-    gap: '$viewOffset',
-  },
+export const getStyles = (colors) =>
+  StyleSheet.create({
+    safeAreaView: {
+      flex: 1,
+      justifyContent: 'flex-end',
+    },
 
-  pinCode: {
-    flexDirection: 'row',
-    marginBottom: '$spaceL',
-  },
+    content: {
+      alignItems: 'center',
+      gap: viewOffset,
+    },
 
-  pin: {
-    backgroundColor: '$colorBorder',
-    borderRadius: '$spaceM / 2',
-    height: '$spaceM',
-    marginHorizontal: '$spaceS',
-    width: '$spaceM',
-  },
+    pinCode: {
+      flexDirection: 'row',
+      marginBottom: theme.spacing.lg,
+    },
 
-  pinActive: {
-    backgroundColor: '$colorAccent',
-  },
-});
+    pin: {
+      backgroundColor: colors.border,
+      borderRadius: theme.spacing.md / 2,
+      height: theme.spacing.md,
+      marginHorizontal: theme.spacing.sm,
+      width: theme.spacing.md,
+    },
+
+    pinActive: {
+      backgroundColor: colors.accent,
+    },
+  });

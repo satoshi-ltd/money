@@ -4,10 +4,10 @@ import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { theme } from '../../config/theme';
 import { useApp } from '../../contexts';
 import { ICON } from '../../modules';
 import { Button, Icon, View } from '../../primitives';
+import { theme } from '../../theme';
 
 const TAB_SIZE = theme.spacing.xxl + theme.spacing.md;
 
@@ -41,12 +41,8 @@ const Footer = ({ state, navigation, onActionPress }) => {
         {state.routes.map((route, index) => {
           const isFocused = state.index === index;
           return (
-            <TouchableOpacity
-              key={route.key}
-              onPress={() => handleTabPress(route, isFocused)}
-              style={styles.tab}
-            >
-              <Icon color={isFocused ? 'accent' : 'contentLight'} name={routeIcon(route.name)} size="l" />
+            <TouchableOpacity key={route.key} onPress={() => handleTabPress(route, isFocused)} style={styles.tab}>
+              <Icon tone={isFocused ? 'accent' : 'secondary'} name={routeIcon(route.name)} size="l" />
             </TouchableOpacity>
           );
         })}

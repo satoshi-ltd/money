@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, StyleSheet, TouchableOpacity } from 'react-native';
 
-import { theme } from '../../config/theme';
 import { useApp } from '../../contexts';
 import { useMotion } from '../../hooks/useMotion';
 import { Icon, ScrollView, Text, View } from '../../primitives';
+import { theme } from '../../theme';
 
 const Dropdown = ({
   visible,
@@ -41,7 +41,7 @@ const Dropdown = ({
 
   const renderDefaultOption = (option, isSelected) => (
     <View style={styles.optionContent}>
-      <Text color={isSelected ? 'accent' : undefined} bold={isSelected} size="s">
+      <Text tone={isSelected ? 'accent' : undefined} bold={isSelected} size="s">
         {option.label}
       </Text>
       {isSelected ? <Icon name="check" tone="accent" /> : null}
@@ -75,7 +75,12 @@ const Dropdown = ({
       positionStyle = { position: 'absolute', top: -32, right: 60, zIndex: 1001 };
     }
 
-    return [styles.dropdownRelative, baseStyle, positionStyle, { backgroundColor: colors.surface, borderColor: colors.border }];
+    return [
+      styles.dropdownRelative,
+      baseStyle,
+      positionStyle,
+      { backgroundColor: colors.surface, borderColor: colors.border },
+    ];
   };
 
   useEffect(() => {

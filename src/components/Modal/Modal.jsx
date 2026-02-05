@@ -1,14 +1,17 @@
-import { Animated, Dimensions, KeyboardAvoidingView, Modal as RNModal, Platform } from 'react-native';
-import { PanGestureHandler, State } from 'react-native-gesture-handler';
+import { useIsFocused } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Animated, Dimensions, KeyboardAvoidingView, Modal as RNModal, Platform } from 'react-native';
+import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useIsFocused } from '@react-navigation/native';
 
+import { getStyles } from './Modal.styles';
+import { useApp } from '../../contexts';
 import { Pressable, View } from '../../primitives';
-import { styles } from './Modal.styles';
 
 const Modal = ({ children, onClose }) => {
+  const { colors } = useApp();
+  const styles = useMemo(() => getStyles(colors), [colors]);
   const [visible, setVisible] = useState(true);
   const isFocused = useIsFocused();
   const isAndroid = Platform.OS === 'android';
@@ -84,10 +87,7 @@ const Modal = ({ children, onClose }) => {
         <Animated.View style={[styles.backdrop, { opacity: backdropOpacity }]}>
           <Pressable style={styles.backdropPressable} onPress={handleClose} />
         </Animated.View>
-        <KeyboardAvoidingView
-          behavior={isAndroid ? 'height' : 'padding'}
-          style={styles.keyboardAvoid}
-        >
+        <KeyboardAvoidingView behavior={isAndroid ? 'height' : 'padding'} style={styles.keyboardAvoid}>
           <PanGestureHandler
             enabled={gestureEnabled}
             activeOffsetY={10}

@@ -1,9 +1,9 @@
-import { Button, Panel, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
 
 import { style } from './Clone.style';
+import { Button, Panel, View } from '../../components';
 import { useStore } from '../../contexts';
 import { C, L10N } from '../../modules';
 import { FormTransaction } from '../Transaction/components'; // ! TODO: Should be a /component
@@ -79,11 +79,7 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
   const disableClone = isDirty || !account?.hash;
 
   const headerTitle =
-    type === C?.TX?.TYPE?.TRANSFER
-      ? L10N.SWAP
-      : type === C?.TX?.TYPE?.INCOME
-        ? L10N.INCOME
-        : L10N.EXPENSE;
+    type === C?.TX?.TYPE?.TRANSFER ? L10N.SWAP : type === C?.TX?.TYPE?.INCOME ? L10N.INCOME : L10N.EXPENSE;
 
   return (
     <Panel offset title={headerTitle} onBack={goBack}>

@@ -1,17 +1,20 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
+
+import { theme } from '../../theme';
+import { viewOffset } from '../../theme/layout';
 
 export const style = StyleSheet.create({
   screen: {
-    paddingBottom: '$spaceXXL * 2',
-    paddingTop: '$spaceM',
+    paddingBottom: theme.spacing.xxl * 2,
+    paddingTop: viewOffset,
   },
 
   hint: {
-    marginTop: '$spaceXS',
+    marginTop: theme.spacing.xs,
   },
 
   offset: {
-    marginHorizontal: '$viewOffset',
+    marginHorizontal: viewOffset,
     width: 'auto',
   },
 

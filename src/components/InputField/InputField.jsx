@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
-import { Field } from '../Field';
 import { Input } from '../../primitives';
-import { style } from './InputField.style';
+import { Field } from '../Field';
+import { styles } from './InputField.style';
 
 const InputField = ({
   disabled,
@@ -39,7 +39,7 @@ const InputField = ({
         onBlur={handleBlur}
         onChange={onChange}
         onFocus={handleFocus}
-        style={[label ? style.inputWithLabel : style.input, inputStyle]}
+        style={[label ? styles.inputWithLabel : null, inputStyle]}
         {...restInputProps}
       />
     </Field>

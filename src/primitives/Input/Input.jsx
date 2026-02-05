@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { TextInput } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
 
-import { styles } from './Input.styles';
+import { getStyles } from './Input.styles';
+import { useApp } from '../../contexts';
 
 const Input = React.forwardRef(
   (
@@ -23,6 +23,8 @@ const Input = React.forwardRef(
     },
     ref,
   ) => {
+    const { colors } = useApp();
+    const styles = useMemo(() => getStyles(colors), [colors]);
     const [focused, setFocused] = React.useState(false);
 
     const handleChangeText = (text) => {
@@ -40,8 +42,7 @@ const Input = React.forwardRef(
       if (onFocus) onFocus(event);
     };
 
-    const resolvedPlaceholder =
-      placeholder !== undefined ? placeholder : focused ? undefined : placeholderWhenBlur;
+    const resolvedPlaceholder = placeholder !== undefined ? placeholder : focused ? undefined : placeholderWhenBlur;
 
     return (
       <TextInput
@@ -52,19 +53,14 @@ const Input = React.forwardRef(
         editable={editable}
         multiline={multiline}
         placeholder={resolvedPlaceholder}
-        placeholderTextColor={StyleSheet.value('$inputPlaceholderColor')}
+        placeholderTextColor={styles.placeholderColor.color}
         underlineColorAndroid="transparent"
         value={value}
         onBlur={handleBlur}
         onChangeText={handleChangeText}
         onFocus={handleFocus}
         {...props}
-        style={[
-          styles.base,
-          grow ? styles.grow : null,
-          multiline ? styles.multiline : null,
-          style,
-        ]}
+        style={[styles.base, grow ? styles.grow : null, multiline ? styles.multiline : null, style]}
       />
     );
   },

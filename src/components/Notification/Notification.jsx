@@ -1,34 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Platform } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { style } from './Notification.style';
-import { Icon, Pressable, Text, View } from '../../primitives';
+import { getStyles } from './Notification.style';
+import { useApp } from '../../contexts';
 import { C, eventEmitter, ICON, L10N } from '../../modules';
+import { Icon, Pressable, Text, View } from '../../primitives';
 
 const { EVENT } = C;
 
 const NotificationBase = ({ error, onClose, text, title, visible, style: containerStyle }) => {
   if (!visible) return null;
 
-  const textColor = error ? 'base' : 'content';
+  const { colors } = useApp();
+  const style = useMemo(() => getStyles(colors), [colors]);
+  const contentTone = error ? 'onInverse' : 'onAccent';
 
   return (
     <Pressable onPress={onClose} style={[style.notification, error ? style.alert : style.accent, containerStyle]}>
       <SafeAreaView edges={['top']} style={style.safeAreaView}>
-        <Icon name={error ? ICON.ALERT : ICON.INFO} color={textColor} />
+        <Icon name={error ? ICON.ALERT : ICON.INFO} tone={contentTone} />
         <View flex style={style.text}>
-          <Text bold color={textColor}>
+          <Text bold tone={contentTone}>
             {title}
           </Text>
           {text ? (
-            <Text color={textColor} size="xs">
+            <Text tone={contentTone} size="xs">
               {text}
             </Text>
           ) : null}
         </View>
         <Pressable onPress={onClose}>
-          <Icon name={ICON.CLOSE} color={textColor} />
+          <Icon name={ICON.CLOSE} tone={contentTone} />
         </Pressable>
       </SafeAreaView>
     </Pressable>

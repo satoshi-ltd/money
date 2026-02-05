@@ -1,12 +1,11 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ActivityIndicator, Switch } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
 
+import { useApp } from '../../contexts';
+import { ICON } from '../../modules';
 import { Icon, Pressable, Text, View } from '../../primitives';
 import Card from '../Card';
-import { ICON } from '../../modules';
-import { useApp } from '../../contexts';
-import { styles } from './Setting.styles';
+import { getStyles } from './Setting.styles';
 
 const resolveOptionLabel = (option) => option?.text || option?.label || option?.caption || option?.value;
 
@@ -28,6 +27,7 @@ const Setting = ({
   ...props
 }) => {
   const { colors } = useApp();
+  const styles = useMemo(() => getStyles(colors), [colors]);
   const selectedIndex = options?.findIndex((option) => option?.id === selected || option?.value === selected);
   const selectedOption = selectedIndex >= 0 ? options[selectedIndex] : options?.[0];
   const isToggle = type === 'toggle';
@@ -71,7 +71,7 @@ const Setting = ({
         {right ? (
           right
         ) : activity ? (
-          <ActivityIndicator size="small" color={StyleSheet.value('$colorContentLight')} />
+          <ActivityIndicator size="small" color={colors.textSecondary} />
         ) : isToggle ? (
           <Switch
             disabled={disabled}

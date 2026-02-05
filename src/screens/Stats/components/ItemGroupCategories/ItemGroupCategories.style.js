@@ -1,13 +1,15 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
+
+import { viewOffset } from '../../../../theme/layout';
 
 export const style = StyleSheet.create({
   container: {
-    marginBottom: '$viewOffset',
+    marginBottom: viewOffset,
   },
 
   content: {
-    gap: '$viewOffset / 2',
-    marginHorizontal: '$viewOffset',
+    gap: viewOffset / 2,
+    marginHorizontal: viewOffset,
   },
 
   touchable: {

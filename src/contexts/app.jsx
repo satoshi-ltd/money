@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
-import { theme } from '../config/theme';
 import { detectDeviceLanguage, formatDateTime, translate } from '../i18n';
+import { theme } from '../theme';
 import { useStore } from './store';
 
 export const useApp = () => {

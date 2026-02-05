@@ -1,4 +1,6 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
+
+import { theme } from '../../../../theme';
 
 export const style = StyleSheet.create({
   container: {
@@ -14,6 +16,6 @@ export const style = StyleSheet.create({
 
   key: {
     alignItems: 'center',
-    marginVertical: '$spaceS',
+    marginVertical: theme.spacing.sm,
   },
 });

@@ -1,14 +1,14 @@
-import { Button, InputField, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useWindowDimensions } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
 
 import { ButtonSummary } from './components';
-import { style } from './Transactions.style';
+import { getStyles } from './Transactions.style';
+import { Button, InputField, View } from '../../components';
 import { Heading, LineChart, Summary } from '../../components';
-import { useStore } from '../../contexts';
+import { useApp, useStore } from '../../contexts';
 import { C, ICON, L10N } from '../../modules';
+import { viewOffset } from '../../theme/layout';
 
 const {
   TX: {
@@ -19,9 +19,12 @@ let timeoutId;
 
 const TransactionsListHeader = ({ chartBalanceBase, dataSource, navigation, onSearch, setPage }) => {
   const { accounts = [], settings: { baseCurrency } = {} } = useStore();
+  const { colors } = useApp();
+  const style = React.useMemo(() => getStyles(colors), [colors]);
   const { currency = baseCurrency, ...rest } = dataSource;
 
   const { width } = useWindowDimensions();
+  const chartWidth = width - viewOffset * 2;
 
   const [search, setSearch] = useState(false);
   const [query, setQuery] = useState();
@@ -55,13 +58,7 @@ const TransactionsListHeader = ({ chartBalanceBase, dataSource, navigation, onSe
     <>
       <View style={style.headerWrap}>
         <Summary {...rest} currency={currency} title={rest?.title} noPadding>
-          <LineChart
-            currency={currency}
-            height={128}
-            showPointer
-            values={chartBalanceBase}
-            width={width - StyleSheet.value('$viewOffset') * 2}
-          />
+          <LineChart currency={currency} height={128} showPointer values={chartBalanceBase} width={chartWidth} />
 
           <View row style={style.buttons}>
             <ButtonSummary icon={ICON.INCOME} text={L10N.INCOME} onPress={() => handleTransaction(INCOME)} />
@@ -74,12 +71,7 @@ const TransactionsListHeader = ({ chartBalanceBase, dataSource, navigation, onSe
         </Summary>
 
         <Heading value={L10N.TRANSACTIONS}>
-          <Button
-            icon={!search ? ICON.SEARCH : ICON.CLOSE}
-            variant="outlined"
-            size="s"
-            onPress={handleSearch}
-          />
+          <Button icon={!search ? ICON.SEARCH : ICON.CLOSE} variant="outlined" size="s" onPress={handleSearch} />
         </Heading>
         {search && (
           <InputField
