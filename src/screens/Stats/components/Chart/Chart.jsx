@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import React from 'react';
-import { useWindowDimensions } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { Animated, Easing, useWindowDimensions } from 'react-native';
 
 import { style } from './Chart.style';
 import { Heading, Text, View } from '../../../../components';
@@ -28,6 +28,21 @@ const Chart = ({
   const normalizedData1 = normalize(data1);
   const normalizedData2 = normalize(data2);
   const { width } = useWindowDimensions();
+  const chartWidth = width - viewOffset * 2;
+
+  // Gifted-charts `isAnimated` can be visually flaky here; keep charts static and animate a safe reveal.
+  const reveal = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    reveal.stopAnimation();
+    reveal.setValue(0);
+    Animated.timing(reveal, {
+      toValue: chartWidth,
+      duration: 450,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: false,
+    }).start();
+  }, [chartWidth, monthsLimit, multipleData, normalizedData1.length, normalizedData2.length, reveal]);
 
   // eslint-disable-next-line react/prop-types
   const Scale = ({ color, dataSource }) => (
@@ -51,24 +66,25 @@ const Chart = ({
 
       <Scale color={color1} dataSource={normalizedData1} />
 
-      <LineChart
-        {...{
-          currency,
-          color,
-          multipleData,
-          monthsLimit,
-          values: multipleData ? [normalizedData1, normalizedData2] : normalizedData1,
-          onPointerChange,
-        }}
-        height={128}
-        isAnimated
-        pointerConfig={{
-          initialPointerIndex: data1.length ? pointerIndex : undefined,
-          persistPointer: true,
-        }}
-        showPointer
-        width={width - viewOffset * 2}
-      />
+      <Animated.View style={{ width: reveal, overflow: 'hidden' }}>
+        <LineChart
+          {...{
+            currency,
+            color,
+            multipleData,
+            monthsLimit,
+            values: multipleData ? [normalizedData1, normalizedData2] : normalizedData1,
+            onPointerChange,
+          }}
+          height={128}
+          pointerConfig={{
+            initialPointerIndex: data1.length ? pointerIndex : undefined,
+            persistPointer: true,
+          }}
+          showPointer
+          width={chartWidth}
+        />
+      </Animated.View>
 
       {multipleData && <Scale color={color2} dataSource={normalizedData2} />}
     </View>
