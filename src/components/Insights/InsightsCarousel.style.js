@@ -11,6 +11,16 @@ export const style = StyleSheet.create({
   card: {
     marginLeft: cardGap,
   },
+  twoCard: {
+    width: cardAccountSize,
+  },
+  twoCardGap: {
+    marginLeft: cardGap,
+  },
+  twoCardsRow: {
+    marginBottom: theme.spacing.xxs,
+    marginHorizontal: viewOffset,
+  },
   firstCard: {
     marginLeft: viewOffset,
   },

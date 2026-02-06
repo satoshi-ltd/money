@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
+import { useWindowDimensions } from 'react-native';
 
 import { style } from './InsightsCarousel.style';
 import { useStore } from '../../contexts';
 import { ICON, L10N } from '../../modules';
 import { Icon, Pressable, ScrollView, Text, View } from '../../primitives';
 import { theme } from '../../theme';
-import { cardAccountSize, cardAccountSnap } from '../../theme/layout';
+import { cardAccountSize, cardAccountSnap, cardGap, viewOffset } from '../../theme/layout';
 import Card from '../Card';
 import { LineChart } from '../LineChart';
 import { MetricBar } from '../MetricBar';
@@ -14,6 +15,7 @@ import { PriceFriendly } from '../PriceFriendly';
 
 const InsightsCarousel = ({ balanceCard, currency, insights = [] }) => {
   const { settings: { maskAmount } = {}, updateSettings } = useStore();
+  const { width } = useWindowDimensions();
 
   const cards = useMemo(() => {
     const normalized = Array.isArray(insights) ? insights : [];
@@ -21,6 +23,10 @@ const InsightsCarousel = ({ balanceCard, currency, insights = [] }) => {
   }, [balanceCard, insights]);
 
   const hasCards = cards.length > 0;
+  const twoCardMode = cards.length === 2;
+  const twoCardSize = (width - viewOffset * 2 - cardGap) / 2;
+  const cardSize = twoCardMode ? twoCardSize : cardAccountSize;
+  const cardStyle = { width: cardSize, height: cardAccountSize };
 
   const formatSignedPercent = (value = 0) => `${value >= 0 ? '+' : ''}${Math.round(value)}%`;
 
@@ -32,14 +38,14 @@ const InsightsCarousel = ({ balanceCard, currency, insights = [] }) => {
 
     const content = (
       <Pressable onPress={toggleMask}>
-        <Card style={style.insightCard}>
+        <Card style={[style.insightCard, cardStyle]}>
           <View style={style.balanceCardContent}>
             {showChart ? (
               <LineChart
-                height={cardAccountSize / 2}
+                height={cardSize / 2}
                 isAnimated={false}
                 values={chartValues}
-                width={cardAccountSize}
+                width={cardSize}
                 style={style.balanceChart}
               />
             ) : null}
@@ -83,7 +89,7 @@ const InsightsCarousel = ({ balanceCard, currency, insights = [] }) => {
     const toneColor = insight.tone === 'negative' ? 'danger' : insight.tone === 'positive' ? 'accent' : 'primary';
 
     return (
-      <Card style={style.insightCard}>
+      <Card style={[style.insightCard, cardStyle]}>
         <View style={style.insightCardContent}>
           <View style={style.insightHeader}>
             <Text align="left" bold uppercase numberOfLines={2} size="xs">
@@ -164,11 +170,11 @@ const InsightsCarousel = ({ balanceCard, currency, insights = [] }) => {
             ) : null}
             {showChart ? (
               <LineChart
-                height={cardAccountSize * 0.35}
+                height={cardSize * 0.35}
                 monthsLimit={insight.chart.monthsLimit}
                 values={insight.chart.values}
                 style={insight.type === 'trend' ? style.insightChartTrend : style.insightChart}
-                width={insight.type === 'trend' ? cardAccountSize : cardAccountSize - theme.spacing.sm * 2}
+                width={insight.type === 'trend' ? cardSize : cardSize - theme.spacing.sm * 2}
               />
             ) : null}
             {showCategories ? (
@@ -187,6 +193,24 @@ const InsightsCarousel = ({ balanceCard, currency, insights = [] }) => {
   };
 
   if (!hasCards) return null;
+
+  if (twoCardMode) {
+    return (
+      <View row style={style.twoCardsRow}>
+        {cards.map((card, index) => {
+          const body = card.type === 'balance_card' ? renderBalanceCard(card) : renderInsightCard(card);
+          return (
+            <View
+              key={card.id || `${card.type}-${index}`}
+              style={[style.twoCard, index === 1 && style.twoCardGap, { width: cardSize }]}
+            >
+              {body}
+            </View>
+          );
+        })}
+      </View>
+    );
+  }
 
   return (
     <ScrollView horizontal snapTo={cardAccountSnap} style={style.scroll}>
