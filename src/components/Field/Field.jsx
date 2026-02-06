@@ -27,8 +27,10 @@ const Field = ({ children, first, focused, label, last, style: styleProp, suffix
         </Text>
       ) : null}
       {suffix ? (
-        <View row align="center" style={styles.content}>
-          <View flex>{children}</View>
+        <View row style={styles.content}>
+          <View flex style={styles.inputSlot}>
+            {children}
+          </View>
           <View style={styles.suffix}>{suffix}</View>
         </View>
       ) : (

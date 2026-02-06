@@ -31,11 +31,15 @@ export const getStyles = (colors) =>
       zIndex: 1,
     },
     content: {
-      alignItems: 'center',
+      alignItems: 'stretch',
       flexDirection: 'row',
       gap: theme.spacing.sm,
     },
+    inputSlot: {
+      minHeight: inputTextHeight,
+    },
     suffix: {
+      justifyContent: 'center',
       paddingRight: inputPaddingHorizontal,
     },
   });
