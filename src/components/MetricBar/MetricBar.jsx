@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native';
 
 import { getStyles } from './MetricBar.style';
 import { useApp } from '../../contexts';
+import { theme } from '../../theme';
 import { Text, View } from '../../primitives';
 
 const resolveBarColor = (value, colors) => {
@@ -17,9 +18,20 @@ const resolveBarColor = (value, colors) => {
   return value;
 };
 
-const MetricBar = ({ color = 'accent', minPercent = 6, percent = 0, title, value, style: propStyle }) => {
+const MetricBar = ({
+  color = 'accent',
+  fillStyle,
+  minPercent = 6,
+  percent = 0,
+  title,
+  trackStyle,
+  value,
+  variant = 'kpi',
+  style: propStyle,
+}) => {
   const { colors } = useApp();
   const style = useMemo(() => getStyles(colors), [colors]);
+  const isStats = variant === 'stats';
   const clamped = Math.max(0, Math.min(100, percent));
   const width = `${Math.max(minPercent, Math.round(clamped))}%`;
 
@@ -35,18 +47,35 @@ const MetricBar = ({ color = 'accent', minPercent = 6, percent = 0, title, value
     [fillColor, width],
   );
 
+  const dynamicContainer = useMemo(
+    () =>
+      StyleSheet.create({
+        container: {
+          gap: isStats ? theme.spacing.xxs / 2 : theme.spacing.xxs / 2,
+        },
+        track: {
+          height: isStats ? theme.spacing.xxs + 2 : theme.spacing.xxs,
+        },
+      }),
+    [isStats],
+  );
+
+  const headerSize = isStats ? 's' : 'xs';
+
   return (
-    <View style={[style.container, propStyle]}>
+    <View style={[style.container, dynamicContainer.container, propStyle]}>
       {title || value ? (
         <View style={style.header}>
-          {title ? (
-            <Text tone="primary" size="xs">
+          {title ? (typeof title === 'string' || typeof title === 'number' ? (
+            <Text bold={isStats} tone="primary" size={headerSize}>
               {title}
             </Text>
-          ) : null}
+          ) : (
+            title
+          )) : null}
           {value !== undefined && value !== null ? (
             typeof value === 'string' || typeof value === 'number' ? (
-              <Text tone="secondary" size="xs">
+              <Text tone="secondary" size={headerSize}>
                 {value}
               </Text>
             ) : (
@@ -55,8 +84,8 @@ const MetricBar = ({ color = 'accent', minPercent = 6, percent = 0, title, value
           ) : null}
         </View>
       ) : null}
-      <View style={style.track}>
-        <View style={[style.fill, dynamic.fill]} />
+      <View style={[style.track, dynamicContainer.track, trackStyle]}>
+        <View style={[style.fill, dynamic.fill, fillStyle]} />
       </View>
     </View>
   );
@@ -64,10 +93,13 @@ const MetricBar = ({ color = 'accent', minPercent = 6, percent = 0, title, value
 
 MetricBar.propTypes = {
   color: PropTypes.string,
+  fillStyle: PropTypes.any,
   minPercent: PropTypes.number,
   percent: PropTypes.number,
-  title: PropTypes.string,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.node]),
+  trackStyle: PropTypes.any,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.node]),
+  variant: PropTypes.oneOf(['kpi', 'stats']),
   style: PropTypes.any,
 };
 

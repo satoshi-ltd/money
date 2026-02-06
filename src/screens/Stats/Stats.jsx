@@ -70,6 +70,7 @@ const Stats = () => {
   const chartProps = { currency: baseCurrency, monthsLimit, pointerIndex };
   const color = colors.accent;
   const colorExpense = colors.text;
+  const colorExpenseBars = colors.textSecondary;
 
   return (
     <Screen style={style.screen}>
@@ -96,7 +97,9 @@ const Stats = () => {
       {Object.keys(incomes).length > 0 || Object.keys(expenses).length > 0 ? (
         <View style={style.sectionGap}>
           {Object.keys(incomes).length > 0 && <ItemGroupCategories color={color} type={INCOME} dataSource={incomes} />}
-          {Object.keys(expenses).length > 0 && <ItemGroupCategories type={EXPENSE} dataSource={expenses} />}
+          {Object.keys(expenses).length > 0 && (
+            <ItemGroupCategories color={colorExpenseBars} type={EXPENSE} dataSource={expenses} />
+          )}
         </View>
       ) : null}
 
