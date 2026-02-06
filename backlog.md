@@ -5,7 +5,6 @@
 - Verify app resume behavior (`AppState=active`): auto-create due scheduled transactions and sync notifications correctly after date changes.
 - Validate notification policy at scale: caps (`8 per schedule`, `48 total`), cancellation of stale/duplicate notifications, and timezone/DST edge cases.
 - Final pass on naming/copy consistency (`Scheduled`) across UI, i18n, and logs.
-- Add lightweight migration fallback for imports with legacy key (`recurrings`) only if we need to support pre-rename backups.
 
 ## Insights / Forecast
 - Tune `spending_pace` with scheduled transactions using real scenarios (low-activity month, high fixed-cost month, mixed currencies).
@@ -25,6 +24,6 @@
 
 ## Engineering
 - Memoization/caching for `consolidate` and stats with large datasets.
-- Review remaining TODOs in codebase (transactions list + LineChart pointer dispatch).
+- Review remaining TODOs in codebase (transactions list refactors).
 - Harder backup validation and optional checksums.
 - Schema/migrations: keep `settings.schemaVersion` bumps only for breaking/transforming migrations; additive `settings.*` can rely on defaults merge.

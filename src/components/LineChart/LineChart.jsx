@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { StyleSheet, useWindowDimensions } from 'react-native';
 import { CurveType, LineChart as LineChartBase } from 'react-native-gifted-charts';
 
@@ -30,6 +30,7 @@ const LineChart = ({
   const colorAccent = colors.accent;
   const [color, color2] = multipleData ? propColor : [propColor || colorAccent];
   let [data = [], data2 = []] = multipleData ? values : [values];
+  const lastPointerIndexRef = useRef();
 
   const normalize = (series = []) =>
     series.filter((value) => typeof value === 'number' && !isNaN(value)).map((value) => Math.max(0, value));
@@ -48,13 +49,23 @@ const LineChart = ({
   const maxValue = hasData ? max + safeRange * 0.05 : 0;
   const minValue = hasData ? Math.max(0, min - safeRange * 0.15) : 0;
 
-  const months = getLastMonths(monthsLimit);
+  const months = useMemo(() => getLastMonths(monthsLimit), [monthsLimit]);
   const sizedStyle = useMemo(
     () =>
       StyleSheet.create({
         sized: { height: resolvedHeight, width: resolvedWidth },
       }).sized,
     [resolvedHeight, resolvedWidth],
+  );
+
+  const handlePointerIndex = useCallback(
+    (index) => {
+      if (!Number.isFinite(index)) return;
+      if (lastPointerIndexRef.current === index) return;
+      lastPointerIndexRef.current = index;
+      onPointerChange(index);
+    },
+    [onPointerChange],
   );
 
   return (
@@ -95,8 +106,7 @@ const LineChart = ({
                 autoAdjustPointerLabelPosition: true,
                 initialPointerIndex: data.length ? data.length - 1 : undefined,
                 pointerLabelComponent: ([{ index, value } = {}]) => {
-                  // ! TODO: Seems is dispatching too much times
-                  onPointerChange(index);
+                  handlePointerIndex(index);
 
                   return !multipleData ? (
                     <View align="center">
