@@ -25,6 +25,6 @@
 
 ## Engineering
 - Memoization/caching for `consolidate` and stats with large datasets.
-- Review TODOs in codebase (list/LineChart refactors).
+- Review remaining TODOs in codebase (transactions list + LineChart pointer dispatch).
 - Harder backup validation and optional checksums.
 - Schema/migrations: keep `settings.schemaVersion` bumps only for breaking/transforming migrations; additive `settings.*` can rely on defaults merge.
