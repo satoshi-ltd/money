@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useRef } from 'react';
-import { StyleSheet, useWindowDimensions } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import { Animated, Easing, StyleSheet, useWindowDimensions } from 'react-native';
 import { CurveType, LineChart as LineChartBase } from 'react-native-gifted-charts';
 
 import { getLastMonths } from './helpers';
 import { useApp } from '../../contexts';
-import { C, L10N } from '../../modules';
+import { L10N } from '../../modules';
+import { theme } from '../../theme';
 import { PriceFriendly } from '../PriceFriendly';
 import { getStyles } from './LineChart.style';
 import { Text, View } from '../../primitives';
@@ -15,6 +16,10 @@ const LineChart = ({
   currency,
   height,
   isAnimated = false,
+  reveal = false,
+  revealDelay = 0,
+  revealDuration = theme.animations.duration.standard,
+  revealResetKey,
   multipleData = false,
   monthsLimit,
   pointerConfig = {},
@@ -38,6 +43,7 @@ const LineChart = ({
 
   const resolvedWidth = Number.isFinite(width) ? width : windowWidth;
   const resolvedHeight = Number.isFinite(height) ? height : 128;
+  const revealWidth = useRef(new Animated.Value(resolvedWidth)).current;
 
   data = normalize(data);
   data2 = normalize(data2);
@@ -69,70 +75,92 @@ const LineChart = ({
     [onPointerChange],
   );
 
+  useEffect(() => {
+    if (!reveal) return;
+
+    revealWidth.stopAnimation();
+    revealWidth.setValue(0);
+    Animated.timing(revealWidth, {
+      toValue: resolvedWidth,
+      duration: revealDuration,
+      delay: Math.max(0, revealDelay),
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: false,
+    }).start();
+  }, [reveal, revealDelay, revealDuration, revealResetKey, resolvedWidth, revealWidth]);
+
+  const chart = (
+    <LineChartBase
+      {...{
+        color,
+        height: resolvedHeight,
+        maxValue,
+        minValue,
+        width: resolvedWidth,
+      }}
+      adjustToWidth
+      curved
+      curveType={CurveType.QUADRATIC}
+      data={data.map((value, index) => ({ index, value, dataPointText: value }))}
+      data2={data2?.map((value, index) => ({ index, value: value, dataPointText: value }))}
+      disableScroll
+      endSpacing={0}
+      hideAxesAndRules
+      hideDataPoints
+      initialSpacing={0}
+      isAnimated={isAnimated}
+      thickness={2}
+      xAxisLabelHeight={0}
+      yAxisLabelWidth={0}
+      // -- area
+      areaChart
+      startFillColor={color}
+      startOpacity={0.33}
+      endOpacity={0}
+      endFillColor={color}
+      {...(multipleData ? { color2, startFillColor2: color2, endFillColor2: color2 } : {})}
+      // -- pointer
+      pointerConfig={
+        showPointer
+          ? {
+              autoAdjustPointerLabelPosition: true,
+              initialPointerIndex: data.length ? data.length - 1 : undefined,
+              pointerLabelComponent: ([{ index, value } = {}]) => {
+                handlePointerIndex(index);
+
+                return !multipleData ? (
+                  <View align="center">
+                    <Text bold style={style.pointerCaption} size="xs">
+                      {L10N.MONTHS[months[index]?.month || 0]} {months[index]?.year || ''}
+                    </Text>
+                    <View style={style.pointerValue}>
+                      <PriceFriendly bold size="s" tone="onInverse" {...{ currency, value }} />
+                    </View>
+                  </View>
+                ) : null;
+              },
+              pointerVanishDelay: 0,
+              pointerLabelHeight: 48,
+              pointerLabelWidth: 96,
+              pointerColor: color,
+              pointer2Color: color2,
+              pointerStripColor: colors.textSecondary,
+              pointerStripWidth: 1,
+              ...pointerConfig,
+            }
+          : undefined
+      }
+      {...props}
+    />
+  );
+
   return (
     <View style={[style.container, sizedStyle, propStyle]}>
-      <LineChartBase
-        {...{
-          color,
-          height: resolvedHeight,
-          maxValue,
-          minValue,
-          width: resolvedWidth,
-        }}
-        adjustToWidth
-        curved
-        curveType={CurveType.QUADRATIC}
-        data={data.map((value, index) => ({ index, value, dataPointText: value }))}
-        data2={data2?.map((value, index) => ({ index, value: value, dataPointText: value }))}
-        disableScroll
-        endSpacing={0}
-        hideAxesAndRules
-        hideDataPoints
-        initialSpacing={0}
-        isAnimated={isAnimated}
-        thickness={2}
-        xAxisLabelHeight={0}
-        yAxisLabelWidth={0}
-        // -- area
-        areaChart
-        startFillColor={color}
-        startOpacity={0.33}
-        endOpacity={0}
-        endFillColor={color}
-        {...(multipleData ? { color2, startFillColor2: color2, endFillColor2: color2 } : {})}
-        // -- pointer
-        pointerConfig={
-          showPointer
-            ? {
-                autoAdjustPointerLabelPosition: true,
-                initialPointerIndex: data.length ? data.length - 1 : undefined,
-                pointerLabelComponent: ([{ index, value } = {}]) => {
-                  handlePointerIndex(index);
-
-                  return !multipleData ? (
-                    <View align="center">
-                      <Text bold style={style.pointerCaption} size="xs">
-                        {L10N.MONTHS[months[index]?.month || 0]} {months[index]?.year || ''}
-                      </Text>
-                      <View style={style.pointerValue}>
-                        <PriceFriendly bold size="s" tone="onInverse" {...{ currency, value }} />
-                      </View>
-                    </View>
-                  ) : null;
-                },
-                pointerVanishDelay: 0,
-                pointerLabelHeight: 48,
-                pointerLabelWidth: 96,
-                pointerColor: color,
-                pointer2Color: color2,
-                pointerStripColor: colors.textSecondary,
-                pointerStripWidth: 1,
-                ...pointerConfig,
-              }
-            : undefined
-        }
-        {...props}
-      />
+      {reveal ? (
+        <Animated.View style={{ width: revealWidth, height: resolvedHeight, overflow: 'hidden' }}>{chart}</Animated.View>
+      ) : (
+        chart
+      )}
     </View>
   );
 };
@@ -142,6 +170,10 @@ LineChart.propTypes = {
   currency: PropTypes.string,
   height: PropTypes.number,
   isAnimated: PropTypes.bool,
+  reveal: PropTypes.bool,
+  revealDelay: PropTypes.number,
+  revealDuration: PropTypes.number,
+  revealResetKey: PropTypes.any,
   multipleData: PropTypes.bool,
   monthsLimit: PropTypes.number,
   pointerConfig: PropTypes.shape({}),

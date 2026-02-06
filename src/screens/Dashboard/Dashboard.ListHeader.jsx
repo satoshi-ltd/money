@@ -6,6 +6,7 @@ import { queryAccounts } from './helpers';
 import { Button, CardAccount, Heading, InputField, InsightsCarousel, ScrollView, View } from '../../components';
 import { useStore } from '../../contexts';
 import { buildInsights, getProgressionPercentage, ICON, L10N } from '../../modules';
+import { theme } from '../../theme';
 import { cardAccountSnap } from '../../theme/layout';
 
 let timeoutId;
@@ -13,6 +14,7 @@ let timeoutId;
 const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
   const { accounts = [], scheduledTxs = [], rates = {}, settings = {}, overall = {}, txs = [] } = useStore();
   const { baseCurrency } = settings || {};
+  const chartStagger = Math.round(theme.animations.duration.quick / 5);
 
   const [search, setSearch] = useState(false);
   const [query, setQuery] = useState();
@@ -68,7 +70,7 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
           <View style={style.insightsHeading}>
             <Heading value={L10N.INSIGHTS} offset />
           </View>
-          <InsightsCarousel balanceCard={balanceCard} currency={baseCurrency} insights={insights} />
+          <InsightsCarousel animateCharts balanceCard={balanceCard} currency={baseCurrency} insights={insights} />
         </>
       ) : null}
 
@@ -94,6 +96,9 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
               key={hash}
               balance={currentBalance}
               chart={chartBalanceBase}
+              chartReveal={index < 6}
+              chartRevealDelay={index < 6 ? index * chartStagger : 0}
+              chartRevealResetKey={hash}
               currency={currency}
               operator
               percentage={getProgressionPercentage(currentBalance, progressionCurrency)}
