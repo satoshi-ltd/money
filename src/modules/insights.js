@@ -2,6 +2,7 @@ import { C } from './constants';
 import { exchange } from './exchange';
 import { isInternalTransfer } from './isInternalTransfer';
 import { L10N } from './l10n';
+import { getOccurrencesBetween } from './recurrence';
 
 const { TX: { TYPE } = {} } = C;
 
@@ -43,9 +44,16 @@ const monthDateFromKey = (key) => {
   return new Date(Number(year), Number(month) - 1, 1);
 };
 
-export const buildInsights = ({ accounts = [], rates = {}, settings = {}, txs = [] } = {}) => {
+export const buildInsights = ({
+  accounts = [],
+  now: nowProp,
+  rates = {},
+  scheduledTxs = [],
+  settings = {},
+  txs = [],
+} = {}) => {
   const baseCurrency = settings.baseCurrency;
-  const now = new Date();
+  const now = nowProp instanceof Date ? nowProp : new Date();
   const currentKey = monthKey(now);
   const previousKeys = getPreviousMonths(now, MONTH_WINDOW);
 
@@ -232,6 +240,26 @@ export const buildInsights = ({ accounts = [], rates = {}, settings = {}, txs = 
 
   const daysInMonth = getDaysInMonth(now);
   if (currentExpenses > 0 && day >= 2) {
+    const tomorrowMidday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 12, 0, 0, 0);
+    const endOfMonthMidday = new Date(now.getFullYear(), now.getMonth() + 1, 0, 12, 0, 0, 0);
+    const fromAt = tomorrowMidday.getTime();
+    const toAt = endOfMonthMidday.getTime();
+    const remainingScheduledExpenses = (Array.isArray(scheduledTxs) ? scheduledTxs : []).reduce((sum, scheduled) => {
+      if (scheduled.type !== TYPE.EXPENSE) return sum;
+      const occurrences = getOccurrencesBetween({ scheduled, fromAt, toAt });
+      if (!occurrences.length) return sum;
+      const account = accountMap.get(scheduled.account);
+      const currency = account?.currency || baseCurrency;
+      return (
+        sum +
+        occurrences.reduce(
+          (occurrenceSum, occurrenceAt) =>
+            occurrenceSum + exchange(scheduled.value, currency, baseCurrency, rates, occurrenceAt),
+          0,
+        )
+      );
+    }, 0);
+
     const paceKeys = getPreviousMonths(now, PACE_MONTHS);
     const ratios = paceKeys
       .map((key) => {
@@ -252,7 +280,9 @@ export const buildInsights = ({ accounts = [], rates = {}, settings = {}, txs = 
 
     const avgRatio = ratios.length ? ratios.reduce((sum, ratio) => sum + ratio, 0) / ratios.length : undefined;
     const useHistoricalRatio = Number.isFinite(avgRatio) && ratios.length >= 3;
-    const projected = useHistoricalRatio ? currentExpenses / avgRatio : (currentExpenses / day) * daysInMonth;
+    const baseProjection = useHistoricalRatio ? currentExpenses / avgRatio : (currentExpenses / day) * daysInMonth;
+    const scheduledAwareProjection = currentExpenses + remainingScheduledExpenses;
+    const projected = Math.max(baseProjection, scheduledAwareProjection);
     insights.push({
       id: 'spending_pace',
       title: L10N.INSIGHT_SPENDING_PACE_TITLE,
@@ -265,8 +295,10 @@ export const buildInsights = ({ accounts = [], rates = {}, settings = {}, txs = 
         day,
         daysInMonth,
         method: useHistoricalRatio ? 'historical_ratio' : 'linear',
+        scheduledFloor: scheduledAwareProjection,
         ratioAvg: avgRatio,
         ratioSamples: ratios.length,
+        scheduledRemaining: remainingScheduledExpenses,
       },
       tone: 'neutral',
     });

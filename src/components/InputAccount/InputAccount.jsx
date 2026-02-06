@@ -73,14 +73,14 @@ const InputAccount = ({ accounts = [], first, last, onSelect, selected }) => {
   };
 
   return (
-    <View style={[style.select, first && !last && style.stacked]}>
+    <View style={style.select}>
       <Pressable onPress={() => setShowSelect(true)}>
         <View
           row
           style={[
             style.item,
             first && style.first,
-            first && !last && style.noBottom,
+            !last && style.noBottom,
             last && style.last,
             showSelect && style.focus,
           ]}

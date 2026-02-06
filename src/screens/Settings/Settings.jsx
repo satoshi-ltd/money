@@ -23,6 +23,7 @@ const Settings = ({ navigation = {} }) => {
   const {
     accounts = [],
     importBackup,
+    scheduledTxs = [],
     updateSettings,
     updateSubscription,
     updateTheme,
@@ -55,7 +56,7 @@ const Settings = ({ navigation = {} }) => {
   const handleExport = async () => {
     if (!isPremium) return handleSubscription('export');
 
-    await BackupService.export({ accounts, settings, txs });
+    await BackupService.export({ accounts, scheduledTxs, settings, txs });
   };
 
   const handleExportCsv = async () => {
@@ -139,6 +140,9 @@ const Settings = ({ navigation = {} }) => {
     { id: 'de', label: L10N.LANGUAGE_DE },
   ];
   const currentLanguageLabel = languageOptions.find((option) => option.id === language)?.label || L10N.LANGUAGE_EN;
+  const scheduledSubtitle = scheduledTxs.length ? L10N.SCHEDULED_TOTAL({ count: scheduledTxs.length }) : L10N.SCHEDULED_EMPTY;
+  const handleScheduledPress = () =>
+    navigation.navigate(scheduledTxs.length ? 'scheduled' : 'scheduledForm', scheduledTxs.length ? undefined : { create: true });
 
   const settingProps = {};
 
@@ -219,6 +223,14 @@ const Settings = ({ navigation = {} }) => {
             onPress={() => handleOption(rest)}
           />
         ))}
+        <Setting
+          {...settingProps}
+          icon={ICON.SCHEDULED}
+          subtitle={scheduledSubtitle}
+          title={L10N.SCHEDULED}
+          type="navigation"
+          onPress={handleScheduledPress}
+        />
         <Setting
           {...settingProps}
           subtitle={L10N.REMINDER_BACKUP_CAPTION}

@@ -8,6 +8,7 @@ export const consolidate = ({
   settings = {},
   subscription = {},
   txs = [],
+  scheduledTxs = [],
   accounts: storeAccounts = [],
 } = {}) => {
   const { baseCurrency } = settings;
@@ -67,6 +68,7 @@ export const consolidate = ({
     accounts,
     overall: { balance, chartBalance, currentBalance, currentMonth },
     rates,
+    scheduledTxs,
     settings,
     subscription,
     txs,

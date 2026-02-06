@@ -10,11 +10,7 @@ export const getStyles = (colors) =>
       gap: theme.spacing.xs,
     },
     select: {
-      marginBottom: theme.spacing.sm,
       position: 'relative',
-    },
-    stacked: {
-      marginBottom: 0,
     },
     dropdownOption: {
       paddingVertical: viewOffset / 2,
@@ -28,7 +24,6 @@ export const getStyles = (colors) =>
       alignItems: 'center',
       backgroundColor: colors.background,
       borderColor: colors.border,
-      borderRadius: theme.borderRadius.md,
       borderWidth: 1,
       paddingVertical: viewOffset / 2,
       paddingHorizontal: theme.spacing.sm,

@@ -13,5 +13,6 @@ export * from './icon';
 export * from './insights';
 export * from './isInternalTransfer';
 export * from './l10n';
+export * from './recurrence';
 export * from './verboseDate';
 export * from './verboseTime';

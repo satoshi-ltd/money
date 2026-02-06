@@ -142,4 +142,5 @@ export const ICON = {
   BELL: 'bell',
   UPDATE: 'update',
   LANGUAGE: 'translate',
+  SCHEDULED: 'calendar-sync',
 };

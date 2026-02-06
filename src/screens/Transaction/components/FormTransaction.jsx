@@ -99,6 +99,7 @@ const FormTransaction = ({
       {showDate && (
         <InputDate
           first={!showAccountInput}
+          maximumDate={new Date()}
           value={safeForm.timestamp ? new Date(safeForm.timestamp) : new Date()}
           onChange={(value) => handleField('timestamp', value.getTime())}
         />

@@ -12,7 +12,15 @@ import Modal from '../Modal';
 
 const DATE_FORMAT = { day: 'numeric', month: 'long', year: 'numeric' };
 
-const InputDate = ({ first, label = L10N.DATE, last, value = new Date(), onChange = () => {} }) => {
+const InputDate = ({
+  first,
+  label = L10N.DATE,
+  last,
+  maximumDate,
+  minimumDate,
+  value = new Date(),
+  onChange = () => {},
+}) => {
   const { session: { locale } = {}, settings: { theme } = {} } = useStore();
   const { colors } = useApp();
 
@@ -41,7 +49,8 @@ const InputDate = ({ first, label = L10N.DATE, last, value = new Date(), onChang
           <DateTimePicker
             accentColor={colors.accent}
             is24Hour
-            maximumDate={new Date()}
+            maximumDate={maximumDate instanceof Date ? maximumDate : undefined}
+            minimumDate={minimumDate instanceof Date ? minimumDate : undefined}
             mode="date"
             display={Platform.OS === 'ios' ? 'inline' : 'calendar'}
             textColor={colors.text}
@@ -63,6 +72,8 @@ InputDate.propTypes = {
   label: PropTypes.string,
   last: PropTypes.bool,
   disabled: PropTypes.bool,
+  maximumDate: PropTypes.any,
+  minimumDate: PropTypes.any,
   value: PropTypes.any,
   onChange: PropTypes.func,
 };

@@ -5,8 +5,8 @@ import { style } from './InsightsCarousel.style';
 import { useStore } from '../../contexts';
 import { ICON, L10N } from '../../modules';
 import { Icon, Pressable, ScrollView, Text, View } from '../../primitives';
-import { cardAccountSize, cardAccountSnap } from '../../theme/layout';
 import { theme } from '../../theme';
+import { cardAccountSize, cardAccountSnap } from '../../theme/layout';
 import Card from '../Card';
 import { LineChart } from '../LineChart';
 import { MetricBar } from '../MetricBar';
@@ -103,15 +103,7 @@ const InsightsCarousel = ({ balanceCard, currency, insights = [] }) => {
             ) : null}
             {insight.type === 'trend' && insight.valueLabel ? (
               <View style={style.insightTrendValue}>
-                <PriceFriendly
-                  bold
-                  tone="accent"
-                  currency="%"
-                  fixed={0}
-                  operator
-                  size="s"
-                  value={insight.value}
-                />
+                <PriceFriendly bold tone="accent" currency="%" fixed={0} operator size="s" value={insight.value} />
               </View>
             ) : null}
             {insight.type === 'alert' && insight.valueLabel ? (
@@ -203,7 +195,10 @@ const InsightsCarousel = ({ balanceCard, currency, insights = [] }) => {
         const isLast = index === cards.length - 1;
         const body = card.type === 'balance_card' ? renderBalanceCard(card) : renderInsightCard(card);
         return (
-          <View key={card.id || `${card.type}-${index}`} style={[style.card, isFirst && style.firstCard, isLast && style.lastCard]}>
+          <View
+            key={card.id || `${card.type}-${index}`}
+            style={[style.card, isFirst && style.firstCard, isLast && style.lastCard]}
+          >
             {body}
           </View>
         );

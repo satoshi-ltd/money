@@ -16,6 +16,8 @@ import {
   Clone,
   Dashboard,
   Onboarding,
+  Scheduled,
+  ScheduledForm,
   Session,
   Settings,
   Stats,
@@ -179,6 +181,8 @@ export const Navigator = () => {
         <Stack.Screen name="transactions" component={Transactions} options={panel} />
         <Stack.Screen name="transaction" component={Transaction} options={panel} />
         <Stack.Screen name="clone" component={Clone} options={panel} />
+        <Stack.Screen name="scheduled" component={Scheduled} options={panel} />
+        <Stack.Screen name="scheduledForm" component={ScheduledForm} options={panel} />
         {/* -- settings */}
         <Stack.Screen name="account" component={Account} options={panel} />
         <Stack.Screen name="baseCurrency" component={BaseCurrency} options={panel} />

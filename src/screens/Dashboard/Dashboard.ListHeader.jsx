@@ -3,15 +3,7 @@ import React, { useMemo, useState } from 'react';
 
 import { style } from './Dashboard.style';
 import { queryAccounts } from './helpers';
-import {
-  Button,
-  CardAccount,
-  Heading,
-  InputField,
-  InsightsCarousel,
-  ScrollView,
-  View,
-} from '../../components';
+import { Button, CardAccount, Heading, InputField, InsightsCarousel, ScrollView, View } from '../../components';
 import { useStore } from '../../contexts';
 import { buildInsights, getProgressionPercentage, ICON, L10N } from '../../modules';
 import { cardAccountSnap } from '../../theme/layout';
@@ -19,7 +11,8 @@ import { cardAccountSnap } from '../../theme/layout';
 let timeoutId;
 
 const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
-  const { accounts = [], rates = {}, settings: { baseCurrency } = {}, overall = {}, txs = [] } = useStore();
+  const { accounts = [], scheduledTxs = [], rates = {}, settings = {}, overall = {}, txs = [] } = useStore();
+  const { baseCurrency } = settings || {};
 
   const [search, setSearch] = useState(false);
   const [query, setQuery] = useState();
@@ -43,8 +36,8 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
 
   const sortedAccounts = queryAccounts({ accounts, query: undefined });
   const insights = useMemo(
-    () => buildInsights({ accounts, rates, settings: { baseCurrency }, txs }),
-    [accounts, rates, baseCurrency, txs],
+    () => buildInsights({ accounts, scheduledTxs, rates, settings: { ...settings, baseCurrency }, txs }),
+    [accounts, scheduledTxs, rates, settings, baseCurrency, txs],
   );
   const overallProgressionPercentage = useMemo(() => {
     const next = getProgressionPercentage(overall?.currentBalance, overall?.currentMonth?.progression);

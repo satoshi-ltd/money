@@ -135,6 +135,8 @@ export const EN = {
   INSIGHT_NET_BALANCE_CAPTION: 'Incomes vs expenses',
   INSIGHT_SPENDING_PACE_TITLE: 'Projected spending',
   INSIGHT_SPENDING_PACE_CAPTION: 'Estimated total if you keep this pace',
+  INSIGHT_FORECAST_NET_TITLE: 'Forecast net end of month',
+  INSIGHT_FORECAST_NET_CAPTION: 'Includes scheduled scheduled transactions',
 
   LAST_TRANSACTIONS: 'Recent activity',
 
@@ -194,6 +196,36 @@ export const EN = {
 
   REMINDER_BACKUP: 'Backup Reminder',
   REMINDER_BACKUP_CAPTION: 'Get backup alerts.',
+  SCHEDULED: 'Scheduled transactions',
+  SCHEDULED_NEW: 'New scheduled transaction',
+  SCHEDULED_NEW_CTA: 'New schedule',
+  SCHEDULED_EDIT: 'Edit scheduled transaction',
+  SCHEDULED_STATUS_ACTIVE: 'Active',
+  SCHEDULED_STATUS_PAUSED: 'Paused',
+  SCHEDULED_STATUS_ENDED: 'Ended',
+  SCHEDULED_PATTERN_WEEKLY: 'Weekly',
+  SCHEDULED_PATTERN_MONTHLY: 'Monthly',
+  SCHEDULED_INTERVAL_EVERY: 'Every',
+  SCHEDULED_CAPTION_WEEKLY: ({ days = '' } = {}) => `Every week on ${days}`,
+  SCHEDULED_CAPTION_MONTHLY: ({ day = '' } = {}) => {
+    const value = Number(day) || 1;
+    const mod100 = value % 100;
+    const suffix =
+      mod100 >= 11 && mod100 <= 13
+        ? 'th'
+        : value % 10 === 1
+        ? 'st'
+        : value % 10 === 2
+        ? 'nd'
+        : value % 10 === 3
+        ? 'rd'
+        : 'th';
+    return `Monthly on the ${value}${suffix}`;
+  },
+  SCHEDULED_NOTIFICATION_CAPTION: 'A scheduled transaction is due tomorrow.',
+  SCHEDULED_AUTOCREATE_LIMIT: 'Generated 100 scheduled transactions. Open Scheduled transactions to review.',
+  SCHEDULED_EMPTY: 'No schedules.',
+  SCHEDULED_TOTAL: ({ count = 0 } = {}) => `${count} schedules`,
   RECEIVE: 'Receive',
   RESTORE_PURCHASES: 'Restore purchases',
   SEND: 'Send',
@@ -218,6 +250,7 @@ export const EN = {
   DATE: 'Date',
   DESTINATION: 'To',
   SETTINGS: 'Settings',
+  TYPE: 'Type',
   START: 'Start',
   START_TRIAL: 'Start free 7 day trial',
   SUBSCRIPTION: 'Subscription',
@@ -408,6 +441,8 @@ export const PT = {
   INSIGHT_NET_BALANCE_CAPTION: 'Receitas vs despesas',
   INSIGHT_SPENDING_PACE_TITLE: 'Gasto projetado',
   INSIGHT_SPENDING_PACE_CAPTION: 'Total estimado se mantiver este ritmo',
+  INSIGHT_FORECAST_NET_TITLE: 'Saldo previsto no fim do mês',
+  INSIGHT_FORECAST_NET_CAPTION: 'Inclui transações recorrentes agendadas',
 
   LAST_TRANSACTIONS: 'Atividade recente',
 
@@ -465,6 +500,22 @@ export const PT = {
 
   REMINDER_BACKUP: 'Lembrete de backup',
   REMINDER_BACKUP_CAPTION: 'Receba alertas de backup.',
+  SCHEDULED: 'Transações agendadas',
+  SCHEDULED_NEW: 'Nova transação agendada',
+  SCHEDULED_NEW_CTA: 'Nova programação',
+  SCHEDULED_EDIT: 'Editar transação agendada',
+  SCHEDULED_STATUS_ACTIVE: 'Ativa',
+  SCHEDULED_STATUS_PAUSED: 'Pausada',
+  SCHEDULED_STATUS_ENDED: 'Finalizada',
+  SCHEDULED_PATTERN_WEEKLY: 'Semanal',
+  SCHEDULED_PATTERN_MONTHLY: 'Mensal',
+  SCHEDULED_INTERVAL_EVERY: 'A cada',
+  SCHEDULED_CAPTION_WEEKLY: ({ days = '' } = {}) => `Toda semana, ${days}`,
+  SCHEDULED_CAPTION_MONTHLY: ({ day = '' } = {}) => `Todo mês no dia ${day}`,
+  SCHEDULED_NOTIFICATION_CAPTION: 'Uma transação agendada vence amanhã.',
+  SCHEDULED_AUTOCREATE_LIMIT: 'Foram geradas 100 transações agendadas. Abra Transações agendadas para revisar.',
+  SCHEDULED_EMPTY: 'Sem programações',
+  SCHEDULED_TOTAL: ({ count = 0 } = {}) => `${count} programações`,
   RECEIVE: 'Receber',
   RESTORE_PURCHASES: 'Restaurar compras',
   SEND: 'Enviar',
@@ -489,6 +540,7 @@ export const PT = {
   DATE: 'Data',
   DESTINATION: 'Para',
   SETTINGS: 'Ajustes',
+  TYPE: 'Tipo',
   START: 'Começar',
   START_TRIAL: 'Comece teste grátis de 7 dias',
   SUBSCRIPTION: 'Assinatura',
@@ -679,6 +731,8 @@ export const FR = {
   INSIGHT_NET_BALANCE_CAPTION: 'Revenus vs dépenses',
   INSIGHT_SPENDING_PACE_TITLE: 'Dépenses projetées',
   INSIGHT_SPENDING_PACE_CAPTION: 'Total estimé si vous gardez ce rythme',
+  INSIGHT_FORECAST_NET_TITLE: 'Solde prévu en fin de mois',
+  INSIGHT_FORECAST_NET_CAPTION: 'Inclut les transactions récurrentes planifiées',
 
   LAST_TRANSACTIONS: 'Activité récente',
 
@@ -738,6 +792,22 @@ export const FR = {
 
   REMINDER_BACKUP: 'Rappel de sauvegarde',
   REMINDER_BACKUP_CAPTION: 'Recevez des alertes de sauvegarde.',
+  SCHEDULED: 'Transactions planifiées',
+  SCHEDULED_NEW: 'Nouvelle transaction planifiée',
+  SCHEDULED_NEW_CTA: 'Nouvelle planification',
+  SCHEDULED_EDIT: 'Modifier la transaction planifiée',
+  SCHEDULED_STATUS_ACTIVE: 'Active',
+  SCHEDULED_STATUS_PAUSED: 'En pause',
+  SCHEDULED_STATUS_ENDED: 'Terminée',
+  SCHEDULED_PATTERN_WEEKLY: 'Hebdomadaire',
+  SCHEDULED_PATTERN_MONTHLY: 'Mensuelle',
+  SCHEDULED_INTERVAL_EVERY: 'Tous les',
+  SCHEDULED_CAPTION_WEEKLY: ({ days = '' } = {}) => `Chaque semaine, ${days}`,
+  SCHEDULED_CAPTION_MONTHLY: ({ day = '' } = {}) => `Chaque mois le ${day}`,
+  SCHEDULED_NOTIFICATION_CAPTION: 'Une transaction planifiée est due demain.',
+  SCHEDULED_AUTOCREATE_LIMIT: '100 transactions planifiées ont été générées. Ouvrez Transactions planifiées pour vérifier.',
+  SCHEDULED_EMPTY: 'Aucune planification',
+  SCHEDULED_TOTAL: ({ count = 0 } = {}) => `${count} planifications`,
   RECEIVE: 'Recevoir',
   RESTORE_PURCHASES: 'Restaurer les achats',
   SEND: 'Envoyer',
@@ -762,6 +832,7 @@ export const FR = {
   DATE: 'Date',
   DESTINATION: 'À',
   SETTINGS: 'Paramètres',
+  TYPE: 'Type',
   START: 'Commencer',
   START_TRIAL: 'Commencer l’essai gratuit de 7 jours',
   SUBSCRIPTION: 'Abonnement',
@@ -952,6 +1023,8 @@ export const DE = {
   INSIGHT_NET_BALANCE_CAPTION: 'Einnahmen vs Ausgaben',
   INSIGHT_SPENDING_PACE_TITLE: 'Prognostizierte Ausgaben',
   INSIGHT_SPENDING_PACE_CAPTION: 'Geschätzter Gesamtbetrag bei gleichem Tempo',
+  INSIGHT_FORECAST_NET_TITLE: 'Prognose: Nettosaldo Monatsende',
+  INSIGHT_FORECAST_NET_CAPTION: 'Enthält geplante wiederkehrende Transaktionen',
 
   LAST_TRANSACTIONS: 'Letzte Aktivitäten',
 
@@ -1010,6 +1083,22 @@ export const DE = {
 
   REMINDER_BACKUP: 'Backup-Erinnerung',
   REMINDER_BACKUP_CAPTION: 'Backup-Erinnerungen erhalten.',
+  SCHEDULED: 'Geplante Transaktionen',
+  SCHEDULED_NEW: 'Neue geplante Transaktion',
+  SCHEDULED_NEW_CTA: 'Neue Planung',
+  SCHEDULED_EDIT: 'Geplante Transaktion bearbeiten',
+  SCHEDULED_STATUS_ACTIVE: 'Aktiv',
+  SCHEDULED_STATUS_PAUSED: 'Pausiert',
+  SCHEDULED_STATUS_ENDED: 'Beendet',
+  SCHEDULED_PATTERN_WEEKLY: 'Wöchentlich',
+  SCHEDULED_PATTERN_MONTHLY: 'Monatlich',
+  SCHEDULED_INTERVAL_EVERY: 'Alle',
+  SCHEDULED_CAPTION_WEEKLY: ({ days = '' } = {}) => `Jede Woche am ${days}`,
+  SCHEDULED_CAPTION_MONTHLY: ({ day = '' } = {}) => `Jeden Monat am ${day}`,
+  SCHEDULED_NOTIFICATION_CAPTION: 'Eine geplante Transaktion ist morgen fällig.',
+  SCHEDULED_AUTOCREATE_LIMIT: '100 geplante Transaktionen wurden erstellt. Öffne Geplante Transaktionen zur Prüfung.',
+  SCHEDULED_EMPTY: 'Keine Planungen',
+  SCHEDULED_TOTAL: ({ count = 0 } = {}) => `${count} Planungen`,
   RECEIVE: 'Empfangen',
   RESTORE_PURCHASES: 'Käufe wiederherstellen',
   SEND: 'Senden',
@@ -1034,6 +1123,7 @@ export const DE = {
   DATE: 'Datum',
   DESTINATION: 'An',
   SETTINGS: 'Einstellungen',
+  TYPE: 'Typ',
   START: 'Start',
   START_TRIAL: '7 Tage gratis testen',
   SUBSCRIPTION: 'Abonnement',
@@ -1225,6 +1315,8 @@ export const ES = {
   INSIGHT_NET_BALANCE_CAPTION: 'Ingresos vs gastos',
   INSIGHT_SPENDING_PACE_TITLE: 'Gasto proyectado',
   INSIGHT_SPENDING_PACE_CAPTION: 'Total estimado si mantienes este ritmo',
+  INSIGHT_FORECAST_NET_TITLE: 'Balance previsto fin de mes',
+  INSIGHT_FORECAST_NET_CAPTION: 'Incluye transacciones recurrentes programadas',
 
   LAST_TRANSACTIONS: 'Actividad reciente',
 
@@ -1283,6 +1375,22 @@ export const ES = {
 
   REMINDER_BACKUP: 'Recordatorio de backup',
   REMINDER_BACKUP_CAPTION: 'Recibe alertas de backup.',
+  SCHEDULED: 'Transacciones programadas',
+  SCHEDULED_NEW: 'Nueva transacción programada',
+  SCHEDULED_NEW_CTA: 'Nueva programación',
+  SCHEDULED_EDIT: 'Editar transacción programada',
+  SCHEDULED_STATUS_ACTIVE: 'Activo',
+  SCHEDULED_STATUS_PAUSED: 'Pausado',
+  SCHEDULED_STATUS_ENDED: 'Finalizado',
+  SCHEDULED_PATTERN_WEEKLY: 'Semanal',
+  SCHEDULED_PATTERN_MONTHLY: 'Mensual',
+  SCHEDULED_INTERVAL_EVERY: 'Cada',
+  SCHEDULED_CAPTION_WEEKLY: ({ days = '' } = {}) => `Cada semana, ${days}`,
+  SCHEDULED_CAPTION_MONTHLY: ({ day = '' } = {}) => `Cada mes el día ${day}`,
+  SCHEDULED_NOTIFICATION_CAPTION: 'Una transacción programada vence mañana.',
+  SCHEDULED_AUTOCREATE_LIMIT: 'Se generaron 100 transacciones programadas. Abre Transacciones programadas para revisar.',
+  SCHEDULED_EMPTY: 'No hay programaciones',
+  SCHEDULED_TOTAL: ({ count = 0 } = {}) => `${count} programaciones`,
   RECEIVE: 'Recibir',
   RESTORE_PURCHASES: 'Restaurar compras',
   SEND: 'Enviar',
@@ -1307,6 +1415,7 @@ export const ES = {
   DATE: 'Fecha',
   DESTINATION: 'A',
   SETTINGS: 'Ajustes',
+  TYPE: 'Tipo',
   START: 'Empezar',
   START_TRIAL: 'Empieza prueba gratis 7 días',
   SUBSCRIPTION: 'Suscripción',

@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { theme } from '../../../../theme';
+import { theme } from '../../theme';
 
 export const getStyles = (colors) =>
   StyleSheet.create({
@@ -19,3 +19,4 @@ export const getStyles = (colors) =>
       backgroundColor: colors.accent,
     },
   });
+

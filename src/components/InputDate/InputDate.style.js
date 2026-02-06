@@ -20,6 +20,5 @@ export const styles = StyleSheet.create({
     paddingTop: inputPaddingVertical,
     paddingBottom: inputPaddingVertical / 2,
   },
-  valueWithLabel: {
-  },
+  valueWithLabel: {},
 });

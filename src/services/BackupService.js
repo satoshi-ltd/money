@@ -6,13 +6,13 @@ import { SCHEMA_VERSION } from '../contexts/store.constants';
 import { L10N } from '../modules';
 
 export const BackupService = {
-  export: async ({ accounts = [], settings = {}, txs = [] } = {}) =>
+  export: async ({ accounts = [], scheduledTxs = [], settings = {}, txs = [] } = {}) =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
       try {
         const fileName = `money-${new Date().toISOString()}.json`;
         const schemaVersion = settings?.schemaVersion || SCHEMA_VERSION;
-        const data = JSON.stringify({ schemaVersion, accounts, settings, txs });
+        const data = JSON.stringify({ schemaVersion, accounts, scheduledTxs, settings, txs });
 
         const isSharingAvailable = await Sharing.isAvailableAsync();
         if (!isSharingAvailable) return reject(L10N.ERROR_EXPORT);
@@ -77,11 +77,11 @@ export const BackupService = {
           const fileData = await FileSystem.readAsStringAsync(file.uri);
           jsonData = JSON.parse(fileData);
 
-          const { accounts = [], schemaVersion, settings = {}, txs = [] } = jsonData;
+          const { accounts = [], scheduledTxs = [], schemaVersion, settings = {}, txs = [] } = jsonData;
 
           if (!accounts.length || !Object.keys(settings).length) return reject(L10N.ERROR_IMPORT);
 
-          resolve({ accounts, schemaVersion, settings, txs });
+          resolve({ accounts, scheduledTxs, schemaVersion, settings, txs });
         }
       } catch (error) {
         reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);

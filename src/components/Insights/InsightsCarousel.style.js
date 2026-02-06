@@ -80,4 +80,3 @@ export const style = StyleSheet.create({
     alignSelf: 'flex-start',
   },
 });
-

@@ -13,7 +13,7 @@ import { NotificationsService, ServiceRates } from '../../services';
 const { EVENT, VERSION } = C;
 
 const Session = ({ navigation: { reset } = {} }) => {
-  const { accounts = [], settings = {}, updateRates, updateSettings } = useStore();
+  const { accounts = [], scheduledTxs = [], settings = {}, txs = [], updateRates, updateSettings } = useStore();
   const { colors } = useApp();
   const style = React.useMemo(() => getStyles(colors), [colors]);
 
@@ -43,7 +43,7 @@ const Session = ({ navigation: { reset } = {} }) => {
 
   const handleSubmit = async () => {
     if (signup) await updateSettings({ pin });
-    NotificationsService.init();
+    await NotificationsService.init({ reminders: settings.reminders, scheduledTxs, txs });
 
     reset({ index: 0, routes: [{ name: 'main' }] });
   };
