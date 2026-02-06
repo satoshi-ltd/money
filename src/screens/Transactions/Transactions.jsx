@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { SectionList } from 'react-native';
 
 import { queryLastTxs, querySearchTxs } from './modules';
@@ -13,28 +13,32 @@ import { C, L10N } from '../../modules';
 const Transactions = (props = {}) => {
   const { route = {}, navigation = {} } = props;
   const { goBack } = navigation;
-  const { params: { account: { hash, chartBalanceBase = [] } = {} } = {} } = route;
+  const { params: { account: routeAccount = {} } = {} } = route;
+  const { hash, chartBalanceBase: routeChartBalanceBase = [] } = routeAccount || {};
   const { accounts = [], settings: { baseCurrency } = {} } = useStore();
   const { colors } = useApp();
-  const style = React.useMemo(() => getStyles(colors), [colors]);
+  const style = useMemo(() => getStyles(colors), [colors]);
 
-  const [dataSource, setDataSource] = useState({});
   const [query, setQuery] = useState();
   const [page, setPage] = useState(1);
-  const [txs, setTxs] = useState([]);
 
-  useEffect(() => {
+  const dataSource = useMemo(() => {
     const account = accounts.find((item) => item.hash === hash);
-    if (!account) return;
+    return account || routeAccount || {};
+  }, [accounts, hash, routeAccount]);
 
-    setDataSource(account);
-    setTxs(queryLastTxs(account.txs, page));
+  const sections = useMemo(() => {
+    if (!dataSource?.hash) return [];
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accounts, hash, page]);
+    const search = querySearchTxs({ account: dataSource, page, query });
+    if (search) return search;
+
+    return queryLastTxs(dataSource.txs, page);
+  }, [dataSource, page, query]);
 
   const { currency = baseCurrency } = dataSource;
   const title = dataSource?.title || L10N.TRANSACTIONS;
+  const chartBalanceBase = dataSource?.chartBalanceBase || routeChartBalanceBase;
 
   return (
     <Panel title={title} onBack={goBack} disableScroll>
@@ -44,7 +48,7 @@ const Transactions = (props = {}) => {
         ListEmptyComponent={() => <Banner align="center" title={L10N.NO_TRANSACTIONS} />}
         ListHeaderComponent={
           <TransactionsListHeader
-            chartBalanceBase={dataSource?.chartBalanceBase || chartBalanceBase}
+            chartBalanceBase={chartBalanceBase}
             dataSource={dataSource}
             navigation={navigation}
             onSearch={setQuery}
@@ -53,7 +57,7 @@ const Transactions = (props = {}) => {
         }
         renderItem={({ item }) => <TransactionItem {...item} currency={currency} />}
         renderSectionHeader={({ section }) => <TransactionsHeader {...section} />}
-        sections={querySearchTxs({ account: dataSource, page, query }) || txs}
+        sections={sections}
         stickySectionHeadersEnabled={false}
         onEndReached={() => setPage((prevPage) => prevPage + 1)}
         style={style.screen}
