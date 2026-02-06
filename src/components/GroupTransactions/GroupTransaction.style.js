@@ -1,28 +1,27 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
 
-export const style = StyleSheet.create({
+import { theme } from '../../theme';
+import { viewOffset } from '../../theme/layout';
+
+export const styles = StyleSheet.create({
   container: {
-    marginBottom: '$viewOffset',
+    marginBottom: viewOffset,
   },
-
   content: {
-    paddingHorizontal: '$viewOffset',
-    paddingVertical: '$viewOffset / 2',
+    paddingHorizontal: viewOffset,
+    paddingVertical: viewOffset / 2,
     width: '100%',
   },
-
   date: {
-    marginLeft: '$viewOffset',
+    marginLeft: viewOffset,
   },
-
   text: {
     flex: 1,
   },
-
   cardIcon: {
-    height: '$spaceXXL + $spaceS',
-    width: '$spaceXXL + $spaceS',
-    marginRight: '$viewOffset / 2',
+    height: theme.spacing.xxl + theme.spacing.sm,
+    width: theme.spacing.xxl + theme.spacing.sm,
+    marginRight: viewOffset / 2,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -1,21 +1,24 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
 
-export const style = StyleSheet.create({
-  container: {
-    gap: '$spaceXXS',
-  },
-  header: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  track: {
-    height: '$spaceXXS',
-    borderRadius: '$borderRadius',
-    backgroundColor: '$colorBorder',
-    overflow: 'hidden',
-  },
-  fill: {
-    height: '100%',
-  },
-});
+import { theme } from '../../theme';
+
+export const getStyles = (colors) =>
+  StyleSheet.create({
+    container: {
+      gap: theme.spacing.xxs,
+    },
+    header: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    track: {
+      height: theme.spacing.xxs,
+      borderRadius: theme.borderRadius.md,
+      backgroundColor: colors.border,
+      overflow: 'hidden',
+    },
+    fill: {
+      height: '100%',
+    },
+  });

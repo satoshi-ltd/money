@@ -1,14 +1,14 @@
-import { Heading, InputAccount, InputDate, ScrollView } from '../../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import { useWindowDimensions } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './FormTransaction.style';
-import { CardOption, InputAmount, InputText } from '../../../components';
-import { C, getIcon, L10N, suggestCategory } from '../../../modules';
-import { queryCategories } from '../helpers';
+import { Heading, InputAccount, InputDate, ScrollView } from '../../../components';
+import { CardOption, InputAmount, InputField } from '../../../components';
 import { useStore } from '../../../contexts';
+import { C, getIcon, L10N, suggestCategory } from '../../../modules';
+import { optionSnap } from '../../../theme/layout';
+import { queryCategories } from '../helpers';
 
 const EXPENSE = C?.TX?.TYPE?.EXPENSE ?? 0;
 
@@ -51,12 +51,9 @@ const FormTransaction = ({
     });
   };
 
-  const optionSnap = StyleSheet.value('$optionSnap');
   const categories = queryCategories({ type: safeType });
-  const totals = account?.txs?.reduce(
-    (total, { category }) => ((total[category] = (total[category] || 0) + 1), total),
-    {},
-  ) || {};
+  const totals =
+    account?.txs?.reduce((total, { category }) => ((total[category] = (total[category] || 0) + 1), total), {}) || {};
 
   let sortedCategories = [...categories]
     .filter((category) => !!totals[category.key.toString()])
@@ -74,7 +71,7 @@ const FormTransaction = ({
         <>
           <Heading value={L10N.CATEGORY} />
 
-          <ScrollView horizontal ref={scrollview} snap={optionSnap} width={width} style={style.scrollView}>
+          <ScrollView horizontal ref={scrollview} snapTo={optionSnap} style={[{ width }, style.scrollView]}>
             {sortedCategories.map((item, index) => (
               <CardOption
                 key={item.key}
@@ -102,6 +99,7 @@ const FormTransaction = ({
       {showDate && (
         <InputDate
           first={!showAccountInput}
+          maximumDate={new Date()}
           value={safeForm.timestamp ? new Date(safeForm.timestamp) : new Date()}
           onChange={(value) => handleField('timestamp', value.getTime())}
         />
@@ -115,12 +113,7 @@ const FormTransaction = ({
         onChange={(value) => handleField('value', value)}
       />
 
-      <InputText
-        last
-        label={L10N.CONCEPT}
-        value={safeForm.title}
-        onChange={(value) => handleField('title', value)}
-      />
+      <InputField last label={L10N.CONCEPT} value={safeForm.title} onChange={(value) => handleField('title', value)} />
     </>
   );
 };

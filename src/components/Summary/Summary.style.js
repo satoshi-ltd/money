@@ -1,61 +1,46 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
 
-export const style = StyleSheet.create({
-  children: {
-    gap: '$viewOffset',
-    marginTop: '$viewOffset',
-    width: '100%',
-  },
+import { theme } from '../../theme';
+import { viewOffset } from '../../theme/layout';
 
-  container: {
-    paddingHorizontal: '$viewOffset',
-  },
-  noPadding: {
-    paddingHorizontal: 0,
-  },
-  heading: {
-    marginHorizontal: 0,
-    marginVertical: 0,
-  },
-  balanceRow: {
-    alignItems: 'baseline',
-    gap: '$spaceXXS',
-  },
-
-  summary: {
-    flexDirection: 'row',
-    marginTop: '$spaceL',
-    paddingHorizontal: '$spaceXS',
-    width: '100%',
-  },
-
-  progression: {
-    gap: '$spaceXXS',
-  },
-
-  color: {
-    borderRadius: '50%',
-    height: '$fontSizeTiny',
-    marginRight: '$spaceXS',
-    width: '$fontSizeTiny',
-  },
-
-  tags: {
-    gap: '$spaceS',
-  },
-
-  tag: {
-    gap: '$spaceXXS',
-  },
-
-  income: {
-    backgroundColor: '$colorAccent',
-    position: 'absolute',
-    borderRadius: '$borderRadius',
-    bottom: '$spaceXXS * -1',
-    left: '$spaceXXS * -1',
-    right: '$spaceXXS * -1',
-    top: '$spaceXXS * -1',
-    opacity: 0.15,
-  },
-});
+export const getStyles = (colors) =>
+  StyleSheet.create({
+    children: {
+      gap: viewOffset,
+      marginTop: viewOffset,
+      width: '100%',
+    },
+    container: {
+      paddingHorizontal: viewOffset,
+    },
+    noPadding: {
+      paddingHorizontal: 0,
+    },
+    heading: {
+      marginHorizontal: 0,
+      marginVertical: 0,
+    },
+    balanceRow: {
+      alignItems: 'baseline',
+      gap: theme.spacing.xxs,
+    },
+    progression: {
+      gap: theme.spacing.xxs,
+    },
+    tags: {
+      gap: theme.spacing.sm,
+    },
+    tag: {
+      gap: theme.spacing.xxs,
+    },
+    incomeOverlay: {
+      backgroundColor: colors.accent,
+      position: 'absolute',
+      borderRadius: theme.borderRadius.md,
+      bottom: -theme.spacing.xxs,
+      left: -theme.spacing.xxs,
+      right: -theme.spacing.xxs,
+      top: -theme.spacing.xxs,
+      opacity: 0.15,
+    },
+  });

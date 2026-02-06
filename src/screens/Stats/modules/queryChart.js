@@ -9,13 +9,10 @@ const {
   },
 } = C;
 
-export default ({
-  accounts = [],
-  overall: { chartBalance = [] } = {},
-  rates = {},
-  settings: { baseCurrency } = {},
-  txs = [],
-}, monthsLimit = STATS_MONTHS_LIMIT) => {
+export default (
+  { accounts = [], overall: { chartBalance = [] } = {}, rates = {}, settings: { baseCurrency } = {}, txs = [] },
+  monthsLimit = STATS_MONTHS_LIMIT,
+) => {
   let effectiveLimit = monthsLimit === 0 ? 0 : monthsLimit || STATS_MONTHS_LIMIT;
   if (effectiveLimit <= 0) {
     effectiveLimit = chartBalance.length || STATS_MONTHS_LIMIT;

@@ -1,6 +1,8 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
 
-export const style = StyleSheet.create({
+import { inputPaddingHorizontal, inputPaddingVertical, inputTextHeight } from '../../theme/layout';
+
+export const styles = StyleSheet.create({
   dateTimePicker: {
     alignSelf: 'flex-start',
     backgroundColor: 'transparent',
@@ -8,22 +10,15 @@ export const style = StyleSheet.create({
     padding: 0,
   },
   pressable: {
-    height: '$inputTextHeight',
-    paddingLeft: '$inputPaddingHorizontal',
-    paddingRight: '$inputPaddingHorizontal',
-    paddingTop: '$inputPaddingVertical',
+    minHeight: inputTextHeight,
     justifyContent: 'center',
+    paddingLeft: inputPaddingHorizontal,
+    paddingRight: inputPaddingHorizontal,
+    paddingVertical: inputPaddingVertical,
   },
-  value: {
-    color: '$inputColor',
-    fontFamily: '$fontBold',
-    fontSize: '$inputTextFontSize',
-    fontWeight: '$fontWeightBold',
+  pressableWithLabel: {
+    paddingTop: inputPaddingVertical,
+    paddingBottom: inputPaddingVertical / 2,
   },
-  inputWeb: {
-    position: 'absolute',
-    margin: 0,
-    width: 0,
-    right: 0,
-  },
+  valueWithLabel: {},
 });

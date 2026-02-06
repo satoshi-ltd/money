@@ -1,25 +1,32 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
 
-export const style = StyleSheet.create({
-  screen: {
-    paddingTop: 0,
-  },
+import { theme } from '../../theme';
+import { viewOffset } from '../../theme/layout';
 
-  buttons: {
-    backgroundColor: '$colorSurface',
-    borderRadius: '$borderRadius * 2',
-    gap: '$spaceXXS',
-    marginTop: '$spaceS',
-    marginBottom: '$spaceS',
-    padding: '$spaceXXS',
-  },
-  headerWrap: {
-    paddingHorizontal: '$viewOffset',
-    paddingTop: '$spaceM',
-  },
+export const getStyles = (colors) =>
+  StyleSheet.create({
+    screen: {
+      paddingTop: 0,
+    },
 
-  inputSearch: {
-    marginHorizontal: 0,
-    marginBottom: '$viewOffset',
-  },
-});
+    buttons: {
+      backgroundColor: colors.surface,
+      borderRadius: theme.borderRadius.md * 2,
+      gap: theme.spacing.xxs,
+      marginTop: theme.spacing.sm,
+      marginBottom: theme.spacing.sm,
+      padding: theme.spacing.xxs,
+    },
+    headerWrap: {
+      paddingHorizontal: viewOffset,
+      paddingTop: theme.spacing.sm,
+    },
+    insightsTop: {
+      paddingTop: theme.spacing.md,
+    },
+
+    inputSearch: {
+      marginHorizontal: 0,
+      marginBottom: viewOffset,
+    },
+  });

@@ -1,12 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
-import Card from '../Card';
-import { Icon, Pressable, Text, View } from '../../primitives';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { style } from './GroupTransaction.style';
+import { styles as style } from './GroupTransaction.style';
 import { useStore } from '../../contexts';
 import { C, exchange, getIcon, L10N, verboseTime } from '../../modules';
+import { Icon, Pressable, Text, View } from '../../primitives';
+import Card from '../Card';
 import { PriceFriendly } from '../PriceFriendly';
 
 const {
@@ -49,7 +49,7 @@ const Item = ({ category = INTERNAL_TRANSFER, currency, timestamp, title, type =
             </Text>
             <PriceFriendly
               bold
-              color={is.income ? 'accent' : undefined}
+              tone={is.income ? 'accent' : undefined}
               currency={currency}
               operator
               value={value * operator}
@@ -63,7 +63,7 @@ const Item = ({ category = INTERNAL_TRANSFER, currency, timestamp, title, type =
             {baseCurrency !== currency && (
               <PriceFriendly
                 size="s"
-                color="contentLight"
+                tone="secondary"
                 currency={baseCurrency}
                 value={exchange(value, currency, baseCurrency, rates, timestamp)}
               />

@@ -1,30 +1,72 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
-  base: {
-    color: '$colorContent',
-    fontFamily: '$fontDefault',
-    fontSize: '$fontSizeDefault',
-    lineHeight: '$fontSizeDefault * $lineHeightBodyRatio',
-  },
-  title: {
-    fontSize: '$fontSizeTitle',
-    lineHeight: '$fontSizeTitle * $lineHeightDefaultRatio',
-  },
-  subtitle: {
-    fontSize: '$fontSizeSubtitle',
-    lineHeight: '$fontSizeSubtitle * $lineHeightDefaultRatio',
-  },
-  detail: {
-    fontSize: '$fontSizeDetail',
-    lineHeight: '$fontSizeDetail * $lineHeightDefaultRatio',
-  },
-  caption: {
-    fontSize: '$fontSizeCaption',
-    lineHeight: '$fontSizeCaption * $lineHeightDefaultRatio',
-  },
-  tiny: {
-    fontSize: '$fontSizeTiny',
-    lineHeight: '$fontSizeTiny * $lineHeightDefaultRatio',
-  },
-});
+import { theme } from '../../theme';
+
+export const getStyles = (colors) =>
+  StyleSheet.create({
+    base: {
+      fontSize: theme.typography.sizes.body,
+      lineHeight: theme.typography.lineHeights.body,
+      fontFamily: 'font-default',
+      color: colors.text,
+    },
+    bold: {
+      fontFamily: 'font-bold',
+    },
+    title: {
+      fontSize: theme.typography.sizes.title,
+      lineHeight: theme.typography.lineHeights.title,
+    },
+    subtitle: {
+      fontSize: theme.typography.sizes.subtitle,
+      lineHeight: theme.typography.lineHeights.subtitle,
+    },
+    body: {
+      fontSize: theme.typography.sizes.body,
+      lineHeight: theme.typography.lineHeights.body,
+    },
+    caption: {
+      fontSize: theme.typography.sizes.caption,
+      lineHeight: theme.typography.lineHeights.caption,
+    },
+    tiny: {
+      fontSize: theme.typography.sizes.tiny,
+      lineHeight: theme.typography.lineHeights.tiny,
+    },
+    tonePrimary: {
+      color: colors.text,
+    },
+    toneSecondary: {
+      color: colors.textSecondary,
+    },
+    toneAccent: {
+      color: colors.accent,
+    },
+    toneDanger: {
+      color: colors.danger,
+    },
+    toneWarning: {
+      color: colors.warning,
+    },
+    toneOnAccent: {
+      color: colors.onAccent || colors.text,
+    },
+    toneOnInverse: {
+      color: colors.onInverse,
+    },
+    alignLeft: {
+      textAlign: 'left',
+    },
+    alignCenter: {
+      textAlign: 'center',
+    },
+    alignRight: {
+      textAlign: 'right',
+    },
+    flex: {
+      flex: 1,
+    },
+    uppercase: {
+      textTransform: 'uppercase',
+    },
+  });

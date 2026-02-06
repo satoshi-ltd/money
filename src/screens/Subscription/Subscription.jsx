@@ -1,10 +1,10 @@
-import { Button, Card, Icon, Panel, Pressable, Tabs, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { Linking } from 'react-native';
 
 import { PLAN } from './Subscription.constants';
 import { style } from './Subscription.style';
+import { Button, Card, Icon, Panel, Pressable, Tabs, Text, View } from '../../components';
 import { useStore } from '../../contexts';
 import { C, eventEmitter, L10N } from '../../modules';
 import { PurchaseService } from '../../services';
@@ -92,7 +92,9 @@ const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation:
         ) : (
           <>
             <Text align="center" bold size="s">
-              {`${planData?.price || L10N.SUBSCRIPTION_PRICE_FALLBACK_ANNUAL} ${L10N.ANNUALY} (${planData?.pricePerMonth || L10N.SUBSCRIPTION_PRICE_FALLBACK_MONTH}/${L10N.MONTH})`}
+              {`${planData?.price || L10N.SUBSCRIPTION_PRICE_FALLBACK_ANNUAL} ${L10N.ANNUALY} (${
+                planData?.pricePerMonth || L10N.SUBSCRIPTION_PRICE_FALLBACK_MONTH
+              }/${L10N.MONTH})`}
             </Text>
             <Text align="center" bold size="s">
               {L10N.CANCEL_ANYTIME}

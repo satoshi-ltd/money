@@ -1,21 +1,23 @@
-import { StyleSheet as RNStyleSheet } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
-  base: {
-    backgroundColor: '$colorSurface',
-    borderRadius: '$borderRadius',
-    padding: '$spaceS',
-    overflow: 'hidden',
-  },
-  active: {
-    backgroundColor: '$colorAccent',
-  },
-  sizeS: {
-    height: '$spaceXL + $spaceXS',
-    width: '$spaceXL + $spaceXS',
-    padding: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+import { theme } from '../../theme';
+
+export const getStyles = (colors) =>
+  StyleSheet.create({
+    base: {
+      backgroundColor: colors.surface,
+      borderRadius: theme.borderRadius.md,
+      padding: theme.spacing.sm,
+      overflow: 'hidden',
+    },
+    active: {
+      backgroundColor: colors.accent,
+    },
+    sizeS: {
+      height: theme.spacing.xl + theme.spacing.xs,
+      width: theme.spacing.xl + theme.spacing.xs,
+      padding: 0,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  });

@@ -26,6 +26,7 @@ const DEFAULTS = {
   rates: {},
   subscription: {},
   accounts: [],
+  scheduledTxs: [],
   txs: [],
 };
 

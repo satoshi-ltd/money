@@ -1,21 +1,24 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
 
-export const style = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    borderRadius: '$borderRadius',
-    flex: 1,
-    gap: '$spaceXXS',
-    paddingVertical: '$spaceXS',
-    paddingHorizontal: '$spaceS',
-    width: '100%',
-  },
-  iconWrap: {
-    alignItems: 'center',
-    backgroundColor: '$colorBase',
-    borderRadius: '$spaceXL',
-    height: '$spaceXL',
-    justifyContent: 'center',
-    width: '$spaceXL',
-  },
-});
+import { theme } from '../../../../theme';
+
+export const getStyles = (colors) =>
+  StyleSheet.create({
+    container: {
+      alignItems: 'center',
+      borderRadius: theme.borderRadius.md,
+      flex: 1,
+      gap: theme.spacing.xxs,
+      paddingVertical: theme.spacing.xs,
+      paddingHorizontal: theme.spacing.sm,
+      width: '100%',
+    },
+    iconWrap: {
+      alignItems: 'center',
+      backgroundColor: colors.background,
+      borderRadius: theme.borderRadius.full,
+      height: theme.spacing.xl,
+      justifyContent: 'center',
+      width: theme.spacing.xl,
+    },
+  });

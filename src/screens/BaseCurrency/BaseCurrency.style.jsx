@@ -1,29 +1,31 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
+
+import { theme } from '../../theme';
+import { viewOffset } from '../../theme/layout';
 
 export const style = StyleSheet.create({
   title: {
-    marginBottom: '$viewOffset / 2',
+    marginBottom: viewOffset / 2,
   },
 
   list: {
-    marginHorizontal: '$viewOffset * -1',
-
+    marginHorizontal: viewOffset * -1,
   },
   iconCard: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: '$spaceXL',
-    width: '$spaceXL',
+    height: theme.spacing.xl,
+    width: theme.spacing.xl,
     padding: 0,
-    marginRight: '$viewOffset / 2',
+    marginRight: viewOffset / 2,
   },
   rightPlaceholder: {
-    width: '$spaceL',
+    width: theme.spacing.lg,
   },
   item: {
     alignItems: 'center',
-    paddingHorizontal: '$viewOffset',
-    paddingVertical: '$viewOffset / 2',
+    paddingHorizontal: viewOffset,
+    paddingVertical: viewOffset / 2,
     width: '100%',
   },
 });

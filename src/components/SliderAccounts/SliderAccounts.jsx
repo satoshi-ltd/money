@@ -1,12 +1,12 @@
-import { ScrollView } from '../../primitives';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import { useWindowDimensions } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
 
 import { queryAvailableAccounts } from './helpers';
 import { style } from './SliderAccounts.style';
 import { useStore } from '../../contexts';
+import { ScrollView } from '../../primitives';
+import { optionSnap } from '../../theme/layout';
 import { CardOption } from '../CardOption';
 
 const SliderAccounts = ({ account, selected, onChange, ...others }) => {
@@ -21,11 +21,10 @@ const SliderAccounts = ({ account, selected, onChange, ...others }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected]);
 
-  const optionSnap = StyleSheet.value('$optionSnap');
   const availableAccounts = queryAvailableAccounts(accounts, account);
 
   return (
-    <ScrollView {...others} horizontal ref={scrollview} snap={optionSnap} width={width} style={style.scrollview}>
+    <ScrollView {...others} horizontal ref={scrollview} snapTo={optionSnap} style={[{ width }, style.scrollview]}>
       {availableAccounts.map(({ currency, hash, title, ...rest } = {}, index) => (
         <CardOption
           key={hash}

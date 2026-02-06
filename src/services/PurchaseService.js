@@ -104,8 +104,7 @@ export const PurchaseService = {
   checkSubscription: async (subscription) =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
-      if (Constants.appOwnership === 'expo' || subscription.productIdentifier === 'lifetime')
-        return resolve(true);
+      if (Constants.appOwnership === 'expo' || subscription.productIdentifier === 'lifetime') return resolve(true);
 
       try {
         const Purchases = await initializePurchases();

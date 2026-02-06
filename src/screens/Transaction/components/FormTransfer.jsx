@@ -1,7 +1,7 @@
-import { Heading, InputAccount, InputAmount } from '../../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 
+import { Heading, InputAccount, InputAmount } from '../../../components';
 import { useStore } from '../../../contexts';
 import { currencyDecimals, L10N } from '../../../modules';
 import { getAccount, queryAvailableAccounts } from '../helpers';
@@ -55,12 +55,7 @@ const FormTransaction = ({ account = {}, accountsList = [], form = {}, onChange,
     <>
       <Heading value={L10N.FROM_ACCOUNT} />
 
-      <InputAccount
-        accounts={resolvedAccounts}
-        first
-        onSelect={(item) => onSelectAccount?.(item)}
-        selected={account}
-      />
+      <InputAccount accounts={resolvedAccounts} first onSelect={(item) => onSelectAccount?.(item)} selected={account} />
 
       <InputAmount
         account={account}
@@ -85,7 +80,7 @@ const FormTransaction = ({ account = {}, accountsList = [], form = {}, onChange,
         label={L10N.RECEIVE}
         value={form.exchange}
         onChange={(value) => handleField('exchange', value)}
-        editable={false}
+        disabled
       />
     </>
   );

@@ -1,14 +1,12 @@
 import { DefaultTheme } from '@react-navigation/native';
-import StyleSheet from 'react-native-extended-stylesheet';
-
-export const getNavigationTheme = () => ({
+export const getNavigationTheme = (colors) => ({
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: StyleSheet.value('$colorContent'),
-    background: StyleSheet.value('$colorBase'),
-    card: StyleSheet.value('$colorBase'),
-    text: StyleSheet.value('$colorContentLight'),
-    border: StyleSheet.value('$colorBase'),
+    primary: colors?.text ?? DefaultTheme.colors.primary,
+    background: colors?.background ?? DefaultTheme.colors.background,
+    card: colors?.background ?? DefaultTheme.colors.card,
+    text: colors?.textSecondary ?? DefaultTheme.colors.text,
+    border: colors?.background ?? DefaultTheme.colors.border,
   },
 });

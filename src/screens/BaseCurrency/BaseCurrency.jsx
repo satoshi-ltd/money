@@ -1,8 +1,8 @@
-import { Card, CurrencyLogo, Icon, Panel, Pressable, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
 import { style } from './BaseCurrency.style';
+import { Card, CurrencyLogo, Icon, Panel, Pressable, Text, View } from '../../components';
 import { useStore } from '../../contexts';
 import { C, eventEmitter, L10N } from '../../modules';
 import { ServiceRates } from '../../services';

@@ -1,24 +1,24 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
 
-export const style = StyleSheet.create({
-  content: {
-    alignItems: 'center',
-    paddingHorizontal: '$viewOffset',
-    gap: '$viewOffset / 2',
-    paddingVertical: '$viewOffset / 2',
-    width: '100%',
-  },
+import { viewOffset } from '../../theme/layout';
 
-  headerContainer: {
-    backgroundColor: '$colorBase',
-  },
-
-  date: {
-    marginTop: '$viewOffset / 2',
-    marginLeft: '$viewOffset',
-  },
-
-  text: {
-    flex: 1,
-  },
-});
+export const getStyles = (colors) =>
+  StyleSheet.create({
+    content: {
+      alignItems: 'center',
+      paddingHorizontal: viewOffset,
+      gap: viewOffset / 2,
+      paddingVertical: viewOffset / 2,
+      width: '100%',
+    },
+    headerContainer: {
+      backgroundColor: colors.background,
+    },
+    date: {
+      marginTop: viewOffset / 2,
+      marginLeft: viewOffset,
+    },
+    text: {
+      flex: 1,
+    },
+  });

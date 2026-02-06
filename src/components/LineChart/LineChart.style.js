@@ -1,14 +1,20 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
 
-export const style = StyleSheet.create({
-  pointerCaption: {
-    marginBottom: '$spaceXXS',
-  },
+import { theme } from '../../theme';
 
-  pointerValue: {
-    paddingHorizontal: 4,
-    paddingVertical: 2,
-    borderRadius: 4,
-    backgroundColor: '$colorContent',
-  },
-});
+export const getStyles = (colors) =>
+  StyleSheet.create({
+    container: {
+      opacity: 1,
+      overflow: 'hidden',
+    },
+    pointerCaption: {
+      marginBottom: theme.spacing.xxs,
+    },
+    pointerValue: {
+      paddingHorizontal: theme.spacing.xxs,
+      paddingVertical: theme.spacing.xxs / 2,
+      borderRadius: theme.borderRadius.sm,
+      backgroundColor: colors.inverse,
+    },
+  });

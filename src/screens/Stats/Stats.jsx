@@ -1,11 +1,10 @@
-import { Screen, View } from '../../components';
 import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
-import StyleSheet from 'react-native-extended-stylesheet';
 
 import { Chart, ItemGroupCategories, StatsRangeToggle } from './components';
 import { queryMonth, queryChart } from './modules';
 import { style } from './Stats.style';
-import { useStore } from '../../contexts';
+import { Screen, View } from '../../components';
+import { useApp, useStore } from '../../contexts';
 import { C, getMonthDiff, L10N } from '../../modules';
 
 const {
@@ -18,6 +17,7 @@ let debounceTimeout;
 
 const Stats = () => {
   const store = useStore();
+  const { colors } = useApp();
   const {
     settings: { baseCurrency, statsRangeMonths = STATS_MONTHS_LIMIT } = {},
     overall = {},
@@ -68,18 +68,16 @@ const Stats = () => {
 
   const { expenses = {}, incomes = {} } = queryMonth(store, pointerIndex, monthsLimit) || {};
   const chartProps = { currency: baseCurrency, monthsLimit, pointerIndex };
-  const color = StyleSheet.value('$colorAccent');
-  const colorExpense = StyleSheet.value('$colorContent');
+  const color = colors.accent;
+  const colorExpense = colors.text;
 
   return (
     <Screen style={style.screen}>
       <Chart
         {...chartProps}
         color={color}
-        headingRight={
-          <StatsRangeToggle onChange={handleRangeChange} options={rangeOptions} value={selectedRange} />
-        }
-        title={L10N.OVERALL_BALANCE}
+        headingRight={<StatsRangeToggle onChange={handleRangeChange} options={rangeOptions} value={selectedRange} />}
+        title={L10N.TOTAL_BALANCE}
         values={chart.balance}
         onPointerChange={handlePointerIndex}
       />
@@ -95,17 +93,16 @@ const Stats = () => {
         onPointerChange={handlePointerIndex}
       />
 
-      {Object.keys(incomes).length > 0 || Object.keys(expenses).length > 0 ?
-      <View style={style.sectionGap}>
-        {Object.keys(incomes).length > 0 && (
-          <ItemGroupCategories color={color} type={INCOME} dataSource={incomes} />
-        )}
-        {Object.keys(expenses).length > 0 && <ItemGroupCategories type={EXPENSE} dataSource={expenses} />}
-      </View> : null}
+      {Object.keys(incomes).length > 0 || Object.keys(expenses).length > 0 ? (
+        <View style={style.sectionGap}>
+          {Object.keys(incomes).length > 0 && <ItemGroupCategories color={color} type={INCOME} dataSource={incomes} />}
+          {Object.keys(expenses).length > 0 && <ItemGroupCategories type={EXPENSE} dataSource={expenses} />}
+        </View>
+      ) : null}
 
       <Chart
         {...chartProps}
-        color={StyleSheet.value('$colorContent')}
+        color={colors.text}
         title={L10N.TRANSFERS}
         values={chart.transfers}
         onPointerChange={handlePointerIndex}

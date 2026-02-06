@@ -1,10 +1,10 @@
-import { Button, Heading, Panel, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
 
 import { style } from './Account.style';
-import { InputAmount, InputCurrency, InputText } from '../../components';
+import { Button, Heading, Panel, Text, View } from '../../components';
+import { InputAmount, InputCurrency, InputField } from '../../components';
 import { useStore } from '../../contexts';
 import { C, eventEmitter, L10N } from '../../modules';
 import { ServiceRates } from '../../services';
@@ -14,13 +14,7 @@ const { CURRENCY, EVENT } = C;
 const INITIAL_STATE = { balance: 0, currency: undefined, title: undefined };
 
 const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate } = {} }) => {
-  const {
-    settings: { baseCurrency } = {},
-    createAccount,
-    updateAccount,
-    deleteAccount,
-    updateRates,
-  } = useStore();
+  const { settings: { baseCurrency } = {}, createAccount, updateAccount, deleteAccount, updateRates } = useStore();
   const [busy, setBusy] = useState(false);
   const [form, setForm] = useState(INITIAL_STATE);
 
@@ -91,11 +85,7 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
 
       <Heading value={L10N.DETAILS} />
 
-      <InputCurrency
-        first
-        value={form.currency}
-        onChange={(currency) => handleChange('currency', currency)}
-      />
+      <InputCurrency first value={form.currency} onChange={(currency) => handleChange('currency', currency)} />
 
       <InputAmount
         account={{ currency: form.currency }}
@@ -104,12 +94,7 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
         onChange={(value) => handleChange('balance', value)}
       />
 
-      <InputText
-        last
-        label={L10N.NAME}
-        value={form.title}
-        onChange={(value) => handleChange('title', value)}
-      />
+      <InputField last label={L10N.NAME} value={form.title} onChange={(value) => handleChange('title', value)} />
 
       <View row style={style.buttons}>
         {hash && (

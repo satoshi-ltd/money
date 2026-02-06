@@ -1,46 +1,44 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet as RNStyleSheet } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
 
+import { useApp } from '../../contexts';
+import { theme } from '../../theme';
 
 const Icon = ({ size, style, tone, ...props }) => {
-  const sizeToken =
-    size === 'xl'
-      ? '$iconSizeTitle'
-      : size === 'l'
-        ? '$iconSizeSubtitle'
-        : size === 'm'
-          ? '$iconSize'
-          : size === 's'
-            ? '$iconSizeCaption'
-            : size === 'xs'
-              ? '$iconSizeSmall'
-              : null;
+  const { colors } = useApp();
 
   const resolvedSize =
     typeof size === 'number'
       ? size
-      : sizeToken
-        ? StyleSheet.value(sizeToken)
-        : StyleSheet.value('$iconSize');
+      : size === 'xl'
+      ? theme.typography.iconSizes.title
+      : size === 'l'
+      ? theme.typography.iconSizes.subtitle
+      : size === 'm'
+      ? theme.typography.iconSizes.body
+      : size === 's'
+      ? theme.typography.iconSizes.caption
+      : size === 'xs'
+      ? theme.typography.iconSizes.tiny
+      : theme.typography.iconSizes.body;
 
   const flattenedStyle = RNStyleSheet.flatten(style) || {};
   const toneColor =
-    tone === 'primary'
-      ? StyleSheet.value('$colorContent')
-      : tone === 'secondary' || tone === 'muted'
-        ? StyleSheet.value('$colorContentLight')
-        : tone === 'accent'
-          ? StyleSheet.value('$colorAccent')
-          : tone === 'danger'
-            ? StyleSheet.value('$colorError')
-            : tone === 'warning'
-              ? StyleSheet.value('$colorWarning')
-              : tone === 'inverse'
-                ? StyleSheet.value('$colorBase')
-                : undefined;
-  const resolvedColor = flattenedStyle.color || toneColor || StyleSheet.value('$colorContent');
+    tone === 'secondary' || tone === 'muted'
+      ? colors.textSecondary
+      : tone === 'accent'
+      ? colors.accent
+      : tone === 'danger'
+      ? colors.danger
+      : tone === 'warning'
+      ? colors.warning
+      : tone === 'onAccent'
+      ? colors.onAccent || colors.text
+      : tone === 'onInverse'
+      ? colors.onInverse
+      : colors.text;
+  const resolvedColor = flattenedStyle.color || toneColor;
 
   return <MaterialCommunityIcons {...props} color={resolvedColor} size={resolvedSize} style={style} />;
 };

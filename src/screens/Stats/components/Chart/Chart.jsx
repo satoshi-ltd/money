@@ -1,12 +1,12 @@
-import { Heading, Text, View } from '../../../../components';
 import PropTypes from 'prop-types';
-import React from 'react';
-import { useWindowDimensions } from 'react-native';
-import StyleSheet from 'react-native-extended-stylesheet';
+import React, { useEffect, useRef } from 'react';
+import { Animated, Easing, useWindowDimensions } from 'react-native';
 
 import { style } from './Chart.style';
+import { Heading, Text, View } from '../../../../components';
 import { LineChart, PriceFriendly } from '../../../../components';
 import { L10N } from '../../../../modules';
+import { viewOffset } from '../../../../theme/layout';
 import { calcScales } from '../../modules';
 
 const Chart = ({
@@ -24,13 +24,25 @@ const Chart = ({
   const [color1, color2] = multipleData ? color : [color];
   const [data1 = [], data2 = []] = multipleData ? values : [values];
   const normalize = (data = []) =>
-    data.map((val) => (typeof val === 'number' && !isNaN(val) ? Math.max(0, val) : val));
+    data.filter((val) => typeof val === 'number' && !isNaN(val)).map((val) => Math.max(0, val));
   const normalizedData1 = normalize(data1);
   const normalizedData2 = normalize(data2);
   const { width } = useWindowDimensions();
-  const getValue = (token, fallback) =>
-    StyleSheet && typeof StyleSheet.value === 'function' ? StyleSheet.value(token) : fallback;
-  const viewOffset = getValue('$viewOffset', 16);
+  const chartWidth = width - viewOffset * 2;
+
+  // Gifted-charts `isAnimated` can be visually flaky here; keep charts static and animate a safe reveal.
+  const reveal = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    reveal.stopAnimation();
+    reveal.setValue(0);
+    Animated.timing(reveal, {
+      toValue: chartWidth,
+      duration: 450,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: false,
+    }).start();
+  }, [chartWidth, monthsLimit, multipleData, normalizedData1.length, normalizedData2.length, reveal]);
 
   // eslint-disable-next-line react/prop-types
   const Scale = ({ color, dataSource }) => (
@@ -39,7 +51,7 @@ const Chart = ({
         <View key={key} row style={style.scale}>
           <PriceFriendly {...{ color, currency, value }} bold fixed={0} size="xs" label={`${L10N.SCALE_KEY[key]} `} />
           {key !== 'max' && (
-            <Text color={color} size="xs">
+            <Text tone="secondary" size="xs">
               |
             </Text>
           )}
@@ -54,24 +66,25 @@ const Chart = ({
 
       <Scale color={color1} dataSource={normalizedData1} />
 
-      <LineChart
-        {...{
-          currency,
-          color,
-          multipleData,
-          monthsLimit,
-          values: multipleData ? [normalizedData1, normalizedData2] : normalizedData1,
-          onPointerChange,
-        }}
-        height={128}
-        isAnimated={false}
-        pointerConfig={{
-          initialPointerIndex: data1.length ? pointerIndex : undefined,
-          persistPointer: true,
-        }}
-        showPointer
-        width={width - viewOffset * 2}
-      />
+      <Animated.View style={{ width: reveal, overflow: 'hidden' }}>
+        <LineChart
+          {...{
+            currency,
+            color,
+            multipleData,
+            monthsLimit,
+            values: multipleData ? [normalizedData1, normalizedData2] : normalizedData1,
+            onPointerChange,
+          }}
+          height={128}
+          pointerConfig={{
+            initialPointerIndex: data1.length ? pointerIndex : undefined,
+            persistPointer: true,
+          }}
+          showPointer
+          width={chartWidth}
+        />
+      </Animated.View>
 
       {multipleData && <Scale color={color2} dataSource={normalizedData2} />}
     </View>

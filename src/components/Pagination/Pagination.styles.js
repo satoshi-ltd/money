@@ -1,17 +1,20 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    gap: '$spaceXS',
-  },
-  dot: {
-    width: '$spaceXS',
-    height: '$spaceXS',
-    borderRadius: '$spaceXS',
-    backgroundColor: '$colorBorder',
-  },
-  active: {
-    backgroundColor: '$colorAccent',
-  },
-});
+import { theme } from '../../theme';
+
+export const getStyles = (colors) =>
+  StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      gap: theme.spacing.xs,
+    },
+    dot: {
+      width: theme.spacing.xs,
+      height: theme.spacing.xs,
+      borderRadius: theme.spacing.xs,
+      backgroundColor: colors.border,
+    },
+    active: {
+      backgroundColor: colors.accent,
+    },
+  });

@@ -1,13 +1,13 @@
-import { Card, Pressable, Screen, ScrollView, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './Accounts.style';
 import { filter, query } from './modules';
+import { Card, Pressable, Screen, ScrollView, Text, View } from '../../components';
 import { CardAccount, CurrencyLogo, Heading, PriceFriendly } from '../../components';
 import { useStore } from '../../contexts';
 import { L10N } from '../../modules';
+import { cardAccountSnap } from '../../theme/layout';
 
 const Accounts = ({ navigation: { navigate } = {} }) => {
   const { accounts = [], overall = {} } = useStore();
@@ -19,7 +19,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
   return (
     <Screen style={style.screen}>
       <Heading value={L10N.CURRENCIES} offset />
-      <ScrollView horizontal snap={StyleSheet.value('$cardAccountSnap')} style={style.scrollView}>
+      <ScrollView horizontal snapTo={cardAccountSnap} style={style.scrollView}>
         {currencies.map(({ base, currency, ...item }, index) => (
           <CardAccount
             {...item}
@@ -43,7 +43,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
           const hasBalance =
             currentBalance !== undefined && currentBalance !== null && parseFloat(currentBalance.toFixed(2)) > 0;
 
-          const color = !hasBalance ? 'contentLight' : undefined;
+          const tone = !hasBalance ? 'secondary' : 'primary';
 
           return (
             <Pressable key={account.hash} onPress={() => navigate('transactions', { account })}>
@@ -54,10 +54,10 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
 
                 <View flex>
                   <View gap row spaceBetween>
-                    <Text bold color={color} numberOfLines={1} style={style.text}>
+                    <Text bold tone={tone} numberOfLines={1} style={style.text}>
                       {title}
                     </Text>
-                    <PriceFriendly bold color={color || 'content'} currency={currency} size="s" value={currentBalance} />
+                    <PriceFriendly bold tone={tone} currency={currency} size="s" value={currentBalance} />
                   </View>
 
                   <View gap row spaceBetween>

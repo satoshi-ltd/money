@@ -1,18 +1,18 @@
-import { Button, Card, Icon, Input, LineChart, MetricBar, PriceFriendly, ScrollView, Text, View } from '../../components';
 import PropTypes from 'prop-types';
 import React, { useMemo, useState } from 'react';
-import StyleSheet from 'react-native-extended-stylesheet';
 
 import { style } from './Dashboard.style';
 import { queryAccounts } from './helpers';
-import { CardAccount, Heading, Summary } from '../../components';
+import { Button, CardAccount, Heading, InputField, InsightsCarousel, ScrollView, View } from '../../components';
 import { useStore } from '../../contexts';
 import { buildInsights, getProgressionPercentage, ICON, L10N } from '../../modules';
+import { cardAccountSnap } from '../../theme/layout';
 
 let timeoutId;
 
 const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
-  const { accounts = [], rates = {}, settings: { baseCurrency } = {}, overall = {}, txs = [] } = useStore();
+  const { accounts = [], scheduledTxs = [], rates = {}, settings = {}, overall = {}, txs = [] } = useStore();
+  const { baseCurrency } = settings || {};
 
   const [search, setSearch] = useState(false);
   const [query, setQuery] = useState();
@@ -36,170 +36,49 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
 
   const sortedAccounts = queryAccounts({ accounts, query: undefined });
   const insights = useMemo(
-    () => buildInsights({ accounts, rates, settings: { baseCurrency }, txs }),
-    [accounts, rates, baseCurrency, txs],
+    () => buildInsights({ accounts, scheduledTxs, rates, settings: { ...settings, baseCurrency }, txs }),
+    [accounts, scheduledTxs, rates, settings, baseCurrency, txs],
   );
-  const previewInsights = insights;
-  const hasInsights = previewInsights.length > 0;
+  const overallProgressionPercentage = useMemo(() => {
+    const next = getProgressionPercentage(overall?.currentBalance, overall?.currentMonth?.progression);
+    return Number.isFinite(next) ? next : undefined;
+  }, [overall?.currentBalance, overall?.currentMonth?.progression]);
+  const overallChartValues = useMemo(() => {
+    const values = overall?.chartBalance;
+    if (!Array.isArray(values)) return [];
+    return values.slice(-6);
+  }, [overall?.chartBalance]);
 
-  const formatSignedPercent = (value = 0) => `${value >= 0 ? '+' : ''}${Math.round(value)}%`;
+  const balanceCard = useMemo(
+    () => ({
+      title: L10N.TOTAL_BALANCE,
+      value: overall?.currentBalance || 0,
+      chartValues: overallChartValues,
+      progressionPercentage: overallProgressionPercentage,
+    }),
+    [overall?.currentBalance, overallChartValues, overallProgressionPercentage],
+  );
 
-  const renderInsightPreview = (insight) => {
-    const isAmount = insight.type === 'net' || insight.type === 'pace';
-    const showCategories = insight.type === 'categories';
-    const showChart = !!insight.chart?.values?.length;
-    const topItems = (insight.items || []).slice(0, 3);
-    const toneColor =
-      insight.tone === 'negative' ? 'error' : insight.tone === 'positive' ? 'accent' : 'content';
-
-    return (
-      <Card style={style.insightCard}>
-        <View style={style.insightCardContent}>
-          <View style={style.insightHeader}>
-            <Text align="left" bold uppercase numberOfLines={2} size="xs">
-              {insight.title}
-            </Text>
-            {insight.caption ? (
-              <Text tone="secondary" numberOfLines={2} size="xs">
-                {insight.caption}
-              </Text>
-            ) : null}
-          </View>
-          <View flex style={style.insightContent}>
-            {isAmount ? (
-              <View style={style.insightValue}>
-                <PriceFriendly bold size="l" currency={baseCurrency} operator value={insight.value} />
-              </View>
-            ) : null}
-            {insight.type === 'trend' && insight.valueLabel ? (
-              <Text bold color={toneColor} style={style.insightTrendValue} size="xl">
-                {formatSignedPercent(insight.value)}
-              </Text>
-            ) : null}
-            {insight.type === 'alert' && insight.valueLabel ? (
-              <View row style={style.insightValueRow}>
-                <Icon name={ICON.ALERT} tone="danger" size="xs" />
-                <Text bold tone="danger" size="xl">
-                  {insight.valueLabel}
-                </Text>
-              </View>
-            ) : null}
-            {insight.type === 'mover' && insight.valueLabel ? (
-              <View row style={style.insightValueRow}>
-                <Text bold color={toneColor} size="xl">
-                  {formatSignedPercent(insight.value)}
-                </Text>
-              </View>
-            ) : null}
-            {insight.type === 'mover' && insight.meta ? (
-              <View style={style.insightMetrics}>
-                <MetricBar
-                  color="accent"
-                  percent={(insight.meta.current / Math.max(1, insight.meta.current + insight.meta.avg)) * 100}
-                  title={L10N.INSIGHT_THIS_MONTH}
-                  value={
-                    <PriceFriendly size="xs" color="contentLight" currency={baseCurrency} value={insight.meta.current} />
-                  }
-                />
-                <MetricBar
-                  color="content"
-                  percent={(insight.meta.avg / Math.max(1, insight.meta.current + insight.meta.avg)) * 100}
-                  title={L10N.INSIGHT_3MO_AVG}
-                  value={<PriceFriendly size="xs" color="contentLight" currency={baseCurrency} value={insight.meta.avg} />}
-                />
-              </View>
-            ) : null}
-            {insight.type === 'net' && insight.meta ? (
-              <View style={style.insightMetrics}>
-                <MetricBar
-                  color="accent"
-                  percent={(insight.meta.incomes / Math.max(1, insight.meta.incomes + insight.meta.expenses)) * 100}
-                  title={L10N.INCOME}
-                  value={
-                    <PriceFriendly size="xs" color="contentLight" currency={baseCurrency} value={insight.meta.incomes} />
-                  }
-                />
-                <MetricBar
-                  color="content"
-                  percent={(insight.meta.expenses / Math.max(1, insight.meta.incomes + insight.meta.expenses)) * 100}
-                  title={L10N.EXPENSE}
-                  value={
-                    <PriceFriendly size="xs" color="contentLight" currency={baseCurrency} value={insight.meta.expenses} />
-                  }
-                />
-              </View>
-            ) : null}
-            {insight.type === 'pace' && insight.meta ? (
-              <View style={style.insightMetrics}>
-                <MetricBar
-                  percent={(insight.meta.day / insight.meta.daysInMonth) * 100}
-                  title={L10N.INSIGHT_MONTH_PROGRESS}
-                  value={`${insight.meta.day}/${insight.meta.daysInMonth}`}
-                />
-              </View>
-            ) : null}
-            {showChart ? (
-              <LineChart
-                height={StyleSheet.value('$spaceM * 3.5')}
-                monthsLimit={insight.chart.monthsLimit}
-                values={insight.chart.values}
-                style={insight.type === 'trend' ? style.insightChartTrend : style.insightChart}
-                width={StyleSheet.value('$cardAccountSize')}
-              />
-            ) : null}
-            {showCategories ? (
-              <View style={style.insightCategories}>
-                {topItems.map((item) => (
-                  <View key={`${insight.id}-${item.category}`} style={style.insightCategoryItem}>
-                    <MetricBar percent={item.share} title={item.label} value={`${Math.round(item.share)}%`} />
-                  </View>
-                ))}
-              </View>
-            ) : null}
-          </View>
-        </View>
-      </Card>
-    );
-  };
+  const hasInsights = accounts.length > 0;
 
   return (
     <>
-      <Summary {...overall} currency={baseCurrency} detail style={style.summary} />
-
       {hasInsights ? (
         <>
           <View style={style.insightsHeading}>
             <Heading value={L10N.INSIGHTS} offset />
           </View>
-          <ScrollView horizontal style={style.insightsScroll}>
-            {previewInsights.map((insight, index) => (
-              <View
-                key={insight.id}
-                style={[
-                  style.card,
-                  index === 0 && style.firstCard,
-                  index === previewInsights.length - 1 && style.lastCard,
-                ]}
-              >
-                {renderInsightPreview(insight)}
-              </View>
-            ))}
-          </ScrollView>
+          <InsightsCarousel balanceCard={balanceCard} currency={baseCurrency} insights={insights} />
         </>
       ) : null}
 
       <View style={style.accountsHeading}>
         <Heading value={L10N.ACCOUNTS} offset>
-          <Button
-            icon={ICON.NEW}
-            variant="outlined"
-            size="s"
-            onPress={() => navigate('account', { create: true })}
-          />
+          <Button icon={ICON.NEW} variant="outlined" size="s" onPress={() => navigate('account', { create: true })} />
         </Heading>
       </View>
 
-      <ScrollView horizontal snap={StyleSheet.value('$cardAccountSnap')} style={[style.scrollView]}>
+      <ScrollView horizontal snapTo={cardAccountSnap} style={[style.scrollView]}>
         {sortedAccounts.map((account, index) => {
           const {
             chartBalanceBase = [],
@@ -231,17 +110,13 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
       </ScrollView>
       <View style={style.headingTight}>
         <Heading value={L10N.LAST_TRANSACTIONS} offset>
-          <Button
-            icon={!search ? ICON.SEARCH : ICON.CLOSE}
-            variant="outlined"
-            size="s"
-            onPress={handleSearch}
-          />
+          <Button icon={!search ? ICON.SEARCH : ICON.CLOSE} variant="outlined" size="s" onPress={handleSearch} />
         </Heading>
       </View>
       {search && (
-        <Input
-          autoFocus
+        <InputField
+          first
+          last
           placeholder={`${L10N.SEARCH}...`}
           value={query}
           onChange={onQueryChange}

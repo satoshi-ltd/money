@@ -13,4 +13,3 @@ export const sortAccounts = (accounts = []) =>
       return txsComparison !== 0 ? txsComparison : balanceComparison;
     },
   );
-

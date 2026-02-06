@@ -1,14 +1,18 @@
 import { useFonts } from 'expo-font';
 import React from 'react';
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { Navigator } from './App.Navigator';
 import { Notification } from './components';
 import { StoreProvider } from './contexts';
-import { LightTheme } from './theme';
 
-StyleSheet.build(LightTheme);
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
+});
 
 export const App = () => {
   const [ready] = useFonts({
@@ -21,11 +25,13 @@ export const App = () => {
   });
 
   return ready ? (
-    <SafeAreaProvider>
-      <StoreProvider>
-        <Navigator />
-      </StoreProvider>
-      <Notification />
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={styles.root}>
+      <SafeAreaProvider>
+        <StoreProvider>
+          <Navigator />
+        </StoreProvider>
+        <Notification />
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   ) : null;
 };

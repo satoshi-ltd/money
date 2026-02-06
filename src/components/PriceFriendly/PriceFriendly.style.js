@@ -1,10 +1,11 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
 
-export const style = StyleSheet.create({
+import { theme } from '../../theme';
+
+export const styles = StyleSheet.create({
   container: {
-    gap: '$spaceXXS',
+    gap: theme.spacing.xxs,
   },
-
   symbol: {
     transform: [{ scale: 0.9 }],
   },

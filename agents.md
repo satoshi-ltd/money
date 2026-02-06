@@ -14,7 +14,8 @@
 - Backups: `src/services/BackupService.js`
 - Notifications: `src/services/NotificationsService.js`
 - Insights: computed in `src/modules/insights.js` and rendered on Dashboard cards
-- Themes: `src/config/theme.js`, `src/theme/*`
+- Theme tokens: `src/theme/theme.js` (colors/spacing/typography)
+- Derived layout constants: `src/theme/layout.js` (card sizes, snap intervals, input metrics)
 - UI primitives: `src/primitives/*` (prefer these over native)
 
 ## Project structure
@@ -24,7 +25,7 @@
 - `src/contexts/`: global store, reducers, and helpers
 - `src/services/`: persistence, backups, notifications, rates
 - `src/modules/`: shared business logic utilities
-- `src/theme/`: themes and tokens
+- `src/theme/`: theme tokens + derived layout constants
 - `assets/`: fonts and static assets
 
 ## Data model (local)
@@ -51,8 +52,9 @@
 
 ## Coding standards
 - Use `src/primitives` primitives instead of raw `react-native` when possible.
-- Styles live in `*.styles.js` with EStyleSheet tokens.
-- Avoid hardcoded colors; use theme variables or `resolveColor`.
+- Styles are standard `react-native` `StyleSheet` with numeric values.
+- For theme-dependent colors, prefer `getStyles(colors)` factories + `useApp().colors`.
+- Avoid hardcoded colors; use `useApp().colors` + `src/theme/theme.js` tokens.
 - Prefer named/index imports where established.
 - Keep components small; share logic in `src/modules` or `src/contexts/modules`.
 
@@ -68,6 +70,13 @@
 ## UX rules
 - Use tokens for spacing/typography from theme.
 - Maintain existing layout patterns (headers, modals, list cards).
+
+## Theme naming rules
+- Surfaces: `colors.background`, `colors.surface`, `colors.accent`, `colors.inverse`
+- Content on surfaces: `colors.text`/`colors.textSecondary`, plus `colors.onAccent` and `colors.onInverse`
+- `tone` in primitives (`Text`, `Icon`, `Button`) represents **content only**. Use:
+  - `tone="onAccent"` on `colors.accent` backgrounds
+  - `tone="onInverse"` on `colors.inverse` backgrounds
 
 ## Tests & scripts
 - `yarn start`: run Expo dev server

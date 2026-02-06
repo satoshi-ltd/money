@@ -1,15 +1,18 @@
-import { Text, View } from '../../primitives';
-import React from 'react';
+import React, { useMemo } from 'react';
 
-import { style } from './Logo.style';
+import { getStyles } from './Logo.style';
+import { useApp } from '../../contexts';
+import { Text, View } from '../../primitives';
 
 const Logo = () => {
+  const { colors } = useApp();
+  const style = useMemo(() => getStyles(colors), [colors]);
   return (
     <View style={style.container}>
       <Text bold style={style.text}>
         môney
       </Text>
-      <View style={style.color} />
+      <View style={style.dot} />
     </View>
   );
 };

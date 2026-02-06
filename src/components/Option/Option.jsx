@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, Switch, TouchableOpacity } from 'react-native';
+import { Switch, TouchableOpacity } from 'react-native';
+import { StyleSheet } from 'react-native';
 
-import { theme } from '../../config/theme';
 import { useApp } from '../../contexts';
 import { Icon, Text, View } from '../../primitives';
+import { theme } from '../../theme';
 
 const Option = ({
   icon,
@@ -58,7 +59,7 @@ const Option = ({
           </Text>
           {counter !== undefined && counter !== null ? (
             <View style={[styles.counterBadge, { backgroundColor: colors.accent }]}>
-              <Text bold tone="inverse" size="xs">
+              <Text bold tone="onAccent" size="xs">
                 {counter}
               </Text>
             </View>

@@ -1,21 +1,24 @@
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    backgroundColor: '$colorBorder',
-    borderRadius: '$borderRadius',
-    padding: '$spaceXXS',
-  },
-  tab: {
-    paddingVertical: '$spaceXS',
-    paddingHorizontal: '$spaceM',
-    borderRadius: '$borderRadius',
-  },
-  active: {
-    backgroundColor: '$colorAccent',
-  },
-  activeAlt: {
-    backgroundColor: '$colorContent',
-  },
-});
+import { theme } from '../../theme';
+
+export const getStyles = (colors) =>
+  StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      backgroundColor: colors.border,
+      borderRadius: theme.borderRadius.md,
+      padding: theme.spacing.xxs,
+    },
+    tab: {
+      paddingVertical: theme.spacing.xs,
+      paddingHorizontal: theme.spacing.md,
+      borderRadius: theme.borderRadius.md,
+    },
+    active: {
+      backgroundColor: colors.accent,
+    },
+    activeAlt: {
+      backgroundColor: colors.inverse,
+    },
+  });

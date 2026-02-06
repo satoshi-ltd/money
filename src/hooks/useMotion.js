@@ -1,7 +1,7 @@
 import { useRef, useCallback } from 'react';
 import { Animated, LayoutAnimation, Easing, Platform, UIManager } from 'react-native';
 
-import { theme } from '../config/theme';
+import { theme } from '../theme';
 
 if (Platform.OS === 'android') {
   UIManager.setLayoutAnimationEnabledExperimental?.(true);

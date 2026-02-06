@@ -1,16 +1,18 @@
-import { Icon, Pressable, Text, View } from '../../primitives';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 
-import { style } from './Summary.style';
-import { useStore } from '../../contexts';
+import { getStyles } from './Summary.style';
+import { useApp, useStore } from '../../contexts';
 import { C, exchange, getProgressionPercentage, ICON, L10N } from '../../modules';
+import { Icon, Pressable, Text, View } from '../../primitives';
 import { Heading } from '../Heading';
 import { PriceFriendly } from '../PriceFriendly';
 
 const { CURRENCY } = C;
 
 const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth = {}, title, noPadding = false }) => {
+  const { colors } = useApp();
+  const style = useMemo(() => getStyles(colors), [colors]);
   const {
     rates,
     settings: { baseCurrency, maskAmount },
@@ -29,8 +31,7 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
     currentBalance,
     currency === baseCurrency ? progression : progressionCurrency,
   );
-  const accentColor = 'accent';
-
+  const accentTone = 'accent';
 
   return (
     <View style={[style.container, noPadding ? style.noPadding : null]}>
@@ -45,7 +46,7 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
         {baseCurrency !== currency && (
           <PriceFriendly
             bold
-            color="contentLight"
+            tone="secondary"
             currency={baseCurrency}
             label="≈"
             size="xs"
@@ -57,13 +58,13 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
       {progressionPercentage !== 0 && (
         <View row style={style.progression}>
           <Icon
-            color={progressionPercentage > 0 ? accentColor : undefined}
+            tone={progressionPercentage > 0 ? accentTone : undefined}
             size="s"
             name={`trending-${progressionPercentage > 0 ? 'up' : 'down'}`}
           />
           <PriceFriendly
             bold
-            color={progressionPercentage > 0 ? accentColor : undefined}
+            tone={progressionPercentage > 0 ? accentTone : undefined}
             currency="%"
             fixed={progressionPercentage >= 100 ? 0 : undefined}
             operator
@@ -77,17 +78,17 @@ const Summary = ({ children, currency = CURRENCY, currentBalance, currentMonth =
 
           <View row style={style.tags}>
             {(incomes > 0 || incomesBase > 0) && (
-            <View row style={style.tag}>
-              <Icon color={accentColor} name={ICON.INCOME} size="xs" />
-              <PriceFriendly bold color={accentColor} currency={currency} size="xs" value={incomesBase || incomes} />
-            </View>
-          )}
-          {(expenses > 0 || expensesBase > 0) && (
-            <View row style={style.tag}>
-              <Icon name={ICON.EXPENSE} size="xs" />
-              <PriceFriendly bold currency={currency} size="xs" value={expensesBase || expenses} />
-            </View>
-          )}
+              <View row style={style.tag}>
+                <Icon tone={accentTone} name={ICON.INCOME} size="xs" />
+                <PriceFriendly bold tone={accentTone} currency={currency} size="xs" value={incomesBase || incomes} />
+              </View>
+            )}
+            {(expenses > 0 || expensesBase > 0) && (
+              <View row style={style.tag}>
+                <Icon name={ICON.EXPENSE} size="xs" />
+                <PriceFriendly bold currency={currency} size="xs" value={expensesBase || expenses} />
+              </View>
+            )}
           </View>
         </View>
       )}

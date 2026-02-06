@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet, useWindowDimensions } from 'react-native';
 
-import { theme } from '../../config/theme';
 import { useApp } from '../../contexts';
 import { Text, View } from '../../primitives';
+import { theme } from '../../theme';
 
 const getStyles = (colors, position = 'top', align = 'center', offset) => {
   const alignStyles =
@@ -29,7 +29,7 @@ const getStyles = (colors, position = 'top', align = 'center', offset) => {
       borderRadius: theme.borderRadius.md,
       borderWidth: StyleSheet.hairlineWidth,
       borderColor: colors.border,
-      backgroundColor: colors.text,
+      backgroundColor: colors.inverse,
       ...theme.shadows.md,
     },
     arrow: {
@@ -40,7 +40,7 @@ const getStyles = (colors, position = 'top', align = 'center', offset) => {
       ...(position === 'top' ? { borderTopWidth: triangle } : { borderBottomWidth: triangle }),
       borderLeftColor: 'transparent',
       borderRightColor: 'transparent',
-      ...(position === 'top' ? { borderTopColor: colors.text } : { borderBottomColor: colors.text }),
+      ...(position === 'top' ? { borderTopColor: colors.inverse } : { borderBottomColor: colors.inverse }),
       ...(position === 'top' ? { marginTop: -StyleSheet.hairlineWidth } : { marginBottom: -StyleSheet.hairlineWidth }),
     },
   });
@@ -57,7 +57,7 @@ const Tooltip = ({ visible, text, position = 'top', align = 'center', offset, ch
     <View pointerEvents="box-none" style={styles.wrap}>
       <View style={[styles.bubble, { width: windowWidth * 0.6 }]}>
         {text ? (
-          <Text tone="inverse" size="s">
+          <Text tone="onInverse" size="s">
             {text}
           </Text>
         ) : (

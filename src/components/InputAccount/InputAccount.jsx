@@ -1,15 +1,16 @@
+import PropTypes from 'prop-types';
+import React, { useEffect, useMemo, useState } from 'react';
+
+import { getStyles } from './InputAccount.style';
+import { useApp } from '../../contexts';
+import { L10N } from '../../modules';
+import { sortAccounts } from '../../modules/sortAccounts';
+import { Icon, Pressable, Text, View } from '../../primitives';
+import { optionSize } from '../../theme/layout';
 import Card from '../Card';
 import { CurrencyLogo } from '../CurrencyLogo';
 import Dropdown from '../Dropdown';
-import { Icon, Pressable, Text, View } from '../../primitives';
 import { PriceFriendly } from '../PriceFriendly';
-import PropTypes from 'prop-types';
-import React, { useEffect, useMemo, useState } from 'react';
-import StyleSheet from 'react-native-extended-stylesheet';
-
-import { style } from './InputAccount.style';
-import { L10N } from '../../modules';
-import { sortAccounts } from '../../modules/sortAccounts';
 
 const sortAccountsByName = (accounts = []) =>
   [...accounts].sort(({ title = '' }, { title: nextTitle = '' }) =>
@@ -17,6 +18,8 @@ const sortAccountsByName = (accounts = []) =>
   );
 
 const InputAccount = ({ accounts = [], first, last, onSelect, selected }) => {
+  const { colors } = useApp();
+  const style = useMemo(() => getStyles(colors), [colors]);
   const [showSelect, setShowSelect] = useState(false);
 
   const sortedAccounts = useMemo(() => sortAccounts(accounts), [accounts]);
@@ -49,7 +52,7 @@ const InputAccount = ({ accounts = [], first, last, onSelect, selected }) => {
           />
         </Card>
         <View flex style={style.textContainer}>
-          <Text bold numberOfLines={2} style={style.text}>
+          <Text bold numberOfLines={2}>
             {accountOption.title}
           </Text>
           <View row style={style.subline}>
@@ -58,7 +61,7 @@ const InputAccount = ({ accounts = [], first, last, onSelect, selected }) => {
             </Text>
             <PriceFriendly
               size="s"
-              color="contentLight"
+              tone="secondary"
               currency={accountOption.currency}
               value={accountOption.currentBalance || 0}
             />
@@ -70,14 +73,14 @@ const InputAccount = ({ accounts = [], first, last, onSelect, selected }) => {
   };
 
   return (
-    <View style={[style.select, first && !last && style.stacked]}>
+    <View style={style.select}>
       <Pressable onPress={() => setShowSelect(true)}>
         <View
           row
           style={[
             style.item,
             first && style.first,
-            first && !last && style.noBottom,
+            !last && style.noBottom,
             last && style.last,
             showSelect && style.focus,
           ]}
@@ -89,19 +92,19 @@ const InputAccount = ({ accounts = [], first, last, onSelect, selected }) => {
             />
           </Card>
           <View flex style={style.textContainer}>
-            <Text bold numberOfLines={2} style={style.text}>
+            <Text bold numberOfLines={2}>
               {selected?.title}
             </Text>
             <View row style={style.subline}>
               <Text tone="secondary" size="s">
                 {L10N.BALANCE}
               </Text>
-            <PriceFriendly
-              size="s"
-              color="contentLight"
-              currency={selected?.currency}
-              value={selected?.currentBalance || 0}
-            />
+              <PriceFriendly
+                size="s"
+                tone="secondary"
+                currency={selected?.currency}
+                value={selected?.currentBalance || 0}
+              />
             </View>
           </View>
           <Icon name="chevron-down" tone="secondary" />
@@ -120,7 +123,7 @@ const InputAccount = ({ accounts = [], first, last, onSelect, selected }) => {
         renderOption={renderAccountOption}
         selected={selected?.hash}
         visible={showSelect}
-        width={StyleSheet.value('$optionSize') * 2.8}
+        width={optionSize * 2.8}
       />
     </View>
   );

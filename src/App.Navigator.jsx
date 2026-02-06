@@ -1,14 +1,13 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Button, Footer, Icon, Text } from './components';
-import { BlurView } from 'expo-blur';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import StyleSheet from 'react-native-extended-stylesheet';
+import { StyleSheet } from 'react-native';
 
+import { Button, Footer, Icon, Text } from './components';
 import { Logo } from './components';
-import { useStore } from './contexts';
+import { useApp, useStore } from './contexts';
 import { C, eventEmitter, getNavigationTheme, ICON, L10N } from './modules';
 import {
   Account,
@@ -17,6 +16,8 @@ import {
   Clone,
   Dashboard,
   Onboarding,
+  Scheduled,
+  ScheduledForm,
   Session,
   Settings,
   Stats,
@@ -25,24 +26,41 @@ import {
   Transactions,
 } from './screens';
 import { PurchaseService } from './services';
+import { theme } from './theme';
+import { viewOffset } from './theme/layout';
 
 const { EVENT, TX: { TYPE: { EXPENSE } } = {} } = C;
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const commonScreenOptions = () => ({
+const styles = StyleSheet.create({
+  tabLabel: {
+    marginBottom: theme.spacing.xxs,
+  },
+  premiumButton: {
+    marginRight: viewOffset,
+  },
+  actionButton: {
+    marginHorizontal: theme.spacing.md,
+    top: -theme.spacing.sm,
+  },
+});
+
+const commonScreenOptions = (colors) => ({
   headerBackVisible: false,
   headerShown: true,
   headerTitle: () => <Logo />,
   headerTitleAlign: 'center',
   headerTransparent: false,
-  headerStyle: { backgroundColor: StyleSheet.value('$colorBase') },
+  headerStyle: { backgroundColor: colors.background },
+  headerTintColor: colors.text,
 });
 
 // eslint-disable-next-line react/prop-types
 const Tabs = ({ navigation = {} }) => {
-  const { settings: { theme } = {}, subscription } = useStore();
+  const { colors } = useApp();
+  const { subscription } = useStore();
 
   // ! TODO: Somehow we should use new accent
 
@@ -55,17 +73,12 @@ const Tabs = ({ navigation = {} }) => {
   };
 
   const screenOptions = {
-    ...commonScreenOptions(theme),
+    ...commonScreenOptions(colors),
     headerLeft: () => <></>,
     headerRight: () => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       return !subscription?.productIdentifier ? (
-        <Button
-          icon={ICON.STAR}
-          size="s"
-          onPress={handleSubscription}
-          style={{ marginRight: StyleSheet.value('$viewOffset') }}
-        >
+        <Button icon={ICON.STAR} size="s" onPress={handleSubscription} style={styles.premiumButton}>
           {L10N.PREMIUM}
         </Button>
       ) : (
@@ -74,10 +87,10 @@ const Tabs = ({ navigation = {} }) => {
     },
   };
 
-  const tabBarIcon = ({ color, icon }) => <Icon name={icon} size="l" style={{ color }} />;
+  const tabBarIcon = ({ focused, icon }) => <Icon name={icon} size="l" tone={focused ? 'accent' : 'secondary'} />;
 
-  const tabBarLabel = ({ color, text }) => (
-    <Text style={{ color, marginBottom: 4 }} size="xs">
+  const tabBarLabel = ({ focused, text }) => (
+    <Text style={styles.tabLabel} size="xs" tone={focused ? 'accent' : 'secondary'}>
       {text}
     </Text>
   );
@@ -87,7 +100,9 @@ const Tabs = ({ navigation = {} }) => {
       initialRouteName="dashboard"
       shifting
       screenOptions={screenOptions}
-      tabBar={(props) => <Footer {...props} onActionPress={() => navigation.navigate('transaction', { type: EXPENSE })} />}
+      tabBar={(props) => (
+        <Footer {...props} onActionPress={() => navigation.navigate('transaction', { type: EXPENSE })} />
+      )}
     >
       <Tab.Screen
         name="dashboard"
@@ -95,7 +110,7 @@ const Tabs = ({ navigation = {} }) => {
         options={{
           tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.HOME }),
           tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.HOME }),
-          title: L10N.OVERALL_BALANCE,
+          title: L10N.TOTAL_BALANCE,
         }}
       />
       <Tab.Screen
@@ -116,10 +131,7 @@ const Tabs = ({ navigation = {} }) => {
               icon={ICON.EXPENSE}
               size="l"
               onPress={() => navigation.navigate('transaction', { type: EXPENSE })}
-              style={{
-                marginHorizontal: StyleSheet.value('$spaceM'),
-                top: -StyleSheet.value('$spaceS'),
-              }}
+              style={styles.actionButton}
             />
           ),
         }}
@@ -147,15 +159,16 @@ const Tabs = ({ navigation = {} }) => {
 };
 
 export const Navigator = () => {
-  const { settings: { onboarded = true,  pin,  theme = 'light' } = {} } = useStore();
+  const { colors, theme: themeMode } = useApp();
+  const { settings: { onboarded = true, pin } = {} } = useStore();
 
   const screenOptions = { headerBackTitleVisible: false, headerShadowVisible: false, headerShown: false };
-  const screen = { ...commonScreenOptions(theme) };
+  const screen = { ...commonScreenOptions(colors) };
   const panel = { headerShown: false, presentation: 'card' };
 
   return (
-    <NavigationContainer theme={getNavigationTheme()}>
-      <StatusBar style={theme === 'dark' ? 'light' : 'dark'} translucent />
+    <NavigationContainer theme={getNavigationTheme(colors)}>
+      <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} translucent />
 
       <Stack.Navigator
         initialRouteName={onboarded ? (C.IS_DEV && pin ? 'main' : 'session') : 'onboarding'}
@@ -168,6 +181,8 @@ export const Navigator = () => {
         <Stack.Screen name="transactions" component={Transactions} options={panel} />
         <Stack.Screen name="transaction" component={Transaction} options={panel} />
         <Stack.Screen name="clone" component={Clone} options={panel} />
+        <Stack.Screen name="scheduled" component={Scheduled} options={panel} />
+        <Stack.Screen name="scheduledForm" component={ScheduledForm} options={panel} />
         {/* -- settings */}
         <Stack.Screen name="account" component={Account} options={panel} />
         <Stack.Screen name="baseCurrency" component={BaseCurrency} options={panel} />
