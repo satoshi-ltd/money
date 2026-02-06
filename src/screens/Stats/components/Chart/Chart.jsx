@@ -61,7 +61,7 @@ const Chart = ({
           onPointerChange,
         }}
         height={128}
-        isAnimated={false}
+        isAnimated
         pointerConfig={{
           initialPointerIndex: data1.length ? pointerIndex : undefined,
           persistPointer: true,

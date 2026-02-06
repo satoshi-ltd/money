@@ -14,6 +14,7 @@ const LineChart = ({
   color: propColor,
   currency,
   height,
+  isAnimated = false,
   multipleData = false,
   monthsLimit,
   pointerConfig = {},
@@ -88,7 +89,7 @@ const LineChart = ({
         hideAxesAndRules
         hideDataPoints
         initialSpacing={0}
-        isAnimated
+        isAnimated={isAnimated}
         thickness={2}
         xAxisLabelHeight={0}
         yAxisLabelWidth={0}
@@ -140,6 +141,7 @@ LineChart.propTypes = {
   color: PropTypes.any,
   currency: PropTypes.string,
   height: PropTypes.number,
+  isAnimated: PropTypes.bool,
   multipleData: PropTypes.bool,
   monthsLimit: PropTypes.number,
   pointerConfig: PropTypes.shape({}),
