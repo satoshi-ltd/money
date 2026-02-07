@@ -2,7 +2,15 @@ import { C, exchange, getMonthDiff, isInternalTransfer } from '../../modules';
 
 const { TX: { TYPE } = {} } = C;
 
-export const calcAccount = ({ account = {}, baseCurrency, genesisDate, months = 0, rates = {}, txs = [] }) => {
+export const calcAccount = ({
+  account = {},
+  baseCurrency,
+  genesisDate,
+  months = 0,
+  rates = {},
+  txs = [],
+  txsByAccount,
+}) => {
   const now = new Date();
 
   const currentDay = now.getDate();
@@ -15,34 +23,41 @@ export const calcAccount = ({ account = {}, baseCurrency, genesisDate, months = 
   let incomes = 0;
   let incomesBase = 0;
   let progression = 0;
+  let progressionCurrency = 0;
   let today = 0;
 
   const chartBalance = new Array(months + 1).fill(0);
   chartBalance[0] = account.balance > 0 ? account.balance : 0;
 
-  const dataSource = txs.filter((tx) => tx.account === account.hash);
+  const dataSource = txsByAccount?.[account.hash] || txs.filter((tx) => tx.account === account.hash);
   dataSource.forEach(({ category, timestamp, type, value = 0 }) => {
     const isExpense = type === TYPE.EXPENSE;
     const date = new Date(timestamp);
     const monthIndex = getMonthDiff(genesisDate, date);
+    const valueBase = currency !== baseCurrency ? exchange(value, ...exchangeProps, timestamp) : value;
+    const signedValue = isExpense ? -value : value;
+    const signedValueBase = isExpense ? -valueBase : valueBase;
 
-    currentBalance += isExpense ? -value : value;
+    currentBalance += signedValue;
     if (monthIndex >= 0 && monthIndex <= months) {
-      chartBalance[monthIndex] += isExpense ? -value : value;
+      chartBalance[monthIndex] += signedValue;
     }
 
     // ! @TODO: Should revisit this algo
     if (monthIndex === months) {
       currentMonthTxs += 1;
-      progression += isExpense ? -value : value;
-      if (date.getDate() === currentDay) today += isExpense ? -value : value;
-
-      if (isExpense) expensesBase += value;
-      else incomesBase += value;
+      progression += signedValueBase;
+      progressionCurrency += signedValue;
+      if (date.getDate() === currentDay) today += signedValueBase;
 
       if (!isInternalTransfer({ category })) {
-        if (isExpense) expenses += value;
-        else incomes += value;
+        if (isExpense) {
+          expenses += valueBase;
+          expensesBase += value;
+        } else {
+          incomes += valueBase;
+          incomesBase += value;
+        }
       }
     }
   });
@@ -56,20 +71,20 @@ export const calcAccount = ({ account = {}, baseCurrency, genesisDate, months = 
     balance: balance > 0 ? balance : 0,
     chartBalance: chartBalance.map((value, index) =>
       currency !== baseCurrency
-        ? exchange(value, ...exchangeProps, new Date(genesisDate.getFullYear(), genesisDate.getMonth() + index + 1, 1))
+        ? exchange(value, ...exchangeProps, new Date(genesisDate.getFullYear(), genesisDate.getMonth() + index, 1))
         : value,
     ),
     chartBalanceBase: [...chartBalance],
     currentBalance,
     currentBalanceBase: exchange(currentBalance, ...exchangeProps),
     currentMonth: {
-      expenses: exchange(expenses, ...exchangeProps),
+      expenses,
       expensesBase,
-      incomes: exchange(incomes, ...exchangeProps),
+      incomes,
       incomesBase,
-      progression: exchange(progression, ...exchangeProps),
-      progressionCurrency: progression,
-      today: exchange(today, ...exchangeProps),
+      progression,
+      progressionCurrency,
+      today,
       txs: currentMonthTxs,
     },
     txs: dataSource,

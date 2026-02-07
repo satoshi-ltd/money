@@ -14,6 +14,6 @@ export const filterTxs = (txs = [], monthsLimit = STATS_MONTHS_LIMIT) => {
     if (value <= 0) return false;
     if (!originDate) return true;
 
-    return parseDate(timestamp) > originDate;
+    return parseDate(timestamp) >= originDate;
   });
 };

@@ -24,8 +24,11 @@ export default (
   const year = today.getFullYear();
 
   const values = { expenses: {}, incomes: {} };
-  const rangeTxs = [];
-  const currencies = {};
+  const accountCurrencyByHash = {};
+  accounts.forEach(({ hash, currency }) => {
+    if (!hash) return;
+    accountCurrencyByHash[hash] = currency;
+  });
 
   filterTxs(txs, effectiveLimit)
     .filter((tx) => !isInternalTransfer(tx))
@@ -37,7 +40,7 @@ export default (
       const dYear = date.getFullYear();
 
       if (month === dMonth && year === dYear) {
-        const { currency } = accounts.find(({ hash }) => hash === tx.account) || {};
+        const currency = accountCurrencyByHash[tx.account];
 
         const valueExchange = exchange(value, currency, baseCurrency, rates, timestamp);
 
@@ -47,18 +50,8 @@ export default (
 
         values[keyType][category] = values[keyType][category] || {};
         values[keyType][category][categoryKey] = (values[keyType][category][categoryKey] || 0) + valueExchange;
-
-        rangeTxs.push(tx);
       }
     });
-
-  accounts.forEach(({ currency, currentBalance: balance, currentBalanceBase: base }) => {
-    let item = currencies[currency] || { balance: 0, base: 0 };
-    item = { balance: item.balance + balance, base: item.base + base };
-    item.weight = (item.base * 100) / overall.currentBalance;
-
-    currencies[currency] = item;
-  });
 
   return values;
 };

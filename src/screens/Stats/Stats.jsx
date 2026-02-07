@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { Chart, ItemGroupCategories, StatsRangeToggle } from './components';
 import { queryMonth, queryChart } from './modules';
@@ -25,7 +25,6 @@ const Stats = () => {
     updateSettings,
   } = store;
 
-  const [chart, setChart] = useState({});
   const monthsLimit = useMemo(() => {
     if (statsRangeMonths && statsRangeMonths > 0) return Math.min(statsRangeMonths, MAX_STATS_MONTHS);
     const chartLength = overall?.chartBalance?.length || 0;
@@ -54,10 +53,7 @@ const Stats = () => {
 
   const selectedRange = statsRangeMonths === 0 ? MAX_STATS_MONTHS : Math.min(statsRangeMonths, MAX_STATS_MONTHS);
   const handleRangeChange = (value) => updateSettings({ statsRangeMonths: value });
-  useLayoutEffect(() => {
-    setChart(queryChart(store, monthsLimit));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [baseCurrency, monthsLimit, txs]);
+  const chart = useMemo(() => queryChart(store, monthsLimit), [store, monthsLimit]);
 
   const handlePointerIndex = (next) => {
     clearTimeout(debounceTimeout);
@@ -66,7 +62,11 @@ const Stats = () => {
     }, 100);
   };
 
-  const { expenses = {}, incomes = {} } = queryMonth(store, pointerIndex, monthsLimit) || {};
+  const monthData = useMemo(
+    () => queryMonth(store, pointerIndex, monthsLimit) || {},
+    [store, pointerIndex, monthsLimit],
+  );
+  const { expenses = {}, incomes = {} } = monthData;
   const chartProps = { currency: baseCurrency, monthsLimit, pointerIndex };
   const color = colors.accent;
   const colorExpense = colors.text;

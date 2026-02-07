@@ -10,7 +10,7 @@ export const deleteAccount = async ({ hash }, [state, setState]) => {
 
   setState({
     ...state,
-    account: await store.get('accounts').value,
+    accounts: await store.get('accounts').value,
     txs: await store.get('txs').value,
   });
 };

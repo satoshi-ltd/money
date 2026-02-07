@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { createContext, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { createContext, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 
 import { consolidate, migrateState } from './modules';
@@ -46,16 +46,13 @@ const runScheduledSync = async ({ migrated, store }) => {
   const now = Date.now();
   const fromAt = now - 90 * MS_IN_DAY;
   const toAt = now;
-  const existingIndex = new Set(
-    txs
-      .map((tx) => {
-        const meta = tx?.meta;
-        if (meta?.kind !== 'scheduled') return null;
-        if (!meta?.scheduledId || !Number.isFinite(meta?.occurrenceAt)) return null;
-        return `${meta.scheduledId}:${meta.occurrenceAt}`;
-      })
-      .filter(Boolean),
-  );
+  const existingIndex = txs.reduce((memo, tx) => {
+    const meta = tx?.meta;
+    if (meta?.kind !== 'scheduled') return memo;
+    if (!meta?.scheduledId || !Number.isFinite(meta?.occurrenceAt)) return memo;
+    memo[`${meta.scheduledId}:${meta.occurrenceAt}`] = true;
+    return memo;
+  }, {});
 
   const newTxs = [];
   let hitLimit = false;
@@ -69,8 +66,8 @@ const runScheduledSync = async ({ migrated, store }) => {
       }
       const occurrenceAt = occurrences[j];
       const key = `${scheduled.id}:${occurrenceAt}`;
-      if (existingIndex.has(key)) continue;
-      existingIndex.add(key);
+      if (existingIndex[key]) continue;
+      existingIndex[key] = true;
       newTxs.push(
         parseTx({
           account: scheduled.account,
@@ -98,7 +95,10 @@ const runScheduledSync = async ({ migrated, store }) => {
     let nextSettings = migrated.settings;
     const categoryTxs = newTxs.filter((tx) => tx?.category !== undefined);
     if (categoryTxs.length > 0) {
-      const nextCatalog = categoryTxs.reduce((catalog, tx) => learnAutoCategory(catalog, tx), migrated.settings.autoCategory);
+      const nextCatalog = categoryTxs.reduce(
+        (catalog, tx) => learnAutoCategory(catalog, tx),
+        migrated.settings.autoCategory,
+      );
       nextSettings = { ...migrated.settings, autoCategory: nextCatalog };
       await store.get('settings').save(nextSettings);
     }
@@ -209,10 +209,12 @@ const StoreProvider = ({ children }) => {
     return () => subscription.remove();
   }, [state.store]);
 
+  const consolidated = useMemo(() => consolidate(state), [state]);
+
   return (
     <StoreContext.Provider
       value={{
-        ...consolidate(state),
+        ...consolidated,
         // -- account
         createAccount: (...props) => createAccount(...props, [state, setState]),
         updateAccount: (...props) => updateAccount(...props, [state, setState]),
