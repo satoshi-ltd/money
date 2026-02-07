@@ -59,7 +59,7 @@ const ItemGroupCategories = ({ color, dataSource, type }) => {
             />
 
             {expand === key && (
-              <>
+              <View style={style.detailGroup}>
                 {orderByAmount(dataSource[key]).map((item) => (
                   <HorizontalChartItem
                     key={`${key}-${item.key}`}
@@ -71,7 +71,7 @@ const ItemGroupCategories = ({ color, dataSource, type }) => {
                     width={Math.floor((item.amount / amount) * 100)}
                   />
                 ))}
-              </>
+              </View>
             )}
           </Pressable>
         ))}

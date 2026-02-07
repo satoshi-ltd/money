@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { useWindowDimensions } from 'react-native';
 
 import { style } from './InsightsCarousel.style';
-import { useStore } from '../../contexts';
+import { useApp, useStore } from '../../contexts';
 import { ICON, L10N } from '../../modules';
 import { Icon, Pressable, ScrollView, Text, View } from '../../primitives';
 import { theme } from '../../theme';
@@ -13,7 +13,8 @@ import { LineChart } from '../LineChart';
 import { MetricBar } from '../MetricBar';
 import { PriceFriendly } from '../PriceFriendly';
 
-const InsightsCarousel = ({ animateCharts = false, balanceCard, currency, insights = [] }) => {
+const InsightsCarousel = ({ animateCharts = false, balanceCard, currency, highlightBalanceCard = false, insights = [] }) => {
+  const { colors } = useApp();
   const { settings: { maskAmount } = {}, updateSettings } = useStore();
   const { width } = useWindowDimensions();
   const chartStagger = useMemo(() => Math.round(theme.animations.duration.quick / 5), []);
@@ -37,13 +38,17 @@ const InsightsCarousel = ({ animateCharts = false, balanceCard, currency, insigh
     const showPercentage = Number.isFinite(progressionPercentage) && progressionPercentage !== 0;
     const toggleMask = () => updateSettings?.({ maskAmount: !maskAmount });
     const shouldAnimateChart = animateCharts && index < 4;
+    const isHighlighted = highlightBalanceCard;
+    const contentTone = isHighlighted ? 'onAccent' : undefined;
+    const chartColor = isHighlighted ? colors.onAccent : undefined;
 
     const content = (
       <Pressable onPress={toggleMask}>
-        <Card style={[style.insightCard, cardStyle]}>
+        <Card active={isHighlighted} style={[style.insightCard, cardStyle]}>
           <View style={style.balanceCardContent}>
             {showChart ? (
               <LineChart
+                color={chartColor}
                 height={cardSize / 2}
                 isAnimated={false}
                 reveal={shouldAnimateChart}
@@ -58,11 +63,11 @@ const InsightsCarousel = ({ animateCharts = false, balanceCard, currency, insigh
             <View style={style.balanceOverlay}>
               <View>
                 <View row>
-                  <Text bold ellipsizeMode="tail" numberOfLines={1} size="xs">
+                  <Text bold ellipsizeMode="tail" numberOfLines={1} size="xs" tone={contentTone}>
                     {`${title}`.toUpperCase()}
                   </Text>
                 </View>
-                <PriceFriendly bold size="l" currency={currency} value={value} />
+                <PriceFriendly bold size="l" tone={contentTone} currency={currency} value={value} />
               </View>
 
               {showPercentage ? (
@@ -73,7 +78,7 @@ const InsightsCarousel = ({ animateCharts = false, balanceCard, currency, insigh
                   fixed={2}
                   operator
                   style={style.balancePercentage}
-                  tone="accent"
+                  tone={isHighlighted ? 'onAccent' : 'accent'}
                   value={progressionPercentage}
                 />
               ) : null}
@@ -243,6 +248,7 @@ const InsightsCarousel = ({ animateCharts = false, balanceCard, currency, insigh
 InsightsCarousel.propTypes = {
   animateCharts: PropTypes.bool,
   currency: PropTypes.string,
+  highlightBalanceCard: PropTypes.bool,
   insights: PropTypes.arrayOf(PropTypes.shape({})),
   balanceCard: PropTypes.shape({
     title: PropTypes.string,

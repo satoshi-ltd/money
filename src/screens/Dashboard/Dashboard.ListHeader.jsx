@@ -70,7 +70,13 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
           <View style={style.insightsHeading}>
             <Heading value={L10N.INSIGHTS} offset />
           </View>
-          <InsightsCarousel animateCharts balanceCard={balanceCard} currency={baseCurrency} insights={insights} />
+          <InsightsCarousel
+            animateCharts
+            balanceCard={balanceCard}
+            currency={baseCurrency}
+            highlightBalanceCard
+            insights={insights}
+          />
         </>
       ) : null}
 

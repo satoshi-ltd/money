@@ -24,7 +24,8 @@ const HorizontalChartItem = ({ color, currency, detail, title, value, width: pro
 
   const valueNode = <PriceFriendly {...valueTextProps} currency={currency} fixed={0} value={value} />;
 
-  const barColor = color || 'contentLight';
+  const hasEnhancedContrast = color === colors.textSecondary && propWidth >= 8;
+  const barColor = hasEnhancedContrast ? colors.text : color || 'contentLight';
   const titleLabel = capitalizeFirst(title);
 
   return (

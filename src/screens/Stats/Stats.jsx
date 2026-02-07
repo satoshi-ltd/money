@@ -78,6 +78,7 @@ const Stats = () => {
         {...chartProps}
         color={color}
         headingRight={<StatsRangeToggle onChange={handleRangeChange} options={rangeOptions} value={selectedRange} />}
+        scaleMode="median"
         title={L10N.TOTAL_BALANCE}
         values={chart.balance}
         onPointerChange={handlePointerIndex}
@@ -85,9 +86,11 @@ const Stats = () => {
 
       <Chart
         {...chartProps}
+        compact
         color={[color, colorExpense]}
         hideMonth
         multipleData
+        scaleMode="median"
         title={`${L10N.INCOMES} & ${L10N.EXPENSES}`}
         style={style.chartGap}
         values={[chart.incomes, chart.expenses]}
@@ -106,6 +109,7 @@ const Stats = () => {
       <Chart
         {...chartProps}
         color={colors.text}
+        scaleMode="median"
         title={L10N.TRANSFERS}
         values={chart.transfers}
         onPointerChange={handlePointerIndex}
