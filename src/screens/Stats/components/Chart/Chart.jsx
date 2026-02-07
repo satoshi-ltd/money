@@ -149,7 +149,6 @@ const Chart = ({
           width={chartWidth}
         />
       </Animated.View>
-
     </View>
   );
 };

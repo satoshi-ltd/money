@@ -13,7 +13,13 @@ import { LineChart } from '../LineChart';
 import { MetricBar } from '../MetricBar';
 import { PriceFriendly } from '../PriceFriendly';
 
-const InsightsCarousel = ({ animateCharts = false, balanceCard, currency, highlightBalanceCard = false, insights = [] }) => {
+const InsightsCarousel = ({
+  animateCharts = false,
+  balanceCard,
+  currency,
+  highlightBalanceCard = false,
+  insights = [],
+}) => {
   const { colors } = useApp();
   const { settings: { maskAmount } = {}, updateSettings } = useStore();
   const { width } = useWindowDimensions();

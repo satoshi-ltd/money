@@ -4,9 +4,7 @@ import React from 'react';
 import { SegmentedToggle } from '../../../../components';
 
 const StatsRangeToggle = ({ onChange, options = [], value }) => {
-  return (
-    <SegmentedToggle options={options} value={value} onChange={(nextValue) => onChange?.(nextValue)} />
-  );
+  return <SegmentedToggle options={options} value={value} onChange={(nextValue) => onChange?.(nextValue)} />;
 };
 
 StatsRangeToggle.propTypes = {

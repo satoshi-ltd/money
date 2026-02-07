@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
-import { viewOffset } from '../../../../theme/layout';
 import { theme } from '../../../../theme';
+import { viewOffset } from '../../../../theme/layout';
 
 export const style = StyleSheet.create({
   container: {

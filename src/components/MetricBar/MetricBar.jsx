@@ -4,8 +4,8 @@ import { StyleSheet } from 'react-native';
 
 import { getStyles } from './MetricBar.style';
 import { useApp } from '../../contexts';
-import { theme } from '../../theme';
 import { Text, View } from '../../primitives';
+import { theme } from '../../theme';
 
 const resolveBarColor = (value, colors) => {
   if (!value) return colors.accent;
@@ -66,13 +66,15 @@ const MetricBar = ({
     <View style={[style.container, dynamicContainer.container, propStyle]}>
       {title || value ? (
         <View style={style.header}>
-          {title ? (typeof title === 'string' || typeof title === 'number' ? (
-            <Text bold={isStats} tone="primary" size={headerSize}>
-              {title}
-            </Text>
-          ) : (
-            title
-          )) : null}
+          {title ? (
+            typeof title === 'string' || typeof title === 'number' ? (
+              <Text bold={isStats} tone="primary" size={headerSize}>
+                {title}
+              </Text>
+            ) : (
+              title
+            )
+          ) : null}
           {value !== undefined && value !== null ? (
             typeof value === 'string' || typeof value === 'number' ? (
               <Text tone="secondary" size={headerSize}>

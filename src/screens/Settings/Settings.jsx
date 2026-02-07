@@ -140,9 +140,14 @@ const Settings = ({ navigation = {} }) => {
     { id: 'de', label: L10N.LANGUAGE_DE },
   ];
   const currentLanguageLabel = languageOptions.find((option) => option.id === language)?.label || L10N.LANGUAGE_EN;
-  const scheduledSubtitle = scheduledTxs.length ? L10N.SCHEDULED_TOTAL({ count: scheduledTxs.length }) : L10N.SCHEDULED_EMPTY;
+  const scheduledSubtitle = scheduledTxs.length
+    ? L10N.SCHEDULED_TOTAL({ count: scheduledTxs.length })
+    : L10N.SCHEDULED_EMPTY;
   const handleScheduledPress = () =>
-    navigation.navigate(scheduledTxs.length ? 'scheduled' : 'scheduledForm', scheduledTxs.length ? undefined : { create: true });
+    navigation.navigate(
+      scheduledTxs.length ? 'scheduled' : 'scheduledForm',
+      scheduledTxs.length ? undefined : { create: true },
+    );
 
   const settingProps = {};
 

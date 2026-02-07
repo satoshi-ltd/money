@@ -1,6 +1,9 @@
 import { L10N } from '../i18n';
 
-export const verboseDate = (date = new Date(), { locale = 'en-US', now = new Date(), relative = false, ...props } = {}) => {
+export const verboseDate = (
+  date = new Date(),
+  { locale = 'en-US', now = new Date(), relative = false, ...props } = {},
+) => {
   const resolvedDate = date instanceof Date ? date : new Date(date);
 
   if (relative) {

@@ -157,7 +157,9 @@ const LineChart = ({
   return (
     <View style={[style.container, sizedStyle, propStyle]}>
       {reveal ? (
-        <Animated.View style={{ width: revealWidth, height: resolvedHeight, overflow: 'hidden' }}>{chart}</Animated.View>
+        <Animated.View style={{ width: revealWidth, height: resolvedHeight, overflow: 'hidden' }}>
+          {chart}
+        </Animated.View>
       ) : (
         chart
       )}

@@ -805,7 +805,8 @@ export const FR = {
   SCHEDULED_CAPTION_WEEKLY: ({ days = '' } = {}) => `Chaque semaine, ${days}`,
   SCHEDULED_CAPTION_MONTHLY: ({ day = '' } = {}) => `Chaque mois le ${day}`,
   SCHEDULED_NOTIFICATION_CAPTION: 'Une transaction planifiée est due demain.',
-  SCHEDULED_AUTOCREATE_LIMIT: '100 transactions planifiées ont été générées. Ouvrez Transactions planifiées pour vérifier.',
+  SCHEDULED_AUTOCREATE_LIMIT:
+    '100 transactions planifiées ont été générées. Ouvrez Transactions planifiées pour vérifier.',
   SCHEDULED_EMPTY: 'Aucune planification',
   SCHEDULED_TOTAL: ({ count = 0 } = {}) => `${count} planifications`,
   RECEIVE: 'Recevoir',
@@ -1388,7 +1389,8 @@ export const ES = {
   SCHEDULED_CAPTION_WEEKLY: ({ days = '' } = {}) => `Cada semana, ${days}`,
   SCHEDULED_CAPTION_MONTHLY: ({ day = '' } = {}) => `Cada mes el día ${day}`,
   SCHEDULED_NOTIFICATION_CAPTION: 'Una transacción programada vence mañana.',
-  SCHEDULED_AUTOCREATE_LIMIT: 'Se generaron 100 transacciones programadas. Abre Transacciones programadas para revisar.',
+  SCHEDULED_AUTOCREATE_LIMIT:
+    'Se generaron 100 transacciones programadas. Abre Transacciones programadas para revisar.',
   SCHEDULED_EMPTY: 'No hay programaciones',
   SCHEDULED_TOTAL: ({ count = 0 } = {}) => `${count} programaciones`,
   RECEIVE: 'Recibir',
