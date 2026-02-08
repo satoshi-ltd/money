@@ -23,7 +23,11 @@
 - Budget threshold alerts (optional): 80% / 100% per category.
 
 ## Engineering
-- Memoization/caching for `consolidate` and stats with large datasets.
+- Accounting correctness: support negative balances (liabilities/credit cards) end-to-end (storage, consolidate, UI, insights).
+- FX consistency: define and apply one rule for historical conversion (per-tx/per-month) across charts, month summaries, and insights.
+- Performance: index txs once (by account, by day/month) and reuse for Dashboard/Transactions/Stats to avoid repeated sorts/finds with large datasets.
+- Stats UX performance: avoid full chart reveal re-animation on range switch; keep pointer behavior consistent.
+- Memoization/caching for `consolidate` and Stats with large datasets.
 - Review remaining TODOs in codebase (transactions list refactors).
 - Harder backup validation and optional checksums.
 - Schema/migrations: keep `settings.schemaVersion` bumps only for breaking/transforming migrations; additive `settings.*` can rely on defaults merge.
