@@ -188,14 +188,12 @@ const ScheduledForm = ({ navigation = {}, route = {} }) => {
 
       <InputAccount accounts={accounts} onSelect={(a) => setAccount(a.hash)} selected={currentAccount} />
 
-      <InputDate minimumDate={new Date()} value={new Date(startAt)} onChange={(d) => setStartAt(d.getTime())} />
-
       <InputAmount account={currentAccount} currency={currentAccount?.currency} value={value} onChange={setValue} />
 
       <InputField label={L10N.CONCEPT} value={title} onChange={setTitle} />
 
       <InputGroupOption
-        label={L10N.SCHEDULED}
+        label={L10N.SCHEDULED_FREQUENCY}
         options={kindOptions}
         value={kind}
         onChange={(nextValue) => setKind(nextValue)}
