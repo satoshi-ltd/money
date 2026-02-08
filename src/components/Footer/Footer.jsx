@@ -1,7 +1,7 @@
 import { BlurView } from 'expo-blur';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { Platform, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useApp } from '../../contexts';
@@ -22,6 +22,7 @@ const routeIcon = (name) => {
 const Footer = ({ state, navigation, onActionPress }) => {
   const insets = useSafeAreaInsets();
   const { colors, theme: mode } = useApp();
+  const isAndroid = Platform.OS === 'android';
 
   const handleTabPress = (route, isFocused) => {
     if (isFocused) return;
@@ -29,24 +30,47 @@ const Footer = ({ state, navigation, onActionPress }) => {
     navigation.navigate(route.name);
   };
 
+  const navWidth = (state.routes.length + 1.5) * 56;
+  const navStyle = [
+    styles.blurView,
+    {
+      width: navWidth,
+      borderColor: colors.border,
+      backgroundColor: isAndroid ? colors.surface : 'transparent',
+    },
+  ];
+
   return (
     <View pointerEvents="box-none" style={[styles.root, { bottom: insets.bottom }]}>
-      <BlurView
-        experimentalBlurMethod="dimezisBlurView"
-        blurReductionFactor={0.6}
-        intensity={60}
-        tint={mode === 'dark' ? 'dark' : 'light'}
-        style={[styles.blurView, { width: (state.routes.length + 1.5) * 56, borderColor: colors.border }]}
-      >
-        {state.routes.map((route, index) => {
-          const isFocused = state.index === index;
-          return (
-            <TouchableOpacity key={route.key} onPress={() => handleTabPress(route, isFocused)} style={styles.tab}>
-              <Icon tone={isFocused ? 'accent' : 'secondary'} name={routeIcon(route.name)} size="l" />
-            </TouchableOpacity>
-          );
-        })}
-      </BlurView>
+      {isAndroid ? (
+        <View style={navStyle}>
+          {state.routes.map((route, index) => {
+            const isFocused = state.index === index;
+            return (
+              <TouchableOpacity key={route.key} onPress={() => handleTabPress(route, isFocused)} style={styles.tab}>
+                <Icon tone={isFocused ? 'accent' : 'secondary'} name={routeIcon(route.name)} size="l" />
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      ) : (
+        <BlurView
+          experimentalBlurMethod="dimezisBlurView"
+          blurReductionFactor={0.6}
+          intensity={60}
+          tint={mode === 'dark' ? 'dark' : 'light'}
+          style={navStyle}
+        >
+          {state.routes.map((route, index) => {
+            const isFocused = state.index === index;
+            return (
+              <TouchableOpacity key={route.key} onPress={() => handleTabPress(route, isFocused)} style={styles.tab}>
+                <Icon tone={isFocused ? 'accent' : 'secondary'} name={routeIcon(route.name)} size="l" />
+              </TouchableOpacity>
+            );
+          })}
+        </BlurView>
+      )}
 
       <Button
         icon={ICON.EXPENSE}

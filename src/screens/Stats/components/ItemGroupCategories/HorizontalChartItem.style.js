@@ -4,25 +4,17 @@ import { theme } from '../../../../theme';
 
 export const getStyles = (colors) =>
   StyleSheet.create({
-    bar: {
-      backgroundColor: colors.border,
-      borderRadius: theme.borderRadius.md,
-      height: '100%',
-      maxHeight: theme.spacing.lg,
-      minWidth: theme.spacing.lg,
-      position: 'absolute',
-      left: 0,
-      top: 0,
-    },
-
-    content: {
-      gap: theme.spacing.sm,
-      paddingLeft: theme.spacing.xxs,
-      paddingVertical: theme.spacing.xxs,
+    item: {
+      paddingVertical: theme.spacing.xxs / 2,
+      paddingLeft: 0,
     },
 
     detail: {
-      paddingBottom: 0,
-      paddingLeft: theme.spacing.md,
+      marginLeft: 0,
+    },
+
+    detailItem: {
+      paddingVertical: theme.spacing.xxs / 2,
+      paddingLeft: 0,
     },
   });

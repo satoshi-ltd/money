@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { useWindowDimensions } from 'react-native';
 
 import { style } from './InsightsCarousel.style';
-import { useStore } from '../../contexts';
+import { useApp, useStore } from '../../contexts';
 import { ICON, L10N } from '../../modules';
 import { Icon, Pressable, ScrollView, Text, View } from '../../primitives';
 import { theme } from '../../theme';
@@ -13,9 +13,17 @@ import { LineChart } from '../LineChart';
 import { MetricBar } from '../MetricBar';
 import { PriceFriendly } from '../PriceFriendly';
 
-const InsightsCarousel = ({ balanceCard, currency, insights = [] }) => {
+const InsightsCarousel = ({
+  animateCharts = false,
+  balanceCard,
+  currency,
+  highlightBalanceCard = false,
+  insights = [],
+}) => {
+  const { colors } = useApp();
   const { settings: { maskAmount } = {}, updateSettings } = useStore();
   const { width } = useWindowDimensions();
+  const chartStagger = useMemo(() => Math.round(theme.animations.duration.quick / 5), []);
 
   const cards = useMemo(() => {
     const normalized = Array.isArray(insights) ? insights : [];
@@ -30,20 +38,28 @@ const InsightsCarousel = ({ balanceCard, currency, insights = [] }) => {
 
   const formatSignedPercent = (value = 0) => `${value >= 0 ? '+' : ''}${Math.round(value)}%`;
 
-  const renderBalanceCard = (card) => {
+  const renderBalanceCard = (card, index = 0) => {
     const { chartValues = [], progressionPercentage, title, value } = card || {};
     const showChart = Array.isArray(chartValues) && chartValues.length > 0;
     const showPercentage = Number.isFinite(progressionPercentage) && progressionPercentage !== 0;
     const toggleMask = () => updateSettings?.({ maskAmount: !maskAmount });
+    const shouldAnimateChart = animateCharts && index < 4;
+    const isHighlighted = highlightBalanceCard;
+    const contentTone = isHighlighted ? 'onAccent' : undefined;
+    const chartColor = isHighlighted ? colors.onAccent : undefined;
 
     const content = (
       <Pressable onPress={toggleMask}>
-        <Card style={[style.insightCard, cardStyle]}>
+        <Card active={isHighlighted} style={[style.insightCard, cardStyle]}>
           <View style={style.balanceCardContent}>
             {showChart ? (
               <LineChart
+                color={chartColor}
                 height={cardSize / 2}
                 isAnimated={false}
+                reveal={shouldAnimateChart}
+                revealDelay={shouldAnimateChart ? index * chartStagger : 0}
+                revealResetKey={card?.id}
                 values={chartValues}
                 width={cardSize}
                 style={style.balanceChart}
@@ -53,11 +69,11 @@ const InsightsCarousel = ({ balanceCard, currency, insights = [] }) => {
             <View style={style.balanceOverlay}>
               <View>
                 <View row>
-                  <Text bold ellipsizeMode="tail" numberOfLines={1} size="xs">
+                  <Text bold ellipsizeMode="tail" numberOfLines={1} size="xs" tone={contentTone}>
                     {`${title}`.toUpperCase()}
                   </Text>
                 </View>
-                <PriceFriendly bold size="l" currency={currency} value={value} />
+                <PriceFriendly bold size="l" tone={contentTone} currency={currency} value={value} />
               </View>
 
               {showPercentage ? (
@@ -68,7 +84,7 @@ const InsightsCarousel = ({ balanceCard, currency, insights = [] }) => {
                   fixed={2}
                   operator
                   style={style.balancePercentage}
-                  tone="accent"
+                  tone={isHighlighted ? 'onAccent' : 'accent'}
                   value={progressionPercentage}
                 />
               ) : null}
@@ -81,12 +97,13 @@ const InsightsCarousel = ({ balanceCard, currency, insights = [] }) => {
     return content;
   };
 
-  const renderInsightCard = (insight) => {
+  const renderInsightCard = (insight, index = 0) => {
     const isAmount = insight.type === 'net' || insight.type === 'pace';
     const showCategories = insight.type === 'categories';
     const showChart = !!insight.chart?.values?.length;
     const topItems = (insight.items || []).slice(0, 3);
     const toneColor = insight.tone === 'negative' ? 'danger' : insight.tone === 'positive' ? 'accent' : 'primary';
+    const shouldAnimateChart = animateCharts && index < 4;
 
     return (
       <Card style={[style.insightCard, cardStyle]}>
@@ -171,6 +188,9 @@ const InsightsCarousel = ({ balanceCard, currency, insights = [] }) => {
             {showChart ? (
               <LineChart
                 height={cardSize * 0.35}
+                reveal={shouldAnimateChart}
+                revealDelay={shouldAnimateChart ? index * chartStagger : 0}
+                revealResetKey={insight?.id}
                 monthsLimit={insight.chart.monthsLimit}
                 values={insight.chart.values}
                 style={insight.type === 'trend' ? style.insightChartTrend : style.insightChart}
@@ -198,7 +218,7 @@ const InsightsCarousel = ({ balanceCard, currency, insights = [] }) => {
     return (
       <View row style={style.twoCardsRow}>
         {cards.map((card, index) => {
-          const body = card.type === 'balance_card' ? renderBalanceCard(card) : renderInsightCard(card);
+          const body = card.type === 'balance_card' ? renderBalanceCard(card, index) : renderInsightCard(card, index);
           return (
             <View
               key={card.id || `${card.type}-${index}`}
@@ -217,7 +237,7 @@ const InsightsCarousel = ({ balanceCard, currency, insights = [] }) => {
       {cards.map((card, index) => {
         const isFirst = index === 0;
         const isLast = index === cards.length - 1;
-        const body = card.type === 'balance_card' ? renderBalanceCard(card) : renderInsightCard(card);
+        const body = card.type === 'balance_card' ? renderBalanceCard(card, index) : renderInsightCard(card, index);
         return (
           <View
             key={card.id || `${card.type}-${index}`}
@@ -232,7 +252,9 @@ const InsightsCarousel = ({ balanceCard, currency, insights = [] }) => {
 };
 
 InsightsCarousel.propTypes = {
+  animateCharts: PropTypes.bool,
   currency: PropTypes.string,
+  highlightBalanceCard: PropTypes.bool,
   insights: PropTypes.arrayOf(PropTypes.shape({})),
   balanceCard: PropTypes.shape({
     title: PropTypes.string,

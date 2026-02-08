@@ -116,10 +116,10 @@ const ScheduledForm = ({ navigation = {}, route = {} }) => {
     (kind === 'weekly' ? Array.isArray(byWeekday) && byWeekday.length > 0 : Number(byMonthDay) >= 1);
 
   const toggleDay = (day) => {
-    const next = new Set(byWeekday || []);
-    if (next.has(day)) next.delete(day);
-    else next.add(day);
-    const arr = [...next].sort((a, b) => a - b);
+    const current = Array.isArray(byWeekday) ? byWeekday : [];
+    const exists = current.includes(day);
+    const next = exists ? current.filter((d) => d !== day) : [...current, day];
+    const arr = next.slice().sort((a, b) => a - b);
     setByWeekday(arr.length ? arr : [new Date(startAt).getDay()]);
   };
 
@@ -188,26 +188,22 @@ const ScheduledForm = ({ navigation = {}, route = {} }) => {
 
       <InputAccount accounts={accounts} onSelect={(a) => setAccount(a.hash)} selected={currentAccount} />
 
-      <InputDate minimumDate={new Date()} value={new Date(startAt)} onChange={(d) => setStartAt(d.getTime())} />
-
       <InputAmount account={currentAccount} currency={currentAccount?.currency} value={value} onChange={setValue} />
 
       <InputField label={L10N.CONCEPT} value={title} onChange={setTitle} />
 
       <InputGroupOption
-        label={L10N.SCHEDULED}
+        label={L10N.SCHEDULED_FREQUENCY}
         options={kindOptions}
         value={kind}
         onChange={(nextValue) => setKind(nextValue)}
       />
 
       {kind === 'weekly' ? (
-        <Field last>
-          <View style={style.dayRow}>
+        <Field last style={style.dayField}>
+          <View style={[style.dayRow, { backgroundColor: colors.surface }]}>
             {Array.from({ length: 7 }).map((_, d) => {
               const selected = (byWeekday || []).includes(d);
-              const backgroundColor = selected ? colors.accent : colors.surface;
-              const borderColor = selected ? colors.accent : colors.border;
               return (
                 <Pressable
                   key={`dow-${d}`}
@@ -215,13 +211,11 @@ const ScheduledForm = ({ navigation = {}, route = {} }) => {
                   style={[
                     style.dayChip,
                     {
-                      backgroundColor,
-                      borderColor,
-                      borderWidth: 1,
+                      backgroundColor: selected ? colors.accent : 'transparent',
                     },
                   ]}
                 >
-                  <Text align="center" bold size="s" tone={selected ? 'onAccent' : undefined}>
+                  <Text align="center" bold size="s" tone={selected ? 'onAccent' : 'secondary'}>
                     {weekdayLabel(d)}
                   </Text>
                 </Pressable>

@@ -10,4 +10,3 @@ describe('modules/verboseDate', () => {
     expect(verboseDate(yesterday, { now, relative: true })).toBe(L10N.YESTERDAY);
   });
 });
-

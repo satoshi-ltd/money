@@ -68,12 +68,7 @@ const Scheduled = ({ navigation = {} }) => {
   const { goBack, navigate, replace } = navigation;
   const { colors, language } = useApp();
   const style = useMemo(() => getStyles(colors), [colors]);
-  const {
-    accounts = [],
-    rates = {},
-    scheduledTxs = [],
-    settings: { baseCurrency } = {},
-  } = useStore();
+  const { accounts = [], rates = {}, scheduledTxs = [], settings: { baseCurrency } = {} } = useStore();
 
   useEffect(() => {
     if (!scheduledTxs?.length && typeof replace === 'function') replace('scheduledForm', { create: true });

@@ -13,6 +13,14 @@ export const consolidate = ({
 } = {}) => {
   const { baseCurrency } = settings;
   let accounts = [];
+  const txsByAccount = {};
+
+  txs.forEach((tx) => {
+    const accountHash = tx?.account;
+    if (!accountHash) return;
+    if (!txsByAccount[accountHash]) txsByAccount[accountHash] = [];
+    txsByAccount[accountHash].push(tx);
+  });
 
   if (storeAccounts.length > 0) {
     const accountTimestamps = storeAccounts
@@ -31,6 +39,7 @@ export const consolidate = ({
         months,
         rates,
         txs,
+        txsByAccount,
       }),
     );
   }

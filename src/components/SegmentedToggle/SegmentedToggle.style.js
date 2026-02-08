@@ -19,4 +19,3 @@ export const getStyles = (colors) =>
       backgroundColor: colors.accent,
     },
   });
-

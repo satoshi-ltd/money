@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import { Button, Footer, Icon, Text } from './components';
 import { Logo } from './components';
@@ -100,6 +100,7 @@ const Tabs = ({ navigation = {} }) => {
       initialRouteName="dashboard"
       shifting
       screenOptions={screenOptions}
+      sceneContainerStyle={{ backgroundColor: colors.background }}
       tabBar={(props) => (
         <Footer {...props} onActionPress={() => navigation.navigate('transaction', { type: EXPENSE })} />
       )}
@@ -162,13 +163,22 @@ export const Navigator = () => {
   const { colors, theme: themeMode } = useApp();
   const { settings: { onboarded = true, pin } = {} } = useStore();
 
-  const screenOptions = { headerBackTitleVisible: false, headerShadowVisible: false, headerShown: false };
+  const screenOptions = {
+    headerBackTitleVisible: false,
+    headerShadowVisible: false,
+    headerShown: false,
+    contentStyle: { backgroundColor: colors.background },
+  };
   const screen = { ...commonScreenOptions(colors) };
   const panel = { headerShown: false, presentation: 'card' };
 
   return (
     <NavigationContainer theme={getNavigationTheme(colors)}>
-      <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} translucent />
+      <StatusBar
+        style={themeMode === 'dark' ? 'light' : 'dark'}
+        translucent={Platform.OS !== 'android'}
+        backgroundColor={Platform.OS === 'android' ? colors.background : undefined}
+      />
 
       <Stack.Navigator
         initialRouteName={onboarded ? (C.IS_DEV && pin ? 'main' : 'session') : 'onboarding'}

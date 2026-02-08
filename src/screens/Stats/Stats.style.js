@@ -13,9 +13,9 @@ export const style = StyleSheet.create({
     marginBottom: theme.spacing.lg,
   },
   chartGap: {
-    marginTop: theme.spacing.md,
+    marginTop: theme.spacing.sm,
   },
   sectionGap: {
-    marginTop: theme.spacing.md,
+    marginTop: theme.spacing.sm,
   },
 });

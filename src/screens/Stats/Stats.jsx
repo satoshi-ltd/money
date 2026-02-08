@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { Chart, ItemGroupCategories, StatsRangeToggle } from './components';
 import { queryMonth, queryChart } from './modules';
@@ -25,7 +25,6 @@ const Stats = () => {
     updateSettings,
   } = store;
 
-  const [chart, setChart] = useState({});
   const monthsLimit = useMemo(() => {
     if (statsRangeMonths && statsRangeMonths > 0) return Math.min(statsRangeMonths, MAX_STATS_MONTHS);
     const chartLength = overall?.chartBalance?.length || 0;
@@ -38,6 +37,10 @@ const Stats = () => {
   }, [overall?.chartBalance?.length, statsRangeMonths, txs]);
 
   const [pointerIndex, setPointerIndex] = useState(Math.max(0, monthsLimit - 1));
+  const safePointerIndex = useMemo(() => Math.max(0, Math.min(pointerIndex, Math.max(0, monthsLimit - 1))), [
+    pointerIndex,
+    monthsLimit,
+  ]);
 
   useEffect(() => {
     setPointerIndex(Math.max(0, monthsLimit - 1));
@@ -54,22 +57,24 @@ const Stats = () => {
 
   const selectedRange = statsRangeMonths === 0 ? MAX_STATS_MONTHS : Math.min(statsRangeMonths, MAX_STATS_MONTHS);
   const handleRangeChange = (value) => updateSettings({ statsRangeMonths: value });
-  useLayoutEffect(() => {
-    setChart(queryChart(store, monthsLimit));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [baseCurrency, monthsLimit, txs]);
+  const chart = useMemo(() => queryChart(store, monthsLimit), [store, monthsLimit]);
 
   const handlePointerIndex = (next) => {
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(() => {
-      if (next !== pointerIndex) setPointerIndex(next);
+      setPointerIndex((prev) => (next !== prev ? next : prev));
     }, 100);
   };
 
-  const { expenses = {}, incomes = {} } = queryMonth(store, pointerIndex, monthsLimit) || {};
-  const chartProps = { currency: baseCurrency, monthsLimit, pointerIndex };
+  const monthData = useMemo(
+    () => queryMonth(store, safePointerIndex, monthsLimit) || {},
+    [store, safePointerIndex, monthsLimit],
+  );
+  const { expenses = {}, incomes = {} } = monthData;
+  const chartProps = { currency: baseCurrency, monthsLimit, pointerIndex: safePointerIndex };
   const color = colors.accent;
   const colorExpense = colors.text;
+  const colorExpenseBars = colors.textSecondary;
 
   return (
     <Screen style={style.screen}>
@@ -77,6 +82,7 @@ const Stats = () => {
         {...chartProps}
         color={color}
         headingRight={<StatsRangeToggle onChange={handleRangeChange} options={rangeOptions} value={selectedRange} />}
+        scaleMode="median"
         title={L10N.TOTAL_BALANCE}
         values={chart.balance}
         onPointerChange={handlePointerIndex}
@@ -84,9 +90,11 @@ const Stats = () => {
 
       <Chart
         {...chartProps}
+        compact
         color={[color, colorExpense]}
         hideMonth
         multipleData
+        scaleMode="median"
         title={`${L10N.INCOMES} & ${L10N.EXPENSES}`}
         style={style.chartGap}
         values={[chart.incomes, chart.expenses]}
@@ -96,13 +104,16 @@ const Stats = () => {
       {Object.keys(incomes).length > 0 || Object.keys(expenses).length > 0 ? (
         <View style={style.sectionGap}>
           {Object.keys(incomes).length > 0 && <ItemGroupCategories color={color} type={INCOME} dataSource={incomes} />}
-          {Object.keys(expenses).length > 0 && <ItemGroupCategories type={EXPENSE} dataSource={expenses} />}
+          {Object.keys(expenses).length > 0 && (
+            <ItemGroupCategories color={colorExpenseBars} type={EXPENSE} dataSource={expenses} />
+          )}
         </View>
       ) : null}
 
       <Chart
         {...chartProps}
         color={colors.text}
+        scaleMode="median"
         title={L10N.TRANSFERS}
         values={chart.transfers}
         onPointerChange={handlePointerIndex}

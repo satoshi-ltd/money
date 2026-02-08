@@ -1,50 +1,45 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useMemo, useRef } from 'react';
-import { Animated, Dimensions, Easing } from 'react-native';
+import React, { useMemo } from 'react';
 
 import { getStyles } from './HorizontalChartItem.style';
-import { Icon, Text, View } from '../../../../components';
-import { PriceFriendly } from '../../../../components';
+import { MetricBar, PriceFriendly, View } from '../../../../components';
 import { useApp } from '../../../../contexts';
-import { viewOffset } from '../../../../theme/layout';
 
-const screen = Dimensions.get('window');
+const capitalizeFirst = (value = '') => {
+  if (typeof value !== 'string') return value;
+  const trimmed = value.trim();
+  if (!trimmed) return '';
+  return `${trimmed.charAt(0).toUpperCase()}${trimmed.slice(1)}`;
+};
 
-const HorizontalChartItem = ({ color, currency, detail, icon, title, value, width: propWidth = 0 }) => {
-  const width = useRef(new Animated.Value(propWidth)).current;
+const HorizontalChartItem = ({ color, currency, detail, title, value, width: propWidth = 0 }) => {
   const { colors } = useApp();
   const style = useMemo(() => getStyles(colors), [colors]);
 
-  useEffect(() => {
-    Animated.timing(width, {
-      duration: 400,
-      easing: Easing.inOut(Easing.ease),
-      toValue: ((screen.width - viewOffset * 2) * propWidth) / 100,
-      useNativeDriver: false,
-    }).start();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [propWidth]);
-
-  const textProps = {
+  const valueTextProps = {
     bold: !detail,
     tone: detail ? 'secondary' : 'primary',
     size: detail ? 'xs' : 's',
   };
 
-  return (
-    <>
-      {!detail && (
-        <Animated.View style={[style.bar, color ? { backgroundColor: color, opacity: 0.33 } : undefined, { width }]} />
-      )}
+  const valueNode = <PriceFriendly {...valueTextProps} currency={currency} fixed={0} value={value} />;
 
-      <View row style={[style.content, detail && style.detail]}>
-        <Icon name={icon} size="xs" />
-        <View flex>
-          <Text {...textProps}>{title}</Text>
-        </View>
-        <PriceFriendly {...textProps} currency={currency} fixed={0} value={value} />
-      </View>
-    </>
+  const hasEnhancedContrast = color === colors.textSecondary && propWidth >= 8;
+  const barColor = hasEnhancedContrast ? colors.text : color || 'contentLight';
+  const titleLabel = capitalizeFirst(title);
+
+  return (
+    <View style={detail ? style.detail : undefined}>
+      <MetricBar
+        color={barColor}
+        minPercent={detail ? 0 : 6}
+        percent={propWidth}
+        title={titleLabel}
+        value={valueNode}
+        variant={detail ? 'kpi' : 'stats'}
+        style={detail ? style.detailItem : style.item}
+      />
+    </View>
   );
 };
 
@@ -52,7 +47,6 @@ HorizontalChartItem.propTypes = {
   color: PropTypes.string,
   currency: PropTypes.string,
   detail: PropTypes.bool,
-  icon: PropTypes.string,
   title: PropTypes.string.isRequired,
   value: PropTypes.number.isRequired,
   width: PropTypes.number,

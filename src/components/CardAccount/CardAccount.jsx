@@ -14,6 +14,9 @@ const CardAccount = ({
   balance = 0,
   chart = [],
   currency,
+  chartReveal = false,
+  chartRevealDelay = 0,
+  chartRevealResetKey,
   highlight,
   percentage = 0,
   showExchange = false,
@@ -46,6 +49,9 @@ const CardAccount = ({
             currency={currency}
             height={cardAccountSize / 2}
             isAnimated={false}
+            reveal={chartReveal}
+            revealDelay={chartRevealDelay}
+            revealResetKey={chartRevealResetKey || title}
             values={chartValues}
             width={cardAccountSize}
             style={style.chart}
@@ -94,6 +100,9 @@ const CardAccount = ({
 CardAccount.propTypes = {
   balance: PropTypes.number,
   chart: PropTypes.arrayOf(PropTypes.number),
+  chartReveal: PropTypes.bool,
+  chartRevealDelay: PropTypes.number,
+  chartRevealResetKey: PropTypes.any,
   color: PropTypes.string,
   currency: PropTypes.string,
   highlight: PropTypes.bool,

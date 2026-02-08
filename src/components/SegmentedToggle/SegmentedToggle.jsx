@@ -39,4 +39,3 @@ SegmentedToggle.propTypes = {
 };
 
 export { SegmentedToggle };
-

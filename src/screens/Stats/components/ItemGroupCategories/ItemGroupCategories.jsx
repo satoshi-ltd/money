@@ -6,7 +6,7 @@ import { HorizontalChartItem } from './HorizontalChartItem';
 import { style } from './ItemGroupCategories.style';
 import { Heading, PriceFriendly } from '../../../../components';
 import { useStore } from '../../../../contexts';
-import { C, getIcon, L10N } from '../../../../modules';
+import { C, L10N } from '../../../../modules';
 import { orderByAmount } from '../../modules';
 
 const {
@@ -51,29 +51,27 @@ const ItemGroupCategories = ({ color, dataSource, type }) => {
             style={[style.touchable, expand && expand !== key && { opacity: 0.25 }]}
           >
             <HorizontalChartItem
-              amount={Object.keys(dataSource[key])?.length}
               color={color}
               currency={baseCurrency}
-              icon={getIcon({ type, category: key })}
               title={L10N.CATEGORIES[type][key]}
               value={amount}
               width={Math.floor((amount / total) * 100)}
             />
 
             {expand === key && (
-              <>
+              <View style={style.detailGroup}>
                 {orderByAmount(dataSource[key]).map((item) => (
                   <HorizontalChartItem
                     key={`${key}-${item.key}`}
+                    color={color}
                     currency={baseCurrency}
                     detail
-                    highlight={type !== EXPENSE}
                     title={item.key}
                     value={item.amount}
                     width={Math.floor((item.amount / amount) * 100)}
                   />
                 ))}
-              </>
+              </View>
             )}
           </Pressable>
         ))}

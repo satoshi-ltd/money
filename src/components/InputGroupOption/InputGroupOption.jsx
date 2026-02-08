@@ -2,16 +2,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { styles } from './InputGroupOption.style';
+import { Text, View } from '../../primitives';
 import { Field } from '../Field';
 import { SegmentedToggle } from '../SegmentedToggle';
-import { Text, View } from '../../primitives';
 
 const InputGroupOption = ({ first, label, last, onChange, options, value }) => (
   <Field first={first} last={last}>
     <View style={styles.row}>
-      <Text bold>
-        {label}
-      </Text>
+      <Text bold>{label}</Text>
       <SegmentedToggle options={options} value={value} onChange={onChange} style={styles.group} />
     </View>
   </Field>
