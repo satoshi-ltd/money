@@ -11,6 +11,6 @@ export const styles = StyleSheet.create({
     paddingVertical: inputPaddingVertical,
   },
   group: {
-    alignSelf: 'flex-end',
+    alignSelf: 'center',
   },
 });
