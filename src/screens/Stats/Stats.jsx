@@ -37,6 +37,10 @@ const Stats = () => {
   }, [overall?.chartBalance?.length, statsRangeMonths, txs]);
 
   const [pointerIndex, setPointerIndex] = useState(Math.max(0, monthsLimit - 1));
+  const safePointerIndex = useMemo(() => Math.max(0, Math.min(pointerIndex, Math.max(0, monthsLimit - 1))), [
+    pointerIndex,
+    monthsLimit,
+  ]);
 
   useEffect(() => {
     setPointerIndex(Math.max(0, monthsLimit - 1));
@@ -58,16 +62,16 @@ const Stats = () => {
   const handlePointerIndex = (next) => {
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(() => {
-      if (next !== pointerIndex) setPointerIndex(next);
+      setPointerIndex((prev) => (next !== prev ? next : prev));
     }, 100);
   };
 
   const monthData = useMemo(
-    () => queryMonth(store, pointerIndex, monthsLimit) || {},
-    [store, pointerIndex, monthsLimit],
+    () => queryMonth(store, safePointerIndex, monthsLimit) || {},
+    [store, safePointerIndex, monthsLimit],
   );
   const { expenses = {}, incomes = {} } = monthData;
-  const chartProps = { currency: baseCurrency, monthsLimit, pointerIndex };
+  const chartProps = { currency: baseCurrency, monthsLimit, pointerIndex: safePointerIndex };
   const color = colors.accent;
   const colorExpense = colors.text;
   const colorExpenseBars = colors.textSecondary;

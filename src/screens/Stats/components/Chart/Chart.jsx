@@ -29,6 +29,23 @@ const Chart = ({
     data.filter((val) => typeof val === 'number' && !isNaN(val)).map((val) => Math.max(0, val));
   const normalizedData1 = normalize(data1);
   const normalizedData2 = normalize(data2);
+  const safePointerIndex = (() => {
+    const len1 = normalizedData1.length;
+    const len2 = normalizedData2.length;
+    const hasData = multipleData ? len1 > 0 || len2 > 0 : len1 > 0;
+    if (!hasData) return undefined;
+
+    const maxIndex1 = Math.max(0, len1 - 1);
+    const maxIndex2 = Math.max(0, len2 - 1);
+    const maxIndex = multipleData
+      ? len1 > 0 && len2 > 0
+        ? Math.min(maxIndex1, maxIndex2)
+        : Math.max(maxIndex1, maxIndex2)
+      : maxIndex1;
+
+    const requested = Number.isFinite(pointerIndex) ? pointerIndex : maxIndex;
+    return Math.max(0, Math.min(requested, maxIndex));
+  })();
   const { width } = useWindowDimensions();
   const chartWidth = width - viewOffset * 2;
   const chartHeight = compact ? 108 : 128;
@@ -139,7 +156,9 @@ const Chart = ({
           }}
           height={chartHeight}
           pointerConfig={{
-            initialPointerIndex: data1.length ? pointerIndex : undefined,
+            // Range toggles can briefly render with a stale/out-of-bounds pointerIndex.
+            // Clamp to available data to avoid gifted-charts crashing on undefined datapoints.
+            initialPointerIndex: safePointerIndex,
             persistPointer: true,
             pointerLabelHeight: compact ? 42 : 48,
             pointerLabelWidth: compact ? 88 : 96,

@@ -48,6 +48,16 @@ const LineChart = ({
   data = normalize(data);
   data2 = normalize(data2);
   const hasData = data.length > 0;
+  const clampIndex = (idx, max) => Math.max(0, Math.min(idx, max));
+  const safePointerMaxIndex = (() => {
+    const len1 = data.length;
+    const len2 = multipleData ? data2.length : 0;
+    if (!multipleData) return len1 > 0 ? len1 - 1 : -1;
+    if (len1 > 0 && len2 > 0) return Math.min(len1, len2) - 1;
+    if (len1 > 0) return len1 - 1;
+    if (len2 > 0) return len2 - 1;
+    return -1;
+  })();
   const max = hasData ? Math.max(...data) : 0;
   const min = hasData ? Math.min(...data) : 0;
   const range = max - min;
@@ -124,14 +134,28 @@ const LineChart = ({
         showPointer
           ? {
               autoAdjustPointerLabelPosition: true,
-              initialPointerIndex: data.length ? data.length - 1 : undefined,
+              // Defensive: prevent gifted-charts from reading undefined datapoints when the caller
+              // passes an out-of-bounds pointer index (can happen during range toggles).
+              initialPointerIndex:
+                safePointerMaxIndex >= 0
+                  ? Number.isFinite(pointerConfig?.initialPointerIndex)
+                    ? clampIndex(pointerConfig.initialPointerIndex, safePointerMaxIndex)
+                    : safePointerMaxIndex
+                  : undefined,
               pointerLabelComponent: ([{ index, value } = {}]) => {
-                handlePointerIndex(index);
+                const safeIndex =
+                  Number.isFinite(index) && months.length > 0
+                    ? clampIndex(index, months.length - 1)
+                    : Number.isFinite(index)
+                    ? index
+                    : 0;
+
+                handlePointerIndex(safeIndex);
 
                 return !multipleData ? (
                   <View align="center">
                     <Text bold style={style.pointerCaption} size="xs">
-                      {L10N.MONTHS[months[index]?.month || 0]} {months[index]?.year || ''}
+                      {L10N.MONTHS[months[safeIndex]?.month || 0]} {months[safeIndex]?.year || ''}
                     </Text>
                     <View style={style.pointerValue}>
                       <PriceFriendly bold size="s" tone="onInverse" {...{ currency, value }} />
