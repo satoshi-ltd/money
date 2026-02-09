@@ -28,6 +28,21 @@ export const NotificationsService = {
     await NotificationsService.syncScheduled({ scheduledTxs, txs });
   },
 
+  // Used for destructive actions like "Reset data". We only cancel Money-scoped notifications
+  // and we must not prompt the user for permission during a reset.
+  clearAll: async () => {
+    const permission = await Notifications.getPermissionsAsync();
+    if (permission.status !== GRANTED) return;
+
+    const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+    const ours = scheduled.filter((item) => {
+      const kind = item?.content?.data?.kind;
+      return kind === NOTIFICATION_KIND.BACKUP || kind === NOTIFICATION_KIND.SCHEDULED;
+    });
+
+    await Promise.all(ours.map((item) => Notifications.cancelScheduledNotificationAsync(item.identifier)));
+  },
+
   permission: async () => {
     if (Platform.OS === 'android') {
       Notifications.setNotificationChannelAsync('default', {

@@ -121,7 +121,12 @@ export const Notification = () => {
 
   return (
     <Animated.View
-      style={[style.notification, error ? style.alert : style.accent, { top: Math.max(0, top) + theme.spacing.xs }, animatedStyle]}
+      style={[
+        style.notification,
+        error ? style.alert : style.accent,
+        { top: Math.max(0, top) + theme.spacing.xs },
+        animatedStyle,
+      ]}
     >
       <Pressable onPress={handleClose}>
         <View row style={style.row}>

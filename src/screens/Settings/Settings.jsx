@@ -24,6 +24,7 @@ const Settings = ({ navigation = {} }) => {
     accounts = [],
     importBackup,
     scheduledTxs = [],
+    resetAppData,
     updateSettings,
     updateSubscription,
     updateTheme,
@@ -139,6 +140,50 @@ const Settings = ({ navigation = {} }) => {
     NotificationsService.reminders([value]);
     updateSettings({ reminders: [value] });
   };
+
+  const handleLogout = () => {
+    Alert.alert(L10N.CONFIRM_LOG_OUT, L10N.CONFIRM_LOG_OUT_CAPTION, [
+      { text: L10N.CANCEL, style: 'cancel' },
+      {
+        text: L10N.ACCEPT,
+        style: 'destructive',
+        onPress: async () => {
+          await updateSettings({ onboarded: false });
+          // Settings lives inside Tabs -> Stack. Reset the root stack to onboarding.
+          const root = navigation?.getParent?.()?.getParent?.();
+          if (root?.reset) root.reset({ index: 0, routes: [{ name: 'onboarding' }] });
+          else navigation?.navigate?.('onboarding');
+        },
+      },
+    ]);
+  };
+
+  const handleResetData = () => {
+    Alert.alert(L10N.RESET_DATA, L10N.RESET_DATA_CAPTION, [
+      { text: L10N.CANCEL, style: 'cancel' },
+      {
+        text: L10N.NEXT,
+        style: 'destructive',
+        onPress: () => {
+          Alert.alert(L10N.RESET_DATA_CONFIRM, L10N.RESET_DATA_CONFIRM_CAPTION, [
+            { text: L10N.CANCEL, style: 'cancel' },
+            {
+              text: L10N.RESET_DATA_ACTION,
+              style: 'destructive',
+              onPress: async () => {
+                await resetAppData?.();
+                const root = navigation?.getParent?.()?.getParent?.();
+                if (root?.reset) root.reset({ index: 0, routes: [{ name: 'onboarding' }] });
+                else navigation?.navigate?.('onboarding');
+              },
+            },
+          ]);
+        },
+      },
+    ]);
+  };
+
+  const revenueCatCustomerId = subscription?.customerInfo?.originalAppUserId;
 
   const languageOptions = [
     { id: 'en', label: L10N.LANGUAGE_EN },
@@ -268,6 +313,36 @@ const Settings = ({ navigation = {} }) => {
             onPress={() => handleOption(rest)}
           />
         ))}
+      </View>
+
+      <View style={style.group}>
+        <Text bold size="s">
+          {L10N.ACCOUNT_ACTIONS.toUpperCase()}
+        </Text>
+
+        <Setting
+          icon={ICON.CLOSE}
+          title={L10N.LOG_OUT}
+          subtitle={L10N.LOG_OUT_CAPTION}
+          type="action"
+          onPress={handleLogout}
+        />
+        <Setting
+          icon={ICON.ALERT}
+          title={L10N.RESET_DATA}
+          subtitle={L10N.RESET_DATA_CAPTION}
+          type="action"
+          onPress={handleResetData}
+        />
+
+        <View style={style.idsBlock}>
+          <Text align="center" size="xs" tone="secondary">{`Money v${C.VERSION}`}</Text>
+          {revenueCatCustomerId ? (
+            <Text align="center" selectable size="xs" tone="secondary">
+              {revenueCatCustomerId}
+            </Text>
+          ) : null}
+        </View>
       </View>
     </Screen>
   );

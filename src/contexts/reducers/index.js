@@ -15,3 +15,4 @@ export * from './updateSettings';
 export * from './updateSubscription';
 export * from './updateRates';
 export * from './importBackup';
+export * from './resetAppData';

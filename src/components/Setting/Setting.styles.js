@@ -5,7 +5,7 @@ import { theme } from '../../theme';
 export const getStyles = (colors) =>
   StyleSheet.create({
     container: {
-      paddingVertical: theme.spacing.xs,
+      paddingVertical: theme.spacing.xxs,
       borderRadius: theme.borderRadius.md,
       backgroundColor: colors.background,
     },

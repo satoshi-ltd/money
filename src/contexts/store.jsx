@@ -23,6 +23,7 @@ import {
   updateSubscription,
   updateRates,
   importBackup,
+  resetAppData,
 } from './reducers';
 import { parseTx } from './reducers/modules';
 import { DEFAULTS, FILENAME } from './store.constants';
@@ -262,6 +263,7 @@ const StoreProvider = ({ children }) => {
         updateSubscription: (...props) => updateSubscription(...props, [state, setState]),
         updateTheme: (theme) => updateSettings({ theme }, [state, setState]),
         importBackup: (...props) => importBackup(...props, [state, setState]),
+        resetAppData: (...props) => resetAppData(...props, [state, setState]),
       }}
     >
       {state.store ? children : undefined}

@@ -3,7 +3,7 @@ import { C } from '../modules';
 
 const { CURRENCY } = C;
 
-const SCHEMA_VERSION = 2;
+const SCHEMA_VERSION = 3;
 
 const DEFAULTS = {
   settings: {
@@ -14,6 +14,18 @@ const DEFAULTS = {
     onboarded: false,
     pin: undefined,
     reminders: [1],
+    // Local-only user profile collected via onboarding survey (opt-in lead capture).
+    userProfile: {
+      version: 1,
+      answers: {},
+      completedAt: undefined,
+    },
+    marketingLead: {
+      email: '',
+      consent: false,
+      sentAt: undefined,
+      remote: undefined,
+    },
     autoCategory: {
       rules: {},
       stats: {},
