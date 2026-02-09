@@ -9,6 +9,10 @@ export const style = StyleSheet.create({
     paddingTop: viewOffset,
   },
 
+  group: {
+    gap: theme.spacing.sm,
+  },
+
   hint: {
     marginTop: theme.spacing.xs,
   },
@@ -20,5 +24,21 @@ export const style = StyleSheet.create({
 
   dropdownWrap: {
     position: 'relative',
+  },
+
+  metaCard: {
+    marginTop: theme.spacing.lg,
+    padding: theme.spacing.xs,
+  },
+
+  metaRow: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: theme.spacing.md,
+  },
+
+  metaText: {
+    gap: theme.spacing.xxs,
+    paddingLeft: theme.spacing.sm,
   },
 });

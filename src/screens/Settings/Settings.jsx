@@ -5,7 +5,7 @@ import { Alert, Linking } from 'react-native';
 import { getLatestRates } from './helpers';
 import { ABOUT, OPTIONS, PREFERENCES } from './Settings.constants';
 import { style } from './Settings.style';
-import { Dropdown, Heading, Screen, Setting, Text, View } from '../../components';
+import { Button, Card, Dropdown, Heading, Screen, Setting, Text, View } from '../../components';
 import { useStore } from '../../contexts';
 import { setLanguage } from '../../i18n';
 import { C, eventEmitter, ICON, L10N } from '../../modules';
@@ -140,6 +140,25 @@ const Settings = ({ navigation = {} }) => {
     updateSettings({ reminders: [value] });
   };
 
+  const handleLogout = () => {
+    Alert.alert(L10N.CONFIRM_LOG_OUT, L10N.CONFIRM_LOG_OUT_CAPTION, [
+      { text: L10N.CANCEL, style: 'cancel' },
+      {
+        text: L10N.ACCEPT,
+        style: 'destructive',
+        onPress: async () => {
+          await updateSettings({ onboarded: false });
+          // Settings lives inside Tabs -> Stack. Reset the root stack to onboarding.
+          const root = navigation?.getParent?.()?.getParent?.();
+          if (root?.reset) root.reset({ index: 0, routes: [{ name: 'onboarding' }] });
+          else navigation?.navigate?.('onboarding');
+        },
+      },
+    ]);
+  };
+
+  const revenueCatCustomerId = subscription?.customerInfo?.originalAppUserId;
+
   const languageOptions = [
     { id: 'en', label: L10N.LANGUAGE_EN },
     { id: 'es', label: L10N.LANGUAGE_ES },
@@ -269,6 +288,23 @@ const Settings = ({ navigation = {} }) => {
           />
         ))}
       </View>
+
+      <Card style={style.metaCard}>
+        <View row style={style.metaRow}>
+          <View flex style={style.metaText}>
+            <Text bold>{`Money v${C.VERSION}`}</Text>
+            {revenueCatCustomerId ? (
+              <Text selectable tone="secondary">
+                {revenueCatCustomerId}
+              </Text>
+            ) : null}
+          </View>
+
+          <Button size="s" variant="outlined" onPress={handleLogout}>
+            {L10N.LOG_OUT}
+          </Button>
+        </View>
+      </Card>
     </Screen>
   );
 };
