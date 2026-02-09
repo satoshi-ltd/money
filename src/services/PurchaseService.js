@@ -2,6 +2,8 @@ import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
 import { L10N } from '../modules';
+const PRO_ENTITLEMENT = 'pro';
+
 const APIKEY = {
   ios: 'appl_aGBSQTaLCQAEJevVIvbQKAkNKpZ',
   android: 'goog_bzzicUKLHqrXEdrltqKGmdXgyyI',
@@ -20,13 +22,28 @@ const PREMIUM_MOCK = {
   productIdentifier: 'lifetime',
 };
 
+let purchasesInitialized = false;
+
 const initializePurchases = async () => {
   const Purchases = require('react-native-purchases').default;
 
-  Purchases.setLogLevel(Purchases.LOG_LEVEL.VERBOSE);
-  Purchases.configure({ apiKey: APIKEY[Platform.OS] });
+  if (!purchasesInitialized) {
+    Purchases.setLogLevel(Purchases.LOG_LEVEL.VERBOSE);
+    Purchases.configure({ apiKey: APIKEY[Platform.OS] });
+    purchasesInitialized = true;
+  }
 
   return Purchases;
+};
+
+const getSubscriptionFromCustomerInfo = (customerInfo = {}) => {
+  const entitlement = customerInfo?.entitlements?.active?.[PRO_ENTITLEMENT];
+  if (!entitlement) return {};
+
+  return {
+    customerInfo,
+    productIdentifier: entitlement.productIdentifier || entitlement.identifier,
+  };
 };
 
 export const PurchaseService = {
@@ -69,10 +86,11 @@ export const PurchaseService = {
       try {
         const Purchases = await initializePurchases();
 
-        const { customerInfo, productIdentifier } = await Purchases.purchasePackage(plan);
+        const { customerInfo } = await Purchases.purchasePackage(plan);
+        const subscription = getSubscriptionFromCustomerInfo(customerInfo);
 
-        if (typeof customerInfo.entitlements.active['pro'] !== 'undefined') {
-          resolve({ customerInfo, productIdentifier });
+        if (subscription.productIdentifier) {
+          resolve(subscription);
         } else {
           reject(L10N.ERROR_PURCHASE);
         }
@@ -91,9 +109,10 @@ export const PurchaseService = {
         const Purchases = await initializePurchases();
 
         const customerInfo = await Purchases.restorePurchases();
+        const subscription = getSubscriptionFromCustomerInfo(customerInfo);
 
-        if (typeof customerInfo.entitlements.active['pro'] !== 'undefined') {
-          resolve({ customerInfo, productIdentifier: customerInfo.entitlements.active['pro'].productIdentifier });
+        if (subscription.productIdentifier) {
+          resolve(subscription);
         } else {
           reject(L10N.ERROR_RESTORE);
         }
@@ -101,7 +120,7 @@ export const PurchaseService = {
         reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);
       }
     }),
-  checkSubscription: async (subscription) =>
+  checkSubscription: async (subscription = {}) =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
       if (Constants.appOwnership === 'expo' || subscription.productIdentifier === 'lifetime') return resolve(true);
@@ -110,11 +129,22 @@ export const PurchaseService = {
         const Purchases = await initializePurchases();
 
         const customerInfo = await Purchases.getCustomerInfo();
-        if (typeof customerInfo.entitlements.active['pro'] !== 'undefined') {
-          resolve(true);
-        } else {
-          resolve(false);
-        }
+        resolve(!!getSubscriptionFromCustomerInfo(customerInfo).productIdentifier);
+      } catch (error) {
+        reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);
+      }
+    }),
+  syncSubscription: async ({ forceRefresh = false } = {}) =>
+    // eslint-disable-next-line no-undef, no-async-promise-executor
+    new Promise(async (resolve, reject) => {
+      if (Constants.appOwnership === 'expo') return resolve({});
+
+      try {
+        const Purchases = await initializePurchases();
+        if (forceRefresh) await Purchases.invalidateCustomerInfoCache();
+
+        const customerInfo = await Purchases.getCustomerInfo();
+        resolve(getSubscriptionFromCustomerInfo(customerInfo));
       } catch (error) {
         reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);
       }

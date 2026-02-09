@@ -26,7 +26,7 @@ import {
 } from './reducers';
 import { parseTx } from './reducers/modules';
 import { DEFAULTS, FILENAME } from './store.constants';
-import { NotificationsService, StorageService } from '../services';
+import { NotificationsService, PurchaseService, StorageService } from '../services';
 
 const { EVENT } = C;
 const MS_IN_DAY = C.MS_IN_DAY;
@@ -183,7 +183,32 @@ const StoreProvider = ({ children }) => {
   useEffect(() => {
     if (!state.store) return undefined;
 
-    const subscription = AppState.addEventListener('change', (nextState) => {
+    let disposed = false;
+
+    const syncSubscription = async ({ forceRefresh = false } = {}) => {
+      const current = stateRef.current;
+      if (!current?.store) return;
+
+      try {
+        const nextSubscription = await PurchaseService.syncSubscription({ forceRefresh });
+        if (disposed) return;
+
+        const latest = stateRef.current;
+        if (!latest?.store) return;
+
+        const currentProductIdentifier = latest.subscription?.productIdentifier;
+        const nextProductIdentifier = nextSubscription?.productIdentifier;
+        if (currentProductIdentifier === nextProductIdentifier) return;
+
+        await updateSubscription(nextSubscription, [latest, setState]);
+      } catch (error) {
+        // We keep last known local subscription when RevenueCat cannot be reached.
+      }
+    };
+
+    syncSubscription({ forceRefresh: true });
+
+    const appStateSubscription = AppState.addEventListener('change', (nextState) => {
       if (nextState !== 'active') return;
 
       const current = stateRef.current;
@@ -203,10 +228,14 @@ const StoreProvider = ({ children }) => {
           settings: nextMigrated.settings,
           txs: nextMigrated.txs,
         }));
+        await syncSubscription({ forceRefresh: true });
       })();
     });
 
-    return () => subscription.remove();
+    return () => {
+      disposed = true;
+      appStateSubscription.remove();
+    };
   }, [state.store]);
 
   const consolidated = useMemo(() => consolidate(state), [state]);
