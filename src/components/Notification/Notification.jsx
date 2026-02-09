@@ -1,61 +1,74 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Platform } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Animated, Easing } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { getStyles } from './Notification.style';
 import { useApp } from '../../contexts';
 import { C, eventEmitter, ICON, L10N } from '../../modules';
 import { Icon, Pressable, Text, View } from '../../primitives';
+import { theme } from '../../theme';
 
 const { EVENT } = C;
 
-const NotificationBase = ({ error, onClose, text, title, visible, style: containerStyle }) => {
-  if (!visible) return null;
-
-  const { colors } = useApp();
-  const style = useMemo(() => getStyles(colors), [colors]);
-  const contentTone = error ? 'onInverse' : 'onAccent';
-
-  return (
-    <Pressable onPress={onClose} style={[style.notification, error ? style.alert : style.accent, containerStyle]}>
-      <SafeAreaView edges={['top']} style={style.safeAreaView}>
-        <Icon name={error ? ICON.ALERT : ICON.INFO} tone={contentTone} />
-        <View flex style={style.text}>
-          <Text bold tone={contentTone}>
-            {title}
-          </Text>
-          {text ? (
-            <Text tone={contentTone} size="xs">
-              {text}
-            </Text>
-          ) : null}
-        </View>
-        <Pressable onPress={onClose}>
-          <Icon name={ICON.CLOSE} tone={contentTone} />
-        </Pressable>
-      </SafeAreaView>
-    </Pressable>
-  );
-};
-
 export const Notification = () => {
   const { top } = useSafeAreaInsets();
+  const { colors } = useApp();
+  const style = useMemo(() => getStyles(colors), [colors]);
 
   const [value, setValue] = useState();
-  const [visible, setVisible] = useState(false);
+  const [rendered, setRendered] = useState(false);
+  const isVisibleRef = useRef(false);
+  const anim = useRef(new Animated.Value(0)).current;
+  const dismissTimerRef = useRef();
 
   useEffect(() => {
     const listener = (data = {}) => {
-      if (visible) setVisible(false);
-      setTimeout(
-        () => {
-          setValue(data);
-          setVisible(true);
+      const show = () => {
+        if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);
+        setValue(data);
+        setRendered(true);
+        isVisibleRef.current = true;
+        Animated.timing(anim, {
+          toValue: 1,
+          duration: theme.animations.duration.quick,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }).start();
 
-          if (!data.error) setTimeout(() => setVisible(false), 5000);
-        },
-        visible ? 300 : 0,
-      );
+        if (!data.error) {
+          dismissTimerRef.current = setTimeout(() => hide(), 5000);
+        }
+      };
+
+      const hide = () => {
+        if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);
+        isVisibleRef.current = false;
+        Animated.timing(anim, {
+          toValue: 0,
+          duration: theme.animations.duration.quick,
+          easing: Easing.in(Easing.cubic),
+          useNativeDriver: true,
+        }).start(({ finished }) => {
+          if (!finished) return;
+          if (isVisibleRef.current) return;
+          setRendered(false);
+        });
+      };
+
+      if (isVisibleRef.current) {
+        // Animate out, swap content, then animate in.
+        Animated.timing(anim, {
+          toValue: 0,
+          duration: Math.max(160, Math.round(theme.animations.duration.quick * 0.7)),
+          easing: Easing.in(Easing.cubic),
+          useNativeDriver: true,
+        }).start(({ finished }) => {
+          if (!finished) return;
+          show();
+        });
+      } else {
+        show();
+      }
     };
 
     eventEmitter.on(EVENT.NOTIFICATION, listener);
@@ -63,16 +76,71 @@ export const Notification = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleClose = () => setVisible(false);
+  useEffect(
+    () => () => {
+      if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);
+    },
+    [],
+  );
+
+  const handleClose = () => {
+    if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);
+    isVisibleRef.current = false;
+    Animated.timing(anim, {
+      toValue: 0,
+      duration: theme.animations.duration.quick,
+      easing: Easing.in(Easing.cubic),
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      if (finished) setRendered(false);
+    });
+  };
+
+  if (!rendered) return null;
 
   const { error, text, title } = value || {};
+  const contentTone = error ? 'onInverse' : 'onAccent';
+
+  const animatedStyle = {
+    opacity: anim,
+    transform: [
+      {
+        translateY: anim.interpolate({
+          inputRange: [0, 1],
+          outputRange: [-12, 0],
+        }),
+      },
+      {
+        scale: anim.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0.98, 1],
+        }),
+      },
+    ],
+  };
 
   return (
-    <NotificationBase
-      {...{ error, text, visible }}
-      title={title || (error ? L10N.ERROR : L10N.INFO)}
-      onClose={handleClose}
-      style={Platform.OS === 'android' ? { marginTop: top } : undefined}
-    />
+    <Animated.View
+      style={[style.notification, error ? style.alert : style.accent, { top: Math.max(0, top) + theme.spacing.xs }, animatedStyle]}
+    >
+      <Pressable onPress={handleClose}>
+        <View row style={style.row}>
+          <Icon name={error ? ICON.ALERT : ICON.INFO} tone={contentTone} />
+          <View flex style={style.text}>
+            <Text bold tone={contentTone}>
+              {title || (error ? L10N.ERROR : L10N.INFO)}
+            </Text>
+            {text ? (
+              <Text tone={contentTone} size="xs">
+                {text}
+              </Text>
+            ) : null}
+          </View>
+          <Pressable onPress={handleClose}>
+            <Icon name={ICON.CLOSE} tone={contentTone} />
+          </Pressable>
+        </View>
+      </Pressable>
+    </Animated.View>
   );
 };

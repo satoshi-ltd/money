@@ -8,10 +8,12 @@ export const getStyles = (colors) =>
     notification: {
       position: 'absolute',
       top: 0,
-      left: 0,
-      right: 0,
+      left: viewOffset,
+      right: viewOffset,
       zIndex: 999,
-      width: '100%',
+      borderRadius: theme.borderRadius.md,
+      overflow: 'hidden',
+      ...theme.shadows.md,
     },
     accent: {
       backgroundColor: colors.accent,
@@ -25,12 +27,12 @@ export const getStyles = (colors) =>
     text: {
       flex: 1,
     },
-    safeAreaView: {
+    row: {
       alignItems: 'center',
       flexDirection: 'row',
       gap: theme.spacing.sm,
-      marginHorizontal: viewOffset,
-      marginVertical: viewOffset / 2,
+      paddingHorizontal: theme.spacing.sm,
+      paddingVertical: theme.spacing.xs,
       width: 'auto',
     },
   });
