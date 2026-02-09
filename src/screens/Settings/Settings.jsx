@@ -5,7 +5,7 @@ import { Alert, Linking } from 'react-native';
 import { getLatestRates } from './helpers';
 import { ABOUT, OPTIONS, PREFERENCES } from './Settings.constants';
 import { style } from './Settings.style';
-import { Button, Card, Dropdown, Heading, Screen, Setting, Text, View } from '../../components';
+import { Dropdown, Heading, Screen, Setting, Text, View } from '../../components';
 import { useStore } from '../../contexts';
 import { setLanguage } from '../../i18n';
 import { C, eventEmitter, ICON, L10N } from '../../modules';
@@ -24,6 +24,7 @@ const Settings = ({ navigation = {} }) => {
     accounts = [],
     importBackup,
     scheduledTxs = [],
+    resetAppData,
     updateSettings,
     updateSubscription,
     updateTheme,
@@ -152,6 +153,31 @@ const Settings = ({ navigation = {} }) => {
           const root = navigation?.getParent?.()?.getParent?.();
           if (root?.reset) root.reset({ index: 0, routes: [{ name: 'onboarding' }] });
           else navigation?.navigate?.('onboarding');
+        },
+      },
+    ]);
+  };
+
+  const handleResetData = () => {
+    Alert.alert(L10N.RESET_DATA, L10N.RESET_DATA_CAPTION, [
+      { text: L10N.CANCEL, style: 'cancel' },
+      {
+        text: L10N.NEXT,
+        style: 'destructive',
+        onPress: () => {
+          Alert.alert(L10N.RESET_DATA_CONFIRM, L10N.RESET_DATA_CONFIRM_CAPTION, [
+            { text: L10N.CANCEL, style: 'cancel' },
+            {
+              text: L10N.RESET_DATA_ACTION,
+              style: 'destructive',
+              onPress: async () => {
+                await resetAppData?.();
+                const root = navigation?.getParent?.()?.getParent?.();
+                if (root?.reset) root.reset({ index: 0, routes: [{ name: 'onboarding' }] });
+                else navigation?.navigate?.('onboarding');
+              },
+            },
+          ]);
         },
       },
     ]);
@@ -289,22 +315,35 @@ const Settings = ({ navigation = {} }) => {
         ))}
       </View>
 
-      <Card style={style.metaCard}>
-        <View row style={style.metaRow}>
-          <View flex style={style.metaText}>
-            <Text bold>{`Money v${C.VERSION}`}</Text>
-            {revenueCatCustomerId ? (
-              <Text selectable tone="secondary">
-                {revenueCatCustomerId}
-              </Text>
-            ) : null}
-          </View>
+      <View style={style.group}>
+        <Text bold size="s">
+          {L10N.ACCOUNT_ACTIONS.toUpperCase()}
+        </Text>
 
-          <Button size="s" variant="outlined" onPress={handleLogout}>
-            {L10N.LOG_OUT}
-          </Button>
+        <Setting
+          icon={ICON.CLOSE}
+          title={L10N.LOG_OUT}
+          subtitle={L10N.LOG_OUT_CAPTION}
+          type="action"
+          onPress={handleLogout}
+        />
+        <Setting
+          icon={ICON.ALERT}
+          title={L10N.RESET_DATA}
+          subtitle={L10N.RESET_DATA_CAPTION}
+          type="action"
+          onPress={handleResetData}
+        />
+
+        <View style={style.idsBlock}>
+          <Text align="center" size="xs" tone="secondary">{`Money v${C.VERSION}`}</Text>
+          {revenueCatCustomerId ? (
+            <Text align="center" selectable size="xs" tone="secondary">
+              {revenueCatCustomerId}
+            </Text>
+          ) : null}
         </View>
-      </Card>
+      </View>
     </Screen>
   );
 };

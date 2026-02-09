@@ -5,12 +5,12 @@ import { viewOffset } from '../../theme/layout';
 
 export const style = StyleSheet.create({
   screen: {
-    paddingBottom: theme.spacing.xxl * 2,
+    paddingBottom: theme.spacing.xxl * 3,
     paddingTop: viewOffset,
   },
 
   group: {
-    gap: theme.spacing.sm,
+    gap: theme.spacing.xxs,
   },
 
   hint: {
@@ -26,19 +26,9 @@ export const style = StyleSheet.create({
     position: 'relative',
   },
 
-  metaCard: {
-    marginTop: theme.spacing.lg,
-    padding: theme.spacing.xs,
-  },
-
-  metaRow: {
+  idsBlock: {
+    marginTop: theme.spacing.xs,
+    width: '100%',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: theme.spacing.md,
-  },
-
-  metaText: {
-    gap: theme.spacing.xxs,
-    paddingLeft: theme.spacing.sm,
   },
 });
