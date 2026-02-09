@@ -14,7 +14,7 @@ const Tabs = ({ accent, caption, onChange, options = [], selected = 0, style }) 
       {options.map((option, index) => {
         const isActive = selectedId ? option.id === selectedId : index === selected;
         const activeStyle = accent ? styles.activeAlt : styles.active;
-        const activeTone = accent ? 'inverse' : 'primary';
+        const activeTone = accent ? 'onInverse' : 'onAccent';
 
         return (
           <Pressable
