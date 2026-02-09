@@ -11,11 +11,11 @@ export const getStyles = (colors) =>
     },
     dot: {
       backgroundColor: colors.accent,
-      width: 11,
-      height: 11,
+      width: 12,
+      height: 12,
       borderRadius: 9999,
       position: 'absolute',
-      top: 10,
+      top: 11,
       left: 20,
     },
   });
