@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 import { useWindowDimensions } from 'react-native';
 
-import { style } from './InsightsCarousel.style';
+import { getStyles } from './InsightsCarousel.style';
 import { useApp, useStore } from '../../contexts';
 import { ICON, L10N } from '../../modules';
 import { Icon, Pressable, ScrollView, Text, View } from '../../primitives';
@@ -23,6 +23,7 @@ const InsightsCarousel = ({
   const { colors } = useApp();
   const { settings: { maskAmount } = {}, updateSettings } = useStore();
   const { width } = useWindowDimensions();
+  const style = useMemo(() => getStyles(colors), [colors]);
   const chartStagger = useMemo(() => Math.round(theme.animations.duration.quick / 5), []);
 
   const cards = useMemo(() => {
@@ -83,7 +84,7 @@ const InsightsCarousel = ({
                   currency="%"
                   fixed={2}
                   operator
-                  style={style.balancePercentage}
+                  style={[style.balancePercentage, style.chartLabel, isHighlighted && style.chartLabelOnAccent]}
                   tone={isHighlighted ? 'onAccent' : 'accent'}
                   value={progressionPercentage}
                 />
@@ -102,7 +103,6 @@ const InsightsCarousel = ({
     const showCategories = insight.type === 'categories';
     const showChart = !!insight.chart?.values?.length;
     const topItems = (insight.items || []).slice(0, 3);
-    const toneColor = insight.tone === 'negative' ? 'danger' : insight.tone === 'positive' ? 'accent' : 'primary';
     const shouldAnimateChart = animateCharts && index < 4;
 
     return (
@@ -126,7 +126,16 @@ const InsightsCarousel = ({
             ) : null}
             {insight.type === 'trend' && insight.valueLabel ? (
               <View style={style.insightTrendValue}>
-                <PriceFriendly bold tone="accent" currency="%" fixed={0} operator size="s" value={insight.value} />
+                <PriceFriendly
+                  bold
+                  tone="accent"
+                  currency="%"
+                  fixed={0}
+                  operator
+                  size="s"
+                  style={style.chartLabel}
+                  value={insight.value}
+                />
               </View>
             ) : null}
             {insight.type === 'alert' && insight.valueLabel ? (
@@ -139,7 +148,7 @@ const InsightsCarousel = ({
             ) : null}
             {insight.type === 'mover' && insight.valueLabel ? (
               <View row style={style.insightValueRow}>
-                <Text bold tone="accent" size="xl">
+                <Text bold tone="accent" size="xl" style={style.chartLabel}>
                   {formatSignedPercent(insight.value)}
                 </Text>
               </View>

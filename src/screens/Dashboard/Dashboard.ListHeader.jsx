@@ -48,7 +48,7 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
   const overallChartValues = useMemo(() => {
     const values = overall?.chartBalance;
     if (!Array.isArray(values)) return [];
-    return values.slice(-6);
+    return values.slice(-12);
   }, [overall?.chartBalance]);
 
   const balanceCard = useMemo(

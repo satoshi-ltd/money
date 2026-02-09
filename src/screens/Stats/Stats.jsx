@@ -37,10 +37,10 @@ const Stats = () => {
   }, [overall?.chartBalance?.length, statsRangeMonths, txs]);
 
   const [pointerIndex, setPointerIndex] = useState(Math.max(0, monthsLimit - 1));
-  const safePointerIndex = useMemo(() => Math.max(0, Math.min(pointerIndex, Math.max(0, monthsLimit - 1))), [
-    pointerIndex,
-    monthsLimit,
-  ]);
+  const safePointerIndex = useMemo(
+    () => Math.max(0, Math.min(pointerIndex, Math.max(0, monthsLimit - 1))),
+    [pointerIndex, monthsLimit],
+  );
 
   useEffect(() => {
     setPointerIndex(Math.max(0, monthsLimit - 1));

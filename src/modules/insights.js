@@ -7,7 +7,7 @@ import { getOccurrencesBetween } from './recurrence';
 const { TX: { TYPE } = {} } = C;
 
 const MONTH_WINDOW = 3;
-const TREND_MONTHS = 6;
+const TREND_MONTHS = 12;
 const PACE_MONTHS = 6;
 
 const monthKey = (date) => {
@@ -167,7 +167,7 @@ export const buildInsights = ({
     insights.push({
       id: 'spending_trend',
       title: L10N.INSIGHT_SPENDING_TREND_FALLBACK,
-      caption: L10N.INSIGHT_LAST_6_MONTHS,
+      caption: L10N.INSIGHT_LAST_12_MONTHS,
       type: 'trend',
       chart: { values: expenseTrend, monthsLimit: TREND_MONTHS },
       tone: 'neutral',

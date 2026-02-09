@@ -68,7 +68,7 @@ const TransactionsListHeader = ({ chartBalanceBase, dataSource, navigation, onSe
     () => ({
       title: L10N.TOTAL_BALANCE,
       value: rest?.currentBalance || 0,
-      chartValues: Array.isArray(chartBalanceBase) ? chartBalanceBase.slice(-6) : [],
+      chartValues: Array.isArray(chartBalanceBase) ? chartBalanceBase.slice(-12) : [],
       progressionPercentage,
     }),
     [chartBalanceBase, progressionPercentage, rest?.currentBalance],

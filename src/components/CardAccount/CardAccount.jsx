@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo } from 'react';
 
-import { style } from './CardAccount.style';
+import { getStyles } from './CardAccount.style';
 import { useApp, useStore } from '../../contexts';
 import { exchange } from '../../modules';
 import { Pressable, Text, View } from '../../primitives';
@@ -25,6 +25,7 @@ const CardAccount = ({
   ...others
 }) => {
   const { colors } = useApp();
+  const style = useMemo(() => getStyles(colors), [colors]);
   const {
     settings: { baseCurrency },
     rates,
@@ -37,8 +38,8 @@ const CardAccount = ({
   const exchangeTone = highlight ? 'onAccent' : 'secondary';
   const percentageTone = highlight ? 'onAccent' : 'accent';
 
-  const showPercentage = Math.abs(percentage) >= 3;
-  const chartValues = Array.isArray(chart) ? chart.slice(-6) : [];
+  const showPercentage = Number.isFinite(percentage) && Math.abs(percentage) >= 0.1;
+  const chartValues = Array.isArray(chart) ? chart.slice(-12) : [];
 
   return (
     <Pressable onPress={onPress} style={others.style}>
@@ -85,7 +86,7 @@ const CardAccount = ({
                 currency="%"
                 fixed={2}
                 operator
-                style={style.percentage}
+                style={[style.percentage, highlight && style.percentageOnAccent]}
                 tone={percentageTone}
                 value={percentage}
               />
