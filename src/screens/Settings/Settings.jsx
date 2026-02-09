@@ -56,13 +56,23 @@ const Settings = ({ navigation = {} }) => {
   const handleExport = async () => {
     if (!isPremium) return handleSubscription('export');
 
-    await BackupService.export({ accounts, scheduledTxs, settings, txs });
+    try {
+      const ok = await BackupService.export({ accounts, scheduledTxs, settings, txs });
+      if (ok) eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.CONFIRM_EXPORT_SUCCESS });
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   const handleExportCsv = async () => {
     if (!isPremium) return handleSubscription('export');
 
-    await BackupService.exportCsv({ accounts, settings, txs });
+    try {
+      const ok = await BackupService.exportCsv({ accounts, settings, txs });
+      if (ok) eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.CONFIRM_EXPORT_SUCCESS });
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   const handleImport = async () => {
