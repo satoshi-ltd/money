@@ -76,8 +76,6 @@ const Settings = ({ navigation = {} }) => {
   };
 
   const handleImport = async () => {
-    if (!isPremium) return handleSubscription('import');
-
     const backup = await BackupService.import().catch(handleError);
 
     if (backup) {
