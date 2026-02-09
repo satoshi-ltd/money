@@ -38,7 +38,7 @@ const CardAccount = ({
   const exchangeTone = highlight ? 'onAccent' : 'secondary';
   const percentageTone = highlight ? 'onAccent' : 'accent';
 
-  const showPercentage = Number.isFinite(percentage) && Math.abs(percentage) >= 1;
+  const showPercentage = Number.isFinite(percentage) && Math.abs(percentage) >= 0.1;
   const chartValues = Array.isArray(chart) ? chart.slice(-12) : [];
 
   return (
