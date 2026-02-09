@@ -9,7 +9,12 @@ const NOTIFICATION_KIND = {
   SCHEDULED: 'scheduled-tx',
 };
 
-const resolveDateTrigger = (date) => (date instanceof Date ? date : new Date(date));
+// Expo Notifications deprecated passing a Date directly as trigger input.
+// Use explicit `{ type: 'date', date: Date }` instead.
+const resolveDateTrigger = (date) => {
+  const resolved = date instanceof Date ? date : new Date(date);
+  return { type: Notifications.SchedulableTriggerInputTypes.DATE, date: resolved };
+};
 const notificationKey = ({ scheduledId, occurrenceAt } = {}) => `${scheduledId}:${occurrenceAt}`;
 const triggerTime = (notification = {}) => {
   const value = notification?.trigger?.value ?? notification?.trigger?.date;
