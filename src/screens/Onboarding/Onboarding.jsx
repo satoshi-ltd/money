@@ -110,7 +110,6 @@ const Onboarding = ({ navigation: { navigate } }) => {
           await updateSettings({
             marketingLead: { email, consent: true, sentAt: Date.now(), remote: response || true },
           });
-          eventEmitter.emit(C.EVENT.NOTIFICATION, { title: L10N.LEAD_SENT });
         } catch {
           // Do not block onboarding if the network fails.
           await updateSettings({

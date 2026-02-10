@@ -31,7 +31,7 @@ const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation:
       .catch(handleError);
   };
 
-  const handleError = (error) => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, text: JSON.stringify(error) });
+  const handleError = () => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, text: L10N.ERROR_TRY_AGAIN });
 
   const handleTermsAndConditions = () => {
     Linking.openURL(TERMS_URL);

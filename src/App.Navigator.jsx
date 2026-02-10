@@ -67,7 +67,7 @@ const Tabs = ({ navigation = {} }) => {
       .then((plans) => {
         navigation.navigate('subscription', { plans });
       })
-      .catch((error) => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, text: JSON.stringify(error) }));
+      .catch(() => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, text: L10N.ERROR_TRY_AGAIN }));
   };
 
   const screenOptions = {

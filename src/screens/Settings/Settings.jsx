@@ -117,9 +117,11 @@ const Settings = ({ navigation = {} }) => {
     setActivity((prev) => ({ ...(prev || {}), handleRestorePurchases: true }));
     PurchaseService.restore()
       .then((activeSubscription) => {
-        if (activeSubscription) {
+        if (activeSubscription?.productIdentifier) {
           updateSubscription(activeSubscription);
           eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.PURCHASE_RESTORED });
+        } else {
+          eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.PURCHASES_NOT_FOUND });
         }
         setActivity((prev) => ({ ...(prev || {}), handleRestorePurchases: false }));
       })
@@ -129,7 +131,7 @@ const Settings = ({ navigation = {} }) => {
       });
   };
 
-  const handleError = (error) => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, text: JSON.stringify(error) });
+  const handleError = () => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, text: L10N.ERROR_TRY_AGAIN });
 
   const handleTheme = () => {
     const nextTheme = theme === 'light' ? 'dark' : 'light';

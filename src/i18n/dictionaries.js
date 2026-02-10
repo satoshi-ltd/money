@@ -256,6 +256,7 @@ export const EN = {
   PRIVACY: 'Privacy Policy',
   PURCHASE: 'Purchase',
   PURCHASE_RESTORED: 'Purchase restored.',
+  PURCHASES_NOT_FOUND: 'No purchases found.',
 
   REMINDER_BACKUP: 'Backup Reminder',
   REMINDER_BACKUP_CAPTION: 'Get backup alerts.',
@@ -630,6 +631,7 @@ export const PT = {
   PRIVACY: 'Política de privacidade',
   PURCHASE: 'Comprar',
   PURCHASE_RESTORED: 'Compra restaurada.',
+  PURCHASES_NOT_FOUND: 'Nenhuma compra encontrada.',
 
   REMINDER_BACKUP: 'Lembrete de backup',
   REMINDER_BACKUP_CAPTION: 'Receba alertas de backup.',
@@ -993,6 +995,7 @@ export const FR = {
   PRIVACY: 'Politique de confidentialité',
   PURCHASE: 'Acheter',
   PURCHASE_RESTORED: 'Achat restauré.',
+  PURCHASES_NOT_FOUND: 'Aucun achat trouvé.',
 
   REMINDER_BACKUP: 'Rappel de sauvegarde',
   REMINDER_BACKUP_CAPTION: 'Recevez des alertes de sauvegarde.',
@@ -1356,6 +1359,7 @@ export const DE = {
   PRIVACY: 'Datenschutzrichtlinie',
   PURCHASE: 'Kaufen',
   PURCHASE_RESTORED: 'Kauf wiederhergestellt.',
+  PURCHASES_NOT_FOUND: 'Keine Käufe gefunden.',
 
   REMINDER_BACKUP: 'Backup-Erinnerung',
   REMINDER_BACKUP_CAPTION: 'Backup-Erinnerungen erhalten.',
@@ -1718,6 +1722,7 @@ export const ES = {
   PRIVACY: 'Política de privacidad',
   PURCHASE: 'Comprar',
   PURCHASE_RESTORED: 'Compra restaurada.',
+  PURCHASES_NOT_FOUND: 'No se encontraron compras.',
 
   REMINDER_BACKUP: 'Recordatorio de backup',
   REMINDER_BACKUP_CAPTION: 'Recibe alertas de backup.',
