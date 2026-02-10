@@ -40,7 +40,7 @@ export const BackupService = {
           const accountInfo = accountMap.get(account);
           const accountTitle = accountInfo?.title || account || '';
           const accountCurrency = accountInfo?.currency || settings.baseCurrency || '';
-          const safeTitle = `${title || ''}`.replace(/\"/g, '""');
+          const safeTitle = `${title || ''}`.replace(/"/g, '""');
           rows.push(
             [date, type, value, accountCurrency, category ?? '', `"${safeTitle}"`, `"${accountTitle}"`].join(','),
           );

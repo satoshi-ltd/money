@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { FormTransaction, FormTransfer } from './components';
 import { createTransaction, createTransfer } from './helpers';
 import { style } from './Transaction.style';
-import { Button, Panel, Text, View } from '../../components';
+import { Button, Panel, View } from '../../components';
 import { useStore } from '../../contexts';
 import { C, L10N } from '../../modules';
 import { sortAccounts } from '../../modules/sortAccounts';

@@ -95,10 +95,15 @@
 ## Tests & scripts
 - `yarn start`: run Expo dev server
 - `yarn lint`: ESLint
+- `yarn lint:fix`: ESLint autofix (use intentionally)
 - `yarn test`: Jest
+
+## Quality gates
+- Before finishing a change that touches business logic/state/insights/migrations: run `yarn test`.
+- Before finishing a change that touches UI/components/hooks/imports: run `yarn lint`.
+- Use `yarn lint:fix` only when you explicitly want ESLint to rewrite files (expect diff noise).
 
 ## Product direction (2026)
 - Local-first always (privacy and offline usability).
 - Notifications should be scoped per feature (avoid global cancel).
 - Maintain schema/migrations in backups and storage.
-

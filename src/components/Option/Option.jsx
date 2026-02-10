@@ -1,6 +1,5 @@
 import React from 'react';
-import { Switch, TouchableOpacity } from 'react-native';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Switch, TouchableOpacity } from 'react-native';
 
 import { useApp } from '../../contexts';
 import { Icon, Text, View } from '../../primitives';

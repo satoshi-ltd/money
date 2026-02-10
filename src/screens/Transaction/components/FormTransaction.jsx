@@ -3,8 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { useWindowDimensions } from 'react-native';
 
 import { style } from './FormTransaction.style';
-import { Heading, InputAccount, InputDate, ScrollView } from '../../../components';
-import { CardOption, InputAmount, InputField } from '../../../components';
+import { CardOption, Heading, InputAccount, InputAmount, InputDate, InputField, ScrollView } from '../../../components';
 import { useStore } from '../../../contexts';
 import { C, getIcon, L10N, suggestCategory } from '../../../modules';
 import { optionSnap } from '../../../theme/layout';

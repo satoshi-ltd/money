@@ -87,11 +87,12 @@ const Onboarding = ({ navigation: { navigate } }) => {
   const handleLeadEmail = (email) => setSurveyData((prev) => ({ ...prev, email }));
 
   const leadEmailValid = isValidEmail(surveyData.email);
+  const leadEmailPresent = `${surveyData.email || ''}`.trim().length > 0;
 
   const handleNext = async () => {
     if (is.last) {
-      // Lead capture: no separate "Send" button. We send on Start if email is valid.
-      if (is.lead && leadEmailValid) {
+      // Lead capture: optional. We only send if the user provided a valid email.
+      if (is.lead && leadEmailPresent && leadEmailValid) {
         const email = `${surveyData.email || ''}`.trim();
         const { fingerprint } = settings || {};
         const profile = settings?.userProfile?.answers || {};
@@ -116,6 +117,11 @@ const Onboarding = ({ navigation: { navigate } }) => {
           });
           eventEmitter.emit(C.EVENT.NOTIFICATION, { error: true, title: L10N.LEAD_SEND_FAILED });
         }
+      } else if (is.lead && !leadEmailPresent) {
+        // Explicitly persist "no lead" choice (keeps defaults, but updates local email if needed).
+        await updateSettings({
+          marketingLead: { email: '', consent: false, sentAt: undefined, remote: undefined },
+        });
       }
 
       await persistProfile(surveyData, { completedAt: settings?.userProfile?.completedAt || Date.now() });
@@ -149,11 +155,7 @@ const Onboarding = ({ navigation: { navigate } }) => {
       <View row style={styles.footer}>
         <View flex />
 
-        <Button
-          disabled={(is.survey && !surveyData[currentSlide?.type]) || (is.lead && !leadEmailValid)}
-          onPress={handleNext}
-          style={styles.button}
-        >
+        <Button disabled={is.survey && !surveyData[currentSlide?.type]} onPress={handleNext} style={styles.button}>
           {is.lead ? L10N.START : is.last ? L10N.START : L10N.NEXT}
         </Button>
       </View>

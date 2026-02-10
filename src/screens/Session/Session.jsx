@@ -4,8 +4,7 @@ import { SafeAreaView } from 'react-native';
 
 import { NumKeyboard } from './components';
 import { getStyles } from './Session.style';
-import { Text, View } from '../../components';
-import { Logo } from '../../components';
+import { Logo, Text, View } from '../../components';
 import { useApp, useStore } from '../../contexts';
 import { C, eventEmitter, L10N } from '../../modules';
 import { NotificationsService, ServiceRates } from '../../services';

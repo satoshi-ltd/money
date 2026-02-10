@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Alert } from 'react-native';
-import { useWindowDimensions } from 'react-native';
+import { Alert, useWindowDimensions } from 'react-native';
 
 import { style } from './ScheduledForm.style';
 import {

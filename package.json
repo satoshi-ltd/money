@@ -7,7 +7,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "lint": "eslint --cache --fix --format codeframe --ext .jsx,.js src",
+    "lint": "eslint --cache --format stylish --ext .jsx,.js src",
+    "lint:fix": "eslint --cache --fix --format stylish --ext .jsx,.js src",
     "test": "jest"
   },
   "dependencies": {
@@ -47,13 +48,23 @@
   "devDependencies": {
     "@babel/core": "^7.24.0",
     "@babel/plugin-transform-regenerator": "^7.20.5",
-    "@satoshi-ltd/eslint": "^0.1"
+    "eslint": "8.57.1",
+    "eslint-plugin-import": "2.31.0",
+    "eslint-plugin-react": "7.37.4",
+    "eslint-plugin-react-hooks": "4.6.2"
   },
   "jest": {
     "preset": "jest-expo",
     "transformIgnorePatterns": [
       "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg)"
     ],
+    "moduleNameMapper": {
+      "^expo-modules-core/src/Refs$": "<rootDir>/src/test/mocks/expo-modules-core-Refs.js",
+      "^expo-modules-core/src/web/index\\.web$": "<rootDir>/src/test/mocks/expo-modules-core-web-index.js"
+      ,
+      "^expo/src/winter/FormData$": "<rootDir>/src/test/mocks/expo-winter-FormData.js",
+      "^expo/src/winter$": "<rootDir>/src/test/mocks/expo-winter-index.js"
+    },
     "moduleFileExtensions": [
       "js",
       "jsx"

@@ -5,8 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Platform, StyleSheet } from 'react-native';
 
-import { Button, Footer, Icon, Text } from './components';
-import { Logo } from './components';
+import { Button, Footer, Icon, Logo, Text } from './components';
 import { useApp, useStore } from './contexts';
 import { C, eventEmitter, getNavigationTheme, ICON, L10N } from './modules';
 import {

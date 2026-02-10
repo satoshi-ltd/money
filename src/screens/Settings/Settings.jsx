@@ -8,8 +8,7 @@ import { style } from './Settings.style';
 import { Dropdown, Heading, Screen, Setting, Text, View } from '../../components';
 import { useStore } from '../../contexts';
 import { setLanguage } from '../../i18n';
-import { C, eventEmitter, ICON, L10N } from '../../modules';
-import { verboseDate } from '../../modules';
+import { C, eventEmitter, ICON, L10N, verboseDate } from '../../modules';
 import { BackupService, NotificationsService, PurchaseService } from '../../services';
 
 const { EVENT } = C;

@@ -3,8 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { Animated, Easing, useWindowDimensions } from 'react-native';
 
 import { style } from './Chart.style';
-import { Heading, Text, View } from '../../../../components';
-import { LineChart, PriceFriendly } from '../../../../components';
+import { Heading, LineChart, PriceFriendly, Text, View } from '../../../../components';
 import { L10N } from '../../../../modules';
 import { viewOffset } from '../../../../theme/layout';
 import { calcScales } from '../../modules';

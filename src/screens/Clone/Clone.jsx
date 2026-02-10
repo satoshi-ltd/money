@@ -16,7 +16,7 @@ const {
 
 const INITIAL_STATE = { form: {}, valid: false };
 
-const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } = {} }) => {
+const Clone = ({ route: { params = {} } = {}, navigation: { goBack } = {} }) => {
   const store = useStore();
   const { accounts, createTx, deleteTx, updateTx } = store;
   const [dataSource, setDataSource] = useState({});
@@ -69,7 +69,7 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack, navigate } =
     if (!remove) goBack();
   };
 
-  const { title = '', type = EXPENSE } = dataSource;
+  const { type = EXPENSE } = dataSource;
 
   const isDirty =
     ['category', 'timestamp', 'title', 'value'].some(

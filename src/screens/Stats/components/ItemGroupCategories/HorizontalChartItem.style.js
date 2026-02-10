@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 
 import { theme } from '../../../../theme';
 
-export const getStyles = (colors) =>
+export const getStyles = () =>
   StyleSheet.create({
     item: {
       paddingVertical: theme.spacing.xxs / 2,

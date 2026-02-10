@@ -2,7 +2,11 @@ import { DEFAULTS, SCHEMA_VERSION } from '../store.constants';
 
 const ensureArray = (value) => (Array.isArray(value) ? value : []);
 const normalizeScheduled = (item = {}) => {
-  const { endedAt, pausedAt, status, ...rest } = item || {};
+  // Drop legacy scheduled fields if present (we keep scheduled items "active-only").
+  const rest = { ...(item || {}) };
+  delete rest.endedAt;
+  delete rest.pausedAt;
+  delete rest.status;
   return rest;
 };
 
