@@ -28,8 +28,21 @@ export const NotificationsService = {
     await NotificationsService.syncScheduled({ scheduledTxs, txs });
   },
 
-  // Used for destructive actions like "Reset data". We only cancel Money-scoped notifications
-  // and we must not prompt the user for permission during a reset.
+  notifyPremiumUnlocked: async () => {
+    const permission = await Notifications.getPermissionsAsync();
+    if (permission.status !== GRANTED) return;
+
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: L10N.PREMIUM_UNLOCKED_TITLE,
+        body: L10N.PREMIUM_UNLOCKED_CAPTION,
+        sound: true,
+        data: { kind: 'btc-premium' },
+      },
+      trigger: null,
+    });
+  },
+
   clearAll: async () => {
     const permission = await Notifications.getPermissionsAsync();
     if (permission.status !== GRANTED) return;
