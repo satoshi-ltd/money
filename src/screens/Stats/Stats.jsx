@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useScrollToTop } from '@react-navigation/native';
 
 import { Chart, ItemGroupCategories, StatsRangeToggle } from './components';
 import { queryMonth, queryChart } from './modules';
@@ -16,6 +17,9 @@ const MAX_STATS_MONTHS = 48;
 let debounceTimeout;
 
 const Stats = () => {
+  const scrollRef = useRef(null);
+  useScrollToTop(scrollRef);
+
   const store = useStore();
   const { colors } = useApp();
   const {
@@ -77,7 +81,7 @@ const Stats = () => {
   const colorExpenseBars = colors.textSecondary;
 
   return (
-    <Screen style={style.screen}>
+    <Screen ref={scrollRef} style={style.screen}>
       <Chart
         {...chartProps}
         color={color}

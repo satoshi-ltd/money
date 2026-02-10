@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { useScrollToTop } from '@react-navigation/native';
 
 import { style } from './Accounts.style';
 import { filter, query } from './modules';
@@ -21,13 +22,15 @@ import { cardAccountSnap } from '../../theme/layout';
 
 const Accounts = ({ navigation: { navigate } = {} }) => {
   const { accounts = [], overall = {} } = useStore();
+  const scrollRef = useRef(null);
+  useScrollToTop(scrollRef);
 
   const [selected, setSelected] = useState();
 
   const currencies = query(accounts);
 
   return (
-    <Screen style={style.screen}>
+    <Screen ref={scrollRef} style={style.screen}>
       <Heading value={L10N.CURRENCIES} offset />
       <ScrollView horizontal snapTo={cardAccountSnap} style={style.scrollView}>
         {currencies.map(({ base, currency, ...item }, index) => (
