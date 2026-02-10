@@ -7,6 +7,7 @@ export const getStyles = (colors) =>
   StyleSheet.create({
     safeAreaView: {
       flex: 1,
+      backgroundColor: colors.background,
       justifyContent: 'flex-end',
     },
 

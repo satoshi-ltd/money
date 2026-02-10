@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { NumKeyboard } from './components';
 import { getStyles } from './Session.style';
@@ -48,7 +48,7 @@ const Session = ({ navigation: { reset } = {} }) => {
   };
 
   return (
-    <SafeAreaView style={style.safeAreaView}>
+    <SafeAreaView edges={['top', 'bottom']} style={style.safeAreaView}>
       <View style={style.content}>
         <Logo />
         <Text size="m">{signup ? L10N.PIN_CHOOSE : L10N.PIN}</Text>

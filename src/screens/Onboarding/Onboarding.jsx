@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useMemo, useRef, useState } from 'react';
-import { SafeAreaView, useWindowDimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { DEFAULT_SURVEY_DATA, SLIDES } from './Onboarding.constants';
 import { Slide } from './Onboarding.Slide';
@@ -135,7 +136,7 @@ const Onboarding = ({ navigation: { navigate } }) => {
   };
 
   return (
-    <SafeAreaView style={styles.screen}>
+    <SafeAreaView edges={['top', 'bottom']} style={styles.screen}>
       <ScrollView horizontal ref={scrollview} snapTo={width} onScroll={handleScroll}>
         {SLIDES.map((slide, index) => (
           <Slide

@@ -7,11 +7,8 @@ import { viewOffset } from '../../theme/layout';
 export const getStyles = (colors) =>
   StyleSheet.create({
     screen: {
-      height: '100%',
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
+      flex: 1,
+      backgroundColor: colors.background,
     },
 
     slide: {
