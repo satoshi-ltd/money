@@ -5,11 +5,15 @@ import { AppState } from 'react-native';
 import { consolidate, migrateState } from './modules';
 import { detectDeviceLanguage, setLanguage } from '../i18n';
 import {
+  buildAutoAccountCatalog,
+  buildAutoAmountCatalog,
   buildAutoCategoryCatalog,
   C,
   eventEmitter,
   getOccurrencesBetween,
   L10N,
+  learnAutoAccount,
+  learnAutoAmount,
   learnAutoCategory,
   maybeUnlockPremiumFromAccounts,
 } from '../modules';
@@ -95,25 +99,43 @@ const runScheduledSync = async ({ migrated, store }) => {
     }
   }
 
-  let next = migrated;
-  if (newTxs.length > 0) {
-    store.get('txs');
-    await store.save(newTxs);
-    const nextTxs = store.value;
+    let next = migrated;
+    if (newTxs.length > 0) {
+      store.get('txs');
+      await store.save(newTxs);
+      const nextTxs = store.value;
 
-    let nextSettings = migrated.settings;
-    const categoryTxs = newTxs.filter((tx) => tx?.category !== undefined);
-    if (categoryTxs.length > 0) {
-      const nextCatalog = categoryTxs.reduce(
-        (catalog, tx) => learnAutoCategory(catalog, tx),
-        migrated.settings.autoCategory,
-      );
-      nextSettings = { ...migrated.settings, autoCategory: nextCatalog };
-      await store.get('settings').save(nextSettings);
+      let nextSettings = migrated.settings;
+      const categoryTxs = newTxs.filter((tx) => tx?.category !== undefined);
+      const nextAutoCategory =
+        categoryTxs.length > 0
+          ? categoryTxs.reduce((catalog, tx) => learnAutoCategory(catalog, tx), migrated.settings.autoCategory)
+          : undefined;
+
+      const accountTxs = newTxs.filter((tx) => !!tx?.account);
+      const nextAutoAccount =
+        accountTxs.length > 0
+          ? accountTxs.reduce((catalog, tx) => learnAutoAccount(catalog, tx), migrated.settings.autoAccount)
+          : undefined;
+
+      const amountTxs = newTxs.filter((tx) => !!tx?.account && Number.isFinite(tx?.value) && tx.value > 0);
+      const nextAutoAmount =
+        amountTxs.length > 0
+          ? amountTxs.reduce((catalog, tx) => learnAutoAmount(catalog, tx), migrated.settings.autoAmount)
+          : undefined;
+
+      if (nextAutoCategory || nextAutoAccount || nextAutoAmount) {
+        nextSettings = {
+          ...migrated.settings,
+          ...(nextAutoCategory ? { autoCategory: nextAutoCategory } : null),
+          ...(nextAutoAccount ? { autoAccount: nextAutoAccount } : null),
+          ...(nextAutoAmount ? { autoAmount: nextAutoAmount } : null),
+        };
+        await store.get('settings').save(nextSettings);
+      }
+
+      next = { ...migrated, txs: nextTxs, settings: nextSettings };
     }
-
-    next = { ...migrated, txs: nextTxs, settings: nextSettings };
-  }
 
   await NotificationsService.syncScheduled({ scheduledTxs: next.scheduledTxs, txs: next.txs });
 
@@ -156,16 +178,30 @@ const StoreProvider = ({ children }) => {
       await setLanguage(migrated.settings.language);
 
       const autoCategory = migrated.settings?.autoCategory || {};
-      const hasRules = Object.keys(autoCategory.rules || {}).length > 0;
-      if (!hasRules && (migrated.txs || []).length > 0) {
-        const catalog = buildAutoCategoryCatalog(migrated.txs);
-        const nextSettings = {
-          ...migrated.settings,
-          autoCategory: {
-            ...autoCategory,
-            ...catalog,
-          },
-        };
+      const autoAccount = migrated.settings?.autoAccount || {};
+      const autoAmount = migrated.settings?.autoAmount || {};
+
+      const hasCategoryRules = Object.keys(autoCategory.rules || {}).length > 0;
+      const hasAccountRules = Object.keys(autoAccount.rules || {}).length > 0;
+      const hasAmountRules = Object.keys(autoAmount.rules || {}).length > 0;
+      if ((!hasCategoryRules || !hasAccountRules || !hasAmountRules) && (migrated.txs || []).length > 0) {
+        const nextSettings = { ...migrated.settings };
+
+        if (!hasCategoryRules) {
+          const catalog = buildAutoCategoryCatalog(migrated.txs);
+          nextSettings.autoCategory = { ...autoCategory, ...catalog };
+        }
+
+        if (!hasAccountRules) {
+          const catalog = buildAutoAccountCatalog(migrated.txs);
+          nextSettings.autoAccount = { ...autoAccount, ...catalog };
+        }
+
+        if (!hasAmountRules) {
+          const catalog = buildAutoAmountCatalog(migrated.txs);
+          nextSettings.autoAmount = { ...autoAmount, ...catalog };
+        }
+
         await store.get('settings').save(nextSettings);
         migrated = { ...migrated, settings: nextSettings };
       }

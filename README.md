@@ -20,6 +20,7 @@ Private, local‑first finance ledger for people who want their data to stay on 
 
 **Platforms**
 - iOS and Android only (no web support).
+- iOS baseline: 15.1+
 
 **Privacy first**
 Môney is designed to run offline and store data locally. Some features use the network (rates sync, purchases, optional onboarding email), and should remain opt‑in and transparent.

@@ -22,7 +22,7 @@
       "buildNumber": "21",
       "usesIcloudStorage": true,
       "infoPlist": {
-        "LSMinimumSystemVersion": "12.0",
+        "LSMinimumSystemVersion": "15.1",
         "ITSAppUsesNonExemptEncryption": false
       }
     },
@@ -33,7 +33,8 @@
       },
       "package": "com.satoshilimited.money",
       "versionCode": 21,
-      "windowSoftInputMode": "adjustResize"
+      "edgeToEdgeEnabled": true,
+      "softwareKeyboardLayoutMode": "resize"
     },
     "plugins": [
       [

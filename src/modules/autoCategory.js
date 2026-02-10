@@ -1,31 +1,4 @@
-const STOP_WORDS = new Set([
-  'a',
-  'an',
-  'and',
-  'are',
-  'at',
-  'by',
-  'for',
-  'from',
-  'in',
-  'is',
-  'it',
-  'of',
-  'on',
-  'or',
-  'the',
-  'to',
-  'with',
-]);
-
-const tokenize = (title = '') => {
-  if (!title || typeof title !== 'string') return [];
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .split(/\s+/)
-    .filter((word) => word.length >= 3 && !STOP_WORDS.has(word));
-};
+import { tokenizeTitle } from './autoTokens';
 
 const ensureStatsBucket = (stats, type, word) => {
   if (!stats[type]) stats[type] = {};
@@ -57,7 +30,7 @@ export const buildAutoCategoryCatalog = (txs = [], options = {}) => {
   const stats = {};
   txs.forEach(({ title, type, category }) => {
     if (category === undefined || category === null) return;
-    const words = tokenize(title);
+    const words = tokenizeTitle(title);
     if (!words.length) return;
     words.forEach((word) => {
       const bucket = ensureStatsBucket(stats, type, word);
@@ -86,7 +59,7 @@ export const learnAutoCategory = (catalog, { title, type, category }, options = 
   const stats = { ...(catalog?.stats || {}) };
   const rules = { ...(catalog?.rules || {}) };
 
-  const words = tokenize(title);
+  const words = tokenizeTitle(title);
   if (!words.length) return catalog;
 
   words.forEach((word) => {
@@ -110,7 +83,7 @@ export const learnAutoCategory = (catalog, { title, type, category }, options = 
 
 export const suggestCategory = (catalog, { title, type }) => {
   const rules = catalog?.rules || {};
-  const words = tokenize(title);
+  const words = tokenizeTitle(title);
   if (!words.length) return undefined;
 
   const typeRules = rules[type] || {};

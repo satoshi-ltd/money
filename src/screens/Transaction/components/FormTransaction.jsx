@@ -5,17 +5,28 @@ import { InteractionManager, useWindowDimensions } from 'react-native';
 import { style } from './FormTransaction.style';
 import { CardOption, Heading, InputAccount, InputAmount, InputDate, InputField, ScrollView } from '../../../components';
 import { useStore } from '../../../contexts';
-import { C, getIcon, L10N, suggestCategory } from '../../../modules';
+import { C, getIcon, L10N, suggestAccount, suggestAmount, suggestCategory } from '../../../modules';
 import { optionSnap } from '../../../theme/layout';
 import { queryCategories } from '../helpers';
 
 const EXPENSE = C?.TX?.TYPE?.EXPENSE ?? 0;
+const INCOME = C?.TX?.TYPE?.INCOME ?? 1;
 
 const FormTransaction = ({
   account = {},
   accountsList = [],
+  accountTouched = false,
+  amountTouched = false,
+  categoryTouched = false,
+  typeTouched = false,
+  typeAutoLocked = false,
+  autoSuggest = false,
   form,
   onChange,
+  onAutoSelectAccount,
+  onAutoSelectType,
+  onManualAmountChange,
+  onManualCategorySelect,
   onSelectAccount,
   showAccount = false,
   showCategory = true,
@@ -31,14 +42,71 @@ const FormTransaction = ({
   const handleField = (field, fieldValue) => {
     let next = { ...safeForm, [field]: fieldValue };
 
-    if (field === 'title' && showCategory && next.category === undefined) {
-      const suggested = suggestCategory(settings.autoCategory, { title: fieldValue, type: safeType });
-      if (suggested !== undefined) next = { ...next, category: suggested };
+    if (autoSuggest && field === 'title') {
+      const title = fieldValue;
+      const otherType = safeType === EXPENSE ? INCOME : EXPENSE;
+
+      const amountValue = Number(next.value);
+      const amountEmpty = !Number.isFinite(amountValue) || amountValue <= 0;
+
+      const canAutoSwitchType =
+        amountEmpty &&
+        !typeAutoLocked &&
+        !typeTouched &&
+        !categoryTouched &&
+        !accountTouched &&
+        typeof onAutoSelectType === 'function' &&
+        next.category === undefined;
+
+      let effectiveType = safeType;
+      const suggestedCurrent =
+        showCategory && next.category === undefined
+          ? suggestCategory(settings.autoCategory, { title, type: safeType })
+          : undefined;
+      const suggestedOther =
+        showCategory && next.category === undefined
+          ? suggestCategory(settings.autoCategory, { title, type: otherType })
+          : undefined;
+
+      // If we have a category match only in the other type, auto-switch type (rare case like "mirai").
+      if (canAutoSwitchType && suggestedCurrent === undefined && suggestedOther !== undefined) {
+        onAutoSelectType(otherType);
+        next = { ...next, category: suggestedOther };
+        effectiveType = otherType;
+      } else if (showCategory && next.category === undefined && suggestedCurrent !== undefined) {
+        next = { ...next, category: suggestedCurrent };
+      }
+
+      let effectiveAccountHash = account?.hash;
+
+      // Auto-select account only on screens that opt into it (Transaction create flow).
+      if (!accountTouched && typeof onAutoSelectAccount === 'function' && accountsList.length) {
+        const suggestedHash = suggestAccount(settings.autoAccount, { title, type: effectiveType });
+        if (suggestedHash && suggestedHash !== account?.hash) {
+          const nextAccount = accountsList.find((a) => a?.hash === suggestedHash);
+          if (nextAccount) {
+            effectiveAccountHash = suggestedHash;
+            onAutoSelectAccount(nextAccount);
+          }
+        }
+      }
+
+      // Auto-fill amount only when stable and only if the user hasn't touched the amount field.
+      if (!amountTouched && amountEmpty && effectiveAccountHash) {
+        const suggested = suggestAmount(settings.autoAmount, { title, type: effectiveType, account: effectiveAccountHash });
+        if (suggested !== undefined) next = { ...next, value: suggested };
+      }
     }
+
+    if (autoSuggest && field === 'value' && !amountTouched) onManualAmountChange?.();
 
     onChange({
       form: next,
-      valid: (showCategory ? next.category !== undefined : true) && next.title !== '' && next.value > 0,
+      valid:
+        (showCategory ? next.category !== undefined : true) &&
+        typeof next.title === 'string' &&
+        next.title.trim() !== '' &&
+        next.value > 0,
     });
   };
 
@@ -78,6 +146,15 @@ const FormTransaction = ({
   }, [safeForm.category, showCategory, sortedCategories]);
   const showAccountInput = showAccount && accountsList.length && onSelectAccount;
 
+  const detailRows = [
+    showAccountInput ? 'account' : null,
+    showDate ? 'date' : null,
+    'concept',
+    'amount',
+  ].filter(Boolean);
+  const isFirst = (name) => detailRows[0] === name;
+  const isLast = (name) => detailRows[detailRows.length - 1] === name;
+
   return (
     <>
       {showCategory && (
@@ -91,7 +168,10 @@ const FormTransaction = ({
                 highlight={safeForm.category === item.key}
                 icon={getIcon({ type: safeType, category: item.key })}
                 legend={item.caption}
-                onPress={() => handleField('category', item.key)}
+                onPress={() => {
+                  onManualCategorySelect?.();
+                  handleField('category', item.key);
+                }}
                 style={[
                   style.option,
                   index === 0 && style.firstOption,
@@ -106,27 +186,41 @@ const FormTransaction = ({
       <Heading value={L10N.DETAILS} />
 
       {showAccountInput ? (
-        <InputAccount accounts={accountsList} first onSelect={onSelectAccount} selected={account} />
+        <InputAccount
+          accounts={accountsList}
+          first={isFirst('account')}
+          last={isLast('account')}
+          onSelect={onSelectAccount}
+          selected={account}
+        />
       ) : null}
 
       {showDate && (
         <InputDate
-          first={!showAccountInput}
+          first={isFirst('date')}
+          last={isLast('date')}
           maximumDate={new Date()}
           value={safeForm.timestamp ? new Date(safeForm.timestamp) : new Date()}
           onChange={(value) => handleField('timestamp', value.getTime())}
         />
       )}
 
+      <InputField
+        first={isFirst('concept')}
+        last={isLast('concept')}
+        label={L10N.CONCEPT}
+        value={safeForm.title}
+        onChange={(value) => handleField('title', value)}
+      />
+
       <InputAmount
-        first={!showDate && !showAccountInput}
+        first={isFirst('amount')}
         account={account}
         currency={account.currency}
         value={safeForm.value}
         onChange={(value) => handleField('value', value)}
+        last={isLast('amount')}
       />
-
-      <InputField last label={L10N.CONCEPT} value={safeForm.title} onChange={(value) => handleField('title', value)} />
     </>
   );
 };
@@ -134,11 +228,21 @@ const FormTransaction = ({
 FormTransaction.propTypes = {
   account: PropTypes.shape({}).isRequired,
   accountsList: PropTypes.arrayOf(PropTypes.shape({})),
+  accountTouched: PropTypes.bool,
+  amountTouched: PropTypes.bool,
+  categoryTouched: PropTypes.bool,
+  typeTouched: PropTypes.bool,
+  typeAutoLocked: PropTypes.bool,
+  autoSuggest: PropTypes.bool,
   form: PropTypes.shape({}).isRequired,
   showCategory: PropTypes.bool,
   showDate: PropTypes.bool,
   type: PropTypes.number,
   onChange: PropTypes.func.isRequired,
+  onAutoSelectAccount: PropTypes.func,
+  onAutoSelectType: PropTypes.func,
+  onManualAmountChange: PropTypes.func,
+  onManualCategorySelect: PropTypes.func,
   onSelectAccount: PropTypes.func,
   showAccount: PropTypes.bool,
 };
