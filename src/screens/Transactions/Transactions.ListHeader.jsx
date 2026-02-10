@@ -3,8 +3,7 @@ import React, { useMemo, useState } from 'react';
 
 import { ButtonSummary } from './components';
 import { getStyles } from './Transactions.style';
-import { Button, InputField, View } from '../../components';
-import { Heading, InsightsCarousel } from '../../components';
+import { Button, Heading, InputField, InsightsCarousel, View } from '../../components';
 import { useApp, useStore } from '../../contexts';
 import { buildInsights, getProgressionPercentage, C, ICON, L10N } from '../../modules';
 

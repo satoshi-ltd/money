@@ -3,13 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
 
 import { style } from './Account.style';
-import { Button, Heading, Panel, Text, View } from '../../components';
-import { InputAmount, InputCurrency, InputField } from '../../components';
+import { Button, Heading, InputAmount, InputCurrency, InputField, Panel, Text, View } from '../../components';
 import { useStore } from '../../contexts';
-import { C, eventEmitter, L10N } from '../../modules';
+import { C, L10N } from '../../modules';
 import { ServiceRates } from '../../services';
 
-const { CURRENCY, EVENT } = C;
+const { CURRENCY } = C;
 
 const INITIAL_STATE = { balance: 0, currency: undefined, title: undefined };
 
@@ -45,7 +44,6 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
         onPress: async () => {
           setBusy(true);
           await deleteAccount(params);
-          eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.CONFIRM_DELETION_SUCCESS });
           goBack();
           goBack();
           setBusy(false);

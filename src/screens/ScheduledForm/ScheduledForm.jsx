@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Alert } from 'react-native';
-import { useWindowDimensions } from 'react-native';
+import { Alert, InteractionManager, useWindowDimensions } from 'react-native';
 
 import { style } from './ScheduledForm.style';
 import {
@@ -88,10 +87,23 @@ const ScheduledForm = ({ navigation = {}, route = {} }) => {
   const categories = useMemo(() => queryCategories({ type }), [type]);
 
   useEffect(() => {
-    setTimeout(() => {
-      const index = categories.findIndex(({ key }) => key === category);
-      if (index >= 0) scrollRef.current?.scrollTo({ x: (index - 1) * optionSnap, animated: true });
-    }, 10);
+    const index = categories.findIndex(({ key }) => key === category);
+    if (index < 0) return;
+
+    const x = Math.max(0, (index - 1) * optionSnap);
+    let cancelled = false;
+    const task = InteractionManager.runAfterInteractions(() => {
+      if (cancelled) return;
+      requestAnimationFrame(() => {
+        if (cancelled) return;
+        scrollRef.current?.scrollTo({ x, animated: true });
+      });
+    });
+
+    return () => {
+      cancelled = true;
+      task?.cancel?.();
+    };
   }, [categories, category]);
 
   const typeOptions = [

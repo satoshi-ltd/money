@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { Pressable, View } from 'react-native';
 
 import { HorizontalChartItem } from './HorizontalChartItem';
 import { style } from './ItemGroupCategories.style';
-import { Heading, PriceFriendly } from '../../../../components';
+import { Heading, Pressable, PriceFriendly, View } from '../../../../components';
 import { useStore } from '../../../../contexts';
 import { C, L10N } from '../../../../modules';
 import { orderByAmount } from '../../modules';

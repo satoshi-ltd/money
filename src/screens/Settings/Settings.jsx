@@ -3,13 +3,11 @@ import React, { useState } from 'react';
 import { Alert, Linking } from 'react-native';
 
 import { getLatestRates } from './helpers';
-import { ABOUT, OPTIONS, PREFERENCES } from './Settings.constants';
+import { ABOUT, DATA, PREMIUM, PREFERENCES } from './Settings.constants';
 import { style } from './Settings.style';
-import { Dropdown, Heading, Screen, Setting, Text, View } from '../../components';
+import { Chip, Heading, Icon, Screen, Setting, Text, View } from '../../components';
 import { useStore } from '../../contexts';
-import { setLanguage } from '../../i18n';
 import { C, eventEmitter, ICON, L10N } from '../../modules';
-import { verboseDate } from '../../modules';
 import { BackupService, NotificationsService, PurchaseService } from '../../services';
 
 const { EVENT } = C;
@@ -17,8 +15,7 @@ const { EVENT } = C;
 const Settings = ({ navigation = {} }) => {
   const store = useStore();
 
-  const [activity, setActivity] = useState();
-  const [showLanguage, setShowLanguage] = useState(false);
+  const [activity, setActivity] = useState({});
 
   const {
     accounts = [],
@@ -36,11 +33,16 @@ const Settings = ({ navigation = {} }) => {
   const { baseCurrency, language = 'en', lastRatesUpdate = '', reminders, theme } = settings;
 
   const isPremium = !!subscription?.productIdentifier;
+  const subscriptionStatus = subscription?.productIdentifier
+    ? subscription?.productIdentifier?.split('.')?.[0] === 'lifetime'
+      ? L10N.PREMIUM_LIFETIME
+      : L10N.PREMIUM_YEARLY
+    : undefined;
 
   const handleUpdateRates = async () => {
-    setActivity({ ...activity, updateRates: true });
+    setActivity((prev) => ({ ...(prev || {}), handleUpdateRates: true }));
     await getLatestRates({ store });
-    setActivity({ updateRates: false });
+    setActivity((prev) => ({ ...(prev || {}), handleUpdateRates: false }));
   };
 
   const handleOption = ({ callback, screen, url }) => {
@@ -97,31 +99,39 @@ const Settings = ({ navigation = {} }) => {
     }
   };
 
-  const handleSubscription = (activityState) => {
+  const handleSubscription = () => {
     if (subscription?.productIdentifier) navigation.navigate('subscription');
-    setActivity(activityState);
+    setActivity((prev) => ({ ...(prev || {}), handleSubscription: true }));
     PurchaseService.getProducts()
       .then((plans) => {
         navigation.navigate('subscription', { plans });
-        setActivity();
+        setActivity((prev) => ({ ...(prev || {}), handleSubscription: false }));
       })
-      .catch(handleError);
+      .catch((error) => {
+        setActivity((prev) => ({ ...(prev || {}), handleSubscription: false }));
+        handleError(error);
+      });
   };
 
   const handleRestorePurchases = () => {
-    setActivity('restore');
+    setActivity((prev) => ({ ...(prev || {}), handleRestorePurchases: true }));
     PurchaseService.restore()
       .then((activeSubscription) => {
-        if (activeSubscription) {
+        if (activeSubscription?.productIdentifier) {
           updateSubscription(activeSubscription);
           eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.PURCHASE_RESTORED });
-          setActivity();
+        } else {
+          eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.PURCHASES_NOT_FOUND });
         }
+        setActivity((prev) => ({ ...(prev || {}), handleRestorePurchases: false }));
       })
-      .catch(handleError);
+      .catch((error) => {
+        setActivity((prev) => ({ ...(prev || {}), handleRestorePurchases: false }));
+        handleError(error);
+      });
   };
 
-  const handleError = (error) => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, text: JSON.stringify(error) });
+  const handleError = () => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, text: L10N.ERROR_TRY_AGAIN });
 
   const handleTheme = () => {
     const nextTheme = theme === 'light' ? 'dark' : 'light';
@@ -129,11 +139,30 @@ const Settings = ({ navigation = {} }) => {
     updateSettings({ theme: nextTheme });
   };
 
-  const handleLanguage = (next) => {
-    if (!next) return;
-    updateSettings({ language: next.id });
-    setLanguage(next.id);
-  };
+  const RightValueChevron = ({ value }) => (
+    <View row align="center" gap="xxs">
+      <Text tone="secondary" size="s">
+        {value}
+      </Text>
+      <Icon name={ICON.RIGHT} tone="secondary" />
+    </View>
+  );
+
+  const RightCountChevron = ({ count }) => (
+    <View row align="center" gap="xxs">
+      <Chip label={count} variant="accent" shape={count < 10 ? 'circle' : 'pill'} />
+      <Icon name={ICON.RIGHT} tone="secondary" />
+    </View>
+  );
+
+  const RightPremiumChevron = () => (
+    <View row align="center" gap="xxs">
+      <Chip label={L10N.PREMIUM} variant="muted" />
+      <Icon name={ICON.RIGHT} tone="secondary" />
+    </View>
+  );
+
+  const handleLanguage = () => navigation.navigate('language');
 
   const handleChangeReminder = (next) => {
     const value = typeof next === 'object' ? next.value : next ? 1 : 0;
@@ -185,17 +214,57 @@ const Settings = ({ navigation = {} }) => {
 
   const revenueCatCustomerId = subscription?.customerInfo?.originalAppUserId;
 
-  const languageOptions = [
-    { id: 'en', label: L10N.LANGUAGE_EN },
-    { id: 'es', label: L10N.LANGUAGE_ES },
-    { id: 'pt', label: L10N.LANGUAGE_PT },
-    { id: 'fr', label: L10N.LANGUAGE_FR },
-    { id: 'de', label: L10N.LANGUAGE_DE },
-  ];
-  const currentLanguageLabel = languageOptions.find((option) => option.id === language)?.label || L10N.LANGUAGE_EN;
-  const scheduledSubtitle = scheduledTxs.length
-    ? L10N.SCHEDULED_TOTAL({ count: scheduledTxs.length })
-    : L10N.SCHEDULED_EMPTY;
+  const currentLanguageLabel =
+    language === 'es'
+      ? L10N.LANGUAGE_ES
+      : language === 'pt'
+      ? L10N.LANGUAGE_PT
+      : language === 'fr'
+      ? L10N.LANGUAGE_FR
+      : language === 'de'
+      ? L10N.LANGUAGE_DE
+      : L10N.LANGUAGE_EN;
+  const scheduledCount = scheduledTxs.length;
+  const backupReminderEnabled = (reminders?.[0] ?? 1) === 1;
+  const resolvedLocale =
+    language === 'es'
+      ? 'es-ES'
+      : language === 'pt'
+      ? 'pt-PT'
+      : language === 'fr'
+      ? 'fr-FR'
+      : language === 'de'
+      ? 'de-DE'
+      : 'en-US';
+  const lastRatesDate = lastRatesUpdate ? new Date(lastRatesUpdate) : null;
+  const lastRatesUpdatedValue = (() => {
+    if (!lastRatesDate || Number.isNaN(lastRatesDate.getTime())) return '';
+    const now = new Date();
+    const isToday = lastRatesDate.toDateString() === now.toDateString();
+
+    if (isToday) {
+      // Time-only is easier to scan when the date is obvious.
+      return lastRatesDate.toLocaleTimeString(resolvedLocale, { hour: '2-digit', minute: '2-digit' });
+    }
+
+    return lastRatesDate.toLocaleString(resolvedLocale, {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  })();
+  const backupReminderSubtitle = (() => {
+    if (!backupReminderEnabled) return L10N.REMINDER_BACKUP_CAPTION;
+
+    // Matches NotificationsService.reminders() weekly trigger: Sunday at 08:00 local time.
+    const sunday = new Date(2024, 0, 7, 8, 0, 0, 0); // Sunday
+    const weekday = sunday.toLocaleDateString(resolvedLocale, { weekday: 'short' });
+    const time = sunday.toLocaleTimeString(resolvedLocale, { hour: '2-digit', minute: '2-digit' });
+
+    return `${L10N.SCHEDULED_PATTERN_WEEKLY} - ${weekday} ${time}`;
+  })();
   const handleScheduledPress = () =>
     navigation.navigate(
       scheduledTxs.length ? 'scheduled' : 'scheduledForm',
@@ -210,32 +279,62 @@ const Settings = ({ navigation = {} }) => {
 
       <View style={style.group}>
         <Text bold size="s">
-          {L10N.GENERAL.toUpperCase()}
+          {L10N.PREMIUM.toUpperCase()}
         </Text>
-        {OPTIONS(isPremium, subscription).map(({ caption, disabled, icon, id, text, ...rest }) => (
+        {PREMIUM(isPremium, subscription).map(({ disabled, icon, id, text, ...rest }) => (
           <Setting
             {...settingProps}
-            activity={activity && rest.callback ? activity[rest.callback] : undefined}
-            key={`option-${id}`}
-            {...{
-              activity: rest.callback === 'handleUpdateRates' && activity?.updateRates,
-              subtitle:
-                rest.callback === 'handleUpdateRates'
-                  ? `${L10N.SYNC_RATES_SENTENCE} ${verboseDate(new Date(lastRatesUpdate), {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}`
-                  : caption,
-              disabled,
-              icon,
-              title: text,
-            }}
+            activity={rest.callback ? activity?.[rest.callback] : undefined}
+            key={`premium-${id}`}
+            disabled={disabled}
+            icon={icon}
+            title={text}
+            type={rest.callback === 'handleRestorePurchases' ? 'action' : 'navigation'}
+            right={
+              rest.callback === 'handleSubscription'
+                ? isPremium
+                  ? <RightValueChevron value={subscriptionStatus} />
+                  : <RightPremiumChevron />
+                : undefined
+            }
             onPress={rest.callback ? () => handleOption(rest) : undefined}
           />
         ))}
+      </View>
+
+      <View style={style.group}>
+        <Text bold size="s">
+          {L10N.DATA.toUpperCase()}
+        </Text>
+        {DATA().map(({ disabled, icon, id, text, ...rest }) => {
+          const isUpdateRates = rest.callback === 'handleUpdateRates';
+          const isExportBackup = rest.callback === 'handleExport';
+          const isExportCsv = rest.callback === 'handleExportCsv';
+          const gated = !isPremium && (isExportBackup || isExportCsv);
+          const showSpinner = isUpdateRates && activity?.handleUpdateRates;
+
+          return (
+            <Setting
+              {...settingProps}
+              key={`data-${id}`}
+              disabled={disabled}
+              icon={icon}
+              title={text}
+              type="navigation"
+              activity={showSpinner}
+              right={
+                showSpinner
+                  ? undefined
+                  : gated
+                  ? <RightPremiumChevron />
+                  : isUpdateRates && lastRatesUpdatedValue
+                  ? <RightValueChevron value={lastRatesUpdatedValue} />
+                  : <Icon name={ICON.RIGHT} tone="secondary" />
+              }
+              onPress={rest.callback ? () => handleOption(rest) : undefined}
+            />
+          );
+        })}
       </View>
 
       <View style={style.group}>
@@ -247,54 +346,48 @@ const Settings = ({ navigation = {} }) => {
           icon={ICON.THEME}
           title={L10N.APPEARANCE}
           subtitle={theme === 'dark' ? L10N.APPERANCE_DARK : L10N.APPERANCE_LIGHT}
-          type="action"
-          onPress={handleTheme}
+          type="toggle"
+          value={theme === 'dark'}
+          onValueChange={handleTheme}
         />
-        <View style={style.dropdownWrap}>
-          <Setting
-            {...settingProps}
-            subtitle={currentLanguageLabel}
-            icon={ICON.LANGUAGE}
-            title={L10N.LANGUAGE}
-            type="navigation"
-            onPress={() => setShowLanguage(true)}
-          />
-          <Dropdown
-            visible={showLanguage}
-            onClose={() => setShowLanguage(false)}
-            options={languageOptions}
-            selected={language}
-            onSelect={(option) => {
-              handleLanguage(option);
-              setShowLanguage(false);
-            }}
-            width={260}
-          />
-        </View>
+        <Setting
+          {...settingProps}
+          icon={ICON.LANGUAGE}
+          title={L10N.LANGUAGE}
+          type="navigation"
+          onPress={handleLanguage}
+          right={<RightValueChevron value={currentLanguageLabel} />}
+        />
         {PREFERENCES().map(({ disabled, icon, text, ...rest }, index) => (
           <Setting
             {...settingProps}
-            subtitle={rest.screen === 'baseCurrency' ? L10N.CURRENCY_NAME[baseCurrency] : undefined}
-            activity={activity && activity[rest.callback]}
+            activity={rest.callback ? activity?.[rest.callback] : undefined}
             key={`preference-${index}`}
             {...{ disabled, icon, title: text }}
+            right={
+              rest.screen === 'baseCurrency' ? <RightValueChevron value={L10N.CURRENCY_NAME[baseCurrency]} /> : undefined
+            }
             onPress={() => handleOption(rest)}
           />
         ))}
         <Setting
           {...settingProps}
           icon={ICON.SCHEDULED}
-          subtitle={scheduledSubtitle}
           title={L10N.SCHEDULED}
           type="navigation"
+          right={
+            scheduledCount
+              ? <RightCountChevron count={scheduledCount} />
+              : <RightValueChevron value={L10N.NEW} />
+          }
           onPress={handleScheduledPress}
         />
         <Setting
           {...settingProps}
-          subtitle={L10N.REMINDER_BACKUP_CAPTION}
+          subtitle={backupReminderSubtitle}
           icon={ICON.BELL}
           type="toggle"
-          value={(reminders?.[0] ?? 1) === 1}
+          value={backupReminderEnabled}
           onValueChange={handleChangeReminder}
           title={L10N.REMINDER_BACKUP}
         />
@@ -304,10 +397,10 @@ const Settings = ({ navigation = {} }) => {
         <Text bold size="s">
           {L10N.ABOUT.toUpperCase()}
         </Text>
-        {ABOUT(isPremium).map(({ disabled, icon, text, ...rest }, index) => (
+        {ABOUT().map(({ disabled, icon, text, ...rest }, index) => (
           <Setting
             {...settingProps}
-            activity={activity && activity[rest.callback]}
+            activity={rest.callback ? activity?.[rest.callback] : undefined}
             key={`about-${index}`}
             {...{ disabled, icon, title: text }}
             onPress={() => handleOption(rest)}
@@ -321,16 +414,18 @@ const Settings = ({ navigation = {} }) => {
         </Text>
 
         <Setting
-          icon={ICON.CLOSE}
+          icon={ICON.BACK}
           title={L10N.LOG_OUT}
-          subtitle={L10N.LOG_OUT_CAPTION}
           type="action"
           onPress={handleLogout}
         />
         <Setting
           icon={ICON.ALERT}
+          iconTone="danger"
           title={L10N.RESET_DATA}
+          titleTone="danger"
           subtitle={L10N.RESET_DATA_CAPTION}
+          subtitleTone="secondary"
           type="action"
           onPress={handleResetData}
         />

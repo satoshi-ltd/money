@@ -24,7 +24,7 @@ const FormTransaction = ({ account = {}, accountsList = [], form = {}, onChange,
     if ((!form.destination || form.from?.hash !== account?.hash) && fallback) {
       onChange({ form: { ...form, destination: fallback.hash, to: fallback, from: account } });
     }
-  }, [account?.hash, fallback, form, onChange]);
+  }, [account, fallback, form, onChange]);
 
   const getLatestRates = () => {
     const keys = Object.keys(rates || {});

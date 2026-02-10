@@ -5,8 +5,7 @@ import { SectionList } from 'react-native';
 import { DashboardListHeader } from './Dashboard.ListHeader';
 import { style } from './Dashboard.style';
 import { queryLastTxs, querySearchTxs } from './helpers';
-import { Screen } from '../../components';
-import { TransactionItem, TransactionsHeader } from '../../components';
+import { Screen, TransactionItem, TransactionsHeader } from '../../components';
 import { useStore } from '../../contexts';
 import { C } from '../../modules';
 

@@ -17,3 +17,4 @@ export * from './Scheduled';
 export * from './ScheduledForm';
 export * from './Subscription';
 export * from './Transaction';
+export * from './Language';

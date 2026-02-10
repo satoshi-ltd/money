@@ -18,6 +18,7 @@ const Modal = ({ children, onClose }) => {
   const backdropOpacity = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(0)).current;
   const screenHeight = Dimensions.get('window').height;
+  const gestureEnabled = !!onClose;
 
   useEffect(() => {
     if (!isFocused) return;
@@ -32,7 +33,7 @@ const Modal = ({ children, onClose }) => {
       toValue: 0,
       useNativeDriver: false,
     }).start();
-  }, [isFocused]);
+  }, [isFocused, backdropOpacity, screenHeight, translateY]);
 
   const handleClose = () => {
     if (!onClose) return;
@@ -73,8 +74,6 @@ const Modal = ({ children, onClose }) => {
       useNativeDriver: false,
     }).start();
   };
-
-  const gestureEnabled = useMemo(() => !!onClose, [onClose]);
 
   return (
     <RNModal

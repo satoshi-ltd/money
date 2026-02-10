@@ -23,6 +23,7 @@ const Footer = ({ state, navigation, onActionPress }) => {
   const insets = useSafeAreaInsets();
   const { colors, theme: mode } = useApp();
   const isAndroid = Platform.OS === 'android';
+  const bottom = Math.max(insets.bottom, theme.spacing.sm);
 
   const handleTabPress = (route, isFocused) => {
     if (isFocused) return;
@@ -41,7 +42,7 @@ const Footer = ({ state, navigation, onActionPress }) => {
   ];
 
   return (
-    <View pointerEvents="box-none" style={[styles.root, { bottom: insets.bottom }]}>
+    <View pointerEvents="box-none" style={[styles.root, { bottom }]}>
       {isAndroid ? (
         <View style={navStyle}>
           {state.routes.map((route, index) => {

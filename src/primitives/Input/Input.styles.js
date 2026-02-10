@@ -1,6 +1,5 @@
 import { StyleSheet } from 'react-native';
 
-import { theme } from '../../theme';
 import { inputPaddingHorizontal, inputPaddingVertical, inputTextHeight } from '../../theme/layout';
 
 export const getStyles = (colors) =>

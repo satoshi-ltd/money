@@ -4,7 +4,15 @@ import { AppState } from 'react-native';
 
 import { consolidate, migrateState } from './modules';
 import { detectDeviceLanguage, setLanguage } from '../i18n';
-import { buildAutoCategoryCatalog, C, eventEmitter, getOccurrencesBetween, L10N, learnAutoCategory } from '../modules';
+import {
+  buildAutoCategoryCatalog,
+  C,
+  eventEmitter,
+  getOccurrencesBetween,
+  L10N,
+  learnAutoCategory,
+  maybeUnlockPremiumFromAccounts,
+} from '../modules';
 import {
   // -- account
   createAccount,
@@ -168,15 +176,36 @@ const StoreProvider = ({ children }) => {
         await store.get('settings').save(migrated.settings);
       }
 
+      const prevSubscription = (await store.get('subscription')?.value) || {};
+      const { shouldUnlock } = maybeUnlockPremiumFromAccounts({ accounts: migrated.accounts, subscription: prevSubscription });
+      const nextSubscription = shouldUnlock
+        ? { ...prevSubscription, productIdentifier: 'lifetime', unlockedBy: 'btc', unlockedAt: Date.now() }
+        : prevSubscription;
+
+      if (shouldUnlock) {
+        await store.wipe('subscription');
+        await store.get('subscription').save(nextSubscription);
+      }
+
       setState({
         store,
         accounts: migrated.accounts,
         scheduledTxs: migrated.scheduledTxs,
         settings: migrated.settings,
-        subscription: await store.get('subscription')?.value,
+        subscription: nextSubscription,
         rates: await store.get('rates')?.value,
         txs: migrated.txs,
       });
+
+      if (shouldUnlock) {
+        setTimeout(() => {
+          eventEmitter.emit(C.EVENT.NOTIFICATION, {
+            title: L10N.PREMIUM_UNLOCKED_TITLE,
+            text: L10N.PREMIUM_UNLOCKED_CAPTION,
+          });
+          NotificationsService.notifyPremiumUnlocked?.().catch(() => {});
+        }, 0);
+      }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -199,7 +228,18 @@ const StoreProvider = ({ children }) => {
 
         const currentProductIdentifier = latest.subscription?.productIdentifier;
         const nextProductIdentifier = nextSubscription?.productIdentifier;
-        if (currentProductIdentifier === nextProductIdentifier) return;
+        const currentIsBtcLifetime = currentProductIdentifier === 'lifetime' && latest.subscription?.unlockedBy === 'btc';
+        const nextIsLifetime = nextProductIdentifier === 'lifetime';
+        const currentHasCustomerInfo = !!latest.subscription?.customerInfo;
+        const nextHasCustomerInfo = !!nextSubscription?.customerInfo;
+
+        if (currentIsBtcLifetime && !nextIsLifetime) return;
+        if (currentProductIdentifier === nextProductIdentifier) {
+          if (nextHasCustomerInfo && !currentHasCustomerInfo) {
+            await updateSubscription({ ...latest.subscription, ...nextSubscription }, [latest, setState]);
+          }
+          return;
+        }
 
         await updateSubscription(nextSubscription, [latest, setState]);
       } catch (error) {

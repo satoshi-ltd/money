@@ -1,4 +1,4 @@
-import { getFingerprint } from './modules';
+import { getFingerprint } from './modules/getFingerprint';
 import { C } from '../modules';
 
 const { CURRENCY } = C;

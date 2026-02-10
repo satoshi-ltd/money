@@ -3,8 +3,18 @@ import React, { useState } from 'react';
 
 import { style } from './Accounts.style';
 import { filter, query } from './modules';
-import { Card, Pressable, Screen, ScrollView, Text, View } from '../../components';
-import { CardAccount, CurrencyLogo, Heading, PriceFriendly } from '../../components';
+import {
+  Card,
+  CardAccount,
+  CurrencyLogo,
+  Heading,
+  Pressable,
+  PriceFriendly,
+  Screen,
+  ScrollView,
+  Text,
+  View,
+} from '../../components';
 import { useStore } from '../../contexts';
 import { L10N } from '../../modules';
 import { cardAccountSnap } from '../../theme/layout';

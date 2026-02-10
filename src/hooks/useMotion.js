@@ -8,6 +8,13 @@ if (Platform.OS === 'android') {
 }
 
 export const useMotion = () => {
+  // We need stable Animated.Value instances without calling Hooks from callbacks.
+  // `createValue()` must be called unconditionally and in a stable order across renders
+  // (similar to Hooks rules) to avoid returning mismatched values.
+  const valuePoolRef = useRef([]);
+  const valueCursorRef = useRef(0);
+  valueCursorRef.current = 0;
+
   const animateLayout = useCallback((expanding = true) => {
     const duration = expanding ? theme.animations.duration.standard : theme.animations.duration.quick;
 
@@ -44,7 +51,10 @@ export const useMotion = () => {
   }, []);
 
   const createValue = useCallback((initial = 0) => {
-    return useRef(new Animated.Value(initial)).current;
+    const index = valueCursorRef.current;
+    valueCursorRef.current += 1;
+    if (!valuePoolRef.current[index]) valuePoolRef.current[index] = new Animated.Value(initial);
+    return valuePoolRef.current[index];
   }, []);
 
   return {

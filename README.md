@@ -9,10 +9,11 @@ Private, local‑first finance ledger for people who want their data to stay on 
 
 **Core features**
 - Multi‑currency accounts and transactions
+- Scheduled transactions (weekly/monthly)
 - Spending and income analytics
 - Local insights (trends, unusual spend alerts, and monthly pace)
-- Manual export/import backup
-- CSV export
+- Import from JSON backup
+- Export JSON backup + CSV export (Pro)
 - Optional weekly backup reminders
 - Automatic category suggestions while typing
 - Multi‑language UI (EN/ES/PT/FR/DE)
@@ -21,7 +22,7 @@ Private, local‑first finance ledger for people who want their data to stay on 
 - iOS and Android only (no web support).
 
 **Privacy first**
-Môney is designed to run offline and store data locally. Any future cloud or AI features should be opt‑in and transparent.
+Môney is designed to run offline and store data locally. Some features use the network (rates sync, purchases, optional onboarding email), and should remain opt‑in and transparent.
 
 **Roadmap**
 See `backlog.md`.

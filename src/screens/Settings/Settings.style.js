@@ -10,7 +10,7 @@ export const style = StyleSheet.create({
   },
 
   group: {
-    gap: theme.spacing.xxs,
+    gap: theme.spacing.xs,
   },
 
   hint: {

@@ -1,6 +1,5 @@
 import React from 'react';
-import { View as RNView } from 'react-native';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View as RNView } from 'react-native';
 
 import { theme } from '../../theme';
 import { viewOffset } from '../../theme/layout';

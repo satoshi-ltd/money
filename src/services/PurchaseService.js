@@ -111,11 +111,7 @@ export const PurchaseService = {
         const customerInfo = await Purchases.restorePurchases();
         const subscription = getSubscriptionFromCustomerInfo(customerInfo);
 
-        if (subscription.productIdentifier) {
-          resolve(subscription);
-        } else {
-          reject(L10N.ERROR_RESTORE);
-        }
+        resolve(subscription);
       } catch (error) {
         reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);
       }

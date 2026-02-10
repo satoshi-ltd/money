@@ -5,8 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Platform, StyleSheet } from 'react-native';
 
-import { Button, Footer, Icon, Text } from './components';
-import { Logo } from './components';
+import { Button, Chip, Footer, Icon, Logo, Text } from './components';
 import { useApp, useStore } from './contexts';
 import { C, eventEmitter, getNavigationTheme, ICON, L10N } from './modules';
 import {
@@ -15,6 +14,7 @@ import {
   BaseCurrency,
   Clone,
   Dashboard,
+  Language,
   Onboarding,
   Scheduled,
   ScheduledForm,
@@ -38,9 +38,7 @@ const styles = StyleSheet.create({
   tabLabel: {
     marginBottom: theme.spacing.xxs,
   },
-  premiumButton: {
-    marginRight: viewOffset,
-  },
+  premiumChip: { marginRight: viewOffset },
   actionButton: {
     marginHorizontal: theme.spacing.md,
     top: -theme.spacing.sm,
@@ -69,7 +67,7 @@ const Tabs = ({ navigation = {} }) => {
       .then((plans) => {
         navigation.navigate('subscription', { plans });
       })
-      .catch((error) => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, text: JSON.stringify(error) }));
+      .catch(() => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, text: L10N.ERROR_TRY_AGAIN }));
   };
 
   const screenOptions = {
@@ -78,9 +76,13 @@ const Tabs = ({ navigation = {} }) => {
     headerRight: () => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       return !subscription?.productIdentifier ? (
-        <Button icon={ICON.STAR} size="s" onPress={handleSubscription} style={styles.premiumButton}>
-          {L10N.PREMIUM}
-        </Button>
+        <Chip
+          onPress={handleSubscription}
+          icon={ICON.STAR}
+          label={L10N.PREMIUM}
+          style={styles.premiumChip}
+          variant="muted"
+        />
       ) : (
         <></>
       );
@@ -196,6 +198,7 @@ export const Navigator = () => {
         {/* -- settings */}
         <Stack.Screen name="account" component={Account} options={panel} />
         <Stack.Screen name="baseCurrency" component={BaseCurrency} options={panel} />
+        <Stack.Screen name="language" component={Language} options={panel} />
         {/* -- common */}
         <Stack.Screen name="subscription" component={Subscription} options={panel} />
       </Stack.Navigator>

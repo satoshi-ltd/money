@@ -36,7 +36,6 @@ const getRecentMonths = (date, count) => {
 
 const getDaysInMonth = (date) => new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
 
-const formatPercent = (value) => `${value >= 0 ? '+' : ''}${Math.round(value)}%`;
 const formatPercentAbs = (value) => `${Math.round(Math.abs(value))}%`;
 
 const monthDateFromKey = (key) => {

@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef } from 'react';
-import { useWindowDimensions } from 'react-native';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { InteractionManager, useWindowDimensions } from 'react-native';
 
 import { style } from './FormTransaction.style';
-import { Heading, InputAccount, InputDate, ScrollView } from '../../../components';
-import { CardOption, InputAmount, InputField } from '../../../components';
+import { CardOption, Heading, InputAccount, InputAmount, InputDate, InputField, ScrollView } from '../../../components';
 import { useStore } from '../../../contexts';
 import { C, getIcon, L10N, suggestCategory } from '../../../modules';
 import { optionSnap } from '../../../theme/layout';
@@ -29,14 +28,6 @@ const FormTransaction = ({
   const safeForm = form || {};
   const safeType = type ?? EXPENSE;
 
-  useEffect(() => {
-    setTimeout(() => {
-      const index = sortedCategories.findIndex(({ key }) => key === safeForm.category);
-      scrollview.current?.scrollTo({ x: (index - 1) * optionSnap, animated: true });
-    }, 10);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [safeForm]);
-
   const handleField = (field, fieldValue) => {
     let next = { ...safeForm, [field]: fieldValue };
 
@@ -52,17 +43,39 @@ const FormTransaction = ({
   };
 
   const categories = queryCategories({ type: safeType });
-  const totals =
-    account?.txs?.reduce((total, { category }) => ((total[category] = (total[category] || 0) + 1), total), {}) || {};
 
-  let sortedCategories = [...categories]
-    .filter((category) => !!totals[category.key.toString()])
-    .sort((a, b) => totals[b.key.toString()] - totals[a.key.toString()]);
+  const sortedCategories = useMemo(() => {
+    const totals =
+      account?.txs?.reduce((total, { category }) => ((total[category] = (total[category] || 0) + 1), total), {}) || {};
 
-  sortedCategories = [
-    ...sortedCategories,
-    ...categories.filter(({ key }) => !sortedCategories.find((item) => item.key === key)),
-  ];
+    const preferred = [...categories]
+      .filter((category) => !!totals[category.key.toString()])
+      .sort((a, b) => totals[b.key.toString()] - totals[a.key.toString()]);
+
+    return [...preferred, ...categories.filter(({ key }) => !preferred.find((item) => item.key === key))];
+  }, [account?.txs, categories]);
+
+  useEffect(() => {
+    if (!showCategory) return;
+    const index = sortedCategories.findIndex(({ key }) => key === safeForm.category);
+    if (index < 0) return;
+
+    // Run after layout; avoid fighting user scroll on unrelated form edits.
+    const x = Math.max(0, (index - 1) * optionSnap);
+    let cancelled = false;
+    const task = InteractionManager.runAfterInteractions(() => {
+      if (cancelled) return;
+      requestAnimationFrame(() => {
+        if (cancelled) return;
+        scrollview.current?.scrollTo({ x, animated: true });
+      });
+    });
+
+    return () => {
+      cancelled = true;
+      task?.cancel?.();
+    };
+  }, [safeForm.category, showCategory, sortedCategories]);
   const showAccountInput = showAccount && accountsList.length && onSelectAccount;
 
   return (
@@ -82,7 +95,7 @@ const FormTransaction = ({
                 style={[
                   style.option,
                   index === 0 && style.firstOption,
-                  index === categories.length - 1 && style.lastOption,
+                  index === sortedCategories.length - 1 && style.lastOption,
                 ]}
               />
             ))}

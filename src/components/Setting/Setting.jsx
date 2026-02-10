@@ -13,6 +13,9 @@ const Setting = ({
   activity,
   disabled,
   icon,
+  iconTone,
+  subtitleTone,
+  titleTone,
   onChange,
   onPress,
   options,
@@ -56,13 +59,19 @@ const Setting = ({
         <View style={styles.left}>
           {icon ? (
             <Card style={styles.iconCard} size="s">
-              <Icon name={icon} tone="primary" />
+              <Icon name={icon} tone={iconTone || 'primary'} />
             </Card>
           ) : null}
           <View flex>
-            <Text bold>{title}</Text>
+            {titleTone ? (
+              <Text bold tone={titleTone}>
+                {title}
+              </Text>
+            ) : (
+              <Text bold>{title}</Text>
+            )}
             {subtitle ? (
-              <Text tone="secondary" size="s">
+              <Text tone={subtitleTone || 'secondary'} size="s">
                 {subtitle}
               </Text>
             ) : null}

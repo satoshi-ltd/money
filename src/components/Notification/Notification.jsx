@@ -9,6 +9,7 @@ import { Icon, Pressable, Text, View } from '../../primitives';
 import { theme } from '../../theme';
 
 const { EVENT } = C;
+const DEFAULT_DISMISS_MS = 5000;
 
 export const Notification = () => {
   const { top } = useSafeAreaInsets();
@@ -36,7 +37,7 @@ export const Notification = () => {
         }).start();
 
         if (!data.error) {
-          dismissTimerRef.current = setTimeout(() => hide(), 5000);
+          dismissTimerRef.current = setTimeout(() => hide(), DEFAULT_DISMISS_MS);
         }
       };
 
@@ -98,7 +99,7 @@ export const Notification = () => {
 
   if (!rendered) return null;
 
-  const { error, text, title } = value || {};
+  const { error, tapToDismiss = true, text, title } = value || {};
   const contentTone = error ? 'onInverse' : 'onAccent';
 
   const animatedStyle = {
@@ -128,7 +129,7 @@ export const Notification = () => {
         animatedStyle,
       ]}
     >
-      <Pressable onPress={handleClose}>
+      <Pressable onPress={tapToDismiss ? handleClose : undefined}>
         <View row style={style.row}>
           <Icon name={error ? ICON.ALERT : ICON.INFO} tone={contentTone} />
           <View flex style={style.text}>
