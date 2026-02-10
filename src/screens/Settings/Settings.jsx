@@ -5,9 +5,8 @@ import { Alert, Linking } from 'react-native';
 import { getLatestRates } from './helpers';
 import { ABOUT, DATA, PREMIUM, PREFERENCES } from './Settings.constants';
 import { style } from './Settings.style';
-import { Chip, Dropdown, Heading, Icon, Screen, Setting, Text, View } from '../../components';
+import { Chip, Heading, Icon, Screen, Setting, Text, View } from '../../components';
 import { useStore } from '../../contexts';
-import { setLanguage } from '../../i18n';
 import { C, eventEmitter, ICON, L10N } from '../../modules';
 import { BackupService, NotificationsService, PurchaseService } from '../../services';
 
@@ -17,7 +16,6 @@ const Settings = ({ navigation = {} }) => {
   const store = useStore();
 
   const [activity, setActivity] = useState({});
-  const [showLanguage, setShowLanguage] = useState(false);
 
   const {
     accounts = [],
@@ -162,11 +160,7 @@ const Settings = ({ navigation = {} }) => {
     </View>
   );
 
-  const handleLanguage = (next) => {
-    if (!next) return;
-    updateSettings({ language: next.id });
-    setLanguage(next.id);
-  };
+  const handleLanguage = () => navigation.navigate('language');
 
   const handleChangeReminder = (next) => {
     const value = typeof next === 'object' ? next.value : next ? 1 : 0;
@@ -218,14 +212,16 @@ const Settings = ({ navigation = {} }) => {
 
   const revenueCatCustomerId = subscription?.customerInfo?.originalAppUserId;
 
-  const languageOptions = [
-    { id: 'en', label: L10N.LANGUAGE_EN },
-    { id: 'es', label: L10N.LANGUAGE_ES },
-    { id: 'pt', label: L10N.LANGUAGE_PT },
-    { id: 'fr', label: L10N.LANGUAGE_FR },
-    { id: 'de', label: L10N.LANGUAGE_DE },
-  ];
-  const currentLanguageLabel = languageOptions.find((option) => option.id === language)?.label || L10N.LANGUAGE_EN;
+  const currentLanguageLabel =
+    language === 'es'
+      ? L10N.LANGUAGE_ES
+      : language === 'pt'
+      ? L10N.LANGUAGE_PT
+      : language === 'fr'
+      ? L10N.LANGUAGE_FR
+      : language === 'de'
+      ? L10N.LANGUAGE_DE
+      : L10N.LANGUAGE_EN;
   const scheduledCount = scheduledTxs.length;
   const backupReminderEnabled = (reminders?.[0] ?? 1) === 1;
   const resolvedLocale =
@@ -352,27 +348,14 @@ const Settings = ({ navigation = {} }) => {
           value={theme === 'dark'}
           onValueChange={handleTheme}
         />
-        <View style={style.dropdownWrap}>
-          <Setting
-            {...settingProps}
-            icon={ICON.LANGUAGE}
-            title={L10N.LANGUAGE}
-            type="navigation"
-            onPress={() => setShowLanguage(true)}
-            right={<RightValueChevron value={currentLanguageLabel} />}
-          />
-          <Dropdown
-            visible={showLanguage}
-            onClose={() => setShowLanguage(false)}
-            options={languageOptions}
-            selected={language}
-            onSelect={(option) => {
-              handleLanguage(option);
-              setShowLanguage(false);
-            }}
-            width={260}
-          />
-        </View>
+        <Setting
+          {...settingProps}
+          icon={ICON.LANGUAGE}
+          title={L10N.LANGUAGE}
+          type="navigation"
+          onPress={handleLanguage}
+          right={<RightValueChevron value={currentLanguageLabel} />}
+        />
         {PREFERENCES().map(({ disabled, icon, text, ...rest }, index) => (
           <Setting
             {...settingProps}
@@ -429,16 +412,18 @@ const Settings = ({ navigation = {} }) => {
         </Text>
 
         <Setting
-          icon={ICON.CLOSE}
+          icon={ICON.BACK}
           title={L10N.LOG_OUT}
-          subtitle={L10N.LOG_OUT_CAPTION}
           type="action"
           onPress={handleLogout}
         />
         <Setting
           icon={ICON.ALERT}
+          iconTone="danger"
           title={L10N.RESET_DATA}
+          titleTone="danger"
           subtitle={L10N.RESET_DATA_CAPTION}
+          subtitleTone="secondary"
           type="action"
           onPress={handleResetData}
         />

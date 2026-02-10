@@ -14,6 +14,7 @@ import {
   BaseCurrency,
   Clone,
   Dashboard,
+  Language,
   Onboarding,
   Scheduled,
   ScheduledForm,
@@ -197,6 +198,7 @@ export const Navigator = () => {
         {/* -- settings */}
         <Stack.Screen name="account" component={Account} options={panel} />
         <Stack.Screen name="baseCurrency" component={BaseCurrency} options={panel} />
+        <Stack.Screen name="language" component={Language} options={panel} />
         {/* -- common */}
         <Stack.Screen name="subscription" component={Subscription} options={panel} />
       </Stack.Navigator>

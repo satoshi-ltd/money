@@ -1,6 +1,6 @@
 export const EN = {
   ABOUT: 'About Money',
-  ACCOUNT_ACTIONS: 'Account actions',
+  ACCOUNT_ACTIONS: 'Account & data',
   ACCEPT: 'Accept',
   ACTIVITY: 'Analytics',
   AMOUNT: 'Amount',
@@ -293,7 +293,7 @@ export const EN = {
   RECEIVE: 'Receive',
   RESTORE_PURCHASES: 'Restore purchases',
   RESET_DATA: 'Reset data',
-  RESET_DATA_CAPTION: 'Delete all local data on this device.',
+  RESET_DATA_CAPTION: 'Deletes all local data.',
   RESET_DATA_CONFIRM: 'Reset data (final)',
   RESET_DATA_CONFIRM_CAPTION: 'Are you sure? This cannot be undone.',
   RESET_DATA_ACTION: 'Reset data',
@@ -376,7 +376,7 @@ export const EN = {
 
 export const PT = {
   ABOUT: 'Sobre o Money',
-  ACCOUNT_ACTIONS: 'Ações da conta',
+  ACCOUNT_ACTIONS: 'Conta e dados',
   ACCEPT: 'Aceitar',
   ACTIVITY: 'Análises',
   AMOUNT: 'Valor',
@@ -653,7 +653,7 @@ export const PT = {
   RECEIVE: 'Receber',
   RESTORE_PURCHASES: 'Restaurar compras',
   RESET_DATA: 'Redefinir dados',
-  RESET_DATA_CAPTION: 'Apaga todos os dados locais neste dispositivo.',
+  RESET_DATA_CAPTION: 'Apaga todos os dados locais.',
   RESET_DATA_CONFIRM: 'Redefinir dados (final)',
   RESET_DATA_CONFIRM_CAPTION: 'Tem certeza? Isso não pode ser desfeito.',
   RESET_DATA_ACTION: 'Redefinir dados',
@@ -736,7 +736,7 @@ export const PT = {
 };
 export const FR = {
   ABOUT: 'À propos de Money',
-  ACCOUNT_ACTIONS: 'Actions du compte',
+  ACCOUNT_ACTIONS: 'Compte et données',
   ACCEPT: 'Accepter',
   ACTIVITY: 'Analyses',
   AMOUNT: 'Montant',
@@ -1017,7 +1017,7 @@ export const FR = {
   RECEIVE: 'Recevoir',
   RESTORE_PURCHASES: 'Restaurer les achats',
   RESET_DATA: 'Réinitialiser les données',
-  RESET_DATA_CAPTION: 'Supprimer toutes les données locales sur cet appareil.',
+  RESET_DATA_CAPTION: 'Supprime toutes les données locales.',
   RESET_DATA_CONFIRM: 'Réinitialiser les données (final)',
   RESET_DATA_CONFIRM_CAPTION: 'Êtes-vous sûr ? Cette action est irréversible.',
   RESET_DATA_ACTION: 'Réinitialiser les données',
@@ -1100,7 +1100,7 @@ export const FR = {
 };
 export const DE = {
   ABOUT: 'Über Money',
-  ACCOUNT_ACTIONS: 'Kontoaktionen',
+  ACCOUNT_ACTIONS: 'Konto & Daten',
   ACCEPT: 'Akzeptieren',
   ACTIVITY: 'Analysen',
   AMOUNT: 'Betrag',
@@ -1379,7 +1379,7 @@ export const DE = {
   RECEIVE: 'Empfangen',
   RESTORE_PURCHASES: 'Käufe wiederherstellen',
   RESET_DATA: 'Daten zurücksetzen',
-  RESET_DATA_CAPTION: 'Alle lokalen Daten auf diesem Gerät löschen.',
+  RESET_DATA_CAPTION: 'Löscht alle lokalen Daten.',
   RESET_DATA_CONFIRM: 'Daten zurücksetzen (final)',
   RESET_DATA_CONFIRM_CAPTION: 'Bist du sicher? Das kann nicht rückgängig gemacht werden.',
   RESET_DATA_ACTION: 'Daten zurücksetzen',
@@ -1462,7 +1462,7 @@ export const DE = {
 };
 export const ES = {
   ABOUT: 'Acerca de Money',
-  ACCOUNT_ACTIONS: 'Acciones de cuenta',
+  ACCOUNT_ACTIONS: 'Cuenta y datos',
   ACCEPT: 'Aceptar',
   ACTIVITY: 'Analíticas',
   AMOUNT: 'Importe',
@@ -1742,7 +1742,7 @@ export const ES = {
   RECEIVE: 'Recibir',
   RESTORE_PURCHASES: 'Restaurar compras',
   RESET_DATA: 'Restablecer datos',
-  RESET_DATA_CAPTION: 'Borra todos los datos locales de este dispositivo.',
+  RESET_DATA_CAPTION: 'Borra todos los datos locales.',
   RESET_DATA_CONFIRM: 'Restablecer datos (final)',
   RESET_DATA_CONFIRM_CAPTION: '¿Seguro? No se puede deshacer.',
   RESET_DATA_ACTION: 'Restablecer datos',
