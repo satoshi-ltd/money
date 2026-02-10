@@ -12,11 +12,7 @@
     "newArchEnabled": true,
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "icon": {
-        "dark": "./assets/ios-dark.png",
-        "light": "./assets/ios-light.png",
-        "tinted": "./assets/ios-tinted.png"
-      },
+      "icon": "./assets/money.icon",
       "supportsTablet": true,
       "bundleIdentifier": "com.satoshi-limited.money",
       "buildNumber": "21",
