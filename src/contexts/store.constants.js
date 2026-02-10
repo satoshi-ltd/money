@@ -31,6 +31,16 @@ const DEFAULTS = {
       stats: {},
       updatedAt: undefined,
     },
+    autoAccount: {
+      rules: {},
+      stats: {},
+      updatedAt: undefined,
+    },
+    autoAmount: {
+      rules: {},
+      stats: {},
+      updatedAt: undefined,
+    },
     schemaVersion: SCHEMA_VERSION,
     statsRangeMonths: 12,
     theme: 'light',

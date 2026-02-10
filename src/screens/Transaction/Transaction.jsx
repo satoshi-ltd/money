@@ -19,7 +19,13 @@ const INITIAL_STATE = { form: {}, valid: false };
 const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigation: { goBack } = {} }) => {
   const store = useStore();
   const { accounts = [], subscription, txs = [], updateSubscription } = store;
+  const initialType = type ?? C?.TX?.TYPE?.EXPENSE ?? 0;
   const [account, setAccount] = useState(params.account);
+  const [accountTouched, setAccountTouched] = useState(false);
+  const [categoryTouched, setCategoryTouched] = useState(false);
+  const [amountTouched, setAmountTouched] = useState(false);
+  const [typeAutoLocked, setTypeAutoLocked] = useState(false);
+  const [txType, setTxType] = useState(initialType);
   const [busy, setBusy] = useState(false);
   // const [dataSource, setDataSource] = useState({});
 
@@ -32,8 +38,32 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
   }, [account, params.account, sortedAccounts]);
 
   useEffect(() => {
+    // We want a clean form when the user manually changes account.
+    // For transfers we keep the old behavior (reset on any account change).
+    if (type === TRANSFER) setState(INITIAL_STATE);
+  }, [account, type]);
+
+  const handleUserSelectAccount = (next) => {
+    setAccountTouched(true);
+    setAccount(next);
     setState(INITIAL_STATE);
-  }, [account]);
+    setCategoryTouched(false);
+    setAmountTouched(false);
+    setTypeAutoLocked(false);
+  };
+
+  const handleAutoSelectAccount = (next) => {
+    setAccount(next);
+  };
+
+  const handleAutoSelectType = (nextType) => {
+    if (typeAutoLocked) return;
+    setTxType(nextType);
+    setTypeAutoLocked(true);
+  };
+
+  const handleManualCategorySelect = () => setCategoryTouched(true);
+  const handleManualAmountChange = () => setAmountTouched(true);
 
   const currentAccount = account || sortedAccounts[0];
 
@@ -41,7 +71,7 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
     setBusy(true);
     setTimeout(async () => {
       const method = type === TRANSFER ? createTransfer : createTransaction;
-      const value = await method({ props: { account: currentAccount, type }, state, store });
+      const value = await method({ props: { account: currentAccount, type: txType }, state, store });
       if (value) goBack();
       setBusy(false);
 
@@ -60,17 +90,28 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
 
   const { valid } = state;
   const Form = type === TRANSFER ? FormTransfer : FormTransaction;
-  const title = type === TRANSFER ? L10N.SWAP : type === C?.TX?.TYPE?.INCOME ? L10N.INCOME : L10N.EXPENSE;
+  const title =
+    type === TRANSFER ? L10N.SWAP : txType === C?.TX?.TYPE?.INCOME ? L10N.INCOME : L10N.EXPENSE;
 
   return (
     <Panel offset title={title} onBack={goBack} disableScroll>
       {currentAccount ? (
         <Form
-          {...{ account: currentAccount, type }}
+          {...{ account: currentAccount, type: txType }}
           {...(type !== TRANSFER
             ? {
                 accountsList: sortedAccounts,
-                onSelectAccount: setAccount,
+                onSelectAccount: handleUserSelectAccount,
+                onAutoSelectAccount: handleAutoSelectAccount,
+                onAutoSelectType: handleAutoSelectType,
+                onManualCategorySelect: handleManualCategorySelect,
+                onManualAmountChange: handleManualAmountChange,
+                accountTouched,
+                categoryTouched,
+                amountTouched,
+                typeTouched: false,
+                typeAutoLocked,
+                autoSuggest: true,
                 showAccount: true,
               }
             : {})}

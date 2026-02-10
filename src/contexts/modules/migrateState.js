@@ -18,6 +18,14 @@ export const migrateState = ({ accounts, scheduledTxs, schemaVersion, settings, 
       ...DEFAULTS.settings.autoCategory,
       ...(settings?.autoCategory || {}),
     },
+    autoAccount: {
+      ...DEFAULTS.settings.autoAccount,
+      ...(settings?.autoAccount || {}),
+    },
+    autoAmount: {
+      ...DEFAULTS.settings.autoAmount,
+      ...(settings?.autoAmount || {}),
+    },
   };
   const resolvedSchemaVersion = Number.isFinite(resolvedSettings.schemaVersion)
     ? resolvedSettings.schemaVersion
