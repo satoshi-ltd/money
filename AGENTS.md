@@ -5,7 +5,8 @@
 - All data is stored on device (AsyncStorage). Export/Import via JSON backup.
 - Navigation: React Navigation v6 with stack + tabs.
 - Mobile only (iOS/Android); no web targets.
-- Current stack (Feb 2026): Expo SDK 53, React Native 0.79, React 19.
+- Current stack (Feb 2026): Expo SDK 54, React Native 0.81, React 19.1.
+- Platform baselines: iOS 15.1+ (SDK 54), Android edge-to-edge enabled.
 
 ## Context cheatsheet
 - App entry: `App.js` -> `src/App.jsx`
@@ -56,7 +57,8 @@
 - Auto-categorization learns on each save; initial catalog builds once if empty.
 - Insights are computed locally from transactions via `buildInsights`.
 - Backup: `BackupService.export` / `BackupService.import` (note: export/CSV is premium-gated in Settings).
-- CSV export: `BackupService.exportCsv` (premium-gated).
+  - CSV export: `BackupService.exportCsv` (premium-gated).
+  - Note (Expo SDK 54): `BackupService` uses `expo-file-system/legacy` to avoid breaking changes in the new filesystem API.
 - Notifications: weekly backup reminder via `NotificationsService.reminders`; scheduled-tx reminders via `syncScheduled`.
 - i18n: `settings.language` drives `L10N` proxy, with EN/ES/PT/FR/DE dictionaries.
 - Onboarding: local survey stored in `settings.userProfile`; optional email can be sent via `LeadService` (remote).
