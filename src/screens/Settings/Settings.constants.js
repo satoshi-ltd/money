@@ -2,9 +2,9 @@ import { C, ICON, L10N } from '../../modules';
 
 const { PRIVACY_URL, TERMS_URL } = C;
 
-const OPTIONS = (isPremium, subscription) => [
+const PREMIUM = (isPremium, subscription) => [
   {
-    callback: !isPremium ? 'handleSubscription' : undefined,
+    callback: 'handleSubscription',
     caption: isPremium
       ? subscription?.productIdentifier?.split('.')?.[0] === 'lifetime'
         ? L10N.PREMIUM_LIFETIME
@@ -14,32 +14,42 @@ const OPTIONS = (isPremium, subscription) => [
     id: 1,
     text: L10N.SUBSCRIPTION,
   },
+  // Restore purchases is only relevant when not premium.
+  ...(!isPremium
+    ? [
+        {
+          callback: 'handleRestorePurchases',
+          icon: ICON.CART,
+          id: 2,
+          text: L10N.RESTORE_PURCHASES,
+        },
+      ]
+    : []),
+];
+
+const DATA = () => [
   {
     callback: 'handleUpdateRates',
-    caption: L10N.IMPORT_DATA_CAPTION,
     icon: ICON.UPDATE,
-    id: 2,
+    id: 1,
     text: L10N.SYNC_RATES_CTA,
   },
   {
     callback: 'handleExport',
-    caption: L10N.EXPORT_DATA_CAPTION,
-    icon: ICON.DOWNLOAD,
-    id: 3,
+    icon: ICON.BACKUP,
+    id: 2,
     text: L10N.EXPORT_DATA,
   },
   {
     callback: 'handleImport',
-    caption: L10N.IMPORT_DATA_CAPTION,
-    icon: ICON.UPLOAD,
-    id: 4,
+    icon: ICON.RESTORE,
+    id: 3,
     text: L10N.IMPORT_DATA,
   },
   {
     callback: 'handleExportCsv',
-    caption: L10N.EXPORT_CSV_CAPTION,
-    icon: ICON.DOWNLOAD,
-    id: 5,
+    icon: ICON.CSV,
+    id: 4,
     text: L10N.EXPORT_CSV,
   },
 ];
@@ -52,25 +62,7 @@ const PREFERENCES = () => [
   },
 ];
 
-const ABOUT = (isPremium) => [
-  ...(!isPremium
-    ? [
-        {
-          callback: 'handleSubscription',
-          icon: ICON.STAR,
-          text: L10N.GET_MONEY_PREMIUM,
-        },
-      ]
-    : []),
-  ...(!isPremium
-    ? [
-        {
-          callback: 'handleRestorePurchases',
-          icon: ICON.CART,
-          text: L10N.RESTORE_PURCHASES,
-        },
-      ]
-    : []),
+const ABOUT = () => [
   {
     icon: ICON.FILE,
     url: TERMS_URL,
@@ -83,4 +75,4 @@ const ABOUT = (isPremium) => [
   },
 ];
 
-export { ABOUT, OPTIONS, PREFERENCES };
+export { ABOUT, DATA, PREMIUM, PREFERENCES };

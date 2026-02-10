@@ -95,6 +95,7 @@ export const theme = {
       title: 28,
     },
     iconSizes: {
+      xxs: 12,
       tiny: 14,
       caption: 16,
       body: 20,

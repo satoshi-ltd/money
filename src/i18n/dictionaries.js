@@ -5,6 +5,7 @@ export const EN = {
   ACTIVITY: 'Analytics',
   AMOUNT: 'Amount',
   ANNUALY: 'Annualy',
+  DATA: 'Data',
 
   APPEARANCE: 'Appearance',
   APPERANCE_DARK: 'Dark mode',
@@ -378,6 +379,7 @@ export const PT = {
   ACTIVITY: 'Análises',
   AMOUNT: 'Valor',
   ANNUALY: 'Anual',
+  DATA: 'Dados',
 
   APPEARANCE: 'Aparência',
   APPERANCE_DARK: 'Modo escuro',
@@ -735,6 +737,7 @@ export const FR = {
   ACTIVITY: 'Analyses',
   AMOUNT: 'Montant',
   ANNUALY: 'Annuel',
+  DATA: 'Données',
 
   APPEARANCE: 'Apparence',
   APPERANCE_DARK: 'Mode sombre',
@@ -1096,6 +1099,7 @@ export const DE = {
   ACTIVITY: 'Analysen',
   AMOUNT: 'Betrag',
   ANNUALY: 'Jährlich',
+  DATA: 'Daten',
 
   APPEARANCE: 'Erscheinungsbild',
   APPERANCE_DARK: 'Dunkelmodus',
@@ -1455,6 +1459,7 @@ export const ES = {
   ACTIVITY: 'Analíticas',
   AMOUNT: 'Importe',
   ANNUALY: 'Anual',
+  DATA: 'Datos',
 
   APPEARANCE: 'Apariencia',
   APPERANCE_DARK: 'Modo oscuro',

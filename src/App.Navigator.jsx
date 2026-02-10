@@ -5,7 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Platform, StyleSheet } from 'react-native';
 
-import { Button, Footer, Icon, Logo, Text } from './components';
+import { Button, Chip, Footer, Icon, Logo, Text } from './components';
 import { useApp, useStore } from './contexts';
 import { C, eventEmitter, getNavigationTheme, ICON, L10N } from './modules';
 import {
@@ -37,9 +37,7 @@ const styles = StyleSheet.create({
   tabLabel: {
     marginBottom: theme.spacing.xxs,
   },
-  premiumButton: {
-    marginRight: viewOffset,
-  },
+  premiumChip: { marginRight: viewOffset },
   actionButton: {
     marginHorizontal: theme.spacing.md,
     top: -theme.spacing.sm,
@@ -77,9 +75,13 @@ const Tabs = ({ navigation = {} }) => {
     headerRight: () => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       return !subscription?.productIdentifier ? (
-        <Button icon={ICON.STAR} size="s" onPress={handleSubscription} style={styles.premiumButton}>
-          {L10N.PREMIUM}
-        </Button>
+        <Chip
+          onPress={handleSubscription}
+          icon={ICON.STAR}
+          label={L10N.PREMIUM}
+          style={styles.premiumChip}
+          variant="muted"
+        />
       ) : (
         <></>
       );

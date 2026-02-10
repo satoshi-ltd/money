@@ -19,6 +19,8 @@ const Icon = ({ size, style, tone, ...props }) => {
       ? theme.typography.iconSizes.body
       : size === 's'
       ? theme.typography.iconSizes.caption
+      : size === 'xxs'
+      ? theme.typography.iconSizes.xxs
       : size === 'xs'
       ? theme.typography.iconSizes.tiny
       : theme.typography.iconSizes.body;

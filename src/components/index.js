@@ -11,6 +11,7 @@ export * from './Field';
 export { default as Footer } from './Footer';
 export { default as Header } from './Header';
 export { default as Checkbox } from './Checkbox';
+export { default as Chip } from './Chip';
 export * from './GroupTransactions';
 export * from './Heading';
 export * from './InputAmount';

@@ -19,6 +19,7 @@
 - Theme tokens: `src/theme/theme.js` (colors/spacing/typography)
 - Derived layout constants: `src/theme/layout.js` (card sizes, snap intervals, input metrics)
 - UI primitives: `src/primitives/*` (prefer these over native)
+- Chips/badges: `src/components/Chip/*` (use for small tags like "Premium" or counts)
 - Premium/subscription: `src/services/PurchaseService.js`, `src/screens/Subscription/*`
 - Onboarding + (optional) lead capture: `src/screens/Onboarding/*`, `src/services/LeadService.js`
 
