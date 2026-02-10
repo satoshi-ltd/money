@@ -178,8 +178,8 @@ export const Navigator = () => {
     <NavigationContainer theme={getNavigationTheme(colors)}>
       <StatusBar
         style={themeMode === 'dark' ? 'light' : 'dark'}
-        translucent={Platform.OS !== 'android'}
-        backgroundColor={Platform.OS === 'android' ? colors.background : undefined}
+        translucent={true}
+        backgroundColor={Platform.OS === 'android' ? 'transparent' : undefined}
       />
 
       <Stack.Navigator

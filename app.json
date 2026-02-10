@@ -28,6 +28,7 @@
       },
       "package": "com.satoshilimited.money",
       "versionCode": 16,
+      "edgeToEdgeEnabled": true,
       "softwareKeyboardLayoutMode": "resize"
     },
     "plugins": [
