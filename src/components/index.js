@@ -16,6 +16,7 @@ export * from './InputCurrency';
 export * from './InputDate';
 export * from './InputField';
 export * from './InputGroupOption';
+export * from './InputTypeTransaction';
 export * from './LineChart';
 export * from './Logo';
 export { default as Modal } from './Modal';

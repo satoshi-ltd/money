@@ -3,7 +3,16 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { InteractionManager, useWindowDimensions } from 'react-native';
 
 import { style } from './FormTransaction.style';
-import { CardOption, Heading, InputAccount, InputAmount, InputDate, InputField, ScrollView } from '../../../components';
+import {
+  CardOption,
+  Heading,
+  InputAccount,
+  InputAmount,
+  InputDate,
+  InputField,
+  InputTypeTransaction,
+  ScrollView,
+} from '../../../components';
 import { useStore } from '../../../contexts';
 import { C, getIcon, L10N, suggestAccount, suggestAmount, suggestCategory } from '../../../modules';
 import { optionSnap } from '../../../theme/layout';
@@ -27,10 +36,12 @@ const FormTransaction = ({
   onAutoSelectType,
   onManualAmountChange,
   onManualCategorySelect,
+  onTypeChange,
   onSelectAccount,
   showAccount = false,
   showCategory = true,
   showDate = true,
+  showType = true,
   type = EXPENSE,
 } = {}) => {
   const scrollview = useRef(null);
@@ -147,6 +158,7 @@ const FormTransaction = ({
   const showAccountInput = showAccount && accountsList.length && onSelectAccount;
 
   const detailRows = [
+    showType ? 'type' : null,
     showAccountInput ? 'account' : null,
     showDate ? 'date' : null,
     'concept',
@@ -184,6 +196,10 @@ const FormTransaction = ({
       )}
 
       <Heading value={L10N.DETAILS} />
+
+      {showType ? (
+        <InputTypeTransaction first={isFirst('type')} last={isLast('type')} value={safeType} onChange={onTypeChange} />
+      ) : null}
 
       {showAccountInput ? (
         <InputAccount
@@ -237,12 +253,14 @@ FormTransaction.propTypes = {
   form: PropTypes.shape({}).isRequired,
   showCategory: PropTypes.bool,
   showDate: PropTypes.bool,
+  showType: PropTypes.bool,
   type: PropTypes.number,
   onChange: PropTypes.func.isRequired,
   onAutoSelectAccount: PropTypes.func,
   onAutoSelectType: PropTypes.func,
   onManualAmountChange: PropTypes.func,
   onManualCategorySelect: PropTypes.func,
+  onTypeChange: PropTypes.func,
   onSelectAccount: PropTypes.func,
   showAccount: PropTypes.bool,
 };

@@ -91,6 +91,7 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack } = {} }) => 
           debounce={200}
           showDate
           showAccount
+          showType={false}
           type={dataSource?.type}
           onChange={setState}
           onSelectAccount={setAccount}

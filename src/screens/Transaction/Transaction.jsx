@@ -24,6 +24,7 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
   const [accountTouched, setAccountTouched] = useState(false);
   const [categoryTouched, setCategoryTouched] = useState(false);
   const [amountTouched, setAmountTouched] = useState(false);
+  const [typeTouched, setTypeTouched] = useState(false);
   const [typeAutoLocked, setTypeAutoLocked] = useState(false);
   const [txType, setTxType] = useState(initialType);
   const [busy, setBusy] = useState(false);
@@ -49,6 +50,7 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
     setState(INITIAL_STATE);
     setCategoryTouched(false);
     setAmountTouched(false);
+    setTypeTouched(false);
     setTypeAutoLocked(false);
   };
 
@@ -62,10 +64,24 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
     setTypeAutoLocked(true);
   };
 
+  const handleManualTypeChange = (nextType) => {
+    if (nextType === txType) return;
+    setTxType(nextType);
+    setTypeTouched(true);
+    setTypeAutoLocked(true);
+    setCategoryTouched(false);
+    setState((current) => ({
+      ...current,
+      form: { ...current.form, category: undefined },
+      valid: false,
+    }));
+  };
+
   const handleManualCategorySelect = () => setCategoryTouched(true);
   const handleManualAmountChange = () => setAmountTouched(true);
 
   const currentAccount = account || sortedAccounts[0];
+  const isAccountScoped = !!params?.account?.hash;
 
   const handleSubmit = async () => {
     setBusy(true);
@@ -106,13 +122,15 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
                 onAutoSelectType: handleAutoSelectType,
                 onManualCategorySelect: handleManualCategorySelect,
                 onManualAmountChange: handleManualAmountChange,
+                onTypeChange: handleManualTypeChange,
                 accountTouched,
                 categoryTouched,
                 amountTouched,
-                typeTouched: false,
+                typeTouched,
                 typeAutoLocked,
                 autoSuggest: true,
                 showAccount: true,
+                showType: !isAccountScoped,
               }
             : {})}
           {...(type === TRANSFER
