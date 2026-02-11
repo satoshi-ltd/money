@@ -39,7 +39,7 @@ import {
 } from './reducers';
 import { parseTx } from './reducers/modules';
 import { DEFAULTS, FILENAME } from './store.constants';
-import { NotificationsService, PurchaseService, StorageService } from '../services';
+import { NotificationsService, PurchaseService, ServiceRates, StorageService } from '../services';
 
 const { EVENT } = C;
 const MS_IN_DAY = C.MS_IN_DAY;
@@ -152,6 +152,7 @@ const runScheduledSync = async ({ migrated, store }) => {
 const StoreProvider = ({ children }) => {
   const [state, setState] = useState(DEFAULTS);
   const stateRef = useRef(state);
+  const ratesSyncInFlightRef = useRef(false);
 
   useEffect(() => {
     stateRef.current = state;
@@ -283,7 +284,29 @@ const StoreProvider = ({ children }) => {
       }
     };
 
+    const syncRates = async () => {
+      const current = stateRef.current;
+      if (!current?.store || ratesSyncInFlightRef.current) return;
+
+      ratesSyncInFlightRef.current = true;
+      try {
+        const rates = await ServiceRates.get({
+          baseCurrency: current?.settings?.baseCurrency,
+          latest: true,
+        }).catch(() => undefined);
+
+        if (disposed || !rates) return;
+
+        const latest = stateRef.current;
+        if (!latest?.store) return;
+        await updateRates(rates, [latest, setState]);
+      } finally {
+        ratesSyncInFlightRef.current = false;
+      }
+    };
+
     syncSubscription({ forceRefresh: true });
+    syncRates();
 
     const appStateSubscription = AppState.addEventListener('change', (nextState) => {
       if (nextState !== 'active') return;
@@ -305,6 +328,7 @@ const StoreProvider = ({ children }) => {
           settings: nextMigrated.settings,
           txs: nextMigrated.txs,
         }));
+        await syncRates();
         await syncSubscription({ forceRefresh: true });
       })();
     });
