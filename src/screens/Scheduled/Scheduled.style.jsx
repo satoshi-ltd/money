@@ -4,11 +4,23 @@ import { theme } from '../../theme';
 
 export const getStyles = (colors) =>
   StyleSheet.create({
+    content: {
+      paddingBottom: theme.spacing.sm,
+    },
+    topCta: {
+      marginBottom: theme.spacing.sm,
+    },
+    section: {
+      marginBottom: theme.spacing.xs,
+    },
+    sectionTitle: {
+      marginVertical: theme.spacing.xxs,
+    },
     item: {
       marginBottom: theme.spacing.xs,
     },
     row: {
-      alignItems: 'center',
+      alignItems: 'flex-start',
       backgroundColor: colors.background,
       gap: theme.spacing.xs,
       paddingHorizontal: 0,
@@ -19,7 +31,12 @@ export const getStyles = (colors) =>
       justifyContent: 'center',
       gap: theme.spacing.xxs,
     },
-    createButton: {
-      marginTop: theme.spacing.sm,
+    emptyCard: {
+      marginBottom: theme.spacing.sm,
+      padding: theme.spacing.sm,
+    },
+    emptyHeader: {
+      alignItems: 'center',
+      gap: theme.spacing.xs,
     },
   });
