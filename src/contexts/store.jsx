@@ -240,7 +240,6 @@ const StoreProvider = ({ children }) => {
             title: L10N.PREMIUM_UNLOCKED_TITLE,
             text: L10N.PREMIUM_UNLOCKED_CAPTION,
           });
-          NotificationsService.notifyPremiumUnlocked?.().catch(() => {});
         }, 0);
       }
     })();
