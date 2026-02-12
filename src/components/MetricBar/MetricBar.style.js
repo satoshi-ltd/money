@@ -21,4 +21,9 @@ export const getStyles = (colors) =>
     fill: {
       height: '100%',
     },
+    segments: {
+      width: '100%',
+      height: '100%',
+      alignItems: 'stretch',
+    },
   });
