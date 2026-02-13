@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Alert, Linking } from 'react-native';
+import { useScrollToTop } from '@react-navigation/native';
 
 import { getLatestRates } from './helpers';
 import { ABOUT, DATA, PREMIUM, PREFERENCES } from './Settings.constants';
@@ -13,6 +14,9 @@ import { BackupService, NotificationsService, PurchaseService } from '../../serv
 const { EVENT } = C;
 
 const Settings = ({ navigation = {} }) => {
+  const scrollRef = useRef(null);
+  useScrollToTop(scrollRef);
+
   const store = useStore();
 
   const [activity, setActivity] = useState({});
@@ -274,7 +278,7 @@ const Settings = ({ navigation = {} }) => {
   const settingProps = {};
 
   return (
-    <Screen gap offset style={style.screen}>
+    <Screen ref={scrollRef} gap offset style={style.screen}>
       <Heading value={L10N.SETTINGS} />
 
       <View style={style.group}>

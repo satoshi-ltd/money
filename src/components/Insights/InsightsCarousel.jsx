@@ -173,13 +173,57 @@ const InsightsCarousel = ({
               <View style={style.insightMetrics}>
                 <MetricBar
                   color="accent"
-                  percent={(insight.meta.incomes / Math.max(1, insight.meta.incomes + insight.meta.expenses)) * 100}
+                  percent={
+                    (insight.meta.incomes /
+                      Math.max(
+                        1,
+                        insight.meta.incomes +
+                          insight.meta.expenses +
+                          (insight.meta.scheduledIncomesRemaining || 0) +
+                          (insight.meta.scheduledExpensesRemaining || 0),
+                      )) *
+                    100
+                  }
+                  secondaryPercent={
+                    ((insight.meta.scheduledIncomesRemaining || 0) /
+                      Math.max(
+                        1,
+                        insight.meta.incomes +
+                          insight.meta.expenses +
+                          (insight.meta.scheduledIncomesRemaining || 0) +
+                          (insight.meta.scheduledExpensesRemaining || 0),
+                      )) *
+                    100
+                  }
+                  secondaryOpacity={0.45}
                   title={L10N.INCOME}
                   value={<PriceFriendly size="xs" tone="secondary" currency={currency} value={insight.meta.incomes} />}
                 />
                 <MetricBar
                   color="content"
-                  percent={(insight.meta.expenses / Math.max(1, insight.meta.incomes + insight.meta.expenses)) * 100}
+                  percent={
+                    (insight.meta.expenses /
+                      Math.max(
+                        1,
+                        insight.meta.incomes +
+                          insight.meta.expenses +
+                          (insight.meta.scheduledIncomesRemaining || 0) +
+                          (insight.meta.scheduledExpensesRemaining || 0),
+                      )) *
+                    100
+                  }
+                  secondaryPercent={
+                    ((insight.meta.scheduledExpensesRemaining || 0) /
+                      Math.max(
+                        1,
+                        insight.meta.incomes +
+                          insight.meta.expenses +
+                          (insight.meta.scheduledIncomesRemaining || 0) +
+                          (insight.meta.scheduledExpensesRemaining || 0),
+                      )) *
+                    100
+                  }
+                  secondaryOpacity={0.45}
                   title={L10N.EXPENSE}
                   value={<PriceFriendly size="xs" tone="secondary" currency={currency} value={insight.meta.expenses} />}
                 />

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { SectionList } from 'react-native';
+import { useScrollToTop } from '@react-navigation/native';
 
 import { DashboardListHeader } from './Dashboard.ListHeader';
 import { style } from './Dashboard.style';
@@ -11,6 +12,8 @@ import { C } from '../../modules';
 
 const Dashboard = ({ navigation: { navigate } = {} }) => {
   const { accounts = [], txs = [] } = useStore();
+  const listRef = useRef(null);
+  useScrollToTop(listRef);
 
   const [lastTxs, setLastTxs] = useState([]);
   const [query, setQuery] = useState();
@@ -30,6 +33,7 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
   return (
     <Screen disableScroll>
       <SectionList
+        ref={listRef}
         initialNumToRender={C.TRANSACTIONS_PER_PAGE}
         keyExtractor={(item, index) => `${item.hash || item.timestamp}-${index}`}
         ListHeaderComponent={<DashboardListHeader navigate={navigate} onSearch={setQuery} setPage={setPage} />}

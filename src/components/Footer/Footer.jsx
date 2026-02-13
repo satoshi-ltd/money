@@ -26,9 +26,9 @@ const Footer = ({ state, navigation, onActionPress }) => {
   const bottom = Math.max(insets.bottom, theme.spacing.sm);
 
   const handleTabPress = (route, isFocused) => {
-    if (isFocused) return;
-    navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
-    navigation.navigate(route.name);
+    // Emit tabPress even when already focused so screens can react (e.g. scroll-to-top).
+    const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
+    if (!isFocused && !event.defaultPrevented) navigation.navigate(route.name);
   };
 
   const navWidth = (state.routes.length + 1.5) * 56;

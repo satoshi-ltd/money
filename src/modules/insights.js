@@ -97,6 +97,29 @@ export const buildInsights = ({
 
   const currentExpenses = totals.expenses[currentKey] || 0;
   const currentIncomes = totals.incomes[currentKey] || 0;
+  const tomorrowMidday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 12, 0, 0, 0);
+  const endOfMonthMidday = new Date(now.getFullYear(), now.getMonth() + 1, 0, 12, 0, 0, 0);
+  const fromAt = tomorrowMidday.getTime();
+  const toAt = endOfMonthMidday.getTime();
+
+  const scheduledRemaining = (Array.isArray(scheduledTxs) ? scheduledTxs : []).reduce(
+    (sum, scheduled) => {
+      if (scheduled?.type !== TYPE.EXPENSE && scheduled?.type !== TYPE.INCOME) return sum;
+      const occurrences = getOccurrencesBetween({ scheduled, fromAt, toAt });
+      if (!occurrences.length) return sum;
+      const account = accountMap.get(scheduled.account);
+      const currency = account?.currency || baseCurrency;
+      const converted = occurrences.reduce(
+        (occurrenceSum, occurrenceAt) => occurrenceSum + exchange(scheduled.value, currency, baseCurrency, rates, occurrenceAt),
+        0,
+      );
+
+      if (scheduled.type === TYPE.INCOME) sum.incomes += converted;
+      if (scheduled.type === TYPE.EXPENSE) sum.expenses += converted;
+      return sum;
+    },
+    { incomes: 0, expenses: 0 },
+  );
 
   const day = now.getDate();
   const cumulativeExpensesMemo = {};
@@ -227,6 +250,8 @@ export const buildInsights = ({
       meta: {
         incomes: currentIncomes,
         expenses: currentExpenses,
+        scheduledIncomesRemaining: scheduledRemaining.incomes,
+        scheduledExpensesRemaining: scheduledRemaining.expenses,
       },
       tone:
         currentIncomes - currentExpenses > 0
@@ -239,25 +264,7 @@ export const buildInsights = ({
 
   const daysInMonth = getDaysInMonth(now);
   if (currentExpenses > 0 && day >= 2) {
-    const tomorrowMidday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 12, 0, 0, 0);
-    const endOfMonthMidday = new Date(now.getFullYear(), now.getMonth() + 1, 0, 12, 0, 0, 0);
-    const fromAt = tomorrowMidday.getTime();
-    const toAt = endOfMonthMidday.getTime();
-    const remainingScheduledExpenses = (Array.isArray(scheduledTxs) ? scheduledTxs : []).reduce((sum, scheduled) => {
-      if (scheduled.type !== TYPE.EXPENSE) return sum;
-      const occurrences = getOccurrencesBetween({ scheduled, fromAt, toAt });
-      if (!occurrences.length) return sum;
-      const account = accountMap.get(scheduled.account);
-      const currency = account?.currency || baseCurrency;
-      return (
-        sum +
-        occurrences.reduce(
-          (occurrenceSum, occurrenceAt) =>
-            occurrenceSum + exchange(scheduled.value, currency, baseCurrency, rates, occurrenceAt),
-          0,
-        )
-      );
-    }, 0);
+    const remainingScheduledExpenses = scheduledRemaining.expenses;
 
     const paceKeys = getPreviousMonths(now, PACE_MONTHS);
     const ratios = paceKeys

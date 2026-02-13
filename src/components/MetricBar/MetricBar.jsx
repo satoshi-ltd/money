@@ -23,6 +23,8 @@ const MetricBar = ({
   fillStyle,
   minPercent = 6,
   percent = 0,
+  secondaryPercent = 0,
+  secondaryOpacity = 0.45,
   title,
   trackStyle,
   value,
@@ -33,7 +35,17 @@ const MetricBar = ({
   const style = useMemo(() => getStyles(colors), [colors]);
   const isStats = variant === 'stats';
   const clamped = Math.max(0, Math.min(100, percent));
+  const clampedSecondary = Math.max(0, Math.min(100, secondaryPercent));
   const width = `${Math.max(minPercent, Math.round(clamped))}%`;
+  const hasSecondary = clampedSecondary > 0;
+
+  const scaledSegments = useMemo(() => {
+    const total = clamped + clampedSecondary;
+    if (!hasSecondary || total <= 0) return { primary: clamped, secondary: 0 };
+    if (total <= 100) return { primary: clamped, secondary: clampedSecondary };
+    const ratio = 100 / total;
+    return { primary: clamped * ratio, secondary: clampedSecondary * ratio };
+  }, [clamped, clampedSecondary, hasSecondary]);
 
   const fillColor = resolveBarColor(color, colors);
   const dynamic = useMemo(
@@ -43,8 +55,17 @@ const MetricBar = ({
           width,
           backgroundColor: fillColor,
         },
+        fillPrimary: {
+          width: `${scaledSegments.primary}%`,
+          backgroundColor: fillColor,
+        },
+        fillSecondary: {
+          width: `${scaledSegments.secondary}%`,
+          backgroundColor: fillColor,
+          opacity: secondaryOpacity,
+        },
       }),
-    [fillColor, width],
+    [fillColor, scaledSegments.primary, scaledSegments.secondary, secondaryOpacity, width],
   );
 
   const dynamicContainer = useMemo(
@@ -87,7 +108,14 @@ const MetricBar = ({
         </View>
       ) : null}
       <View style={[style.track, dynamicContainer.track, trackStyle]}>
-        <View style={[style.fill, dynamic.fill, fillStyle]} />
+        {hasSecondary ? (
+          <View row style={style.segments}>
+            <View style={[style.fill, dynamic.fillPrimary, fillStyle]} />
+            <View style={[style.fill, dynamic.fillSecondary, fillStyle]} />
+          </View>
+        ) : (
+          <View style={[style.fill, dynamic.fill, fillStyle]} />
+        )}
       </View>
     </View>
   );
@@ -98,6 +126,8 @@ MetricBar.propTypes = {
   fillStyle: PropTypes.any,
   minPercent: PropTypes.number,
   percent: PropTypes.number,
+  secondaryPercent: PropTypes.number,
+  secondaryOpacity: PropTypes.number,
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.node]),
   trackStyle: PropTypes.any,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.node]),

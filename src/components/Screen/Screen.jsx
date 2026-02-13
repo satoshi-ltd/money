@@ -4,7 +4,7 @@ import { getStyles } from './Screen.styles';
 import { useApp } from '../../contexts';
 import { ScrollView, View } from '../../primitives';
 
-const Screen = ({ children, disableScroll, gap, offset, style, ...props }) => {
+const Screen = React.forwardRef(({ children, disableScroll, gap, offset, style, ...props }, ref) => {
   const { colors } = useApp();
   const styles = useMemo(() => getStyles(colors), [colors]);
   const contentStyle = [styles.base, offset && styles.offset, gap && styles.gap, style];
@@ -18,10 +18,12 @@ const Screen = ({ children, disableScroll, gap, offset, style, ...props }) => {
   }
 
   return (
-    <ScrollView {...props} contentContainerStyle={contentStyle}>
+    <ScrollView ref={ref} {...props} contentContainerStyle={contentStyle}>
       {children}
     </ScrollView>
   );
-};
+});
+
+Screen.displayName = 'Screen';
 
 export default Screen;
