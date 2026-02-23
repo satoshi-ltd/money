@@ -14,9 +14,9 @@ export const calcAccount = ({
   const now = new Date();
 
   const currentDay = now.getDate();
-  const { balance, currency } = account;
+  const { balance = 0, currency } = account;
   const exchangeProps = [currency, baseCurrency, rates];
-  let { balance: currentBalance = 0 } = account;
+  let currentBalance = Number.isFinite(balance) ? balance : 0;
   let currentMonthTxs = 0;
   let expenses = 0;
   let expensesBase = 0;
@@ -27,7 +27,7 @@ export const calcAccount = ({
   let today = 0;
 
   const chartBalance = new Array(months + 1).fill(0);
-  chartBalance[0] = account.balance > 0 ? account.balance : 0;
+  chartBalance[0] = currentBalance;
 
   const dataSource = txsByAccount?.[account.hash] || txs.filter((tx) => tx.account === account.hash);
   dataSource.forEach(({ category, timestamp, type, value = 0 }) => {
@@ -68,10 +68,12 @@ export const calcAccount = ({
 
   return {
     ...account,
-    balance: balance > 0 ? balance : 0,
+    balance: Number.isFinite(balance) ? balance : 0,
     chartBalance: chartBalance.map((value, index) =>
       currency !== baseCurrency
-        ? exchange(value, ...exchangeProps, new Date(genesisDate.getFullYear(), genesisDate.getMonth() + index, 1))
+        ? index === months
+          ? exchange(value, ...exchangeProps)
+          : exchange(value, ...exchangeProps, new Date(genesisDate.getFullYear(), genesisDate.getMonth() + index, 1))
         : value,
     ),
     chartBalanceBase: [...chartBalance],

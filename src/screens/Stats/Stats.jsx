@@ -84,6 +84,7 @@ const Stats = () => {
     <Screen ref={scrollRef} style={style.screen}>
       <Chart
         {...chartProps}
+        allowNegative
         color={color}
         headingRight={<StatsRangeToggle onChange={handleRangeChange} options={rangeOptions} value={selectedRange} />}
         scaleMode="median"

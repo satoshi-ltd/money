@@ -1,5 +1,5 @@
 import { calcAccount } from './calcAccount';
-import { exchange, getMonthDiff } from '../../modules';
+import { getMonthDiff } from '../../modules';
 
 const KEYS = ['expenses', 'incomes', 'progression', 'today'];
 
@@ -45,22 +45,15 @@ export const consolidate = ({
   }
 
   const currentMonth = { expenses: 0, incomes: 0, progression: 0, today: 0 };
-  let balance = 0;
   let currentBalance = 0;
   const chartBalance = [];
 
   accounts.forEach(
     ({
-      balance: acountBalance,
       chartBalance: accountChartBalance,
       currentBalanceBase: accountCurrentBalanceBase,
-      currency,
       currentMonth: accountLast30Days,
     }) => {
-      const sameCurrency = currency === baseCurrency;
-      const exchangeProps = [currency, baseCurrency, rates];
-
-      balance += sameCurrency ? acountBalance : exchange(acountBalance, ...exchangeProps);
       currentBalance += accountCurrentBalanceBase;
 
       KEYS.forEach((key) => {
@@ -72,6 +65,8 @@ export const consolidate = ({
       });
     },
   );
+
+  const balance = currentBalance;
 
   return {
     accounts,

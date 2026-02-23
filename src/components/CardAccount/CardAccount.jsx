@@ -46,6 +46,7 @@ const CardAccount = ({
       <Card {...others} active={highlight} style={style.card}>
         <View style={style.content}>
           <LineChart
+            allowNegative
             color={chartColor}
             currency={currency}
             height={cardAccountSize / 2}
