@@ -43,6 +43,7 @@ import { NotificationsService, PurchaseService, ServiceRates, StorageService } f
 
 const { EVENT } = C;
 const MS_IN_DAY = C.MS_IN_DAY;
+const RATES_SYNC_INTERVAL = 6 * 60 * 60 * 1000;
 const MAX_SCHEDULED_AUTOCREATE = 100;
 
 const StoreContext = createContext(`context:store`);
@@ -306,6 +307,9 @@ const StoreProvider = ({ children }) => {
 
     syncSubscription({ forceRefresh: true });
     syncRates();
+    const ratesIntervalId = setInterval(() => {
+      syncRates();
+    }, RATES_SYNC_INTERVAL);
 
     const appStateSubscription = AppState.addEventListener('change', (nextState) => {
       if (nextState !== 'active') return;
@@ -334,6 +338,7 @@ const StoreProvider = ({ children }) => {
 
     return () => {
       disposed = true;
+      clearInterval(ratesIntervalId);
       appStateSubscription.remove();
     };
   }, [state.store]);

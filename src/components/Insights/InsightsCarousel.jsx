@@ -55,6 +55,7 @@ const InsightsCarousel = ({
           <View style={style.balanceCardContent}>
             {showChart ? (
               <LineChart
+                allowNegative
                 color={chartColor}
                 height={cardSize / 2}
                 isAnimated={false}

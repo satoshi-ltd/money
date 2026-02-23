@@ -21,6 +21,7 @@ const LineChart = ({
   revealDuration = theme.animations.duration.standard,
   revealResetKey,
   multipleData = false,
+  allowNegative = false,
   monthsLimit,
   pointerConfig = {},
   showPointer = false,
@@ -39,7 +40,9 @@ const LineChart = ({
   const lastPointerIndexRef = useRef();
 
   const normalize = (series = []) =>
-    series.filter((value) => typeof value === 'number' && !isNaN(value)).map((value) => Math.max(0, value));
+    series
+      .filter((value) => typeof value === 'number' && !isNaN(value))
+      .map((value) => (allowNegative ? value : Math.max(0, value)));
 
   const resolvedWidth = Number.isFinite(width) ? width : windowWidth;
   const resolvedHeight = Number.isFinite(height) ? height : 128;
@@ -64,7 +67,7 @@ const LineChart = ({
   // Gifted-charts can produce invalid SVG paths if maxValue === minValue (range = 0).
   const safeRange = range === 0 ? (max === 0 ? 1 : Math.abs(max)) : range;
   const maxValue = hasData ? max + safeRange * 0.05 : 0;
-  const minValue = hasData ? Math.max(0, min - safeRange * 0.15) : 0;
+  const minValue = hasData ? (allowNegative ? min - safeRange * 0.15 : Math.max(0, min - safeRange * 0.15)) : 0;
 
   const months = useMemo(() => getLastMonths(monthsLimit), [monthsLimit]);
   const sizedStyle = useMemo(
@@ -201,6 +204,7 @@ LineChart.propTypes = {
   revealDuration: PropTypes.number,
   revealResetKey: PropTypes.any,
   multipleData: PropTypes.bool,
+  allowNegative: PropTypes.bool,
   monthsLimit: PropTypes.number,
   pointerConfig: PropTypes.shape({}),
   showPointer: PropTypes.bool,

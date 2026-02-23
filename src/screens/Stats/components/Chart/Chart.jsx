@@ -16,6 +16,7 @@ const Chart = ({
   headingRight,
   monthsLimit,
   pointerIndex,
+  allowNegative = false,
   scaleMode = 'median',
   title,
   values = [],
@@ -25,7 +26,9 @@ const Chart = ({
   const [color1, color2] = multipleData ? color : [color];
   const [data1 = [], data2 = []] = multipleData ? values : [values];
   const normalize = (data = []) =>
-    data.filter((val) => typeof val === 'number' && !isNaN(val)).map((val) => Math.max(0, val));
+    data
+      .filter((val) => typeof val === 'number' && !isNaN(val))
+      .map((val) => (allowNegative ? val : Math.max(0, val)));
   const normalizedData1 = normalize(data1);
   const normalizedData2 = normalize(data2);
   const safePointerIndex = (() => {
@@ -146,6 +149,7 @@ const Chart = ({
       <Animated.View style={{ width: reveal, overflow: 'hidden' }}>
         <LineChart
           {...{
+            allowNegative,
             currency,
             color,
             multipleData,
@@ -179,6 +183,7 @@ Chart.propTypes = {
   headingRight: PropTypes.node,
   monthsLimit: PropTypes.number,
   pointerIndex: PropTypes.number,
+  allowNegative: PropTypes.bool,
   scaleMode: PropTypes.oneOf(['full', 'median']),
   title: PropTypes.string,
   values: PropTypes.any,
