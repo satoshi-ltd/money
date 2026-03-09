@@ -1,112 +1,99 @@
-# Money — guide for AI agents
+# Money - guide for AI agents
 
 ## Quick context
 - Local-first personal finance ledger app built with Expo + React Native.
-- All data is stored on device (AsyncStorage). Export/Import via JSON backup.
-- Navigation: React Navigation v6 with stack + tabs.
-- Mobile only (iOS/Android); no web targets.
-- Current stack (Feb 2026): Expo SDK 54, React Native 0.81, React 19.1.
-- Platform baselines: iOS 15.1+ (SDK 54), Android edge-to-edge enabled.
+- Data is stored on device (AsyncStorage). Backups are JSON files via export/import.
+- Navigation: React Navigation v6 (stack + tabs).
+- Mobile only (iOS/Android), no web target.
+- Current stack (Mar 2026): Expo SDK 54, React Native 0.81.5, React 19.1.0.
+- Platform baselines: iOS 15.1+ and Android edge-to-edge enabled.
 
 ## Context cheatsheet
 - App entry: `App.js` -> `src/App.jsx`
 - Navigation: `src/App.Navigator.jsx`
 - Global state: `src/contexts/store.jsx` (+ reducers in `src/contexts/reducers/`)
+- Storage defaults/version: `src/contexts/store.constants.js`
+- Migrations/normalization: `src/contexts/modules/migrateState.js`
 - Persistence: `src/services/StorageService.js`
 - Backups: `src/services/BackupService.js`
 - Notifications: `src/services/NotificationsService.js`
-- Scheduled transactions: `src/screens/Scheduled/*`, `src/screens/ScheduledForm/*`, recurrence in `src/modules/recurrence.js`
-- Insights: computed in `src/modules/insights.js` and rendered on Dashboard cards
-- Theme tokens: `src/theme/theme.js` (colors/spacing/typography)
-- Derived layout constants: `src/theme/layout.js` (card sizes, snap intervals, input metrics)
-- UI primitives: `src/primitives/*` (prefer these over native)
-- Chips/badges: `src/components/Chip/*` (use for small tags like "Premium" or counts)
+- Recurrence logic: `src/modules/recurrence.js`
+- Insights engine: `src/modules/insights.js`
+- Theme tokens/layout: `src/theme/theme.js`, `src/theme/layout.js`
+- UI primitives: `src/primitives/*`
 - Premium/subscription: `src/services/PurchaseService.js`, `src/screens/Subscription/*`
-- Onboarding + (optional) lead capture: `src/screens/Onboarding/*`, `src/services/LeadService.js`
-
-## Project structure
-- `src/screens/`: feature screens and navigation destinations
-- `src/components/`: higher-level UI pieces
-- `src/primitives/`: low-level primitives (View/Text/Button/Icon/Pressable)
-- `src/contexts/`: global store, reducers, and helpers
-- `src/services/`: persistence, backups, notifications, rates
-- `src/modules/`: shared business logic utilities
-- `src/theme/`: theme tokens + derived layout constants
-- `assets/`: fonts and static assets
 
 ## Data model (local)
-- `settings`: includes (non-exhaustive) `schemaVersion`, `theme`, `baseCurrency`, `pin`, `reminders`, `language`,
-  `onboarded`, `maskAmount`, `statsRangeMonths`, `autoCategory`, `userProfile`, `marketingLead`
-- `accounts`: list of account objects (`hash`, `balance`, `currency`, `timestamp`, `title`)
-- `txs`: list of transactions (`hash`, `account`, `category`, `type`, `value`, `timestamp`, `title`)
-- `scheduledTxs`: list of scheduled templates (`id`, `account`, `category`, `type`, `value`, `title`, `startAt`, `pattern`)
-  - Created occurrences are stored as normal `txs` with `tx.meta.kind="scheduled"` and `{ scheduledId, occurrenceAt }`.
-- `subscription`: purchases state
-- `rates`: cached exchange rates
+- `settings`: includes `schemaVersion`, `theme`, `baseCurrency`, `pin`, `reminders`, `language`, `onboarded`,
+  `maskAmount`, `statsRangeMonths`, `autoCategory`, `autoAccount`, `autoAmount`, `userProfile`, `marketingLead`
+- `accounts`: account list (`hash`, `balance`, `currency`, `timestamp`, `title`)
+- `txs`: transactions (`hash`, `account`, `category`, `type`, `value`, `timestamp`, `title`)
+- `scheduledTxs`: templates (`id`, `account`, `category`, `type`, `value`, `title`, `startAt`, `pattern`)
+  - Generated occurrences are normal `txs` with `tx.meta.kind = "scheduled"` and `{ scheduledId, occurrenceAt }`
+- `subscription`: local purchase state
+- `rates`: cached FX rates
 
-## Schema & migrations
-- Storage defaults + schema version live in `src/contexts/store.constants.js`.
-- Migrations/normalization live in `src/contexts/modules/migrateState.js`.
-- Backups include `schemaVersion` and the top-level data model (`accounts`, `scheduledTxs`, `settings`, `txs`).
+## Key flows and guardrails
+- App boot hydrates storage, migrates state, resolves language, rebuilds auto catalogs, then runs scheduled sync.
+- Scheduled auto-create (`runScheduledSync` in store):
+  - Window: from `now - 90 days` to `now`
+  - Dedup key: `${scheduledId}:${occurrenceAt}` against existing tx `meta`
+  - Safety cap: max `100` auto-created txs per sync run
+- Scheduled notifications (`NotificationsService.syncScheduled`):
+  - Horizon: next `90 days`
+  - Caps: max `8` notifications per scheduled template, max `48` total
+  - Trigger: day before occurrence at `08:00` local time
+  - Dedup/cancel by scoped metadata (`kind`, `scheduledId`, `occurrenceAt`)
+- Backup reminder notifications: weekly, Sunday at 08:00 local (current behavior).
 
-## Key flows
-- App boot: `StoreProvider` hydrates AsyncStorage -> consolidates state.
-- New transaction: `createTx` -> `parseTx` -> store -> state update.
-- Scheduled auto-create (boot + app resume): `StoreProvider` runs `runScheduledSync` to create missed occurrences (bounded),
-  and keeps scheduled notifications in sync.
-- Auto-categorization learns on each save; initial catalog builds once if empty.
-- Insights are computed locally from transactions via `buildInsights`.
-- Backup: `BackupService.export` / `BackupService.import` (note: export/CSV is premium-gated in Settings).
-  - CSV export: `BackupService.exportCsv` (premium-gated).
-  - Note (Expo SDK 54): `BackupService` uses `expo-file-system/legacy` to avoid breaking changes in the new filesystem API.
-- Notifications: weekly backup reminder via `NotificationsService.reminders`; scheduled-tx reminders via `syncScheduled`.
-- i18n: `settings.language` drives `L10N` proxy, with EN/ES/PT/FR/DE dictionaries.
-- Onboarding: local survey stored in `settings.userProfile`; optional email can be sent via `LeadService` (remote).
+## Schema, backup, and migration safety rules
+- Any `settings` shape change requires:
+  - Update defaults in `src/contexts/store.constants.js`
+  - Update migration path in `src/contexts/modules/migrateState.js`
+  - Preserve backward compatibility for existing local data and backups
+- Any backup contract change requires:
+  - Keep top-level keys compatible: `schemaVersion`, `accounts`, `scheduledTxs`, `settings`, `txs`
+  - Defensive parsing/validation before importing into state
+- Never remove/rename persisted fields without a migration step.
+- Keep import failures non-destructive (invalid payload must not overwrite current state).
 
-## Coding standards
-- Use `src/primitives` primitives instead of raw `react-native` when possible.
-- Styles are standard `react-native` `StyleSheet` with numeric values.
-- For theme-dependent colors, prefer `getStyles(colors)` factories + `useApp().colors`.
-- Avoid hardcoded colors; use `useApp().colors` + `src/theme/theme.js` tokens.
-- Prefer named/index imports where established.
-- Keep components small; share logic in `src/modules` or `src/contexts/modules`.
-
-## Safety & privacy
-- Keep data local by default.
-- Any remote/AI feature must be opt-in, explicit, and clearly labeled.
-- Avoid sending raw transaction data off device without user confirmation.
-- This codebase does have some network-backed features:
-  - Rates sync (`src/services/RatesService.js`)
+## Premium and privacy constraints
+- Local-first is the default. Do not add network dependency for core ledger flows.
+- Existing network-backed flows are limited to:
+  - FX rates sync (`src/services/RatesService.js`)
   - Purchases/RevenueCat (`src/services/PurchaseService.js`)
   - Optional onboarding lead capture (`src/services/LeadService.js`)
+- Premium unlock has a local path (`unlockedBy: "btc"`); do not break this when syncing with RevenueCat.
+
+## Coding standards
+- Use `src/primitives` instead of raw `react-native` components when possible.
+- Avoid hardcoded colors; prefer theme tokens via `useApp().colors`.
+- Prefer StyleSheet-based styles; avoid inline styles unless unavoidable.
+- Keep components and modules small; avoid overengineering.
+- No TypeScript in this project.
 
 ## Notifications rules
 - Do not use `cancelAllScheduledNotificationsAsync` for new features.
-- Use stable identifiers or scoped metadata to cancel only related notifications.
+- Cancel only notifications owned by the relevant feature using stable metadata.
 
-## UX rules
-- Use tokens for spacing/typography from theme.
-- Maintain existing layout patterns (headers, modals, list cards).
+## Quality gates (mandatory)
+- If a change touches business logic/state/insights/migrations/services:
+  - Run `yarn test`
+- If a change touches UI/components/hooks/imports/styles:
+  - Run `yarn lint`
+- If a change touches both areas:
+  - Run both `yarn test` and `yarn lint`
+- Use `yarn lint:fix` only intentionally (expect diff noise).
 
-## Theme naming rules
-- Surfaces: `colors.background`, `colors.surface`, `colors.accent`, `colors.inverse`
-- Content on surfaces: `colors.text`/`colors.textSecondary`, plus `colors.onAccent` and `colors.onInverse`
-- `tone` in primitives (`Text`, `Icon`, `Button`) represents content only. Use:
-  - `tone="onAccent"` on `colors.accent` backgrounds
-  - `tone="onInverse"` on `colors.inverse` backgrounds
-
-## Tests & scripts
-- `yarn start`: run Expo dev server
+## Scripts
+- `yarn start`: Expo dev server
+- `yarn android`: start on Android
+- `yarn ios`: start on iOS
 - `yarn lint`: ESLint
-- `yarn lint:fix`: ESLint autofix (use intentionally)
+- `yarn lint:fix`: ESLint autofix
 - `yarn test`: Jest
 
-## Quality gates
-- Before finishing a change that touches business logic/state/insights/migrations: run `yarn test`.
-- Before finishing a change that touches UI/components/hooks/imports: run `yarn lint`.
-- Use `yarn lint:fix` only when you explicitly want ESLint to rewrite files (expect diff noise).
-
 ## Product direction (2026)
-- Local-first always (privacy and offline usability).
-- Notifications should be scoped per feature (avoid global cancel).
-- Maintain schema/migrations in backups and storage.
+- Local-first always (privacy + offline usability).
+- Notifications must remain scoped per feature.
+- Keep schema and backups resilient across app updates.
