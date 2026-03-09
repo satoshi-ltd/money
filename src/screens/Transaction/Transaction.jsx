@@ -47,7 +47,6 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
   const handleUserSelectAccount = (next) => {
     setAccountTouched(true);
     setAccount(next);
-    setState(INITIAL_STATE);
     setCategoryTouched(false);
     setAmountTouched(false);
     setTypeTouched(false);
