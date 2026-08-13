@@ -49,7 +49,10 @@ const MAX_SCHEDULED_AUTOCREATE = 100;
 const StoreContext = createContext(`context:store`);
 
 const runScheduledSync = async ({ migrated, store }) => {
-  const scheduledTxs = Array.isArray(migrated?.scheduledTxs) ? migrated.scheduledTxs : [];
+  const accountHashes = new Set((Array.isArray(migrated?.accounts) ? migrated.accounts : []).map(({ hash }) => hash));
+  const scheduledTxs = (Array.isArray(migrated?.scheduledTxs) ? migrated.scheduledTxs : []).filter(({ account }) =>
+    accountHashes.has(account),
+  );
   const txs = Array.isArray(migrated?.txs) ? migrated.txs : [];
 
   if (scheduledTxs.length === 0) {
@@ -138,7 +141,7 @@ const runScheduledSync = async ({ migrated, store }) => {
       next = { ...migrated, txs: nextTxs, settings: nextSettings };
     }
 
-  await NotificationsService.syncScheduled({ scheduledTxs: next.scheduledTxs, txs: next.txs });
+  await NotificationsService.syncScheduled({ scheduledTxs, txs: next.txs });
 
   if (hitLimit) {
     eventEmitter.emit(EVENT.NOTIFICATION, {

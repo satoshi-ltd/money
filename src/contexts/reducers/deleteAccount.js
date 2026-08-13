@@ -1,3 +1,5 @@
+import { NotificationsService } from '../../services';
+
 export const deleteAccount = async ({ hash }, [state, setState]) => {
   const { store } = state;
 
@@ -7,10 +9,17 @@ export const deleteAccount = async ({ hash }, [state, setState]) => {
 
   await store.remove({ hash });
   await store.get('txs').remove({ account: hash });
+  await store.get('scheduledTxs').remove({ account: hash });
+
+  const scheduledTxs = await store.get('scheduledTxs').value;
+  const txs = await store.get('txs').value;
 
   setState({
     ...state,
     accounts: await store.get('accounts').value,
-    txs: await store.get('txs').value,
+    scheduledTxs,
+    txs,
   });
+
+  await NotificationsService.syncScheduled({ scheduledTxs, txs });
 };
