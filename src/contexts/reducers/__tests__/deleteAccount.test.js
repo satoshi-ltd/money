@@ -51,9 +51,9 @@ describe('contexts/reducers/deleteAccount', () => {
     expect(data.txs).toEqual([{ hash: 't2', account: 'a2' }]);
     expect(data.scheduledTxs).toEqual([{ id: 's2', account: 'a2' }]);
 
-    expect(setState).toHaveBeenCalledWith(
-      expect.objectContaining({ scheduledTxs: [{ id: 's2', account: 'a2' }] }),
-    );
+    expect(setState.mock.calls[0][0]({ accounts: [], scheduledTxs: [], txs: [] })).toMatchObject({
+      scheduledTxs: [{ id: 's2', account: 'a2' }],
+    });
     expect(NotificationsService.syncScheduled).toHaveBeenCalledWith({
       scheduledTxs: [{ id: 's2', account: 'a2' }],
       txs: [{ hash: 't2', account: 'a2' }],

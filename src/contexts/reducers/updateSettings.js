@@ -1,6 +1,7 @@
-export const updateSettings = async (value, [state, setState]) => {
-  const nextSettings = { ...state.settings, ...value };
-  await state.store.get('settings').save(nextSettings);
+import { saveSettings } from './modules';
 
-  setState({ ...state, settings: nextSettings });
+export const updateSettings = async (value, [state, setState]) => {
+  const nextSettings = await saveSettings(state.store, value);
+
+  setState((prev) => ({ ...prev, settings: nextSettings }));
 };

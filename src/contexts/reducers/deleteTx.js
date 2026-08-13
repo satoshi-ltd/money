@@ -4,5 +4,6 @@ export const deleteTx = async ({ hash }, [state, setState]) => {
   store.get('txs');
 
   await store.remove({ hash });
-  setState({ ...state, txs: await store.value });
+  const txs = await store.value;
+  setState((prev) => ({ ...prev, txs }));
 };

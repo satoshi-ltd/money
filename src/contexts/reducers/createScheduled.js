@@ -8,7 +8,7 @@ export const createScheduled = async (data = {}, [state, setState]) => {
   const scheduled = await store.save(parseScheduled(data));
   const scheduledTxs = store.value;
 
-  setState({ ...state, scheduledTxs });
+  setState((prev) => ({ ...prev, scheduledTxs }));
 
   await NotificationsService.syncScheduled({ scheduledTxs, txs });
 

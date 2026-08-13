@@ -1,4 +1,4 @@
-import { parseTx } from './modules';
+import { parseTx, saveSettings } from './modules';
 import { learnAutoAccount, learnAutoAmount, learnAutoCategory } from '../../modules';
 
 export const updateTx = async ({ hash, ...data } = {}, [state, setState]) => {
@@ -24,12 +24,12 @@ export const updateTx = async ({ hash, ...data } = {}, [state, setState]) => {
       ...(nextAutoAccount ? { autoAccount: nextAutoAccount } : null),
       ...(nextAutoAmount ? { autoAmount: nextAutoAmount } : null),
     };
-    await store.get('settings').save(nextSettings);
-    setState({ ...state, txs, settings: nextSettings });
+    const settings = await saveSettings(store, nextSettings);
+    setState((prev) => ({ ...prev, txs, settings }));
     return nextTx;
   }
 
-  setState({ ...state, txs });
+  setState((prev) => ({ ...prev, txs }));
 
   return nextTx;
 };

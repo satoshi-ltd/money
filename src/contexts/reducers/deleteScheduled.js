@@ -7,7 +7,7 @@ export const deleteScheduled = async ({ id } = {}, [state, setState]) => {
   const removed = await store.remove({ id });
   const scheduledTxs = store.value;
 
-  setState({ ...state, scheduledTxs });
+  setState((prev) => ({ ...prev, scheduledTxs }));
 
   await NotificationsService.syncScheduled({ scheduledTxs, txs });
 

@@ -8,7 +8,8 @@ export const updateAccount = async ({ hash, ...data } = {}, [state, setState]) =
   if (!account) return undefined;
 
   await store.update({ hash }, parseAccount({ ...account, ...data }));
-  setState({ ...state, accounts: await store.value });
+  const accounts = await store.value;
+  setState((prev) => ({ ...prev, accounts }));
 
   return await store.findOne({ hash });
 };

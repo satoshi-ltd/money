@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import React, { createContext, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 
-import { consolidate, migrateState, runScheduledSync } from './modules';
+import { consolidate, migrateState } from './modules';
+import { runScheduledSync } from './modules/runScheduledSync';
 import { useToday } from '../hooks';
 import { detectDeviceLanguage, setLanguage } from '../i18n';
 import {

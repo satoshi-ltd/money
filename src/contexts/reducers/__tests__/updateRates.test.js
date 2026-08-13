@@ -37,7 +37,7 @@ describe('contexts/reducers/updateRates', () => {
     await updateRates({ currency: 'EUR', '2026-02': { USD: 4 } }, [state, setState]);
 
     expect(data.rates).toEqual({ '2026-01': { USD: 2 }, '2026-02': { USD: 4 } });
-    expect(setState.mock.calls[0][0].settings.ratesBaseCurrency).toBe('EUR');
+    expect(setState.mock.calls[0][0]({}).settings.ratesBaseCurrency).toBe('EUR');
   });
 
   test('drops rates belonging to the previous base currency', async () => {
@@ -52,7 +52,7 @@ describe('contexts/reducers/updateRates', () => {
     await updateRates({ currency: 'JPY', '2026-01': { USD: 0.006 } }, [state, setState]);
 
     expect(data.rates).toEqual({ '2026-01': { USD: 0.006 } });
-    expect(setState.mock.calls[0][0].settings).toMatchObject({ baseCurrency: 'JPY', ratesBaseCurrency: 'JPY' });
+    expect(setState.mock.calls[0][0]({}).settings).toMatchObject({ baseCurrency: 'JPY', ratesBaseCurrency: 'JPY' });
   });
 
   test('treats an untagged cache as belonging to the current base currency', async () => {
@@ -63,6 +63,6 @@ describe('contexts/reducers/updateRates', () => {
     await updateRates({ '2026-02': { USD: 4 } }, [state, setState]);
 
     expect(data.rates).toEqual({ '2026-01': { USD: 2 }, '2026-02': { USD: 4 } });
-    expect(setState.mock.calls[0][0].settings.ratesBaseCurrency).toBe('EUR');
+    expect(setState.mock.calls[0][0]({}).settings.ratesBaseCurrency).toBe('EUR');
   });
 });

@@ -14,12 +14,9 @@ export const deleteAccount = async ({ hash }, [state, setState]) => {
   const scheduledTxs = await store.get('scheduledTxs').value;
   const txs = await store.get('txs').value;
 
-  setState({
-    ...state,
-    accounts: await store.get('accounts').value,
-    scheduledTxs,
-    txs,
-  });
+  const accounts = await store.get('accounts').value;
+
+  setState((prev) => ({ ...prev, accounts, scheduledTxs, txs }));
 
   await NotificationsService.syncScheduled({ scheduledTxs, txs });
 };
