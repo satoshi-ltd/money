@@ -35,6 +35,8 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
       <SectionList
         ref={listRef}
         initialNumToRender={C.TRANSACTIONS_PER_PAGE}
+        keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
         keyExtractor={(item, index) => `${item.hash || item.timestamp}-${index}`}
         ListHeaderComponent={<DashboardListHeader navigate={navigate} onSearch={setQuery} setPage={setPage} />}
         renderItem={({ item }) => <TransactionItem {...item} />}

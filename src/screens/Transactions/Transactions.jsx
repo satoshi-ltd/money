@@ -43,6 +43,8 @@ const Transactions = (props = {}) => {
     <Panel title={title} onBack={goBack} disableScroll>
       <SectionList
         initialNumToRender={C.TRANSACTIONS_PER_PAGE}
+        keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
         keyExtractor={(item, index) => `${item.hash || item.timestamp}-${index}`}
         ListEmptyComponent={() => <Banner align="center" title={L10N.NO_TRANSACTIONS} />}
         ListHeaderComponent={

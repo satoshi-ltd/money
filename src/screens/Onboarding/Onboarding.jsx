@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useMemo, useRef, useState } from 'react';
-import { useWindowDimensions } from 'react-native';
+import { KeyboardAvoidingView, Platform, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { DEFAULT_SURVEY_DATA, SLIDES } from './Onboarding.constants';
@@ -136,29 +136,31 @@ const Onboarding = ({ navigation: { navigate } }) => {
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={styles.screen}>
-      <ScrollView horizontal ref={scrollview} snapTo={width} onScroll={handleScroll}>
-        {SLIDES.map((slide, index) => (
-          <Slide
-            key={`slide-${index}`}
-            leadEmail={surveyData.email}
-            slide={slide}
-            slideSize={slideSize}
-            styles={styles}
-            surveyValue={slide?.type && slide.type !== 'lead' ? surveyData[slide.type] : undefined}
-            width={width}
-            onLeadEmailChange={handleLeadEmail}
-            onSurveyChange={handleSurveyChange}
-          />
-        ))}
-      </ScrollView>
+      <KeyboardAvoidingView behavior={Platform.OS === 'android' ? 'height' : 'padding'} style={styles.screen}>
+        <ScrollView horizontal ref={scrollview} snapTo={width} onScroll={handleScroll}>
+          {SLIDES.map((slide, index) => (
+            <Slide
+              key={`slide-${index}`}
+              leadEmail={surveyData.email}
+              slide={slide}
+              slideSize={slideSize}
+              styles={styles}
+              surveyValue={slide?.type && slide.type !== 'lead' ? surveyData[slide.type] : undefined}
+              width={width}
+              onLeadEmailChange={handleLeadEmail}
+              onSurveyChange={handleSurveyChange}
+            />
+          ))}
+        </ScrollView>
 
-      <View row style={styles.footer}>
-        <View flex />
+        <View row style={styles.footer}>
+          <View flex />
 
-        <Button disabled={is.survey && !surveyData[currentSlide?.type]} onPress={handleNext} style={styles.button}>
-          {is.lead ? L10N.START : is.last ? L10N.START : L10N.NEXT}
-        </Button>
-      </View>
+          <Button disabled={is.survey && !surveyData[currentSlide?.type]} onPress={handleNext} style={styles.button}>
+            {is.lead ? L10N.START : is.last ? L10N.START : L10N.NEXT}
+          </Button>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
