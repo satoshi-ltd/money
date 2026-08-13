@@ -22,13 +22,12 @@ const Subscription = ({ route: { params: { plans = [] } = {} } = {}, navigation:
     const { data } = plans[plan] || {};
     PurchaseService.buy(data)
       .then((newSubscription) => {
-        if (newSubscription) {
-          updateSubscription(newSubscription);
-          goBack();
-          setBusy(null);
-        }
+        if (!newSubscription) return;
+        updateSubscription(newSubscription);
+        goBack();
       })
-      .catch(handleError);
+      .catch(handleError)
+      .finally(() => setBusy(null));
   };
 
   const handleError = () => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, text: L10N.ERROR_TRY_AGAIN });

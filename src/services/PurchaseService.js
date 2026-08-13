@@ -1,7 +1,7 @@
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
-import { L10N } from '../modules';
+import { C, L10N } from '../modules';
 const PRO_ENTITLEMENT = 'pro';
 
 const APIKEY = {
@@ -28,7 +28,7 @@ const initializePurchases = async () => {
   const Purchases = require('react-native-purchases').default;
 
   if (!purchasesInitialized) {
-    Purchases.setLogLevel(Purchases.LOG_LEVEL.VERBOSE);
+    Purchases.setLogLevel(C.IS_DEV ? Purchases.LOG_LEVEL.VERBOSE : Purchases.LOG_LEVEL.ERROR);
     Purchases.configure({ apiKey: APIKEY[Platform.OS] });
     purchasesInitialized = true;
   }
@@ -95,9 +95,8 @@ export const PurchaseService = {
           reject(L10N.ERROR_PURCHASE);
         }
       } catch (error) {
-        if (!error.userCancelled) {
-          reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);
-        }
+        if (error?.userCancelled) resolve(undefined);
+        else reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);
       }
     }),
   restore: async () =>
