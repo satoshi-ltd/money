@@ -99,6 +99,9 @@ module.exports = {
     {
       files: ['**/__tests__/**/*.{js,jsx}', '**/*.test.{js,jsx}'],
       env: { jest: true },
+      rules: {
+        'no-restricted-imports': 'off',
+      },
     },
   ],
 };
