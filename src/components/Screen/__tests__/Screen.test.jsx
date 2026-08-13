@@ -5,6 +5,9 @@ import TestRenderer, { act } from 'react-test-renderer';
 import Screen from '../Screen';
 
 jest.mock('../../../contexts', () => ({ useApp: () => ({ colors: {} }) }));
+jest.mock('../../../hooks', () => ({ useKeyboardInset: () => mockInset }));
+
+let mockInset = 0;
 
 const render = (props) => {
   let renderer;
@@ -14,7 +17,30 @@ const render = (props) => {
   return renderer.root;
 };
 
+const heightOf = ({ props }) => {
+  const style = Array.isArray(props.style) ? Object.assign({}, ...props.style.flat(9).filter(Boolean)) : props.style;
+  return style?.height;
+};
+
 describe('components/Screen', () => {
+  afterEach(() => {
+    mockInset = 0;
+  });
+
+  test('reserves the space the keyboard takes so the content can clear it', () => {
+    mockInset = 312;
+
+    const spacers = render({}).findAllByType(RNView).filter((node) => heightOf(node) === 312);
+
+    expect(spacers).toHaveLength(1);
+  });
+
+  test('reserves nothing while the keyboard is down', () => {
+    const spacers = render({}).findAllByType(RNView).filter((node) => heightOf(node));
+
+    expect(spacers).toHaveLength(0);
+  });
+
   test('lets the scroll view move out of the keyboard and keeps taps working', () => {
     const scroll = render({}).findByType(RNScrollView);
 

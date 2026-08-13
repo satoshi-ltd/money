@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useMemo, useRef, useState } from 'react';
-import { KeyboardAvoidingView, Platform, useWindowDimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { DEFAULT_SURVEY_DATA, SLIDES } from './Onboarding.constants';
@@ -9,6 +9,7 @@ import { getStyles } from './Onboarding.style';
 import { isValidEmail } from './utils/isValidEmail';
 import { Button, ScrollView, View } from '../../components';
 import { useApp, useStore } from '../../contexts';
+import { useKeyboardInset } from '../../hooks';
 import { C, eventEmitter, L10N } from '../../modules';
 import { LeadService } from '../../services';
 import { theme } from '../../theme';
@@ -20,6 +21,7 @@ const Onboarding = ({ navigation: { navigate } }) => {
   const store = useStore();
   const { settings = {}, updateSettings } = store;
   const { width } = useWindowDimensions();
+  const keyboardInset = useKeyboardInset();
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [surveyData, setSurveyData] = useState(() => {
@@ -135,32 +137,33 @@ const Onboarding = ({ navigation: { navigate } }) => {
   };
 
   return (
-    <SafeAreaView edges={['top', 'bottom']} style={styles.screen}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'android' ? 'height' : 'padding'} style={styles.screen}>
-        <ScrollView horizontal ref={scrollview} snapTo={width} onScroll={handleScroll}>
-          {SLIDES.map((slide, index) => (
-            <Slide
-              key={`slide-${index}`}
-              leadEmail={surveyData.email}
-              slide={slide}
-              slideSize={slideSize}
-              styles={styles}
-              surveyValue={slide?.type && slide.type !== 'lead' ? surveyData[slide.type] : undefined}
-              width={width}
-              onLeadEmailChange={handleLeadEmail}
-              onSurveyChange={handleSurveyChange}
-            />
-          ))}
-        </ScrollView>
+    <SafeAreaView
+      edges={['top', 'bottom']}
+      style={[styles.screen, keyboardInset ? { paddingBottom: keyboardInset } : null]}
+    >
+      <ScrollView horizontal ref={scrollview} snapTo={width} onScroll={handleScroll}>
+        {SLIDES.map((slide, index) => (
+          <Slide
+            key={`slide-${index}`}
+            leadEmail={surveyData.email}
+            slide={slide}
+            slideSize={slideSize}
+            styles={styles}
+            surveyValue={slide?.type && slide.type !== 'lead' ? surveyData[slide.type] : undefined}
+            width={width}
+            onLeadEmailChange={handleLeadEmail}
+            onSurveyChange={handleSurveyChange}
+          />
+        ))}
+      </ScrollView>
 
-        <View row style={styles.footer}>
-          <View flex />
+      <View row style={styles.footer}>
+        <View flex />
 
-          <Button disabled={is.survey && !surveyData[currentSlide?.type]} onPress={handleNext} style={styles.button}>
-            {is.lead ? L10N.START : is.last ? L10N.START : L10N.NEXT}
-          </Button>
-        </View>
-      </KeyboardAvoidingView>
+        <Button disabled={is.survey && !surveyData[currentSlide?.type]} onPress={handleNext} style={styles.button}>
+          {is.lead ? L10N.START : is.last ? L10N.START : L10N.NEXT}
+        </Button>
+      </View>
     </SafeAreaView>
   );
 };
