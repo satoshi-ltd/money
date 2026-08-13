@@ -23,6 +23,7 @@ export { default as Modal } from './Modal';
 export * from './MetricBar';
 export * from './Notification';
 export * from './PriceFriendly';
+export { default as ErrorBoundary } from './ErrorBoundary';
 export { default as Panel } from './Panel';
 export { default as Screen } from './Screen';
 export { default as Setting } from './Setting';

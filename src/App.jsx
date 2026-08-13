@@ -5,7 +5,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { Navigator } from './App.Navigator';
-import { Notification } from './components';
+import { ErrorBoundary, Notification } from './components';
 import { StoreProvider } from './contexts';
 
 const styles = StyleSheet.create({
@@ -27,9 +27,11 @@ export const App = () => {
   return ready ? (
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
-        <StoreProvider>
-          <Navigator />
-        </StoreProvider>
+        <ErrorBoundary>
+          <StoreProvider>
+            <Navigator />
+          </StoreProvider>
+        </ErrorBoundary>
         <Notification />
       </SafeAreaProvider>
     </GestureHandlerRootView>

@@ -7,18 +7,22 @@ const state = new WeakMap();
 export class StorageService {
   constructor({ adapter: Adapter = AsyncStorageAdapter, defaults = {}, filename = 'store' } = {}) {
     // eslint-disable-next-line no-undef
-    return new Promise(async (resolve) => {
-      const adapter = await new Adapter({ defaults, filename });
+    return new Promise(async (resolve, reject) => {
+      try {
+        const adapter = await new Adapter({ defaults, filename });
 
-      state.set(this, {
-        adapter,
-        data: await adapter.read(),
-        defaults: JSON.parse(JSON.stringify(defaults)),
-        filename,
-        key: 'default',
-      });
+        state.set(this, {
+          adapter,
+          data: await adapter.read(),
+          defaults: JSON.parse(JSON.stringify(defaults)),
+          filename,
+          key: 'default',
+        });
 
-      resolve(this);
+        resolve(this);
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 

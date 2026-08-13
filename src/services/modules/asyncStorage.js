@@ -3,13 +3,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export class AsyncStorageAdapter {
   constructor({ defaults = {}, filename = 'store' } = {}) {
     // eslint-disable-next-line no-async-promise-executor, no-undef
-    return new Promise(async (resolve) => {
-      this.key = filename;
+    return new Promise(async (resolve, reject) => {
+      try {
+        this.key = filename;
 
-      const store = await AsyncStorage.getItem(this.key);
-      if (!store) await AsyncStorage.setItem(this.key, JSON.stringify(defaults));
+        const store = await AsyncStorage.getItem(this.key);
+        if (!store) await AsyncStorage.setItem(this.key, JSON.stringify(defaults));
 
-      return resolve(this);
+        return resolve(this);
+      } catch (error) {
+        return reject(error);
+      }
     });
   }
 

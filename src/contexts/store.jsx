@@ -44,6 +44,7 @@ const StoreContext = createContext(`context:store`);
 
 const StoreProvider = ({ children }) => {
   const [state, setState] = useState(DEFAULTS);
+  const [bootError, setBootError] = useState();
   const today = useToday();
   const stateRef = useRef(state);
   const ratesSyncInFlightRef = useRef(false);
@@ -137,7 +138,7 @@ const StoreProvider = ({ children }) => {
           });
         }, 0);
       }
-    })();
+    })().catch(setBootError);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -249,6 +250,8 @@ const StoreProvider = ({ children }) => {
   }, [state.store, state.settings]);
 
   const consolidated = useMemo(() => consolidate({ ...state, now: today }), [state, today]);
+
+  if (bootError) throw bootError;
 
   return (
     <StoreContext.Provider
