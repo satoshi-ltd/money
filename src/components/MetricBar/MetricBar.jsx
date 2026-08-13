@@ -36,7 +36,7 @@ const MetricBar = ({
   const isStats = variant === 'stats';
   const clamped = Math.max(0, Math.min(100, percent));
   const clampedSecondary = Math.max(0, Math.min(100, secondaryPercent));
-  const width = `${Math.max(minPercent, Math.round(clamped))}%`;
+  const width = `${clamped > 0 ? Math.max(minPercent, Math.round(clamped)) : 0}%`;
   const hasSecondary = clampedSecondary > 0;
 
   const scaledSegments = useMemo(() => {
