@@ -7,11 +7,12 @@ export const calcAccount = ({
   baseCurrency,
   genesisDate,
   months = 0,
+  now: nowProp,
   rates = {},
   txs = [],
   txsByAccount,
 }) => {
-  const now = new Date();
+  const now = nowProp instanceof Date ? nowProp : new Date();
 
   const currentDay = now.getDate();
   const { balance = 0, currency } = account;

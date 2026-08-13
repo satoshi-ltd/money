@@ -3,6 +3,7 @@ import React, { createContext, useContext, useEffect, useLayoutEffect, useMemo, 
 import { AppState } from 'react-native';
 
 import { consolidate, migrateState } from './modules';
+import { useToday } from '../hooks';
 import { detectDeviceLanguage, setLanguage } from '../i18n';
 import {
   buildAutoAccountCatalog,
@@ -155,6 +156,7 @@ const runScheduledSync = async ({ migrated, store }) => {
 
 const StoreProvider = ({ children }) => {
   const [state, setState] = useState(DEFAULTS);
+  const today = useToday();
   const stateRef = useRef(state);
   const ratesSyncInFlightRef = useRef(false);
   const syncRatesRef = useRef();
@@ -357,12 +359,13 @@ const StoreProvider = ({ children }) => {
     syncRatesRef.current?.({ full: true });
   }, [state.store, state.settings]);
 
-  const consolidated = useMemo(() => consolidate(state), [state]);
+  const consolidated = useMemo(() => consolidate({ ...state, now: today }), [state, today]);
 
   return (
     <StoreContext.Provider
       value={{
         ...consolidated,
+        today,
         // -- account
         createAccount: (...props) => createAccount(...props, [state, setState]),
         updateAccount: (...props) => updateAccount(...props, [state, setState]),

@@ -12,7 +12,7 @@ import { cardAccountSnap } from '../../theme/layout';
 let timeoutId;
 
 const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
-  const { accounts = [], scheduledTxs = [], rates = {}, settings = {}, overall = {}, txs = [] } = useStore();
+  const { accounts = [], scheduledTxs = [], rates = {}, settings = {}, overall = {}, today, txs = [] } = useStore();
   const { baseCurrency } = settings || {};
   const chartStagger = Math.round(theme.animations.duration.quick / 5);
 
@@ -38,8 +38,8 @@ const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
 
   const sortedAccounts = queryAccounts({ accounts, query: undefined });
   const insights = useMemo(
-    () => buildInsights({ accounts, scheduledTxs, rates, settings: { ...settings, baseCurrency }, txs }),
-    [accounts, scheduledTxs, rates, settings, baseCurrency, txs],
+    () => buildInsights({ accounts, now: today, scheduledTxs, rates, settings: { ...settings, baseCurrency }, txs }),
+    [accounts, scheduledTxs, rates, settings, baseCurrency, today, txs],
   );
   const overallProgressionPercentage = useMemo(() => {
     const next = getProgressionPercentage(overall?.currentBalance, overall?.currentMonth?.progression);

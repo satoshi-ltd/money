@@ -4,6 +4,7 @@ import { getMonthDiff } from '../../modules';
 const KEYS = ['expenses', 'incomes', 'progression', 'today'];
 
 export const consolidate = ({
+  now: nowProp,
   rates = {},
   settings = {},
   subscription = {},
@@ -12,6 +13,7 @@ export const consolidate = ({
   accounts: storeAccounts = [],
 } = {}) => {
   const { baseCurrency } = settings;
+  const now = nowProp instanceof Date ? nowProp : new Date();
   let accounts = [];
   const txsByAccount = {};
 
@@ -28,8 +30,8 @@ export const consolidate = ({
       .filter((value) => Number.isFinite(value));
     const txTimestamps = txs.map((tx) => tx?.timestamp).filter((value) => Number.isFinite(value));
     const minTimestamp = Math.min(...[...accountTimestamps, ...txTimestamps].filter((value) => value > 0));
-    const genesisDate = Number.isFinite(minTimestamp) ? new Date(minTimestamp) : new Date();
-    const months = Math.max(0, getMonthDiff(genesisDate, new Date()));
+    const genesisDate = Number.isFinite(minTimestamp) ? new Date(minTimestamp) : now;
+    const months = Math.max(0, getMonthDiff(genesisDate, now));
 
     accounts = storeAccounts.map(({ hash, timestamp, data = {}, ...others }) =>
       calcAccount({
@@ -37,6 +39,7 @@ export const consolidate = ({
         baseCurrency,
         genesisDate,
         months,
+        now,
         rates,
         txs,
         txsByAccount,

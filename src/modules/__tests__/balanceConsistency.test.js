@@ -1,4 +1,7 @@
+import { C } from '../constants';
 import { consolidate } from '../../contexts/modules/consolidate';
+
+const { EXPENSE } = C.TX.TYPE;
 
 describe('balance consistency', () => {
   test('uses latest rates for current balance and latest chart point', () => {
@@ -34,6 +37,21 @@ describe('balance consistency', () => {
     expect(state.accounts[0].hasMissingRate).toBe(false);
     expect(state.accounts[1].hasMissingRate).toBe(true);
     expect(state.accounts[1].currentBalance).toBe(500);
+  });
+
+  test('reads the current month from the date it is given', () => {
+    const state = consolidate({
+      now: new Date(2026, 1, 10, 12),
+      settings: { baseCurrency: 'EUR' },
+      rates: {},
+      accounts: [{ hash: 'a1', balance: 0, currency: 'EUR', timestamp: new Date(2026, 0, 1).getTime() }],
+      txs: [
+        { hash: 't1', account: 'a1', category: 1, type: EXPENSE, value: 40, timestamp: new Date(2026, 1, 3).getTime() },
+        { hash: 't2', account: 'a1', category: 1, type: EXPENSE, value: 90, timestamp: new Date(2026, 0, 3).getTime() },
+      ],
+    });
+
+    expect(state.overall.currentMonth.expenses).toBe(40);
   });
 
   test('keeps negative balances in chart and current balance', () => {
