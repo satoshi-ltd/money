@@ -9,7 +9,12 @@
     "ios": "expo start --ios",
     "lint": "eslint --cache --format stylish --ext .jsx,.js src",
     "lint:fix": "eslint --cache --fix --format stylish --ext .jsx,.js src",
-    "test": "jest"
+    "test": "jest",
+    "eas:login": "npx eas-cli login",
+    "eas:whoami": "npx eas-cli whoami",
+    "build:dev": "npx eas-cli build --platform android --profile development",
+    "build:preview": "npx eas-cli build --platform android --profile preview",
+    "build:prod": "npx eas-cli build --platform android --profile production"
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
