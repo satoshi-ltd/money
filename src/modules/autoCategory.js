@@ -1,4 +1,5 @@
 import { tokenizeTitle } from './autoTokens';
+import { isInternalTransfer } from './isInternalTransfer';
 
 const ensureStatsBucket = (stats, type, word) => {
   if (!stats[type]) stats[type] = {};
@@ -30,6 +31,7 @@ export const buildAutoCategoryCatalog = (txs = [], options = {}) => {
   const stats = {};
   txs.forEach(({ title, type, category }) => {
     if (category === undefined || category === null) return;
+    if (isInternalTransfer({ category })) return;
     const words = tokenizeTitle(title);
     if (!words.length) return;
     words.forEach((word) => {
@@ -56,6 +58,8 @@ export const buildAutoCategoryCatalog = (txs = [], options = {}) => {
 };
 
 export const learnAutoCategory = (catalog, { title, type, category }, options = {}) => {
+  if (isInternalTransfer({ category })) return catalog;
+
   const stats = { ...(catalog?.stats || {}) };
   const rules = { ...(catalog?.rules || {}) };
 
