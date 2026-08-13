@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { createContext, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 
-import { consolidate, migrateState } from './modules';
+import { consolidate, migrateState, runScheduledSync } from './modules';
 import { useToday } from '../hooks';
 import { detectDeviceLanguage, setLanguage } from '../i18n';
 import {
@@ -11,11 +11,7 @@ import {
   buildAutoCategoryCatalog,
   C,
   eventEmitter,
-  getOccurrencesBetween,
   L10N,
-  learnAutoAccount,
-  learnAutoAmount,
-  learnAutoCategory,
   maybeUnlockPremiumFromAccounts,
 } from '../modules';
 import {
@@ -38,121 +34,12 @@ import {
   importBackup,
   resetAppData,
 } from './reducers';
-import { parseTx } from './reducers/modules';
 import { DEFAULTS, FILENAME } from './store.constants';
-import { NotificationsService, PurchaseService, ServiceRates, StorageService } from '../services';
+import { PurchaseService, ServiceRates, StorageService } from '../services';
 
-const { EVENT } = C;
-const MS_IN_DAY = C.MS_IN_DAY;
 const RATES_SYNC_INTERVAL = 6 * 60 * 60 * 1000;
-const MAX_SCHEDULED_AUTOCREATE = 100;
 
 const StoreContext = createContext(`context:store`);
-
-const runScheduledSync = async ({ migrated, store }) => {
-  const accountHashes = new Set((Array.isArray(migrated?.accounts) ? migrated.accounts : []).map(({ hash }) => hash));
-  const scheduledTxs = (Array.isArray(migrated?.scheduledTxs) ? migrated.scheduledTxs : []).filter(({ account }) =>
-    accountHashes.has(account),
-  );
-  const txs = Array.isArray(migrated?.txs) ? migrated.txs : [];
-
-  if (scheduledTxs.length === 0) {
-    await NotificationsService.syncScheduled({ scheduledTxs, txs });
-    return migrated;
-  }
-
-  const now = Date.now();
-  const fromAt = now - 90 * MS_IN_DAY;
-  const toAt = now;
-  const existingIndex = txs.reduce((memo, tx) => {
-    const meta = tx?.meta;
-    if (meta?.kind !== 'scheduled') return memo;
-    if (!meta?.scheduledId || !Number.isFinite(meta?.occurrenceAt)) return memo;
-    memo[`${meta.scheduledId}:${meta.occurrenceAt}`] = true;
-    return memo;
-  }, {});
-
-  const newTxs = [];
-  let hitLimit = false;
-  for (let i = 0; i < scheduledTxs.length; i += 1) {
-    const scheduled = scheduledTxs[i];
-    const occurrences = getOccurrencesBetween({ scheduled, fromAt, toAt });
-    for (let j = 0; j < occurrences.length; j += 1) {
-      if (newTxs.length >= MAX_SCHEDULED_AUTOCREATE) {
-        hitLimit = true;
-        break;
-      }
-      const occurrenceAt = occurrences[j];
-      const key = `${scheduled.id}:${occurrenceAt}`;
-      if (existingIndex[key]) continue;
-      existingIndex[key] = true;
-      newTxs.push(
-        parseTx({
-          account: scheduled.account,
-          category: scheduled.category,
-          title: scheduled.title,
-          timestamp: occurrenceAt,
-          type: scheduled.type,
-          value: scheduled.value,
-          meta: { kind: 'scheduled', scheduledId: scheduled.id, occurrenceAt },
-        }),
-      );
-    }
-    if (newTxs.length >= MAX_SCHEDULED_AUTOCREATE) {
-      if (i < scheduledTxs.length - 1) hitLimit = true;
-      break;
-    }
-  }
-
-    let next = migrated;
-    if (newTxs.length > 0) {
-      store.get('txs');
-      await store.save(newTxs);
-      const nextTxs = store.value;
-
-      let nextSettings = migrated.settings;
-      const categoryTxs = newTxs.filter((tx) => tx?.category !== undefined);
-      const nextAutoCategory =
-        categoryTxs.length > 0
-          ? categoryTxs.reduce((catalog, tx) => learnAutoCategory(catalog, tx), migrated.settings.autoCategory)
-          : undefined;
-
-      const accountTxs = newTxs.filter((tx) => !!tx?.account);
-      const nextAutoAccount =
-        accountTxs.length > 0
-          ? accountTxs.reduce((catalog, tx) => learnAutoAccount(catalog, tx), migrated.settings.autoAccount)
-          : undefined;
-
-      const amountTxs = newTxs.filter((tx) => !!tx?.account && Number.isFinite(tx?.value) && tx.value > 0);
-      const nextAutoAmount =
-        amountTxs.length > 0
-          ? amountTxs.reduce((catalog, tx) => learnAutoAmount(catalog, tx), migrated.settings.autoAmount)
-          : undefined;
-
-      if (nextAutoCategory || nextAutoAccount || nextAutoAmount) {
-        nextSettings = {
-          ...migrated.settings,
-          ...(nextAutoCategory ? { autoCategory: nextAutoCategory } : null),
-          ...(nextAutoAccount ? { autoAccount: nextAutoAccount } : null),
-          ...(nextAutoAmount ? { autoAmount: nextAutoAmount } : null),
-        };
-        await store.get('settings').save(nextSettings);
-      }
-
-      next = { ...migrated, txs: nextTxs, settings: nextSettings };
-    }
-
-  await NotificationsService.syncScheduled({ scheduledTxs, txs: next.txs });
-
-  if (hitLimit) {
-    eventEmitter.emit(EVENT.NOTIFICATION, {
-      title: L10N.SCHEDULED,
-      text: L10N.SCHEDULED_AUTOCREATE_LIMIT,
-    });
-  }
-
-  return next;
-};
 
 const StoreProvider = ({ children }) => {
   const [state, setState] = useState(DEFAULTS);
@@ -328,6 +215,7 @@ const StoreProvider = ({ children }) => {
       (async () => {
         const nextMigrated = await runScheduledSync({
           migrated: {
+            accounts: current.accounts || [],
             scheduledTxs: current.scheduledTxs || [],
             settings: current.settings || {},
             txs: current.txs || [],
