@@ -26,10 +26,15 @@ const BaseCurrency = ({ navigation: { goBack } = {} }) => {
     }
 
     setCurrency(nextCurrency);
-    const rates = await ServiceRates.get({ baseCurrency: nextCurrency, latest: false }).catch(() =>
-      eventEmitter.emit(EVENT.NOTIFICATION, { error: true, title: L10N.ERROR_SERVICE_RATES }),
-    );
-    if (rates) await updateRates({ ...rates, currency: nextCurrency });
+    const rates = await ServiceRates.get({ baseCurrency: nextCurrency, latest: false }).catch(() => undefined);
+
+    if (!rates) {
+      setCurrency(baseCurrency);
+      eventEmitter.emit(EVENT.NOTIFICATION, { error: true, title: L10N.ERROR_SERVICE_RATES });
+      return;
+    }
+
+    await updateRates({ ...rates, currency: nextCurrency });
     goBack();
   };
 

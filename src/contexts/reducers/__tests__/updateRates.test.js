@@ -55,6 +55,22 @@ describe('contexts/reducers/updateRates', () => {
     expect(setState.mock.calls[0][0]({}).settings).toMatchObject({ baseCurrency: 'JPY', ratesBaseCurrency: 'JPY' });
   });
 
+  test('ignores a response that carries no rates instead of wiping the cache', async () => {
+    const data = { accounts: [], rates: { '2026-01': { USD: 2 } }, settings: { baseCurrency: 'EUR' } };
+    const state = {
+      rates: data.rates,
+      settings: { baseCurrency: 'EUR', ratesBaseCurrency: 'EUR' },
+      store: createStore(data),
+    };
+    const setState = jest.fn();
+
+    await updateRates({ currency: 'JPY' }, [state, setState]);
+
+    expect(data.rates).toEqual({ '2026-01': { USD: 2 } });
+    expect(data.settings.baseCurrency).toBe('EUR');
+    expect(setState).not.toHaveBeenCalled();
+  });
+
   test('treats an untagged cache as belonging to the current base currency', async () => {
     const data = { accounts: [], rates: { '2026-01': { USD: 2 } } };
     const state = { rates: data.rates, settings: { baseCurrency: 'EUR' }, store: createStore(data) };

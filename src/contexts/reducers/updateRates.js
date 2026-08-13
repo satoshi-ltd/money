@@ -3,6 +3,8 @@ import { saveSettings } from './modules';
 export const updateRates = async ({ currency, ...rates } = {}, [state, setState]) => {
   const { settings: { baseCurrency, ratesBaseCurrency } = {} } = state;
 
+  if (!Object.keys(rates).length) return;
+
   const nextBaseCurrency = currency || baseCurrency;
   const cachedBaseCurrency = ratesBaseCurrency || baseCurrency;
   const keepCache = cachedBaseCurrency === nextBaseCurrency;
