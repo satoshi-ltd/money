@@ -1,13 +1,20 @@
 import React, { useMemo } from 'react';
+import { KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 
 import { getStyles } from './Screen.styles';
 import { useApp } from '../../contexts';
 import { ScrollView, View } from '../../primitives';
 
+const isAndroid = Platform.OS === 'android';
+
+const styles = StyleSheet.create({
+  keyboardAvoid: { flex: 1 },
+});
+
 const Screen = React.forwardRef(({ children, disableScroll, gap, offset, style, ...props }, ref) => {
   const { colors } = useApp();
-  const styles = useMemo(() => getStyles(colors), [colors]);
-  const contentStyle = [styles.base, offset && styles.offset, gap && styles.gap, style];
+  const dynamicStyles = useMemo(() => getStyles(colors), [colors]);
+  const contentStyle = [dynamicStyles.base, offset && dynamicStyles.offset, gap && dynamicStyles.gap, style];
 
   if (disableScroll) {
     return (
@@ -17,10 +24,24 @@ const Screen = React.forwardRef(({ children, disableScroll, gap, offset, style, 
     );
   }
 
-  return (
-    <ScrollView ref={ref} {...props} contentContainerStyle={contentStyle}>
+  const scroll = (
+    <ScrollView
+      ref={ref}
+      automaticallyAdjustKeyboardInsets={!isAndroid}
+      keyboardDismissMode="on-drag"
+      {...props}
+      contentContainerStyle={contentStyle}
+    >
       {children}
     </ScrollView>
+  );
+
+  return isAndroid ? (
+    <KeyboardAvoidingView behavior="height" style={styles.keyboardAvoid}>
+      {scroll}
+    </KeyboardAvoidingView>
+  ) : (
+    scroll
   );
 });
 

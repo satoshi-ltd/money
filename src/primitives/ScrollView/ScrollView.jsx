@@ -9,6 +9,7 @@ const ScrollView = React.forwardRef(({ snapTo, style, decelerationRate, ...props
       ref={ref}
       decelerationRate={resolvedSnapTo ? 'fast' : decelerationRate}
       snapToInterval={resolvedSnapTo || undefined}
+      keyboardShouldPersistTaps="handled"
       showsHorizontalScrollIndicator={false}
       showsVerticalScrollIndicator={false}
       {...props}
