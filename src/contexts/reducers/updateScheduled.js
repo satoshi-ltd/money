@@ -8,7 +8,10 @@ export const updateScheduled = async ({ id, ...data } = {}, [state, setState]) =
   const prev = await store.findOne({ id });
   if (!prev) return undefined;
 
-  const next = parseScheduled({ ...prev, ...data, id: prev.id, createdAt: prev.createdAt });
+  const candidate = parseScheduled({ ...prev, ...data, id: prev.id, createdAt: prev.createdAt });
+  const recurrenceChanged =
+    candidate.startAt !== prev.startAt || JSON.stringify(candidate.pattern) !== JSON.stringify(prev.pattern);
+  const next = recurrenceChanged ? { ...candidate, materialiseFrom: Date.now() } : candidate;
 
   await store.update({ id }, next);
   const scheduledTxs = store.value;

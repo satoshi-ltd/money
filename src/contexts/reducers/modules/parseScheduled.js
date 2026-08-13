@@ -28,6 +28,7 @@ export const parseScheduled = (data = {}) => {
 
   const createdAt = Number.isFinite(safe.createdAt) ? safe.createdAt : now;
   const updatedAt = now;
+  const materialiseFrom = Number.isFinite(safe.materialiseFrom) ? safe.materialiseFrom : undefined;
 
   return {
     id: safe.id || UUID({ entity: 'scheduled', account: safe.account, createdAt }),
@@ -40,5 +41,6 @@ export const parseScheduled = (data = {}) => {
     pattern: basePattern,
     createdAt,
     updatedAt,
+    materialiseFrom,
   };
 };

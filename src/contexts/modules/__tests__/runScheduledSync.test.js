@@ -88,6 +88,44 @@ describe('contexts/modules/runScheduledSync', () => {
     expect(NotificationsService.syncScheduled.mock.calls[0][0].scheduledTxs).toHaveLength(1);
   });
 
+  test('does not re-materialise the past when the recurrence was edited', async () => {
+    const weekly = {
+      ...scheduled('s1', 'a1'),
+      startAt: Date.now() - 80 * DAY,
+      pattern: { kind: 'weekly', interval: 1, byWeekday: [1] },
+    };
+
+    const first = await runScheduledSync({
+      migrated: { accounts: [{ hash: 'a1' }], scheduledTxs: [weekly], settings: {}, txs: [] },
+      store: createStore({ settings: {}, txs: [] }),
+    });
+    expect(first.txs.length).toBeGreaterThan(6);
+
+    const edited = { ...weekly, pattern: { kind: 'weekly', interval: 1, byWeekday: [2] }, materialiseFrom: Date.now() };
+    const second = await runScheduledSync({
+      migrated: { accounts: [{ hash: 'a1' }], scheduledTxs: [edited], settings: {}, txs: first.txs },
+      store: createStore({ settings: {}, txs: [...first.txs] }),
+    });
+
+    expect(second.txs).toHaveLength(first.txs.length);
+  });
+
+  test('still back-fills a template that was never edited', async () => {
+    const data = { settings: {}, txs: [] };
+    const weekly = {
+      ...scheduled('s1', 'a1'),
+      startAt: Date.now() - 80 * DAY,
+      pattern: { kind: 'weekly', interval: 1, byWeekday: [1] },
+    };
+
+    const next = await runScheduledSync({
+      migrated: { accounts: [{ hash: 'a1' }], scheduledTxs: [weekly], settings: {}, txs: [] },
+      store: createStore(data),
+    });
+
+    expect(next.txs.length).toBeGreaterThan(6);
+  });
+
   test('does not create a transaction that already exists for the same occurrence', async () => {
     const data = { settings: {}, txs: [] };
     const template = scheduled('s1', 'a1');

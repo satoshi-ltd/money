@@ -28,7 +28,7 @@ export const runScheduledSync = async ({ migrated, store }) => {
   }
 
   const now = Date.now();
-  const fromAt = now - WINDOW_DAYS * MS_IN_DAY;
+  const windowAt = now - WINDOW_DAYS * MS_IN_DAY;
   const toAt = now;
   const existingIndex = txs.reduce((memo, tx) => {
     const meta = tx?.meta;
@@ -42,6 +42,9 @@ export const runScheduledSync = async ({ migrated, store }) => {
   let hitLimit = false;
   for (let i = 0; i < scheduledTxs.length; i += 1) {
     const scheduled = scheduledTxs[i];
+    const fromAt = Number.isFinite(scheduled.materialiseFrom)
+      ? Math.max(windowAt, scheduled.materialiseFrom)
+      : windowAt;
     const occurrences = getOccurrencesBetween({ scheduled, fromAt, toAt });
     for (let j = 0; j < occurrences.length; j += 1) {
       if (newTxs.length >= MAX_SCHEDULED_AUTOCREATE) {
