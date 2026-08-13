@@ -19,13 +19,15 @@
 - Notifications: `src/services/NotificationsService.js`
 - Recurrence logic: `src/modules/recurrence.js`
 - Insights engine: `src/modules/insights.js`
+- Shared hooks: `src/hooks/*` (`useToday` drives day/month rollover)
 - Theme tokens/layout: `src/theme/theme.js`, `src/theme/layout.js`
 - UI primitives: `src/primitives/*`
 - Premium/subscription: `src/services/PurchaseService.js`, `src/screens/Subscription/*`
 
 ## Data model (local)
-- `settings`: includes `schemaVersion`, `theme`, `baseCurrency`, `pin`, `reminders`, `language`, `onboarded`,
-  `maskAmount`, `statsRangeMonths`, `autoCategory`, `autoAccount`, `autoAmount`, `userProfile`, `marketingLead`
+- `settings`: includes `schemaVersion`, `theme`, `baseCurrency`, `ratesBaseCurrency`, `pin`, `reminders`, `language`,
+  `onboarded`, `maskAmount`, `statsRangeMonths`, `autoCategory`, `autoAccount`, `autoAmount`, `userProfile`,
+  `marketingLead`
 - `accounts`: account list (`hash`, `balance`, `currency`, `timestamp`, `title`)
 - `txs`: transactions (`hash`, `account`, `category`, `type`, `value`, `timestamp`, `title`)
 - `scheduledTxs`: templates (`id`, `account`, `category`, `type`, `value`, `title`, `startAt`, `pattern`)
@@ -45,6 +47,8 @@
   - Trigger: day before occurrence at `08:00` local time
   - Dedup/cancel by scoped metadata (`kind`, `scheduledId`, `occurrenceAt`)
 - Backup reminder notifications: weekly, Sunday at 08:00 local (current behavior).
+- FX rates: `exchange()` returns `undefined` when it cannot convert; never treat that as 0.
+  `settings.ratesBaseCurrency` tags the cache, and a mismatch drops it instead of merging.
 
 ## Schema, backup, and migration safety rules
 - Any `settings` shape change requires:
