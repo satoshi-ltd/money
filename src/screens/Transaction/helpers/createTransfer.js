@@ -1,3 +1,4 @@
+import { UUID } from '../../../contexts/modules/UUID';
 import { C } from '../../../modules';
 
 const {
@@ -12,25 +13,39 @@ export const createTransfer = async ({
   state: {
     form: { from, to, exchange, value },
   },
-  store: { createTx },
+  store: { createTx, deleteTx },
 }) => {
-  let block = await createTx({
+  const transferId = UUID({ entity: 'transfer', from: account.hash, to: to?.hash, value, at: Date.now() });
+
+  const origin = await createTx({
     account: account.hash,
     category: INTERNAL_TRANSFER,
     title: to.title,
     type: EXPENSE,
     value: parseFloat(value, 10),
+    meta: { kind: 'transfer', transferId, leg: 'from' },
   });
 
-  if (block) {
-    block = await createTx({
+  if (!origin) return undefined;
+
+  let destination;
+  try {
+    destination = await createTx({
       account: to.hash,
       category: INTERNAL_TRANSFER,
       title: from.title,
       type: INCOME,
       value: parseFloat(exchange, 10),
+      meta: { kind: 'transfer', transferId, leg: 'to' },
     });
+  } catch (error) {
+    destination = undefined;
   }
 
-  return block;
+  if (!destination) {
+    await deleteTx?.({ hash: origin.hash });
+    return undefined;
+  }
+
+  return destination;
 };
