@@ -18,10 +18,10 @@ export default (
   if (effectiveLimit <= 0) {
     effectiveLimit = overall?.chartBalance?.length || STATS_MONTHS_LIMIT;
   }
-  const today = new Date();
-  today.setMonth(today.getMonth() - (effectiveLimit - index - 1));
-  const month = today.getMonth();
-  const year = today.getFullYear();
+  const now = new Date();
+  const target = new Date(now.getFullYear(), now.getMonth() - (effectiveLimit - index - 1), 1);
+  const month = target.getMonth();
+  const year = target.getFullYear();
 
   const values = { expenses: {}, incomes: {} };
   const accountCurrencyByHash = {};
