@@ -1,14 +1,28 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const CHUNK_SIZE = 500;
+
+const indexKey = (filename, collection) => `${filename}:${collection}`;
+const chunkKey = (filename, collection, index) => `${filename}:${collection}:${index}`;
+
+const toChunks = (value) => {
+  const chunks = [];
+  for (let index = 0; index < value.length; index += CHUNK_SIZE) chunks.push(value.slice(index, index + CHUNK_SIZE));
+  return chunks.length ? chunks : [[]];
+};
+
 export class AsyncStorageAdapter {
   constructor({ defaults = {}, filename = 'store' } = {}) {
     // eslint-disable-next-line no-async-promise-executor, no-undef
     return new Promise(async (resolve, reject) => {
       try {
         this.key = filename;
+        this.collections = Object.keys(defaults);
+        this.defaults = defaults;
+        this.written = {};
+        this.chunkCount = {};
 
-        const store = await AsyncStorage.getItem(this.key);
-        if (!store) await AsyncStorage.setItem(this.key, JSON.stringify(defaults));
+        await this.migrateFromSingleKey();
 
         return resolve(this);
       } catch (error) {
@@ -17,32 +31,122 @@ export class AsyncStorageAdapter {
     });
   }
 
-  async read() {
-    const { key } = this;
-    let data;
+  async migrateFromSingleKey() {
+    const { defaults, key } = this;
 
+    const legacy = await AsyncStorage.getItem(key);
+    if (!legacy) return;
+
+    let data;
     try {
-      data = JSON.parse(await AsyncStorage.getItem(key));
+      data = JSON.parse(legacy);
     } catch (error) {
       throw new Error(`${key} could not be loaded correctly.`);
     }
 
-    return data;
+    await this.write({ ...defaults, ...data });
+    await AsyncStorage.removeItem(key);
   }
 
-  async write(data = {}) {
-    const { key } = this;
+  async read() {
+    const { collections, defaults, key } = this;
 
     try {
-      await AsyncStorage.setItem(key, JSON.stringify(data));
+      const indexes = await AsyncStorage.multiGet(collections.map((collection) => indexKey(key, collection)));
+      const pending = [];
+
+      const data = collections.reduce((memo, collection, position) => {
+        const [, raw] = indexes[position] || [];
+        if (raw === null || raw === undefined) {
+          memo[collection] = defaults[collection];
+          return memo;
+        }
+
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object' && Number.isFinite(parsed.__chunks)) {
+          pending.push({ collection, chunks: parsed.__chunks });
+          this.chunkCount[collection] = parsed.__chunks;
+        } else {
+          memo[collection] = parsed;
+        }
+        return memo;
+      }, {});
+
+      for (let index = 0; index < pending.length; index += 1) {
+        const { chunks, collection } = pending[index];
+        const keys = Array.from({ length: chunks }, (item, position) => chunkKey(key, collection, position));
+        const stored = await AsyncStorage.multiGet(keys);
+        data[collection] = stored.reduce((memo, [chunkName, raw]) => {
+          if (raw) this.written[chunkName] = raw;
+          return memo.concat(raw ? JSON.parse(raw) : []);
+        }, []);
+      }
+
+      return data;
+    } catch (error) {
+      throw new Error(`${key} could not be loaded correctly.`);
+    }
+  }
+
+  async write(data = {}, collection) {
+    const { collections, key } = this;
+    const touched = collection && collections.includes(collection) ? [collection] : collections;
+
+    try {
+      for (let index = 0; index < touched.length; index += 1) await this.writeCollection(data, touched[index]);
     } catch (error) {
       throw new Error(`${key} could not be saved correctly.`);
     }
   }
 
-  async wipe() {
+  async writeCollection(data, collection) {
     const { key } = this;
+    const value = data[collection];
 
-    await AsyncStorage.removeItem(key);
+    if (!Array.isArray(value)) {
+      const raw = JSON.stringify(value);
+      if (this.written[indexKey(key, collection)] === raw) return;
+      await AsyncStorage.setItem(indexKey(key, collection), raw);
+      this.written[indexKey(key, collection)] = raw;
+      return;
+    }
+
+    const chunks = toChunks(value);
+    const changed = [];
+    chunks.forEach((chunk, position) => {
+      const name = chunkKey(key, collection, position);
+      const raw = JSON.stringify(chunk);
+      if (this.written[name] !== raw) changed.push([name, raw]);
+    });
+
+    if (changed.length) await AsyncStorage.multiSet(changed);
+    changed.forEach(([name, raw]) => (this.written[name] = raw));
+
+    const previous = this.chunkCount[collection] || 0;
+    if (previous > chunks.length) {
+      const stale = Array.from({ length: previous - chunks.length }, (item, position) =>
+        chunkKey(key, collection, chunks.length + position),
+      );
+      await AsyncStorage.multiRemove(stale);
+      stale.forEach((name) => delete this.written[name]);
+    }
+
+    await AsyncStorage.setItem(indexKey(key, collection), JSON.stringify({ __chunks: chunks.length }));
+    this.chunkCount[collection] = chunks.length;
+  }
+
+  async wipe() {
+    const { collections, key } = this;
+    const keys = [key];
+
+    collections.forEach((collection) => {
+      keys.push(indexKey(key, collection));
+      const chunks = this.chunkCount[collection] || 0;
+      for (let index = 0; index < chunks; index += 1) keys.push(chunkKey(key, collection, index));
+    });
+
+    await AsyncStorage.multiRemove(keys);
+    this.written = {};
+    this.chunkCount = {};
   }
 }

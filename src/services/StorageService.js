@@ -65,7 +65,7 @@ export class StorageService {
       data[key] = { ...data[key], ...value };
     }
 
-    await adapter.write(data);
+    await adapter.write(data, key);
 
     return value;
   }
@@ -87,7 +87,7 @@ export class StorageService {
       return changes || row;
     });
 
-    if (values.length > 0) await adapter.write(data);
+    if (values.length > 0) await adapter.write(data, key);
 
     return values;
   }
@@ -104,7 +104,7 @@ export class StorageService {
       return !found;
     });
 
-    if (values.length > 0) await adapter.write(data);
+    if (values.length > 0) await adapter.write(data, key);
 
     return values;
   }
@@ -119,7 +119,7 @@ export class StorageService {
     const { adapter, data = {}, defaults = {} } = state.get(this);
 
     const nextData = JSON.parse(JSON.stringify(key ? { ...data, [key]: defaults[key] } : defaults));
-    await adapter.write(nextData);
+    await adapter.write(nextData, key);
     state.set(this, Object.assign(state.get(this), { data: nextData, memoryPool: [] }));
   }
 }
