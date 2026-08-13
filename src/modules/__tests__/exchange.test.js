@@ -20,6 +20,13 @@ describe('modules/exchange', () => {
     expect(exchange(100, 'USD', 'EUR', RATES)).toBe(25);
   });
 
+  test('picks the rate month from the local calendar, like every other month bucket', () => {
+    const firstOfFebruary = new Date(2026, 1, 1, 0, 30, 0, 0);
+
+    expect(firstOfFebruary.getMonth()).toBe(1);
+    expect(exchange(100, 'USD', 'EUR', RATES, firstOfFebruary.getTime())).toBe(25);
+  });
+
   test('signals an impossible conversion instead of returning zero', () => {
     expect(exchange(100, 'USD', 'EUR', {})).toBeUndefined();
     expect(exchange(100, 'GBP', 'EUR', RATES)).toBeUndefined();

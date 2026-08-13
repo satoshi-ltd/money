@@ -2,7 +2,10 @@ import { C } from './constants';
 
 const { CURRENCY } = C;
 
-const getRateKeyByTimestamp = (timestamp) => new Date(timestamp).toISOString().slice(0, 7);
+const getRateKeyByTimestamp = (timestamp) => {
+  const date = new Date(timestamp);
+  return `${date.getFullYear()}-${`${date.getMonth() + 1}`.padStart(2, '0')}`;
+};
 
 const findLatestKeyWithCurrency = (keys = [], rates = {}, currency) => {
   for (let index = keys.length - 1; index >= 0; index -= 1) {
