@@ -46,6 +46,7 @@ export const consolidate = ({
 
   const currentMonth = { expenses: 0, incomes: 0, progression: 0, today: 0 };
   let currentBalance = 0;
+  let hasMissingRate = false;
   const chartBalance = [];
 
   accounts.forEach(
@@ -53,8 +54,10 @@ export const consolidate = ({
       chartBalance: accountChartBalance,
       currentBalanceBase: accountCurrentBalanceBase,
       currentMonth: accountLast30Days,
+      hasMissingRate: accountHasMissingRate,
     }) => {
-      currentBalance += accountCurrentBalanceBase;
+      if (accountHasMissingRate) hasMissingRate = true;
+      if (Number.isFinite(accountCurrentBalanceBase)) currentBalance += accountCurrentBalanceBase;
 
       KEYS.forEach((key) => {
         currentMonth[key] += accountLast30Days[key];
@@ -70,7 +73,7 @@ export const consolidate = ({
 
   return {
     accounts,
-    overall: { balance, chartBalance, currentBalance, currentMonth },
+    overall: { balance, chartBalance, currentBalance, currentMonth, hasMissingRate },
     rates,
     scheduledTxs,
     settings,

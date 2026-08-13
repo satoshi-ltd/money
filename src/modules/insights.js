@@ -85,7 +85,7 @@ export const buildInsights = ({
 
     const currency = account.currency || baseCurrency;
     const amount = exchange(value, currency, baseCurrency, rates, timestamp);
-    if (!Number.isFinite(amount) || (amount === 0 && currency !== baseCurrency)) return;
+    if (!Number.isFinite(amount)) return;
 
     const occurrenceKey = getScheduledOccurrenceKeyFromTx(tx);
     if (occurrenceKey) recordedOccurrences.add(occurrenceKey);
@@ -131,7 +131,7 @@ export const buildInsights = ({
       if (key && recordedOccurrences.has(key)) return;
 
       const amount = exchange(value, currency, baseCurrency, rates, occurrenceAt);
-      if (!Number.isFinite(amount) || (amount === 0 && currency !== baseCurrency)) return;
+      if (!Number.isFinite(amount)) return;
 
       if (scheduled.type === TYPE.EXPENSE) pendingExpenses += amount;
       else pendingIncomes += amount;

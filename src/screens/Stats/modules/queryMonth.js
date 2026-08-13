@@ -43,6 +43,7 @@ export default (
         const currency = accountCurrencyByHash[tx.account];
 
         const valueExchange = exchange(value, currency, baseCurrency, rates, timestamp);
+        if (!Number.isFinite(valueExchange)) return;
 
         const categoryKey = title ? title.toLowerCase().trim() : 'Unknown';
 

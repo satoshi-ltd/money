@@ -40,6 +40,10 @@ const CardAccount = ({
 
   const showPercentage = Number.isFinite(percentage) && Math.abs(percentage) >= 0.1;
   const chartValues = Array.isArray(chart) ? chart.slice(-12) : [];
+  const balanceBase =
+    showExchange && currency !== baseCurrency
+      ? exchange(Math.abs(balance), currency, baseCurrency, rates)
+      : undefined;
 
   return (
     <Pressable onPress={onPress} style={others.style}>
@@ -70,13 +74,8 @@ const CardAccount = ({
 
                 <PriceFriendly bold currency={currency} size="l" tone={mainTone} value={Math.abs(balance)} />
 
-                {showExchange && currency !== baseCurrency ? (
-                  <PriceFriendly
-                    size="s"
-                    tone={exchangeTone}
-                    currency={baseCurrency}
-                    value={exchange(Math.abs(balance), currency, baseCurrency, rates)}
-                  />
+                {Number.isFinite(balanceBase) ? (
+                  <PriceFriendly size="s" tone={exchangeTone} currency={baseCurrency} value={balanceBase} />
                 ) : null}
               </View>
             ) : null}

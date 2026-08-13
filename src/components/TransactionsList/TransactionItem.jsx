@@ -34,6 +34,7 @@ const TransactionItem = ({
   } = useStore();
 
   const operator = type === EXPENSE ? -1 : 1;
+  const valueBase = baseCurrency !== currency ? exchange(value, currency, baseCurrency, rates, timestamp) : undefined;
 
   const handlePress = () => {
     navigate('clone', { ...others, category, currency, timestamp, title, type, value });
@@ -64,13 +65,8 @@ const TransactionItem = ({
             <Text tone="secondary" style={style.text} size="xs">
               {`${verboseTime(new Date(timestamp))} - ${L10N.CATEGORIES[type][category]}`}
             </Text>
-            {baseCurrency !== currency && (
-              <PriceFriendly
-                size="xs"
-                tone="secondary"
-                currency={baseCurrency}
-                value={exchange(value, currency, baseCurrency, rates, timestamp)}
-              />
+            {Number.isFinite(valueBase) && (
+              <PriceFriendly size="xs" tone="secondary" currency={baseCurrency} value={valueBase} />
             )}
           </View>
         </View>

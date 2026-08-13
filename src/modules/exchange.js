@@ -32,13 +32,14 @@ export const exchange = (value = 0, currency = 'EUR', baseCurrency = CURRENCY, r
   if (currency === baseCurrency || value === 0) return value;
 
   const keys = Object.keys(rates).sort();
-  if (!keys.length) return 0;
+  if (!keys.length) return undefined;
 
   const targetKey = timestamp ? getRateKeyByTimestamp(timestamp) : undefined;
   const key = timestamp
     ? findHistoricalKeyWithCurrency(keys, rates, currency, targetKey)
     : findLatestKeyWithCurrency(keys, rates, currency);
-  if (!key) return 0;
+  if (!key) return undefined;
 
-  return value / rates[key][currency];
+  const rate = rates[key][currency];
+  return Number.isFinite(rate) && rate !== 0 ? value / rate : undefined;
 };

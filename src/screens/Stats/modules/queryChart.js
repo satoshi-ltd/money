@@ -42,6 +42,7 @@ export default (
     const currency = accountsCurrency[tx.account];
 
     const valueExchange = exchange(value, currency, baseCurrency, rates, timestamp);
+    if (!Number.isFinite(valueExchange)) return;
     const monthIndex = getMonthDiff(originDate, parseDate(timestamp)) - 1;
     if (monthIndex < 0 || monthIndex >= effectiveLimit) return;
 

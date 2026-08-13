@@ -18,6 +18,7 @@ export const calcAccount = ({
   const exchangeProps = [currency, baseCurrency, rates];
   let currentBalance = Number.isFinite(balance) ? balance : 0;
   let currentMonthTxs = 0;
+  let hasMissingRate = false;
   let expenses = 0;
   let expensesBase = 0;
   let incomes = 0;
@@ -34,7 +35,10 @@ export const calcAccount = ({
     const isExpense = type === TYPE.EXPENSE;
     const date = new Date(timestamp);
     const monthIndex = getMonthDiff(genesisDate, date);
-    const valueBase = currency !== baseCurrency ? exchange(value, ...exchangeProps, timestamp) : value;
+    const converted = currency !== baseCurrency ? exchange(value, ...exchangeProps, timestamp) : value;
+    const isConverted = Number.isFinite(converted);
+    if (!isConverted) hasMissingRate = true;
+    const valueBase = isConverted ? converted : 0;
     const signedValue = isExpense ? -value : value;
     const signedValueBase = isExpense ? -valueBase : valueBase;
 
@@ -66,19 +70,27 @@ export const calcAccount = ({
     if (index > 0) chartBalance[index] += chartBalance[index - 1];
   });
 
+  const chartBalanceExchanged = chartBalance.map((value, index) => {
+    if (currency === baseCurrency) return value;
+    const converted =
+      index === months
+        ? exchange(value, ...exchangeProps)
+        : exchange(value, ...exchangeProps, new Date(genesisDate.getFullYear(), genesisDate.getMonth() + index, 1));
+    if (Number.isFinite(converted)) return converted;
+    hasMissingRate = true;
+    return 0;
+  });
+  const currentBalanceBase = exchange(currentBalance, ...exchangeProps);
+  if (!Number.isFinite(currentBalanceBase)) hasMissingRate = true;
+
   return {
     ...account,
     balance: Number.isFinite(balance) ? balance : 0,
-    chartBalance: chartBalance.map((value, index) =>
-      currency !== baseCurrency
-        ? index === months
-          ? exchange(value, ...exchangeProps)
-          : exchange(value, ...exchangeProps, new Date(genesisDate.getFullYear(), genesisDate.getMonth() + index, 1))
-        : value,
-    ),
+    chartBalance: chartBalanceExchanged,
     chartBalanceBase: [...chartBalance],
     currentBalance,
-    currentBalanceBase: exchange(currentBalance, ...exchangeProps),
+    currentBalanceBase,
+    hasMissingRate,
     currentMonth: {
       expenses,
       expensesBase,
