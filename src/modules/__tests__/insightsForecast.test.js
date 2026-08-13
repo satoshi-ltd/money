@@ -31,7 +31,7 @@ describe('modules/insights scheduled projection', () => {
     const insights = buildInsights({ accounts, now, scheduledTxs, settings, rates: {}, txs });
     const pace = insights.find((item) => item.id === 'spending_pace');
     expect(pace).toBeDefined();
-    expect(pace.meta.scheduledRemaining).toBe(10);
+    expect(pace.meta.pendingExpenses).toBe(10);
     expect(pace.value).toBeGreaterThanOrEqual(20);
     expect(insights.find((item) => item.id === 'forecast_net_end_month')).toBeUndefined();
   });
@@ -82,7 +82,7 @@ describe('modules/insights scheduled projection', () => {
     const net = insights.find((item) => item.id === 'net_balance');
 
     expect(net).toBeDefined();
-    expect(net.meta.scheduledIncomesRemaining).toBe(30);
-    expect(net.meta.scheduledExpensesRemaining).toBe(10);
+    expect(net.meta.pendingIncomes).toBe(30);
+    expect(net.meta.pendingExpenses).toBe(10);
   });
 });

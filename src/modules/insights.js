@@ -3,45 +3,47 @@ import { exchange } from './exchange';
 import { isInternalTransfer } from './isInternalTransfer';
 import { L10N } from './l10n';
 import { getOccurrencesBetween } from './recurrence';
+import { getScheduledOccurrenceKey, getScheduledOccurrenceKeyFromTx } from './scheduledKey';
 
 const { TX: { TYPE } = {} } = C;
 
-const MONTH_WINDOW = 3;
+const BASELINE_MONTHS = 3;
+const HISTORY_MONTHS = 6;
 const TREND_MONTHS = 12;
-const PACE_MONTHS = 6;
+const TREND_FLAT_BAND = 5;
+const MIN_BASELINE_SHARE = 0.1;
+const MIN_MOVER_SHARE = 0.05;
+const MIN_MOVER_DELTA = 10;
+const MIN_LINEAR_DAY = 5;
+const MAX_DELTA = 999;
 
-const monthKey = (date) => {
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, '0');
-  return `${year}-${month}`;
-};
+const monthKey = (date) => `${date.getFullYear()}-${`${date.getMonth() + 1}`.padStart(2, '0')}`;
 
-const getPreviousMonths = (date, count) => {
-  const months = [];
-  for (let i = 1; i <= count; i += 1) {
-    const d = new Date(date.getFullYear(), date.getMonth() - i, 1);
-    months.push(monthKey(d));
-  }
-  return months;
-};
-
-const getRecentMonths = (date, count) => {
-  const months = [];
-  for (let i = count - 1; i >= 0; i -= 1) {
-    const d = new Date(date.getFullYear(), date.getMonth() - i, 1);
-    months.push(monthKey(d));
-  }
-  return months;
-};
+const shiftMonthKey = (date, offset) => monthKey(new Date(date.getFullYear(), date.getMonth() - offset, 1));
 
 const getDaysInMonth = (date) => new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
 
-const formatPercentAbs = (value) => `${Math.round(Math.abs(value))}%`;
-
-const monthDateFromKey = (key) => {
+const daysInMonthFromKey = (key) => {
   const [year, month] = `${key}`.split('-');
-  return new Date(Number(year), Number(month) - 1, 1);
+  return new Date(Number(year), Number(month), 0).getDate();
 };
+
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+const sum = (values = []) => values.reduce((total, value) => total + value, 0);
+
+const median = (values = []) => {
+  if (!values.length) return 0;
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+};
+
+const percentDelta = (value, baseline) => clamp(((value - baseline) / baseline) * 100, -MAX_DELTA, MAX_DELTA);
+
+const formatPercentAbs = (value) => `${Math.abs(Math.round(value))}%`;
+
+const categoryLabel = (category) => L10N.CATEGORIES?.[0]?.[category] || `${category}`;
 
 export const buildInsights = ({
   accounts = [],
@@ -54,161 +56,169 @@ export const buildInsights = ({
   const baseCurrency = settings.baseCurrency;
   const now = nowProp instanceof Date ? nowProp : new Date();
   const currentKey = monthKey(now);
-  const previousKeys = getPreviousMonths(now, MONTH_WINDOW);
-
+  const daysInMonth = getDaysInMonth(now);
+  const elapsedDay = Math.min(now.getDate(), daysInMonth);
   const accountMap = new Map(accounts.map((account) => [account.hash, account]));
 
-  const totals = {
-    expenses: {},
-    expensesByDay: {},
-    incomes: {},
-    categories: {},
-    categoriesByDay: {},
+  const months = new Map();
+  const monthEntry = (key) => {
+    if (!months.has(key))
+      months.set(key, { categoriesToDate: {}, expenses: 0, expensesToDate: 0, incomes: 0, incomesToDate: 0 });
+    return months.get(key);
   };
 
-  txs.forEach((tx) => {
-    if (!tx || tx.timestamp === undefined) return;
-    if (isInternalTransfer(tx)) return;
+  const recordedOccurrences = new Set();
+  let firstKey;
+  let pendingExpenses = 0;
+  let pendingIncomes = 0;
 
-    const date = new Date(tx.timestamp);
-    const key = monthKey(date);
+  (Array.isArray(txs) ? txs : []).forEach((tx) => {
+    if (!tx || isInternalTransfer(tx)) return;
+    if (tx.type !== TYPE.EXPENSE && tx.type !== TYPE.INCOME) return;
+
+    const timestamp = Number(tx.timestamp);
+    const value = Number(tx.value);
+    if (!Number.isFinite(timestamp) || !Number.isFinite(value) || value === 0) return;
+
     const account = accountMap.get(tx.account);
-    const currency = account?.currency || baseCurrency;
-    const valueBase = exchange(tx.value, currency, baseCurrency, rates, tx.timestamp);
+    if (!account) return;
+
+    const currency = account.currency || baseCurrency;
+    const amount = exchange(value, currency, baseCurrency, rates, timestamp);
+    if (!Number.isFinite(amount) || (amount === 0 && currency !== baseCurrency)) return;
+
+    const occurrenceKey = getScheduledOccurrenceKeyFromTx(tx);
+    if (occurrenceKey) recordedOccurrences.add(occurrenceKey);
+
+    const date = new Date(timestamp);
+    const key = monthKey(date);
+    const entry = monthEntry(key);
+    const toDate = date.getDate() <= Math.min(elapsedDay, getDaysInMonth(date));
+
+    if (!firstKey || key < firstKey) firstKey = key;
 
     if (tx.type === TYPE.EXPENSE) {
-      totals.expenses[key] = (totals.expenses[key] || 0) + valueBase;
-      const day = date.getDate();
-      if (!totals.expensesByDay[key]) totals.expensesByDay[key] = {};
-      totals.expensesByDay[key][day] = (totals.expensesByDay[key][day] || 0) + valueBase;
-      if (tx.category) {
-        if (!totals.categories[key]) totals.categories[key] = {};
-        totals.categories[key][tx.category] = (totals.categories[key][tx.category] || 0) + valueBase;
-
-        if (!totals.categoriesByDay[key]) totals.categoriesByDay[key] = {};
-        if (!totals.categoriesByDay[key][day]) totals.categoriesByDay[key][day] = {};
-        totals.categoriesByDay[key][day][tx.category] =
-          (totals.categoriesByDay[key][day][tx.category] || 0) + valueBase;
-      }
-    } else if (tx.type === TYPE.INCOME) {
-      totals.incomes[key] = (totals.incomes[key] || 0) + valueBase;
+      entry.expenses += amount;
+      if (toDate) {
+        entry.expensesToDate += amount;
+        if (tx.category !== undefined && tx.category !== null)
+          entry.categoriesToDate[tx.category] = (entry.categoriesToDate[tx.category] || 0) + amount;
+      } else if (key === currentKey) pendingExpenses += amount;
+    } else {
+      entry.incomes += amount;
+      if (toDate) entry.incomesToDate += amount;
+      else if (key === currentKey) pendingIncomes += amount;
     }
   });
 
-  const currentExpenses = totals.expenses[currentKey] || 0;
-  const currentIncomes = totals.incomes[currentKey] || 0;
-  const tomorrowMidday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 12, 0, 0, 0);
-  const endOfMonthMidday = new Date(now.getFullYear(), now.getMonth() + 1, 0, 12, 0, 0, 0);
-  const fromAt = tomorrowMidday.getTime();
-  const toAt = endOfMonthMidday.getTime();
+  const fromAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 12, 0, 0, 0).getTime();
+  const toAt = new Date(now.getFullYear(), now.getMonth() + 1, 0, 12, 0, 0, 0).getTime();
 
-  const scheduledRemaining = (Array.isArray(scheduledTxs) ? scheduledTxs : []).reduce(
-    (sum, scheduled) => {
-      if (scheduled?.type !== TYPE.EXPENSE && scheduled?.type !== TYPE.INCOME) return sum;
-      const occurrences = getOccurrencesBetween({ scheduled, fromAt, toAt });
-      if (!occurrences.length) return sum;
-      const account = accountMap.get(scheduled.account);
-      const currency = account?.currency || baseCurrency;
-      const converted = occurrences.reduce(
-        (occurrenceSum, occurrenceAt) => occurrenceSum + exchange(scheduled.value, currency, baseCurrency, rates, occurrenceAt),
-        0,
-      );
+  (Array.isArray(scheduledTxs) ? scheduledTxs : []).forEach((scheduled) => {
+    if (!scheduled || isInternalTransfer(scheduled)) return;
+    if (scheduled.type !== TYPE.EXPENSE && scheduled.type !== TYPE.INCOME) return;
 
-      if (scheduled.type === TYPE.INCOME) sum.incomes += converted;
-      if (scheduled.type === TYPE.EXPENSE) sum.expenses += converted;
-      return sum;
-    },
-    { incomes: 0, expenses: 0 },
-  );
+    const value = Number(scheduled.value);
+    if (!Number.isFinite(value) || value === 0) return;
 
-  const day = now.getDate();
-  const cumulativeExpensesMemo = {};
-  const cumulativeExpenses = (key) => {
-    if (cumulativeExpensesMemo[key] !== undefined) return cumulativeExpensesMemo[key];
-    const daily = totals.expensesByDay[key];
-    if (!daily) {
-      cumulativeExpensesMemo[key] = 0;
-      return 0;
-    }
-    const effectiveDay = Math.min(day, getDaysInMonth(monthDateFromKey(key)));
-    let cumulative = 0;
-    for (let d = 1; d <= effectiveDay; d += 1) cumulative += daily[d] || 0;
-    cumulativeExpensesMemo[key] = cumulative;
-    return cumulative;
-  };
-  const cumulativeCategoriesMemo = {};
-  const cumulativeCategories = (key) => {
-    if (cumulativeCategoriesMemo[key]) return cumulativeCategoriesMemo[key];
-    const daily = totals.categoriesByDay[key];
-    if (!daily) {
-      cumulativeCategoriesMemo[key] = {};
-      return {};
-    }
-    const effectiveDay = Math.min(day, getDaysInMonth(monthDateFromKey(key)));
-    const out = {};
-    for (let d = 1; d <= effectiveDay; d += 1) {
-      const dayCats = daily[d];
-      if (!dayCats) continue;
-      Object.entries(dayCats).forEach(([category, amount]) => {
-        out[category] = (out[category] || 0) + amount;
-      });
-    }
-    cumulativeCategoriesMemo[key] = out;
-    return out;
-  };
+    const account = accountMap.get(scheduled.account);
+    if (!account) return;
 
-  const previousSpendKeys = previousKeys.filter((key) => (totals.expenses[key] || 0) > 0);
-  const avgExpenses = previousSpendKeys.length
-    ? previousSpendKeys.reduce((sum, key) => sum + cumulativeExpenses(key), 0) / previousSpendKeys.length
-    : 0;
+    const currency = account.currency || baseCurrency;
+
+    getOccurrencesBetween({ scheduled, fromAt, toAt }).forEach((occurrenceAt) => {
+      const key = getScheduledOccurrenceKey({ scheduledId: scheduled.id, occurrenceAt });
+      if (key && recordedOccurrences.has(key)) return;
+
+      const amount = exchange(value, currency, baseCurrency, rates, occurrenceAt);
+      if (!Number.isFinite(amount) || (amount === 0 && currency !== baseCurrency)) return;
+
+      if (scheduled.type === TYPE.EXPENSE) pendingExpenses += amount;
+      else pendingIncomes += amount;
+    });
+  });
+
+  const monthTotal = (key) => months.get(key)?.expenses || 0;
+  const monthToDate = (key) => months.get(key)?.expensesToDate || 0;
+  const inHistory = (key) => firstKey !== undefined && key >= firstKey;
+  const previousKeys = (count) =>
+    Array.from({ length: count }, (item, index) => shiftMonthKey(now, index + 1)).filter(inHistory);
+
+  const currentEntry = months.get(currentKey);
+  const currentExpenses = currentEntry?.expensesToDate || 0;
+  const currentIncomes = currentEntry?.incomesToDate || 0;
+
+  const baselineKeys = previousKeys(BASELINE_MONTHS).filter((key) => monthTotal(key) > 0);
+  const baselineToDate = median(baselineKeys.map(monthToDate));
+  const baselineTotalSum = sum(baselineKeys.map(monthTotal));
+  const elapsedShare = baselineTotalSum > 0 ? sum(baselineKeys.map(monthToDate)) / baselineTotalSum : 0;
+  const baselineCaption =
+    baselineKeys.length === BASELINE_MONTHS ? L10N.INSIGHT_VS_LAST_3_MONTHS : L10N.INSIGHT_VS_USUAL;
 
   const insights = [];
 
-  const trendKeys = getRecentMonths(now, TREND_MONTHS);
-  const expenseTrend = trendKeys.map((key) => cumulativeExpenses(key));
-  const hasTrend = expenseTrend.some((value) => value > 0);
-  if (avgExpenses > 0) {
-    const delta = ((currentExpenses - avgExpenses) / avgExpenses) * 100;
+  const trendKeys = [];
+  for (let index = TREND_MONTHS - 1; index >= 0; index -= 1) {
+    const key = shiftMonthKey(now, index);
+    if (inHistory(key)) trendKeys.push(key);
+  }
+  const trendValues = trendKeys.map((key) => (key === currentKey ? monthToDate(key) : monthTotal(key)));
+  const chart =
+    trendValues.length >= 2 && trendValues.some((value) => value > 0)
+      ? { values: trendValues, monthsLimit: trendValues.length }
+      : undefined;
+
+  const comparable = baselineToDate > 0 && elapsedShare >= MIN_BASELINE_SHARE;
+
+  if (comparable) {
+    const delta = Math.round(percentDelta(currentExpenses, baselineToDate));
     const title =
-      delta > 5
+      delta > TREND_FLAT_BAND
         ? L10N.INSIGHT_SPENDING_MORE_TITLE
-        : delta < -5
+        : delta < -TREND_FLAT_BAND
         ? L10N.INSIGHT_SPENDING_LESS_TITLE
         : L10N.INSIGHT_SPENDING_FLAT_TITLE;
+
     insights.push({
       id: 'spending_trend',
       title,
-      caption: L10N.INSIGHT_VS_LAST_3_MONTHS,
+      caption: baselineCaption,
       type: 'trend',
       value: delta,
       valueLabel: formatPercentAbs(delta),
-      tone: delta > 5 ? 'negative' : delta < -5 ? 'positive' : 'neutral',
-      chart: hasTrend ? { values: expenseTrend, monthsLimit: TREND_MONTHS } : undefined,
+      meta: { baseline: baselineToDate, day: elapsedDay, spent: currentExpenses },
+      tone: delta > TREND_FLAT_BAND ? 'negative' : delta < -TREND_FLAT_BAND ? 'positive' : 'neutral',
+      chart,
     });
-  } else if (hasTrend) {
+  } else if (chart) {
     insights.push({
       id: 'spending_trend',
       title: L10N.INSIGHT_SPENDING_TREND_FALLBACK,
-      caption: L10N.INSIGHT_LAST_12_MONTHS,
+      caption: trendValues.length === TREND_MONTHS ? L10N.INSIGHT_LAST_12_MONTHS : undefined,
       type: 'trend',
-      chart: { values: expenseTrend, monthsLimit: TREND_MONTHS },
+      chart,
       tone: 'neutral',
     });
   }
 
-  const currentCategories = cumulativeCategories(currentKey);
+  const currentCategories = currentEntry?.categoriesToDate || {};
+  const categoryBaseline = (category) =>
+    median(baselineKeys.map((key) => months.get(key)?.categoriesToDate?.[category] || 0));
+
   const topCategories = Object.entries(currentCategories)
+    .filter(([, amount]) => amount > 0)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3)
     .map(([category, amount]) => {
-      const avg = previousSpendKeys.length
-        ? previousSpendKeys.reduce((sum, key) => sum + (cumulativeCategories(key)?.[category] || 0), 0) /
-          previousSpendKeys.length
-        : 0;
-      const delta = avg > 0 ? ((amount - avg) / avg) * 100 : 0;
-      const label = L10N.CATEGORIES?.[0]?.[category] || `${category}`;
-      const share = currentExpenses > 0 ? (amount / currentExpenses) * 100 : 0;
-      return { category: Number(category), label, amount, avg, delta, share };
+      const avg = categoryBaseline(category);
+      return {
+        category: Number(category),
+        label: categoryLabel(category),
+        amount,
+        avg,
+        delta: avg > 0 ? percentDelta(amount, avg) : 0,
+        share: currentExpenses > 0 ? (amount / currentExpenses) * 100 : 0,
+      };
     });
 
   if (topCategories.length > 0) {
@@ -222,97 +232,103 @@ export const buildInsights = ({
     });
   }
 
-  const topMover = topCategories.filter(({ avg }) => avg > 0).sort((a, b) => b.delta - a.delta)[0];
-  const topMoverInsight =
-    topMover && Number.isFinite(topMover.delta)
-      ? {
-          id: 'top_mover',
-          title: L10N.INSIGHT_TOP_MOVER_TITLE,
-          caption: `${topMover.label} ${L10N.INSIGHT_VS_LAST_3_MONTHS}`,
-          type: 'mover',
-          value: topMover.delta,
-          valueLabel: formatPercentAbs(topMover.delta),
-          meta: {
-            current: topMover.amount,
-            avg: topMover.avg,
-          },
-          tone: topMover.delta >= 0 ? 'positive' : 'negative',
-        }
-      : null;
+  if (currentExpenses > 0 || currentIncomes > 0 || pendingExpenses > 0 || pendingIncomes > 0) {
+    const value = currentIncomes - currentExpenses;
 
-  if (currentExpenses > 0 || currentIncomes > 0) {
     insights.push({
       id: 'net_balance',
       title: L10N.INSIGHT_NET_BALANCE_TITLE,
       caption: L10N.INSIGHT_NET_BALANCE_CAPTION,
       type: 'net',
-      value: currentIncomes - currentExpenses,
+      value,
       meta: {
-        incomes: currentIncomes,
         expenses: currentExpenses,
-        scheduledIncomesRemaining: scheduledRemaining.incomes,
-        scheduledExpensesRemaining: scheduledRemaining.expenses,
+        incomes: currentIncomes,
+        pendingExpenses,
+        pendingIncomes,
+        projected: value + pendingIncomes - pendingExpenses,
       },
-      tone:
-        currentIncomes - currentExpenses > 0
-          ? 'positive'
-          : currentIncomes - currentExpenses < 0
-          ? 'negative'
-          : 'neutral',
+      tone: value > 0 ? 'positive' : value < 0 ? 'negative' : 'neutral',
     });
   }
 
-  const daysInMonth = getDaysInMonth(now);
-  if (currentExpenses > 0 && day >= 2) {
-    const remainingScheduledExpenses = scheduledRemaining.expenses;
+  const daysLeft = daysInMonth - elapsedDay;
+  const historyKeys = previousKeys(HISTORY_MONTHS).filter(
+    (key) => monthTotal(key) > 0 && daysInMonthFromKey(key) > elapsedDay,
+  );
+  const remainders = historyKeys.map((key) => Math.max(0, monthTotal(key) - monthToDate(key)));
+  const historyRemainder = daysLeft > 0 && remainders.length >= 2 ? median(remainders) : undefined;
 
-    const paceKeys = getPreviousMonths(now, PACE_MONTHS);
-    const ratios = paceKeys
-      .map((key) => {
-        const total = totals.expenses[key] || 0;
-        if (!total) return null;
-        const daily = totals.expensesByDay[key];
-        if (!daily) return null;
+  let remainder;
+  let method;
+  if (historyRemainder !== undefined) {
+    remainder = Math.max(historyRemainder, pendingExpenses);
+    method = 'history';
+  } else if (currentExpenses > 0 && elapsedDay >= MIN_LINEAR_DAY) {
+    remainder = (currentExpenses / elapsedDay) * daysLeft + pendingExpenses;
+    method = 'linear';
+  } else if (pendingExpenses > 0 && elapsedDay >= MIN_LINEAR_DAY) {
+    remainder = pendingExpenses;
+    method = 'scheduled';
+  }
 
-        const effectiveDay = Math.min(day, getDaysInMonth(monthDateFromKey(key)));
-        let cumulative = 0;
-        for (let d = 1; d <= effectiveDay; d += 1) cumulative += daily[d] || 0;
-        const ratio = cumulative / total;
-        if (!Number.isFinite(ratio)) return null;
-        if (ratio < 0.05 || ratio >= 0.995) return null;
-        return ratio;
-      })
-      .filter((ratio) => typeof ratio === 'number' && Number.isFinite(ratio));
-
-    const avgRatio = ratios.length ? ratios.reduce((sum, ratio) => sum + ratio, 0) / ratios.length : undefined;
-    const useHistoricalRatio = Number.isFinite(avgRatio) && ratios.length >= 3;
-    const baseProjection = useHistoricalRatio ? currentExpenses / avgRatio : (currentExpenses / day) * daysInMonth;
-    const scheduledAwareProjection = currentExpenses + remainingScheduledExpenses;
-    const projected = Math.max(baseProjection, scheduledAwareProjection);
+  if (method && (currentExpenses > 0 || remainder > 0)) {
     insights.push({
       id: 'spending_pace',
       title: L10N.INSIGHT_SPENDING_PACE_TITLE,
       caption: L10N.INSIGHT_SPENDING_PACE_CAPTION,
       type: 'pace',
-      value: projected,
+      value: currentExpenses + remainder,
       meta: {
-        spent: currentExpenses,
-        projected,
-        day,
+        day: elapsedDay,
         daysInMonth,
-        method: useHistoricalRatio ? 'historical_ratio' : 'linear',
-        scheduledFloor: scheduledAwareProjection,
-        ratioAvg: avgRatio,
-        ratioSamples: ratios.length,
-        scheduledRemaining: remainingScheduledExpenses,
+        method,
+        pendingExpenses,
+        projected: currentExpenses + remainder,
+        remainder,
+        samples: remainders.length,
+        spent: currentExpenses,
       },
       tone: 'neutral',
     });
   }
 
-  if (topMoverInsight) {
-    const isTopCategory = topCategories.some((item) => item.category === topMover.category);
-    if (!isTopCategory) insights.push(topMoverInsight);
+  const topIds = new Set(topCategories.map(({ category }) => category));
+  const scaleRef = Math.max(currentExpenses, baselineToDate);
+  const topMover = Object.keys(currentCategories)
+    .concat(baselineKeys.flatMap((key) => Object.keys(months.get(key)?.categoriesToDate || {})))
+    .filter((category, index, list) => list.indexOf(category) === index)
+    .filter((category) => !topIds.has(Number(category)))
+    .map((category) => {
+      const amount = currentCategories[category] || 0;
+      const avg = categoryBaseline(category);
+      return {
+        amount,
+        avg,
+        category: Number(category),
+        delta: avg > 0 ? percentDelta(amount, avg) : 0,
+        label: categoryLabel(category),
+      };
+    })
+    .filter(
+      ({ amount, avg, delta }) =>
+        avg > 0 && Math.abs(delta) >= MIN_MOVER_DELTA && Math.max(amount, avg) >= scaleRef * MIN_MOVER_SHARE,
+    )
+    .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta))[0];
+
+  if (topMover) {
+    const delta = Math.round(topMover.delta);
+
+    insights.push({
+      id: 'top_mover',
+      title: L10N.INSIGHT_TOP_MOVER_TITLE,
+      caption: `${topMover.label} ${baselineCaption}`,
+      type: 'mover',
+      value: delta,
+      valueLabel: formatPercentAbs(delta),
+      meta: { avg: topMover.avg, current: topMover.amount },
+      tone: delta > 0 ? 'negative' : 'positive',
+    });
   }
 
   return insights;

@@ -4,8 +4,8 @@ import { useWindowDimensions } from 'react-native';
 
 import { getStyles } from './InsightsCarousel.style';
 import { useApp, useStore } from '../../contexts';
-import { ICON, L10N } from '../../modules';
-import { Icon, Pressable, ScrollView, Text, View } from '../../primitives';
+import { L10N } from '../../modules';
+import { Pressable, ScrollView, Text, View } from '../../primitives';
 import { theme } from '../../theme';
 import { cardAccountSize, cardAccountSnap, cardGap, viewOffset } from '../../theme/layout';
 import Card from '../Card';
@@ -105,6 +105,10 @@ const InsightsCarousel = ({
     const showChart = !!insight.chart?.values?.length;
     const topItems = (insight.items || []).slice(0, 3);
     const shouldAnimateChart = animateCharts && index < 4;
+    const { avg = 0, current = 0, expenses = 0, incomes = 0, pendingExpenses = 0, pendingIncomes = 0 } =
+      insight.meta || {};
+    const netTotal = Math.max(1, incomes + expenses + pendingIncomes + pendingExpenses);
+    const moverTotal = Math.max(1, current + avg);
 
     return (
       <Card style={[style.insightCard, cardStyle]}>
@@ -122,7 +126,13 @@ const InsightsCarousel = ({
           <View flex style={style.insightContent}>
             {isAmount ? (
               <View style={style.insightValue}>
-                <PriceFriendly bold size="l" currency={currency} operator value={insight.value} />
+                <PriceFriendly
+                  bold
+                  size="l"
+                  currency={currency}
+                  operator={insight.type === 'net'}
+                  value={insight.value}
+                />
               </View>
             ) : null}
             {insight.type === 'trend' && insight.valueLabel ? (
@@ -139,14 +149,6 @@ const InsightsCarousel = ({
                 />
               </View>
             ) : null}
-            {insight.type === 'alert' && insight.valueLabel ? (
-              <View row style={style.insightValueRow}>
-                <Icon name={ICON.ALERT} tone="accent" size="xs" />
-                <Text bold tone="accent" size="xl">
-                  {insight.valueLabel}
-                </Text>
-              </View>
-            ) : null}
             {insight.type === 'mover' && insight.valueLabel ? (
               <View row style={style.insightValueRow}>
                 <Text bold tone="accent" size="xl" style={style.chartLabel}>
@@ -158,15 +160,15 @@ const InsightsCarousel = ({
               <View style={style.insightMetrics}>
                 <MetricBar
                   color="accent"
-                  percent={(insight.meta.current / Math.max(1, insight.meta.current + insight.meta.avg)) * 100}
+                  percent={(current / moverTotal) * 100}
                   title={L10N.INSIGHT_THIS_MONTH}
-                  value={<PriceFriendly size="xs" tone="secondary" currency={currency} value={insight.meta.current} />}
+                  value={<PriceFriendly size="xs" tone="secondary" currency={currency} value={current} />}
                 />
                 <MetricBar
                   color="content"
-                  percent={(insight.meta.avg / Math.max(1, insight.meta.current + insight.meta.avg)) * 100}
-                  title={L10N.INSIGHT_3MO_AVG}
-                  value={<PriceFriendly size="xs" tone="secondary" currency={currency} value={insight.meta.avg} />}
+                  percent={(avg / moverTotal) * 100}
+                  title={L10N.INSIGHT_USUAL}
+                  value={<PriceFriendly size="xs" tone="secondary" currency={currency} value={avg} />}
                 />
               </View>
             ) : null}
@@ -174,59 +176,19 @@ const InsightsCarousel = ({
               <View style={style.insightMetrics}>
                 <MetricBar
                   color="accent"
-                  percent={
-                    (insight.meta.incomes /
-                      Math.max(
-                        1,
-                        insight.meta.incomes +
-                          insight.meta.expenses +
-                          (insight.meta.scheduledIncomesRemaining || 0) +
-                          (insight.meta.scheduledExpensesRemaining || 0),
-                      )) *
-                    100
-                  }
-                  secondaryPercent={
-                    ((insight.meta.scheduledIncomesRemaining || 0) /
-                      Math.max(
-                        1,
-                        insight.meta.incomes +
-                          insight.meta.expenses +
-                          (insight.meta.scheduledIncomesRemaining || 0) +
-                          (insight.meta.scheduledExpensesRemaining || 0),
-                      )) *
-                    100
-                  }
+                  percent={(incomes / netTotal) * 100}
+                  secondaryPercent={(pendingIncomes / netTotal) * 100}
                   secondaryOpacity={0.45}
                   title={L10N.INCOME}
-                  value={<PriceFriendly size="xs" tone="secondary" currency={currency} value={insight.meta.incomes} />}
+                  value={<PriceFriendly size="xs" tone="secondary" currency={currency} value={incomes} />}
                 />
                 <MetricBar
                   color="content"
-                  percent={
-                    (insight.meta.expenses /
-                      Math.max(
-                        1,
-                        insight.meta.incomes +
-                          insight.meta.expenses +
-                          (insight.meta.scheduledIncomesRemaining || 0) +
-                          (insight.meta.scheduledExpensesRemaining || 0),
-                      )) *
-                    100
-                  }
-                  secondaryPercent={
-                    ((insight.meta.scheduledExpensesRemaining || 0) /
-                      Math.max(
-                        1,
-                        insight.meta.incomes +
-                          insight.meta.expenses +
-                          (insight.meta.scheduledIncomesRemaining || 0) +
-                          (insight.meta.scheduledExpensesRemaining || 0),
-                      )) *
-                    100
-                  }
+                  percent={(expenses / netTotal) * 100}
+                  secondaryPercent={(pendingExpenses / netTotal) * 100}
                   secondaryOpacity={0.45}
                   title={L10N.EXPENSE}
-                  value={<PriceFriendly size="xs" tone="secondary" currency={currency} value={insight.meta.expenses} />}
+                  value={<PriceFriendly size="xs" tone="secondary" currency={currency} value={expenses} />}
                 />
               </View>
             ) : null}
