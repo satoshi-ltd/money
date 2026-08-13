@@ -9,8 +9,9 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "icon": "./assets/money.icon",
       "supportsTablet": true,
@@ -29,7 +30,6 @@
       },
       "package": "com.satoshilimited.money",
       "versionCode": 25,
-      "edgeToEdgeEnabled": true,
       "softwareKeyboardLayoutMode": "resize"
     },
     "plugins": [
@@ -55,7 +55,9 @@
           "color": "#FFFEFE"
         }
       ],
-      "expo-font"
+      "expo-font",
+      "@react-native-community/datetimepicker",
+      "expo-sharing"
     ],
     "extra": {
       "eas": {

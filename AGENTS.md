@@ -5,8 +5,9 @@
 - Data is stored on device (AsyncStorage). Backups are JSON files via export/import.
 - Navigation: React Navigation v6 (stack + tabs).
 - Mobile only (iOS/Android), no web target.
-- Current stack (Mar 2026): Expo SDK 54, React Native 0.81.5, React 19.1.0.
-- Platform baselines: iOS 15.1+ and Android edge-to-edge enabled.
+- Current stack (Aug 2026): Expo SDK 55, React Native 0.83.10, React 19.2.0.
+- Platform baselines: iOS 15.1+ and Android. SDK 55 always builds with the new architecture and
+  edge-to-edge, so `newArchEnabled` and `edgeToEdgeEnabled` no longer exist in `app.json`.
 
 ## Context cheatsheet
 - App entry: `App.js` -> `src/App.jsx`
