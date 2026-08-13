@@ -52,6 +52,30 @@ describe('services/BackupService', () => {
     expect(account).toMatchObject({ hash: 'a1', currency: 'EUR', title: 'Cash' });
   });
 
+  test('never lets the lock pin or the learning catalogs leave in a backup', async () => {
+    await BackupService.export({
+      ...PAYLOAD,
+      settings: {
+        baseCurrency: 'EUR',
+        pin: '4821',
+        theme: 'dark',
+        autoCategory: { rules: { coffee: 1 }, stats: {} },
+        autoAccount: { rules: {}, stats: {} },
+        autoAmount: { rules: {}, stats: {} },
+      },
+    });
+
+    const [, data] = FileSystem.writeAsStringAsync.mock.calls[0];
+    const { settings } = JSON.parse(data);
+
+    expect(data).not.toContain('4821');
+    expect(settings.pin).toBeUndefined();
+    expect(settings.autoCategory).toBeUndefined();
+    expect(settings.autoAccount).toBeUndefined();
+    expect(settings.autoAmount).toBeUndefined();
+    expect(settings).toMatchObject({ baseCurrency: 'EUR', theme: 'dark' });
+  });
+
   test('resolves with nothing when the picker is cancelled', async () => {
     DocumentPicker.getDocumentAsync.mockResolvedValue({ canceled: true, assets: null });
 

@@ -12,6 +12,7 @@ export const importBackup = async (
   const cachedBaseCurrency = state.settings?.ratesBaseCurrency || state.settings?.baseCurrency;
   const keepRates = cachedBaseCurrency === migrated.settings.baseCurrency;
   migrated.settings.ratesBaseCurrency = keepRates ? cachedBaseCurrency : undefined;
+  migrated.settings.pin = state.settings?.pin;
 
   const prevSubscription = (await store.get('subscription')?.value) || {};
   const { shouldUnlock } = maybeUnlockPremiumFromAccounts({ accounts: migrated.accounts, subscription: prevSubscription });

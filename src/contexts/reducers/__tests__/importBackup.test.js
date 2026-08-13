@@ -60,6 +60,25 @@ describe('contexts/reducers/importBackup', () => {
     expect(setState.mock.calls[0][0]({ rates: state.rates }).rates).toEqual({});
   });
 
+  test('keeps the lock of this device, whatever the backup carries', async () => {
+    const [data, state] = createState();
+    state.settings.pin = '1234';
+    const setState = jest.fn();
+
+    await importBackup({ ...backup('EUR'), settings: { baseCurrency: 'EUR', pin: '9999' } }, [state, setState]);
+
+    expect(data.settings.pin).toBe('1234');
+  });
+
+  test('leaves the device unlocked when it had no pin', async () => {
+    const [data, state] = createState();
+    const setState = jest.fn();
+
+    await importBackup({ ...backup('EUR'), settings: { baseCurrency: 'EUR', pin: '9999' } }, [state, setState]);
+
+    expect(data.settings.pin).toBeUndefined();
+  });
+
   test('keeps the cached rates when the base currency matches', async () => {
     const [data, state] = createState();
     const setState = jest.fn();

@@ -7,6 +7,11 @@ import { parseAccount } from '../contexts/reducers/modules';
 import { SCHEMA_VERSION } from '../contexts/store.constants';
 import { L10N } from '../modules';
 
+const OMITTED_SETTINGS = ['autoAccount', 'autoAmount', 'autoCategory', 'pin'];
+
+const exportableSettings = (settings = {}) =>
+  Object.fromEntries(Object.entries(settings).filter(([key]) => !OMITTED_SETTINGS.includes(key)));
+
 export const BackupService = {
   export: async ({ accounts = [], scheduledTxs = [], settings = {}, txs = [] } = {}) =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
@@ -18,7 +23,7 @@ export const BackupService = {
           schemaVersion,
           accounts: accounts.map(parseAccount),
           scheduledTxs,
-          settings,
+          settings: exportableSettings(settings),
           txs,
         });
 
