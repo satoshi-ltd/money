@@ -1,7 +1,8 @@
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
-import { getOccurrencesBetween, L10N } from '../modules';
+import { buildDesiredNotifications, buildTxIndex, reconcileNotifications } from './modules/scheduledNotifications';
+import { L10N } from '../modules';
 
 const GRANTED = 'granted';
 const NOTIFICATION_KIND = {
@@ -22,12 +23,6 @@ const getNotifications = async () => {
 const resolveDateTrigger = (Notifications, date) => {
   const resolved = date instanceof Date ? date : new Date(date);
   return { type: Notifications.SchedulableTriggerInputTypes.DATE, date: resolved };
-};
-const notificationKey = ({ scheduledId, occurrenceAt } = {}) => `${scheduledId}:${occurrenceAt}`;
-const triggerTime = (notification = {}) => {
-  const value = notification?.trigger?.value ?? notification?.trigger?.date;
-  const time = new Date(value).getTime();
-  return Number.isFinite(time) ? time : undefined;
 };
 
 export const NotificationsService = {
@@ -125,7 +120,7 @@ export const NotificationsService = {
             sound: true,
             data: { kind: NOTIFICATION_KIND.BACKUP },
           },
-          trigger: { hour: 8, minute: 0, weekday: 7, type: Notifications.SchedulableTriggerInputTypes.WEEKLY },
+          trigger: { hour: 8, minute: 0, weekday: 1, type: Notifications.SchedulableTriggerInputTypes.WEEKLY },
         });
       }
     } catch {
@@ -152,88 +147,21 @@ export const NotificationsService = {
         return;
       }
 
-      const MS_IN_DAY = 24 * 60 * 60 * 1000;
-      const MAX_PER_SCHEDULED = 8;
-      const MAX_TOTAL = 48;
-
-      const horizonAt = now + 90 * MS_IN_DAY;
-      const desired = [];
-      const perScheduledCount = new Map();
-
-      source.forEach((scheduled) => {
-        const occurrences = getOccurrencesBetween({ scheduled, fromAt: now, toAt: horizonAt });
-        occurrences.forEach((occurrenceAt) => {
-          const count = perScheduledCount.get(scheduled.id) || 0;
-          if (count >= MAX_PER_SCHEDULED) return;
-
-          const dayBefore = occurrenceAt - MS_IN_DAY;
-          const notifyDate = new Date(dayBefore);
-          const notifyAt = new Date(
-            notifyDate.getFullYear(),
-            notifyDate.getMonth(),
-            notifyDate.getDate(),
-            8,
-            0,
-            0,
-            0,
-          ).getTime();
-          if (notifyAt <= now + 60 * 1000) return;
-
-          desired.push({ scheduledId: scheduled.id, occurrenceAt, notifyAt });
-          perScheduledCount.set(scheduled.id, count + 1);
-        });
-      });
-
-      desired.sort((a, b) => a.notifyAt - b.notifyAt);
-      const capped = desired.slice(0, MAX_TOTAL);
-      const desiredMap = new Map(capped.map((item) => [notificationKey(item), item]));
+      const desired = buildDesiredNotifications({ now, scheduledTxs: source });
 
       const scheduled = await Notifications.getAllScheduledNotificationsAsync();
-      const scheduledNotifications = scheduled.filter(
-        (item) => item?.content?.data?.kind === NOTIFICATION_KIND.SCHEDULED,
-      );
+      const existing = scheduled.filter((item) => item?.content?.data?.kind === NOTIFICATION_KIND.SCHEDULED);
 
-      const txIndex = new Set(
-        (Array.isArray(txs) ? txs : [])
-          .map((tx) => {
-            const meta = tx?.meta;
-            if (meta?.kind !== 'scheduled') return null;
-            if (!meta?.scheduledId || !Number.isFinite(meta?.occurrenceAt)) return null;
-            return `${meta.scheduledId}:${meta.occurrenceAt}`;
-          })
-          .filter(Boolean),
-      );
-
-      const keepKey = new Set();
-      const cancelIds = [];
-      scheduledNotifications.forEach((item) => {
-        const scheduledId = item?.content?.data?.scheduledId;
-        const occurrenceAt = item?.content?.data?.occurrenceAt;
-        const key = notificationKey({ scheduledId, occurrenceAt });
-        const desiredItem = desiredMap.get(key);
-        const scheduledAt = triggerTime(item);
-
-        if (!desiredItem || txIndex.has(key) || !scheduledAt || scheduledAt <= now + 60 * 1000) {
-          cancelIds.push(item.identifier);
-          return;
-        }
-
-        if (Math.abs(scheduledAt - desiredItem.notifyAt) > 60000 || keepKey.has(key)) {
-          cancelIds.push(item.identifier);
-          return;
-        }
-
-        keepKey.add(key);
+      const { cancelIds, pending } = reconcileNotifications({
+        desired,
+        existing,
+        now,
+        txIndex: buildTxIndex(txs),
       });
 
       if (cancelIds.length) {
         await Promise.all(cancelIds.map((id) => Notifications.cancelScheduledNotificationAsync(id)));
       }
-
-      const pending = capped.filter((item) => {
-        const key = notificationKey(item);
-        return !keepKey.has(key) && !txIndex.has(key);
-      });
 
       await Promise.all(
         pending.map((item) =>
@@ -246,6 +174,7 @@ export const NotificationsService = {
                 kind: NOTIFICATION_KIND.SCHEDULED,
                 scheduledId: item.scheduledId,
                 occurrenceAt: item.occurrenceAt,
+                notifyAt: item.notifyAt,
               },
             },
             trigger: resolveDateTrigger(Notifications, new Date(item.notifyAt)),
