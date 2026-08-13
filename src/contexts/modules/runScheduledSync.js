@@ -75,9 +75,9 @@ export const runScheduledSync = async ({ migrated, store }) => {
 
   let next = migrated;
   if (newTxs.length > 0) {
-    store.get('txs');
-    await store.save(newTxs);
-    const nextTxs = store.value;
+    const collection = store.get('txs');
+    await collection.save(newTxs);
+    const nextTxs = collection.value;
 
     let nextSettings = migrated.settings;
     const categoryTxs = newTxs.filter((tx) => tx?.category !== undefined);

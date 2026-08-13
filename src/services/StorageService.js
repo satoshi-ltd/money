@@ -4,6 +4,76 @@ import { AsyncStorageAdapter } from './modules';
 // eslint-disable-next-line no-undef
 const state = new WeakMap();
 
+const matches = (row, query) => Object.keys(query).every((field) => row[field] === query[field]);
+
+class Collection {
+  constructor(record, key) {
+    this.record = record;
+    this.key = key;
+  }
+
+  get value() {
+    return this.record.data[this.key];
+  }
+
+  findOne(query = {}) {
+    return this.value.find((row) => matches(row, query));
+  }
+
+  find(query = {}) {
+    const values = this.value.filter((row) => matches(row, query));
+
+    return values.length > 0 ? values : undefined;
+  }
+
+  async save(value) {
+    if (!value) return undefined;
+
+    const { adapter, data } = this.record;
+    const current = data[this.key];
+    const isArray = current === undefined || Array.isArray(current);
+
+    if (isArray) {
+      const next = Array.isArray(value) ? value : [value];
+      data[this.key] = current ? [...current, ...next] : next;
+    } else {
+      data[this.key] = { ...current, ...value };
+    }
+
+    await adapter.write(data, this.key);
+
+    return value;
+  }
+
+  async update(query, nextData) {
+    const { adapter, data } = this.record;
+    const values = [];
+
+    data[this.key] = this.value.map((row) => {
+      if (!matches(row, query)) return row;
+      const changes = { ...row, ...nextData };
+      values.push(changes);
+      return changes;
+    });
+
+    if (values.length > 0) await adapter.write(data, this.key);
+
+    return values;
+  }
+
+  async remove(query) {
+    const { adapter, data } = this.record;
+    const values = this.value.filter((row) => matches(row, query));
+
+    if (values.length > 0) {
+      data[this.key] = this.value.filter((row) => !values.includes(row));
+      await adapter.write(data, this.key);
+    }
+
+    return values;
+  }
+}
+
 export class StorageService {
   constructor({ adapter: Adapter = AsyncStorageAdapter, defaults = {}, filename = 'store' } = {}) {
     // eslint-disable-next-line no-undef
@@ -16,7 +86,6 @@ export class StorageService {
           data: await adapter.read(),
           defaults: JSON.parse(JSON.stringify(defaults)),
           filename,
-          key: 'default',
         });
 
         resolve(this);
@@ -26,100 +95,24 @@ export class StorageService {
     });
   }
 
-  findOne(query) {
-    const queryFields = Object.keys(query);
-
-    return this.value.find((row) => {
-      const found = !queryFields.some((field) => !(row[field] === query[field]));
-
-      return found;
-    });
-  }
-
-  find(query = {}) {
-    const queryFields = Object.keys(query);
-    const values = [];
-
-    this.value.forEach((row) => {
-      const found = !queryFields.some((field) => !(row[field] === query[field]));
-      if (found) values.push(row);
-    });
-
-    return values.length > 0 ? values : undefined;
-  }
-
   get(key) {
-    state.set(this, Object.assign(state.get(this), { key }));
-
-    return this;
-  }
-
-  async save(value) {
-    if (!value) return;
-
-    const { adapter, data, key } = state.get(this);
-    const isArray = data[key] === undefined || Array.isArray(data[key]);
-    if (isArray) {
-      data[key] = data[key] ? (Array.isArray(value) ? [...data[key], ...value] : [...data[key], value]) : [value];
-    } else {
-      data[key] = { ...data[key], ...value };
-    }
-
-    await adapter.write(data, key);
-
-    return value;
-  }
-
-  async update(query, nextData) {
-    const { adapter, data, key } = state.get(this);
-    const queryFields = Object.keys(query);
-    const values = [];
-
-    data[key] = this.value.map((row) => {
-      const found = !queryFields.some((field) => !(row[field] === query[field]));
-      let changes;
-
-      if (found) {
-        changes = Object.assign(row, nextData);
-        values.push(changes);
-      }
-
-      return changes || row;
-    });
-
-    if (values.length > 0) await adapter.write(data, key);
-
-    return values;
-  }
-
-  async remove(query) {
-    const { adapter, data, key } = state.get(this);
-    const queryFields = Object.keys(query);
-    const values = [];
-
-    data[key] = this.value.filter((row) => {
-      const found = !queryFields.some((field) => !(row[field] === query[field]));
-      if (found) values.push(row);
-
-      return !found;
-    });
-
-    if (values.length > 0) await adapter.write(data, key);
-
-    return values;
-  }
-
-  get value() {
-    const { data, key } = state.get(this);
-
-    return data[key];
+    return new Collection(state.get(this), key);
   }
 
   async wipe(key) {
-    const { adapter, data = {}, defaults = {} } = state.get(this);
+    const { adapter, data, defaults } = state.get(this);
 
-    const nextData = JSON.parse(JSON.stringify(key ? { ...data, [key]: defaults[key] } : defaults));
-    await adapter.write(nextData, key);
-    state.set(this, Object.assign(state.get(this), { data: nextData, memoryPool: [] }));
+    if (key) {
+      data[key] = JSON.parse(JSON.stringify(defaults[key]));
+      await adapter.write(data, key);
+      return;
+    }
+
+    Object.keys(defaults).forEach((collection) => {
+      data[collection] = JSON.parse(JSON.stringify(defaults[collection]));
+    });
+
+    await adapter.wipe();
+    await adapter.write(data);
   }
 }

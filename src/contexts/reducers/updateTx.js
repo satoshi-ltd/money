@@ -4,13 +4,13 @@ import { learnAutoAccount, learnAutoAmount, learnAutoCategory } from '../../modu
 export const updateTx = async ({ hash, ...data } = {}, [state, setState]) => {
   const { store, settings = {} } = state;
 
-  store.get('txs');
-  const tx = await store.findOne({ hash });
+  const collection = store.get('txs');
+  const tx = collection.findOne({ hash });
   if (!tx) return undefined;
 
-  await store.update({ hash }, parseTx({ ...tx, ...data }));
-  const txs = await store.value;
-  const nextTx = await store.findOne({ hash });
+  await collection.update({ hash }, parseTx({ ...tx, ...data }));
+  const txs = collection.value;
+  const nextTx = collection.findOne({ hash });
 
   const nextAutoCategory = nextTx?.category !== undefined ? learnAutoCategory(settings.autoCategory, nextTx) : undefined;
   const nextAutoAccount = nextTx?.account ? learnAutoAccount(settings.autoAccount, nextTx) : undefined;

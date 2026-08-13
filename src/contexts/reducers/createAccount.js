@@ -6,9 +6,9 @@ import { C, eventEmitter, L10N, maybeUnlockPremiumFromAccounts } from '../../mod
 export const createAccount = async (data = {}, [state, setState]) => {
   const { store } = state;
 
-  store.get('accounts');
-  const account = await store.save(parseAccount(data));
-  const accounts = await store.value;
+  const collection = store.get('accounts');
+  const account = await collection.save(parseAccount(data));
+  const accounts = collection.value;
   setState((prev) => ({ ...prev, accounts }));
 
   const { shouldUnlock } = maybeUnlockPremiumFromAccounts({ accounts, subscription: state.subscription });

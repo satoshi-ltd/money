@@ -1,92 +1,70 @@
 import { importBackup } from '../importBackup';
+import { createTestStore } from '../../../test/createTestStore';
 
 jest.mock('../../../services', () => ({
   NotificationsService: { notifyPremiumUnlocked: jest.fn(() => Promise.resolve()) },
 }));
 
-const createStore = (data) => {
-  let key;
-
-  const store = {
-    get(next) {
-      key = next;
-      return store;
-    },
-    get value() {
-      return data[key];
-    },
-    save(value) {
-      data[key] = Array.isArray(data[key]) ? [...data[key], ...value] : { ...data[key], ...value };
-      return Promise.resolve(value);
-    },
-    wipe(next) {
-      data[next] = Array.isArray(data[next]) ? [] : {};
-      return Promise.resolve();
-    },
-  };
-
-  return store;
-};
-
-const backup = (baseCurrency) => ({
+const backup = (baseCurrency, settings = {}) => ({
   accounts: [{ hash: 'a1', currency: baseCurrency }],
   scheduledTxs: [],
-  settings: { baseCurrency },
-  txs: [],
+  settings: { baseCurrency, ...settings },
+  txs: [{ hash: 't1', account: 'a1', value: 10 }],
 });
 
-describe('contexts/reducers/importBackup', () => {
-  const createState = () => {
-    const data = {
-      accounts: [],
-      rates: { '2026-01': { USD: 2 } },
-      scheduledTxs: [],
-      settings: {},
-      subscription: {},
-      txs: [],
-    };
+const createState = async (settings = {}) => {
+  const store = await createTestStore({ rates: { '2026-01': { USD: 2 } }, settings });
 
-    return [data, { rates: data.rates, settings: { baseCurrency: 'EUR', ratesBaseCurrency: 'EUR' }, store: createStore(data) }];
+  return {
+    store,
+    state: { rates: { '2026-01': { USD: 2 } }, settings: { baseCurrency: 'EUR', ratesBaseCurrency: 'EUR', ...settings }, store },
   };
+};
 
+describe('contexts/reducers/importBackup', () => {
   test('drops the cached rates when the backup uses another base currency', async () => {
-    const [data, state] = createState();
+    const { state, store } = await createState();
     const setState = jest.fn();
 
     await importBackup(backup('JPY'), [state, setState]);
 
-    expect(data.rates).toEqual({});
-    expect(data.settings.ratesBaseCurrency).toBeUndefined();
+    expect(store.get('rates').value).toEqual({});
+    expect(store.get('settings').value.ratesBaseCurrency).toBeUndefined();
     expect(setState.mock.calls[0][0]({ rates: state.rates }).rates).toEqual({});
   });
 
-  test('keeps the lock of this device, whatever the backup carries', async () => {
-    const [data, state] = createState();
-    state.settings.pin = '1234';
-    const setState = jest.fn();
-
-    await importBackup({ ...backup('EUR'), settings: { baseCurrency: 'EUR', pin: '9999' } }, [state, setState]);
-
-    expect(data.settings.pin).toBe('1234');
-  });
-
-  test('leaves the device unlocked when it had no pin', async () => {
-    const [data, state] = createState();
-    const setState = jest.fn();
-
-    await importBackup({ ...backup('EUR'), settings: { baseCurrency: 'EUR', pin: '9999' } }, [state, setState]);
-
-    expect(data.settings.pin).toBeUndefined();
-  });
-
   test('keeps the cached rates when the base currency matches', async () => {
-    const [data, state] = createState();
+    const { state, store } = await createState();
     const setState = jest.fn();
 
     await importBackup(backup('EUR'), [state, setState]);
 
-    expect(data.rates).toEqual({ '2026-01': { USD: 2 } });
-    expect(data.settings.ratesBaseCurrency).toBe('EUR');
-    expect(setState.mock.calls[0][0]({ rates: state.rates }).rates).toEqual({ '2026-01': { USD: 2 } });
+    expect(store.get('rates').value).toEqual({ '2026-01': { USD: 2 } });
+    expect(store.get('settings').value.ratesBaseCurrency).toBe('EUR');
+  });
+
+  test('replaces the ledger with the one in the file', async () => {
+    const { state, store } = await createState();
+
+    await importBackup(backup('EUR'), [state, jest.fn()]);
+
+    expect(store.get('txs').value).toEqual([{ hash: 't1', account: 'a1', value: 10 }]);
+    expect(store.get('accounts').value).toHaveLength(1);
+  });
+
+  test('keeps the lock of this device, whatever the backup carries', async () => {
+    const { state, store } = await createState({ pin: '1234' });
+
+    await importBackup({ ...backup('EUR'), settings: { baseCurrency: 'EUR', pin: '9999' } }, [state, jest.fn()]);
+
+    expect(store.get('settings').value.pin).toBe('1234');
+  });
+
+  test('leaves the device unlocked when it had no pin', async () => {
+    const { state, store } = await createState();
+
+    await importBackup({ ...backup('EUR'), settings: { baseCurrency: 'EUR', pin: '9999' } }, [state, jest.fn()]);
+
+    expect(store.get('settings').value.pin).toBeUndefined();
   });
 });

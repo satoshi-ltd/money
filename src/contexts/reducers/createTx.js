@@ -4,9 +4,9 @@ import { learnAutoAccount, learnAutoAmount, learnAutoCategory } from '../../modu
 export const createTx = async (data = {}, [state, setState]) => {
   const { store, settings = {} } = state;
 
-  store.get('txs');
-  const tx = await store.save(parseTx(data));
-  const txs = await store.value;
+  const collection = store.get('txs');
+  const tx = await collection.save(parseTx(data));
+  const txs = collection.value;
 
   const nextAutoCategory = tx?.category !== undefined ? learnAutoCategory(settings.autoCategory, tx) : undefined;
   const nextAutoAccount = tx?.account ? learnAutoAccount(settings.autoAccount, tx) : undefined;

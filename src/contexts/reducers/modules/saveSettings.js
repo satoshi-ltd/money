@@ -1,8 +1,8 @@
 export const saveSettings = async (store, changes = {}) => {
-  const stored = store.get('settings').value || {};
-  const nextSettings = { ...stored, ...changes };
+  const collection = store.get('settings');
+  const nextSettings = { ...(collection.value || {}), ...changes };
 
-  await store.save(nextSettings);
+  await collection.save(nextSettings);
 
   return nextSettings;
 };

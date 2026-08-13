@@ -97,7 +97,7 @@ module.exports = {
       },
     },
     {
-      files: ['**/__tests__/**/*.{js,jsx}', '**/*.test.{js,jsx}'],
+      files: ['**/__tests__/**/*.{js,jsx}', '**/*.test.{js,jsx}', 'src/test/**/*.{js,jsx}'],
       env: { jest: true },
       rules: {
         'no-restricted-imports': 'off',

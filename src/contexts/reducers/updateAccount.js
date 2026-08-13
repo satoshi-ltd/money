@@ -3,13 +3,13 @@ import { parseAccount } from './modules';
 export const updateAccount = async ({ hash, ...data } = {}, [state, setState]) => {
   const { store } = state;
 
-  store.get('accounts');
-  const account = await store.findOne({ hash });
+  const collection = store.get('accounts');
+  const account = collection.findOne({ hash });
   if (!account) return undefined;
 
-  await store.update({ hash }, parseAccount({ ...account, ...data }));
-  const accounts = await store.value;
+  await collection.update({ hash }, parseAccount({ ...account, ...data }));
+  const accounts = collection.value;
   setState((prev) => ({ ...prev, accounts }));
 
-  return await store.findOne({ hash });
+  return collection.findOne({ hash });
 };

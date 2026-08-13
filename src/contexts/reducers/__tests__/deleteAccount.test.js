@@ -1,59 +1,37 @@
 import { deleteAccount } from '../deleteAccount';
+import { createTestStore } from '../../../test/createTestStore';
 import { NotificationsService } from '../../../services';
 
 jest.mock('../../../services', () => ({
   NotificationsService: { syncScheduled: jest.fn(() => Promise.resolve()) },
 }));
 
-const createStore = (data) => {
-  let key;
-
-  const store = {
-    get(next) {
-      key = next;
-      return store;
-    },
-    get value() {
-      return data[key];
-    },
-    findOne(query) {
-      return data[key].find((row) => Object.keys(query).every((field) => row[field] === query[field]));
-    },
-    remove(query) {
-      const removed = data[key].filter((row) => Object.keys(query).every((field) => row[field] === query[field]));
-      data[key] = data[key].filter((row) => !removed.includes(row));
-      return removed;
-    },
-  };
-
-  return store;
+const seed = {
+  accounts: [{ hash: 'a1' }, { hash: 'a2' }],
+  scheduledTxs: [
+    { id: 's1', account: 'a1' },
+    { id: 's2', account: 'a2' },
+  ],
+  txs: [
+    { hash: 't1', account: 'a1' },
+    { hash: 't2', account: 'a2' },
+  ],
 };
 
 describe('contexts/reducers/deleteAccount', () => {
+  beforeEach(() => jest.clearAllMocks());
+
   test('removes the account together with its transactions and scheduled templates', async () => {
-    const data = {
-      accounts: [{ hash: 'a1' }, { hash: 'a2' }],
-      scheduledTxs: [
-        { id: 's1', account: 'a1' },
-        { id: 's2', account: 'a2' },
-      ],
-      txs: [
-        { hash: 't1', account: 'a1' },
-        { hash: 't2', account: 'a2' },
-      ],
-    };
-    const state = { store: createStore(data) };
+    const store = await createTestStore(seed);
     const setState = jest.fn();
 
-    await deleteAccount({ hash: 'a1' }, [state, setState]);
+    await deleteAccount({ hash: 'a1' }, [{ store }, setState]);
 
-    expect(data.accounts).toEqual([{ hash: 'a2' }]);
-    expect(data.txs).toEqual([{ hash: 't2', account: 'a2' }]);
-    expect(data.scheduledTxs).toEqual([{ id: 's2', account: 'a2' }]);
+    expect(store.get('accounts').value).toEqual([{ hash: 'a2' }]);
+    expect(store.get('txs').value).toEqual([{ hash: 't2', account: 'a2' }]);
+    expect(store.get('scheduledTxs').value).toEqual([{ id: 's2', account: 'a2' }]);
 
-    expect(setState.mock.calls[0][0]({ accounts: [], scheduledTxs: [], txs: [] })).toMatchObject({
-      scheduledTxs: [{ id: 's2', account: 'a2' }],
-    });
+    expect(setState.mock.calls[0][0]({})).toMatchObject({ scheduledTxs: [{ id: 's2', account: 'a2' }] });
     expect(NotificationsService.syncScheduled).toHaveBeenCalledWith({
       scheduledTxs: [{ id: 's2', account: 'a2' }],
       txs: [{ hash: 't2', account: 'a2' }],
@@ -61,13 +39,13 @@ describe('contexts/reducers/deleteAccount', () => {
   });
 
   test('does nothing when the account is unknown', async () => {
-    const data = { accounts: [{ hash: 'a1' }], scheduledTxs: [{ id: 's1', account: 'a1' }], txs: [] };
+    const store = await createTestStore(seed);
     const setState = jest.fn();
 
-    await deleteAccount({ hash: 'nope' }, [{ store: createStore(data) }, setState]);
+    await deleteAccount({ hash: 'nope' }, [{ store }, setState]);
 
-    expect(data.accounts).toHaveLength(1);
-    expect(data.scheduledTxs).toHaveLength(1);
+    expect(store.get('accounts').value).toHaveLength(2);
+    expect(store.get('scheduledTxs').value).toHaveLength(2);
     expect(setState).not.toHaveBeenCalled();
   });
 });
