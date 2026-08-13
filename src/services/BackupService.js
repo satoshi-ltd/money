@@ -46,7 +46,7 @@ export const BackupService = {
           );
         });
 
-        const data = rows.join('\\n');
+        const data = rows.join('\n');
 
         const isSharingAvailable = await Sharing.isAvailableAsync();
         if (!isSharingAvailable) return reject(L10N.ERROR_EXPORT);
