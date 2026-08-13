@@ -15,7 +15,7 @@ const {
 let timeoutId;
 
 const TransactionsListHeader = ({ chartBalanceBase, dataSource, navigation, onSearch, setPage }) => {
-  const { accounts = [], rates = {}, settings: { baseCurrency } = {} } = useStore();
+  const { accounts = [], rates = {}, scheduledTxs = [], settings: { baseCurrency } = {} } = useStore();
   const { colors } = useApp();
   const style = React.useMemo(() => getStyles(colors), [colors]);
   const { currency = baseCurrency, ...rest } = dataSource;
@@ -53,10 +53,11 @@ const TransactionsListHeader = ({ chartBalanceBase, dataSource, navigation, onSe
     return buildInsights({
       accounts: [dataSource],
       rates,
+      scheduledTxs: scheduledTxs.filter(({ account }) => account === dataSource.hash),
       settings: { baseCurrency: currency },
       txs: dataSource.txs || [],
     });
-  }, [currency, dataSource, rates]);
+  }, [currency, dataSource, rates, scheduledTxs]);
 
   const progressionPercentage = useMemo(() => {
     const next = getProgressionPercentage(rest?.currentBalance, rest?.currentMonth?.progressionCurrency);
