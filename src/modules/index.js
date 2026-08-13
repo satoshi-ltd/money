@@ -4,6 +4,7 @@ export * from './autoAmount';
 export * from './autoCategory';
 export * from './autoTokens';
 export * from './currencyDecimals';
+export * from './currencyPrecision';
 export * from './eventEmitter';
 export * from './exchange';
 export * from './getCurrencySymbol';

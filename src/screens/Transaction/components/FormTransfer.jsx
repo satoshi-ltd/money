@@ -3,8 +3,8 @@ import React, { useEffect, useRef } from 'react';
 
 import { Heading, InputAccount, InputAmount } from '../../../components';
 import { useStore } from '../../../contexts';
-import { currencyDecimals, L10N } from '../../../modules';
-import { getAccount, queryAvailableAccounts } from '../helpers';
+import { L10N, roundToCurrency } from '../../../modules';
+import { computeTransferExchange, getAccount, queryAvailableAccounts } from '../helpers';
 
 const FormTransaction = ({ account = {}, accountsList = [], form = {}, onChange, onSelectAccount }) => {
   const {
@@ -31,20 +31,8 @@ const FormTransaction = ({ account = {}, accountsList = [], form = {}, onChange,
     return keys.length ? rates[keys[keys.length - 1]] : undefined;
   };
 
-  const computeExchangeAuto = ({ from, to, value }) => {
-    const latestRates = getLatestRates();
-    if (!from?.currency || !to?.currency || !latestRates) return undefined;
-
-    if (!Number.isFinite(value) || value <= 0) return undefined;
-
-    let exchange = 0;
-    if (from.currency === to.currency) exchange = value;
-    else if (from.currency === baseCurrency) exchange = value * latestRates[to.currency];
-    else if (to.currency === baseCurrency) exchange = value / latestRates[from.currency];
-    else exchange = (value / latestRates[from.currency]) * latestRates[to.currency];
-
-    return parseFloat(exchange, 10).toFixed(currencyDecimals(exchange, to.currency));
-  };
+  const computeExchangeAuto = ({ from, to, value }) =>
+    computeTransferExchange({ baseCurrency, from, latestRates: getLatestRates(), to, value });
 
   const handleField = (field, fieldValue) => {
     const prevEdited = lastEditedRef.current;
@@ -73,8 +61,7 @@ const FormTransaction = ({ account = {}, accountsList = [], form = {}, onChange,
         Number.isFinite(nextValue)
       ) {
         const rate = prevExchange / prevValue;
-        const computed = nextValue * rate;
-        exchange = parseFloat(computed, 10).toFixed(currencyDecimals(computed, to.currency));
+        exchange = from.currency === to.currency ? nextValue : roundToCurrency(nextValue * rate, to.currency);
       } else {
         exchange = computeExchangeAuto({ from, to, value: nextValue });
       }

@@ -1,4 +1,5 @@
 export * from './createTransaction';
+export * from './computeTransferExchange';
 export * from './createTransfer';
 export * from './getAccount';
 export * from './getCurrency';
