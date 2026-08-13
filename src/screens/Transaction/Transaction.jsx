@@ -109,7 +109,7 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
     type === TRANSFER ? L10N.SWAP : txType === C?.TX?.TYPE?.INCOME ? L10N.INCOME : L10N.EXPENSE;
 
   return (
-    <Panel offset title={title} onBack={goBack} disableScroll>
+    <Panel offset title={title} onBack={goBack}>
       {currentAccount ? (
         <Form
           {...{ account: currentAccount, type: txType }}
