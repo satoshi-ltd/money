@@ -99,6 +99,21 @@ export class StorageService {
     return new Collection(state.get(this), key);
   }
 
+  async replace(collections = {}) {
+    const { adapter, data } = state.get(this);
+    const names = Object.keys(collections);
+    const previous = names.reduce((memo, name) => Object.assign(memo, { [name]: data[name] }), {});
+
+    names.forEach((name) => (data[name] = collections[name]));
+
+    try {
+      for (let index = 0; index < names.length; index += 1) await adapter.write(data, names[index]);
+    } catch (error) {
+      names.forEach((name) => (data[name] = previous[name]));
+      throw error;
+    }
+  }
+
   async wipe(key) {
     const { adapter, data, defaults } = state.get(this);
 

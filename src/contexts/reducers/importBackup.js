@@ -20,15 +20,13 @@ export const importBackup = async (
     ? { ...prevSubscription, productIdentifier: 'lifetime', unlockedBy: 'btc', unlockedAt: Date.now() }
     : prevSubscription;
 
-  await store.wipe('accounts');
-  await store.wipe('scheduledTxs');
-  await store.wipe('settings');
-  await store.wipe('txs');
-  if (!keepRates) await store.wipe('rates');
-  await store.get('accounts').save(migrated.accounts);
-  await store.get('scheduledTxs').save(migrated.scheduledTxs);
-  await store.get('settings').save(migrated.settings);
-  await store.get('txs').save(migrated.txs);
+  await store.replace({
+    accounts: migrated.accounts,
+    scheduledTxs: migrated.scheduledTxs,
+    settings: migrated.settings,
+    txs: migrated.txs,
+    ...(keepRates ? null : { rates: {} }),
+  });
 
   if (shouldUnlock) await updateSubscription(nextSubscription, [state, setState]);
 
