@@ -9,6 +9,10 @@ export const importBackup = async (
   const { store } = state;
 
   const migrated = migrateState({ accounts, scheduledTxs, schemaVersion, settings, txs });
+  const cachedBaseCurrency = state.settings?.ratesBaseCurrency || state.settings?.baseCurrency;
+  const keepRates = cachedBaseCurrency === migrated.settings.baseCurrency;
+  migrated.settings.ratesBaseCurrency = keepRates ? cachedBaseCurrency : undefined;
+
   const prevSubscription = (await store.get('subscription')?.value) || {};
   const { shouldUnlock } = maybeUnlockPremiumFromAccounts({ accounts: migrated.accounts, subscription: prevSubscription });
   const nextSubscription = shouldUnlock
@@ -19,6 +23,7 @@ export const importBackup = async (
   await store.wipe('scheduledTxs');
   await store.wipe('settings');
   await store.wipe('txs');
+  if (!keepRates) await store.wipe('rates');
   await store.get('accounts').save(migrated.accounts);
   await store.get('scheduledTxs').save(migrated.scheduledTxs);
   await store.get('settings').save(migrated.settings);
@@ -30,6 +35,7 @@ export const importBackup = async (
     ...prev,
     settings: migrated.settings,
     accounts: migrated.accounts,
+    rates: keepRates ? prev.rates : {},
     scheduledTxs: migrated.scheduledTxs,
     txs: migrated.txs,
     subscription: shouldUnlock ? nextSubscription : prev.subscription,

@@ -13,6 +13,7 @@ const DEFAULTS = {
     maskAmount: false,
     onboarded: false,
     pin: undefined,
+    ratesBaseCurrency: undefined,
     reminders: [1],
     // Local-only user profile collected via onboarding survey (opt-in lead capture).
     userProfile: {

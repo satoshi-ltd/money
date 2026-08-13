@@ -157,6 +157,7 @@ const StoreProvider = ({ children }) => {
   const [state, setState] = useState(DEFAULTS);
   const stateRef = useRef(state);
   const ratesSyncInFlightRef = useRef(false);
+  const syncRatesRef = useRef();
 
   useEffect(() => {
     stateRef.current = state;
@@ -287,7 +288,7 @@ const StoreProvider = ({ children }) => {
       }
     };
 
-    const syncRates = async () => {
+    const syncRates = async ({ full = false } = {}) => {
       const current = stateRef.current;
       if (!current?.store || ratesSyncInFlightRef.current) return;
 
@@ -295,7 +296,7 @@ const StoreProvider = ({ children }) => {
       try {
         const rates = await ServiceRates.get({
           baseCurrency: current?.settings?.baseCurrency,
-          latest: true,
+          latest: !full,
         }).catch(() => undefined);
 
         if (disposed || !rates) return;
@@ -307,6 +308,8 @@ const StoreProvider = ({ children }) => {
         ratesSyncInFlightRef.current = false;
       }
     };
+
+    syncRatesRef.current = syncRates;
 
     syncSubscription({ forceRefresh: true });
     syncRates();
@@ -341,10 +344,18 @@ const StoreProvider = ({ children }) => {
 
     return () => {
       disposed = true;
+      syncRatesRef.current = undefined;
       clearInterval(ratesIntervalId);
       appStateSubscription.remove();
     };
   }, [state.store]);
+
+  useEffect(() => {
+    const { baseCurrency, ratesBaseCurrency } = state.settings || {};
+    if (!state.store || !baseCurrency || ratesBaseCurrency === baseCurrency) return;
+
+    syncRatesRef.current?.({ full: true });
+  }, [state.store, state.settings]);
 
   const consolidated = useMemo(() => consolidate(state), [state]);
 
