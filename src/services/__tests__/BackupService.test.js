@@ -37,6 +37,21 @@ describe('services/BackupService', () => {
     expect(lines[1]).toContain('"Coffee"');
   });
 
+  test('never writes the derived account payload into the backup', async () => {
+    await BackupService.export({
+      ...PAYLOAD,
+      accounts: [{ ...PAYLOAD.accounts[0], txs: PAYLOAD.txs, chartBalance: [1, 2], currentBalance: 10 }],
+    });
+
+    const [, data] = FileSystem.writeAsStringAsync.mock.calls[0];
+    const [account] = JSON.parse(data).accounts;
+
+    expect(account.txs).toBeUndefined();
+    expect(account.chartBalance).toBeUndefined();
+    expect(account.currentBalance).toBeUndefined();
+    expect(account).toMatchObject({ hash: 'a1', currency: 'EUR', title: 'Cash' });
+  });
+
   test('resolves with nothing when the picker is cancelled', async () => {
     DocumentPicker.getDocumentAsync.mockResolvedValue({ canceled: true, assets: null });
 

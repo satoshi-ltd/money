@@ -3,6 +3,7 @@ import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 
 import { validateBackupPayload } from './modules/backupValidation';
+import { parseAccount } from '../contexts/reducers/modules';
 import { SCHEMA_VERSION } from '../contexts/store.constants';
 import { L10N } from '../modules';
 
@@ -13,7 +14,13 @@ export const BackupService = {
       try {
         const fileName = `money-${new Date().toISOString()}.json`;
         const schemaVersion = settings?.schemaVersion || SCHEMA_VERSION;
-        const data = JSON.stringify({ schemaVersion, accounts, scheduledTxs, settings, txs });
+        const data = JSON.stringify({
+          schemaVersion,
+          accounts: accounts.map(parseAccount),
+          scheduledTxs,
+          settings,
+          txs,
+        });
 
         const isSharingAvailable = await Sharing.isAvailableAsync();
         if (!isSharingAvailable) return reject(L10N.ERROR_EXPORT);

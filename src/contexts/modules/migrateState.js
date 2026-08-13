@@ -1,3 +1,4 @@
+import { parseAccount } from '../reducers/modules';
 import { DEFAULTS, SCHEMA_VERSION } from '../store.constants';
 
 const ensureArray = (value) => (Array.isArray(value) ? value : []);
@@ -39,7 +40,7 @@ export const migrateState = ({ accounts, scheduledTxs, schemaVersion, settings, 
   }
 
   return {
-    accounts: ensureArray(accounts),
+    accounts: ensureArray(accounts).map(parseAccount),
     scheduledTxs: ensureArray(scheduledTxs)
       .filter((item) => item?.status !== 'paused' && item?.status !== 'ended')
       .map(normalizeScheduled),
