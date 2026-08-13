@@ -2,6 +2,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 
+import { validateBackupPayload } from './modules/backupValidation';
 import { SCHEMA_VERSION } from '../contexts/store.constants';
 import { L10N } from '../modules';
 
@@ -65,24 +66,21 @@ export const BackupService = {
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
       try {
-        const { cancelled, assets = [] } = await DocumentPicker.getDocumentAsync({
+        const { canceled, assets } = await DocumentPicker.getDocumentAsync({
           multiple: false,
           type: 'application/json',
         });
+
+        if (canceled) return resolve(undefined);
+
         const file = assets && assets[0] ? assets[0] : {};
+        if (!file.uri) return reject(L10N.ERROR_IMPORT);
 
-        if (!cancelled && file.uri) {
-          let jsonData = {};
+        const { ok, value } = validateBackupPayload(await FileSystem.readAsStringAsync(file.uri));
 
-          const fileData = await FileSystem.readAsStringAsync(file.uri);
-          jsonData = JSON.parse(fileData);
+        if (!ok || !value.accounts.length || !Object.keys(value.settings).length) return reject(L10N.ERROR_IMPORT);
 
-          const { accounts = [], scheduledTxs = [], schemaVersion, settings = {}, txs = [] } = jsonData;
-
-          if (!accounts.length || !Object.keys(settings).length) return reject(L10N.ERROR_IMPORT);
-
-          resolve({ accounts, scheduledTxs, schemaVersion, settings, txs });
-        }
+        resolve(value);
       } catch (error) {
         reject(`${L10N.ERROR}: ${JSON.stringify(error)}`);
       }

@@ -37,6 +37,36 @@ describe('services/BackupService', () => {
     expect(lines[1]).toContain('"Coffee"');
   });
 
+  test('resolves with nothing when the picker is cancelled', async () => {
+    DocumentPicker.getDocumentAsync.mockResolvedValue({ canceled: true, assets: null });
+
+    await expect(BackupService.import()).resolves.toBeUndefined();
+  });
+
+  test('reads a valid backup file', async () => {
+    DocumentPicker.getDocumentAsync.mockResolvedValue({ canceled: false, assets: [{ uri: 'file:///backup.json' }] });
+    FileSystem.readAsStringAsync.mockResolvedValue(JSON.stringify(PAYLOAD));
+
+    await expect(BackupService.import()).resolves.toMatchObject({
+      accounts: PAYLOAD.accounts,
+      txs: PAYLOAD.txs,
+    });
+  });
+
+  test('rejects a payload whose transactions are not a list instead of importing nothing', async () => {
+    DocumentPicker.getDocumentAsync.mockResolvedValue({ canceled: false, assets: [{ uri: 'file:///backup.json' }] });
+    FileSystem.readAsStringAsync.mockResolvedValue(JSON.stringify({ ...PAYLOAD, txs: { t1: {} } }));
+
+    await expect(BackupService.import()).rejects.toBeDefined();
+  });
+
+  test('rejects a backup without accounts', async () => {
+    DocumentPicker.getDocumentAsync.mockResolvedValue({ canceled: false, assets: [{ uri: 'file:///backup.json' }] });
+    FileSystem.readAsStringAsync.mockResolvedValue(JSON.stringify({ ...PAYLOAD, accounts: [] }));
+
+    await expect(BackupService.import()).rejects.toBeDefined();
+  });
+
   test('does not hang when sharing is unavailable', async () => {
     Sharing.isAvailableAsync.mockResolvedValue(false);
 
