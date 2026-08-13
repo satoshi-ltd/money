@@ -49,7 +49,7 @@ describe('services/modules/asyncStorage', () => {
     const instance = await adapter();
 
     expect(store.money).toBeUndefined();
-    expect(JSON.parse(store['money:txs'])).toEqual({ __chunks: 3 });
+    expect(JSON.parse(store['money:txs'])).toEqual({ __chunks: 3, __length: 1200 });
     expect((await instance.read()).txs).toHaveLength(1200);
   });
 
@@ -89,7 +89,7 @@ describe('services/modules/asyncStorage', () => {
 
     expect(store['money:txs:1']).toBeUndefined();
     expect(store['money:txs:2']).toBeUndefined();
-    expect(JSON.parse(store['money:txs'])).toEqual({ __chunks: 1 });
+    expect(JSON.parse(store['money:txs'])).toEqual({ __chunks: 1, __length: 200 });
     expect((await instance.read()).txs).toHaveLength(200);
   });
 
@@ -102,6 +102,51 @@ describe('services/modules/asyncStorage', () => {
     expect(biggest).toBeLessThan(2 * 1024 * 1024);
   });
 
+  test('refuses to load a ledger whose chunk did not come back', async () => {
+    const instance = await adapter();
+    await instance.write({ ...DEFAULTS, txs: txs(1200) });
+    delete store['money:txs:1'];
+
+    await expect((await adapter()).read()).rejects.toThrow('money:txs:1 is missing');
+  });
+
+  test('refuses to load a ledger that comes back short', async () => {
+    const instance = await adapter();
+    await instance.write({ ...DEFAULTS, txs: txs(1200) });
+    store['money:txs:1'] = JSON.stringify([{ hash: 'only-one' }]);
+
+    await expect((await adapter()).read()).rejects.toThrow('expected 1200 entries');
+  });
+
+  test('keeps the index honest while the ledger shrinks', async () => {
+    const instance = await adapter();
+    await instance.write({ ...DEFAULTS, txs: txs(1200) });
+
+    const order = [];
+    AsyncStorage.setItem.mockImplementation((key, value) => {
+      order.push(`index:${key}`);
+      store[key] = value;
+      return Promise.resolve();
+    });
+    AsyncStorage.multiRemove.mockImplementation((keys) => {
+      order.push(`remove:${keys.join(',')}`);
+      keys.forEach((key) => delete store[key]);
+      return Promise.resolve();
+    });
+
+    await instance.write({ ...DEFAULTS, txs: txs(200) }, 'txs');
+
+    expect(order).toEqual(['index:money:txs', 'remove:money:txs:1,money:txs:2']);
+  });
+
+  test('says what it could not read instead of a bare message', async () => {
+    const instance = await adapter();
+    await instance.write({ ...DEFAULTS, txs: txs(600) });
+    delete store['money:txs:1'];
+
+    await expect((await adapter()).read()).rejects.toThrow(/money could not be loaded correctly: /);
+  });
+
   test('surfaces a write failure instead of swallowing it', async () => {
     const instance = await adapter();
     AsyncStorage.setItem.mockRejectedValue(new Error('disk full'));
@@ -112,7 +157,7 @@ describe('services/modules/asyncStorage', () => {
   test('surfaces an unreadable database', async () => {
     AsyncStorage.multiGet.mockRejectedValue(new Error('Row too big to fit into CursorWindow'));
 
-    await expect((await adapter()).read()).rejects.toThrow('money could not be loaded correctly.');
+    await expect((await adapter()).read()).rejects.toThrow(/money could not be loaded correctly/);
   });
 
   test('wipe clears the index and every chunk', async () => {

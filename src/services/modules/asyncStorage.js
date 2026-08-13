@@ -34,7 +34,12 @@ export class AsyncStorageAdapter {
   async migrateFromSingleKey() {
     const { defaults, key } = this;
 
-    const legacy = await AsyncStorage.getItem(key);
+    let legacy;
+    try {
+      legacy = await AsyncStorage.getItem(key);
+    } catch (error) {
+      throw new Error(`${key} is too large to be read back by this device.`);
+    }
     if (!legacy) return;
 
     let data;
@@ -64,7 +69,7 @@ export class AsyncStorageAdapter {
 
         const parsed = JSON.parse(raw);
         if (parsed && typeof parsed === 'object' && Number.isFinite(parsed.__chunks)) {
-          pending.push({ collection, chunks: parsed.__chunks });
+          pending.push({ collection, chunks: parsed.__chunks, length: parsed.__length });
           this.chunkCount[collection] = parsed.__chunks;
         } else {
           memo[collection] = parsed;
@@ -73,18 +78,24 @@ export class AsyncStorageAdapter {
       }, {});
 
       for (let index = 0; index < pending.length; index += 1) {
-        const { chunks, collection } = pending[index];
+        const { chunks, collection, length } = pending[index];
         const keys = Array.from({ length: chunks }, (item, position) => chunkKey(key, collection, position));
         const stored = await AsyncStorage.multiGet(keys);
+
         data[collection] = stored.reduce((memo, [chunkName, raw]) => {
-          if (raw) this.written[chunkName] = raw;
-          return memo.concat(raw ? JSON.parse(raw) : []);
+          if (raw === null || raw === undefined) throw new Error(`${chunkName} is missing`);
+          this.written[chunkName] = raw;
+          return memo.concat(JSON.parse(raw));
         }, []);
+
+        if (Number.isFinite(length) && data[collection].length !== length) {
+          throw new Error(`${indexKey(key, collection)} expected ${length} entries`);
+        }
       }
 
       return data;
     } catch (error) {
-      throw new Error(`${key} could not be loaded correctly.`);
+      throw new Error(`${key} could not be loaded correctly: ${error.message}`);
     }
   }
 
@@ -119,20 +130,23 @@ export class AsyncStorageAdapter {
       if (this.written[name] !== raw) changed.push([name, raw]);
     });
 
+    const previous = this.chunkCount[collection] || 0;
+    const shrinking = previous > chunks.length;
+    const nextIndex = JSON.stringify({ __chunks: chunks.length, __length: value.length });
+
     if (changed.length) await AsyncStorage.multiSet(changed);
     changed.forEach(([name, raw]) => (this.written[name] = raw));
 
-    const previous = this.chunkCount[collection] || 0;
-    if (previous > chunks.length) {
+    await AsyncStorage.setItem(indexKey(key, collection), nextIndex);
+    this.chunkCount[collection] = chunks.length;
+
+    if (shrinking) {
       const stale = Array.from({ length: previous - chunks.length }, (item, position) =>
         chunkKey(key, collection, chunks.length + position),
       );
       await AsyncStorage.multiRemove(stale);
       stale.forEach((name) => delete this.written[name]);
     }
-
-    await AsyncStorage.setItem(indexKey(key, collection), JSON.stringify({ __chunks: chunks.length }));
-    this.chunkCount[collection] = chunks.length;
   }
 
   async wipe() {
