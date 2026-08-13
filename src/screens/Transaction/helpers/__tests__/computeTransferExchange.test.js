@@ -12,6 +12,12 @@ describe('screens/Transaction/computeTransferExchange', () => {
     expect(compute({ from: account('BTC'), to: account('BTC'), value: 0.123456789 })).toBe(0.123456789);
   });
 
+  test('moves money between accounts of the same currency with no rates cached at all', () => {
+    expect(computeTransferExchange({ baseCurrency: 'USD', from: account('USD'), to: account('USD'), value: 25 })).toBe(
+      25,
+    );
+  });
+
   test('converts from the base currency', () => {
     expect(compute({ from: account('USD'), to: account('EUR'), value: 100 })).toBe(90);
   });

@@ -1,10 +1,11 @@
 import { roundToCurrency } from '../../../modules';
 
 export const computeTransferExchange = ({ baseCurrency, from, latestRates, to, value } = {}) => {
-  if (!from?.currency || !to?.currency || !latestRates) return undefined;
+  if (!from?.currency || !to?.currency) return undefined;
   if (!Number.isFinite(value) || value <= 0) return undefined;
 
   if (from.currency === to.currency) return value;
+  if (!latestRates) return undefined;
 
   const fromRate = latestRates[from.currency];
   const toRate = latestRates[to.currency];
