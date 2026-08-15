@@ -1,7 +1,7 @@
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
-import { C, L10N } from '../modules';
+import { C, L10N, PREMIUM_ENABLED } from '../modules';
 const PRO_ENTITLEMENT = 'pro';
 
 const APIKEY = {
@@ -25,6 +25,7 @@ const PREMIUM_MOCK = {
 let purchasesInitialized = false;
 
 const initializePurchases = async () => {
+  if (!PREMIUM_ENABLED) return undefined;
   const Purchases = require('react-native-purchases').default;
 
   if (!purchasesInitialized) {
@@ -50,7 +51,7 @@ export const PurchaseService = {
   getProducts: async () =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
-      if (Constants.appOwnership === 'expo') return resolve([]);
+      if (!PREMIUM_ENABLED || Constants.appOwnership === 'expo') return resolve([]);
 
       try {
         const Purchases = await initializePurchases();
@@ -81,7 +82,7 @@ export const PurchaseService = {
   buy: async (plan) =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
-      if (Constants.appOwnership === 'expo') return resolve(PREMIUM_MOCK);
+      if (!PREMIUM_ENABLED || Constants.appOwnership === 'expo') return resolve(PREMIUM_MOCK);
 
       try {
         const Purchases = await initializePurchases();
@@ -102,7 +103,7 @@ export const PurchaseService = {
   restore: async () =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
-      if (Constants.appOwnership === 'expo') return resolve(PREMIUM_MOCK);
+      if (!PREMIUM_ENABLED || Constants.appOwnership === 'expo') return resolve(PREMIUM_MOCK);
 
       try {
         const Purchases = await initializePurchases();
@@ -118,7 +119,8 @@ export const PurchaseService = {
   checkSubscription: async (subscription = {}) =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
-      if (Constants.appOwnership === 'expo' || subscription.productIdentifier === 'lifetime') return resolve(true);
+      if (!PREMIUM_ENABLED || Constants.appOwnership === 'expo' || subscription.productIdentifier === 'lifetime')
+        return resolve(true);
 
       try {
         const Purchases = await initializePurchases();
@@ -132,7 +134,7 @@ export const PurchaseService = {
   syncSubscription: async ({ forceRefresh = false } = {}) =>
     // eslint-disable-next-line no-undef, no-async-promise-executor
     new Promise(async (resolve, reject) => {
-      if (Constants.appOwnership === 'expo') return resolve({});
+      if (!PREMIUM_ENABLED || Constants.appOwnership === 'expo') return resolve({});
 
       try {
         const Purchases = await initializePurchases();

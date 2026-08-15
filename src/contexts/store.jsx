@@ -14,6 +14,7 @@ import {
   eventEmitter,
   L10N,
   maybeUnlockPremiumFromAccounts,
+  PREMIUM_ENABLED,
 } from '../modules';
 import {
   // -- account
@@ -148,6 +149,7 @@ const StoreProvider = ({ children }) => {
     let disposed = false;
 
     const syncSubscription = async ({ forceRefresh = false } = {}) => {
+      if (!PREMIUM_ENABLED) return;
       const current = stateRef.current;
       if (!current?.store) return;
 

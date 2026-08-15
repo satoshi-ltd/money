@@ -8,7 +8,7 @@ import { ABOUT, DATA, PREMIUM, PREFERENCES } from './Settings.constants';
 import { style } from './Settings.style';
 import { Chip, Heading, Icon, Screen, Setting, Text, View } from '../../components';
 import { useStore } from '../../contexts';
-import { C, eventEmitter, ICON, L10N } from '../../modules';
+import { C, eventEmitter, hasPremiumAccess, ICON, L10N, PREMIUM_ENABLED } from '../../modules';
 import { BackupService, NotificationsService, PurchaseService } from '../../services';
 
 const { EVENT } = C;
@@ -36,7 +36,7 @@ const Settings = ({ navigation = {} }) => {
 
   const { baseCurrency, language = 'en', lastRatesUpdate = '', reminders, theme } = settings;
 
-  const isPremium = !!subscription?.productIdentifier;
+  const isPremium = hasPremiumAccess(subscription);
   const subscriptionStatus = subscription?.productIdentifier
     ? subscription?.productIdentifier?.split('.')?.[0] === 'lifetime'
       ? L10N.PREMIUM_LIFETIME
@@ -104,6 +104,7 @@ const Settings = ({ navigation = {} }) => {
   };
 
   const handleSubscription = () => {
+    if (!PREMIUM_ENABLED) return;
     if (subscription?.productIdentifier) navigation.navigate('subscription');
     setActivity((prev) => ({ ...(prev || {}), handleSubscription: true }));
     PurchaseService.getProducts()
@@ -281,11 +282,13 @@ const Settings = ({ navigation = {} }) => {
     <Screen ref={scrollRef} gap offset style={style.screen}>
       <Heading value={L10N.SETTINGS} />
 
-      <View style={style.group}>
-        <Text bold size="s">
-          {L10N.PREMIUM.toUpperCase()}
-        </Text>
-        {PREMIUM(isPremium, subscription).map(({ disabled, icon, id, text, ...rest }) => (
+      <View style={PREMIUM_ENABLED ? style.group : undefined}>
+        {PREMIUM_ENABLED ? (
+          <Text bold size="s">
+            {L10N.PREMIUM.toUpperCase()}
+          </Text>
+        ) : null}
+        {(PREMIUM_ENABLED ? PREMIUM(isPremium, subscription) : []).map(({ disabled, icon, id, text, ...rest }) => (
           <Setting
             {...settingProps}
             activity={rest.callback ? activity?.[rest.callback] : undefined}

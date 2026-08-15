@@ -18,6 +18,7 @@ export * from './insights';
 export * from './isInternalTransfer';
 export * from './l10n';
 export * from './maybeUnlockPremiumFromAccounts';
+export * from './premium';
 export * from './recurrence';
 export * from './verboseDate';
 export * from './verboseTime';

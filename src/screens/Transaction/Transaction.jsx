@@ -6,7 +6,7 @@ import { createTransaction, createTransfer } from './helpers';
 import { style } from './Transaction.style';
 import { Button, Panel, View } from '../../components';
 import { useStore } from '../../contexts';
-import { C, L10N } from '../../modules';
+import { C, L10N, PREMIUM_ENABLED } from '../../modules';
 import { sortAccounts } from '../../modules/sortAccounts';
 import { PurchaseService } from '../../services';
 
@@ -90,7 +90,7 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
       if (value) goBack();
       setBusy(false);
 
-      if (subscription?.productIdentifier && txs.length) {
+      if (PREMIUM_ENABLED && subscription?.productIdentifier && txs.length) {
         const lastTxDate = txs[txs.length - 1].timestamp;
         if (Date.now() - lastTxDate > ONE_DAY) {
           PurchaseService.checkSubscription(subscription).then((activeSubscription) => {

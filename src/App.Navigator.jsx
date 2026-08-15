@@ -7,7 +7,7 @@ import { Platform, StyleSheet } from 'react-native';
 
 import { Button, Chip, Footer, Icon, Logo, Text } from './components';
 import { useApp, useStore } from './contexts';
-import { C, eventEmitter, getNavigationTheme, ICON, L10N } from './modules';
+import { C, ICON, L10N, PREMIUM_ENABLED, eventEmitter, getNavigationTheme } from './modules';
 import {
   Account,
   Accounts,
@@ -63,6 +63,7 @@ const Tabs = ({ navigation = {} }) => {
   // ! TODO: Somehow we should use new accent
 
   const handleSubscription = () => {
+    if (!PREMIUM_ENABLED) return;
     PurchaseService.getProducts()
       .then((plans) => {
         navigation.navigate('subscription', { plans });
@@ -75,7 +76,7 @@ const Tabs = ({ navigation = {} }) => {
     headerLeft: () => <></>,
     headerRight: () => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      return !subscription?.productIdentifier ? (
+      return PREMIUM_ENABLED && !subscription?.productIdentifier ? (
         <Chip
           onPress={handleSubscription}
           icon={ICON.STAR}
@@ -200,7 +201,7 @@ export const Navigator = () => {
         <Stack.Screen name="baseCurrency" component={BaseCurrency} options={panel} />
         <Stack.Screen name="language" component={Language} options={panel} />
         {/* -- common */}
-        <Stack.Screen name="subscription" component={Subscription} options={panel} />
+        {PREMIUM_ENABLED ? <Stack.Screen name="subscription" component={Subscription} options={panel} /> : null}
       </Stack.Navigator>
     </NavigationContainer>
   );
