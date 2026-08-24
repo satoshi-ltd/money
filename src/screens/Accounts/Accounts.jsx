@@ -1,90 +1,190 @@
 import PropTypes from 'prop-types';
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useScrollToTop } from '@react-navigation/native';
 
-import { style } from './Accounts.style';
+import { getStyles } from './Accounts.style';
 import { filter, query } from './modules';
 import {
-  Card,
-  CardAccount,
-  CurrencyLogo,
+  EmptyState,
+  Eyebrow,
   Heading,
+  IconButton,
+  Masthead,
   Pressable,
   PriceFriendly,
   Screen,
-  ScrollView,
+  SegmentedToggle,
   Text,
   View,
 } from '../../components';
-import { useStore } from '../../contexts';
-import { L10N } from '../../modules';
-import { cardAccountSnap } from '../../theme/layout';
+import { useApp, useStore } from '../../contexts';
+import { ICON, L10N, netWorthEyebrow, percentText, rankInk } from '../../modules';
+
+const ALL = 'all';
+const SEGMENT_LIMIT = 3;
 
 const Accounts = ({ navigation: { navigate } = {} }) => {
-  const { accounts = [], overall = {} } = useStore();
+  const { accounts = [], overall = {}, settings: { baseCurrency } = {} } = useStore();
+  const { colors } = useApp();
+  const style = useMemo(() => getStyles(colors), [colors]);
   const scrollRef = useRef(null);
   useScrollToTop(scrollRef);
 
   const [selected, setSelected] = useState();
 
-  const currencies = query(accounts);
+  const currencies = useMemo(() => query(accounts), [accounts]);
+  const visible = useMemo(() => filter(accounts, selected), [accounts, selected]);
+
+  const distribution = useMemo(() => {
+    const funded = currencies.filter(({ base }) => base > 0);
+    const total = funded.reduce((sum, { base }) => sum + base, 0);
+    if (total <= 0) return [];
+
+    const ordered = [...funded].sort((a, b) => b.base - a.base);
+    const leads = ordered.slice(0, SEGMENT_LIMIT);
+    const rest = ordered.slice(SEGMENT_LIMIT);
+
+    const segments = leads.map(({ base, currency }, index) => ({
+      color: rankInk(colors, index),
+      currency,
+      percentage: Math.round((base * 100) / total),
+    }));
+
+    if (rest.length) {
+      const amount = rest.reduce((sum, { base }) => sum + base, 0);
+      segments.push({
+        color: colors.textMuted,
+        currency: L10N.OTHERS,
+        percentage: Math.round((amount * 100) / total),
+      });
+    }
+
+    return segments;
+  }, [colors, currencies]);
+
+  const total = visible.reduce(
+    (sum, { currentBalance = 0, currentBalanceBase = 0 }) => sum + (selected ? currentBalance : currentBalanceBase),
+    0,
+  );
+
+  if (accounts.length === 0)
+    return (
+      <>
+        <Masthead section={L10N.ACCOUNTS} />
+        <Screen ref={scrollRef} style={[style.screen, style.empty]}>
+          <EmptyState
+            action={L10N.EMPTY_ACCOUNTS_ACTION}
+            caption={L10N.EMPTY_ACCOUNTS_CAPTION}
+            icon={ICON.ACCOUNTS}
+            title={L10N.EMPTY_ACCOUNTS}
+            onAction={() => navigate('account', { create: true })}
+          />
+        </Screen>
+      </>
+    );
 
   return (
-    <Screen ref={scrollRef} style={style.screen}>
-      <Heading value={L10N.CURRENCIES} offset />
-      <ScrollView horizontal snapTo={cardAccountSnap} style={style.scrollView}>
-        {currencies.map(({ base, currency, ...item }, index) => (
-          <CardAccount
-            {...item}
-            key={currency}
-            currency={currency}
-            highlight={currency === selected}
-            operator={false}
-            percentage={(base * 100) / overall.currentBalance}
-            showExchange
-            title={L10N.CURRENCY_NAME[currency] || currency}
-            style={[style.card, index === 0 && style.firstCard, index === currencies.length - 1 && style.lastCard]}
-            onPress={() => setSelected(currency !== selected ? currency : undefined)}
+    <>
+      <Masthead section={L10N.ACCOUNTS}>
+        <IconButton icon={ICON.ADD} onPress={() => navigate('account', { create: true })} />
+      </Masthead>
+      <Screen ref={scrollRef} style={style.screen}>
+        <View style={style.hero}>
+          <Eyebrow>{netWorthEyebrow({ accounts: accounts.length, currency: baseCurrency })}</Eyebrow>
+          <PriceFriendly
+            bold
+            currency={baseCurrency}
+            size="hero"
+            style={style.heroValue}
+            value={overall?.currentBalance || 0}
           />
-        ))}
-      </ScrollView>
+        </View>
 
-      <Heading value={L10N.ACCOUNTS} offset />
-      <>
-        {filter(accounts, selected).map((account) => {
-          const { currency, currentBalance = 0, title } = account;
-          const hasBalance =
-            currentBalance !== undefined && currentBalance !== null && parseFloat(currentBalance.toFixed(2)) > 0;
+        {distribution.length > 1 ? (
+          <View style={style.distribution}>
+            <View row style={style.bar}>
+              {distribution.map(({ color, currency, percentage }) => (
+                <View key={currency} style={{ backgroundColor: color, flexGrow: percentage }} />
+              ))}
+            </View>
+            <View row style={style.legend}>
+              {distribution.map(({ color, currency, percentage }) => (
+                <View key={currency} row style={style.legendItem}>
+                  <View style={[style.dot, { backgroundColor: color }]} />
+                  <Text
+                    medium={currency === baseCurrency}
+                    size="xxs"
+                    tone={currency === baseCurrency ? undefined : 'muted'}
+                  >
+                    {currency}
+                  </Text>
+                  <Text figure="xs" tone="muted">
+                    {percentText(percentage)}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        ) : null}
 
-          const tone = !hasBalance ? 'secondary' : 'primary';
+        {currencies.length > 1 ? (
+          <View style={style.toolbar}>
+            <SegmentedToggle
+              scrollable
+              options={[
+                { label: L10N.ALL, value: ALL },
+                ...currencies.map(({ currency }) => ({ label: currency, value: currency })),
+              ]}
+              value={selected || ALL}
+              onChange={(value) => setSelected(value === ALL ? undefined : value)}
+            />
+          </View>
+        ) : null}
 
-          return (
-            <Pressable key={account.hash} onPress={() => navigate('transactions', { account })}>
-              <View row style={style.item}>
-                <Card style={style.iconSpacing} size="s">
-                  <CurrencyLogo currency={currency} muted={!hasBalance || currentBalance < 0} />
-                </Card>
+        <View style={style.section}>
+          <Heading eyebrow={`${visible.length}`} value={L10N.ACCOUNTS} />
 
-                <View flex>
-                  <View gap row spaceBetween>
-                    <Text bold tone={tone} numberOfLines={1} style={style.text}>
+          {visible.map((account) => {
+            const { currency, currentBalance = 0, currentBalanceBase = 0, currentMonth, hash, title } = account;
+            const showBase = baseCurrency && currency !== baseCurrency;
+
+            return (
+              <Pressable key={hash} onPress={() => navigate('transactions', { account })}>
+                <View row style={style.accountRow}>
+                  <View flex style={style.accountText}>
+                    <Text medium numberOfLines={1}>
                       {title}
                     </Text>
-                    <PriceFriendly bold tone={tone} currency={currency} size="s" value={currentBalance} />
-                  </View>
-
-                  <View gap row spaceBetween>
-                    <Text tone="secondary" style={style.text} size="xs">
-                      {L10N.CURRENCY_NAME[currency] || currency}
+                    <Text size="xxs" tone="muted">
+                      {currency}
                     </Text>
                   </View>
+                  <View style={style.accountRight}>
+                    <PriceFriendly bold currency={currency} size="lg" value={currentBalance} />
+                    <View row style={style.accountMeta}>
+                      {showBase ? (
+                        <PriceFriendly
+                          currency={baseCurrency}
+                          showSymbol
+                          size="xs"
+                          tone="muted"
+                          value={currentBalanceBase}
+                        />
+                      ) : null}
+                    </View>
+                  </View>
                 </View>
-              </View>
-            </Pressable>
-          );
-        })}
-      </>
-    </Screen>
+              </Pressable>
+            );
+          })}
+
+          <View row spaceBetween style={style.totalRow}>
+            <Eyebrow>{L10N.TOTAL}</Eyebrow>
+            <PriceFriendly bold currency={selected || baseCurrency} size="lg" value={total} />
+          </View>
+        </View>
+      </Screen>
+    </>
   );
 };
 

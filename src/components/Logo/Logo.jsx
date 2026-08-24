@@ -1,20 +1,24 @@
+import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
 import { getStyles } from './Logo.style';
 import { useApp } from '../../contexts';
-import { Text, View } from '../../primitives';
+import { Text } from '../../primitives';
+import { theme } from '../../theme';
 
-const Logo = () => {
+const Logo = ({ size = theme.typography.sizes.tiny }) => {
   const { colors } = useApp();
-  const style = useMemo(() => getStyles(colors), [colors]);
+  const style = useMemo(() => getStyles(colors, size), [colors, size]);
+
   return (
-    <View style={style.container}>
-      <Text bold style={style.text}>
-        môney
-      </Text>
-      <View style={style.dot} />
-    </View>
+    <Text bold style={style.text}>
+      MÔNEY
+    </Text>
   );
+};
+
+Logo.propTypes = {
+  size: PropTypes.number,
 };
 
 export { Logo };

@@ -16,7 +16,7 @@ const InputAmount = ({
   account: { currency } = {},
   disabled = false,
   first,
-  label = '',
+  label,
   last,
   onChange,
   value,
@@ -48,7 +48,7 @@ const InputAmount = ({
       {...others}
       disabled={disabled}
       first={first}
-      label={label || L10N.AMOUNT}
+      label={label !== undefined ? label : L10N.AMOUNT}
       last={last}
       suffix={suffix}
       value={value !== undefined && value !== null ? value.toString() : ''}

@@ -1,17 +1,22 @@
 import { useEffect, useState } from 'react';
 import { Keyboard, Platform } from 'react-native';
 
+const CLOSED = { height: 0, top: 0 };
+
 export const useKeyboardInset = () => {
-  const [inset, setInset] = useState(0);
+  const [keyboard, setKeyboard] = useState(CLOSED);
 
   useEffect(() => {
     if (Platform.OS !== 'android') return undefined;
 
     const show = Keyboard.addListener('keyboardDidShow', ({ endCoordinates } = {}) => {
       const height = Number(endCoordinates?.height);
-      setInset(Number.isFinite(height) && height > 0 ? height : 0);
+      if (!Number.isFinite(height) || height <= 0) return;
+
+      const top = Number(endCoordinates?.screenY);
+      setKeyboard({ height, top: Number.isFinite(top) && top > 0 ? top : 0 });
     });
-    const hide = Keyboard.addListener('keyboardDidHide', () => setInset(0));
+    const hide = Keyboard.addListener('keyboardDidHide', () => setKeyboard(CLOSED));
 
     return () => {
       show.remove();
@@ -19,5 +24,5 @@ export const useKeyboardInset = () => {
     };
   }, []);
 
-  return inset;
+  return keyboard;
 };

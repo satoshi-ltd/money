@@ -5,3 +5,5 @@ import queryChart from './queryChart';
 import queryMonth from './queryMonth';
 
 export { calcScales, orderByAmount, orderCaptions, queryMonth, queryChart };
+export * from './rangeDelta';
+export * from './statsRange';

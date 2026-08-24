@@ -1,48 +1,50 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet as RNStyleSheet } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
 
+import { GLYPHS } from './glyphs';
 import { useApp } from '../../contexts';
 import { theme } from '../../theme';
 
-const Icon = ({ size, style, tone, ...props }) => {
+const SIZES = { xl: 'title', l: 'subtitle', m: 'body', s: 'caption', xs: 'tiny', xxs: 'xxs' };
+const TONES = {
+  secondary: 'textSecondary',
+  muted: 'textSecondary',
+  accent: 'accent',
+  positive: 'positive',
+  danger: 'danger',
+  warning: 'warning',
+  onAccent: 'onAccent',
+  onAccentSoft: 'onAccentSoft',
+  onInverse: 'onInverse',
+};
+const STROKE = 1.5;
+
+const Icon = ({ name, size, style, tone, ...props }) => {
   const { colors } = useApp();
 
-  const resolvedSize =
-    typeof size === 'number'
-      ? size
-      : size === 'xl'
-      ? theme.typography.iconSizes.title
-      : size === 'l'
-      ? theme.typography.iconSizes.subtitle
-      : size === 'm'
-      ? theme.typography.iconSizes.body
-      : size === 's'
-      ? theme.typography.iconSizes.caption
-      : size === 'xxs'
-      ? theme.typography.iconSizes.xxs
-      : size === 'xs'
-      ? theme.typography.iconSizes.tiny
-      : theme.typography.iconSizes.body;
+  const glyph = GLYPHS[name];
+  if (!glyph) return null;
 
-  const flattenedStyle = RNStyleSheet.flatten(style) || {};
-  const toneColor =
-    tone === 'secondary' || tone === 'muted'
-      ? colors.textSecondary
-      : tone === 'accent'
-      ? colors.accent
-      : tone === 'danger'
-      ? colors.danger
-      : tone === 'warning'
-      ? colors.warning
-      : tone === 'onAccent'
-      ? colors.onAccent || colors.text
-      : tone === 'onInverse'
-      ? colors.onInverse
-      : colors.text;
-  const resolvedColor = flattenedStyle.color || toneColor;
+  const resolved = typeof size === 'number' ? size : theme.typography.iconSizes[SIZES[size] || 'body'];
 
-  return <MaterialCommunityIcons {...props} color={resolvedColor} size={resolvedSize} style={style} />;
+  return (
+    <Svg
+      {...props}
+      fill="none"
+      height={resolved}
+      stroke={colors[TONES[tone]] || colors.text}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={STROKE}
+      style={style}
+      viewBox="0 0 24 24"
+      width={resolved}
+    >
+      {glyph.map((d) => (
+        <Path d={d} key={d} />
+      ))}
+    </Svg>
+  );
 };
 
 export default Icon;

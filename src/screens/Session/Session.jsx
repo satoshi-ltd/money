@@ -1,5 +1,7 @@
+import * as Haptics from 'expo-haptics';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { NumKeyboard } from './components';
@@ -11,12 +13,15 @@ import { NotificationsService, ServiceRates } from '../../services';
 
 const { EVENT, VERSION } = C;
 
+const PIN_LENGTH = 4;
+
 const Session = ({ navigation: { reset } = {} }) => {
   const { accounts = [], scheduledTxs = [], settings = {}, txs = [], updateRates, updateSettings } = useStore();
   const { colors } = useApp();
   const style = React.useMemo(() => getStyles(colors), [colors]);
 
   const [pin, setPin] = useState('');
+  const shake = useRef(new Animated.Value(0)).current;
 
   const signup = settings.pin === undefined;
 
@@ -33,10 +38,18 @@ const Session = ({ navigation: { reset } = {} }) => {
   };
 
   useEffect(() => {
-    if (pin.length < 4) return;
+    if (pin.length < PIN_LENGTH) return;
 
-    if (pin.length === 4 && (signup || settings.pin === pin)) handleSubmit();
-    else setPin('');
+    if (pin.length === PIN_LENGTH && (signup || settings.pin === pin)) handleSubmit();
+    else {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      Animated.sequence(
+        [12, -12, 8, -8, 0].map((toValue) =>
+          Animated.timing(shake, { toValue, duration: 50, useNativeDriver: true }),
+        ),
+      ).start();
+      setPin('');
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pin]);
 
@@ -50,17 +63,25 @@ const Session = ({ navigation: { reset } = {} }) => {
   return (
     <SafeAreaView edges={['top', 'bottom']} style={style.safeAreaView}>
       <View style={style.content}>
-        <Logo />
-        <Text size="m">{signup ? L10N.PIN_CHOOSE : L10N.PIN}</Text>
-        <View style={style.pinCode}>
-          {['•', '•', '•', '•'].map((letter, index) => (
+        <View style={style.spacerTop} />
+        <Logo size={24} />
+        <Text size="s" tone="muted" style={style.caption}>
+          {signup ? L10N.PIN_CHOOSE : L10N.PIN}
+        </Text>
+        <Animated.View style={[style.pinCode, { transform: [{ translateX: shake }] }]}>
+          {Array.from({ length: PIN_LENGTH }).map((_, index) => (
             <View key={index} style={[style.pin, pin.length > index ? style.pinActive : undefined]} />
           ))}
-        </View>
+        </Animated.View>
 
-        <NumKeyboard onPress={(number) => setPin(`${pin}${number}`)} />
+        <View style={style.spacerMiddle} />
 
-        <Text size="xs">{`v${VERSION}`}</Text>
+        <NumKeyboard
+          onDelete={() => setPin((current) => current.slice(0, -1))}
+          onPress={(number) => setPin(`${pin}${number}`)}
+        />
+
+        <Text size="xxs" tone="muted" style={style.version}>{`m\u00F4ney v${VERSION}`}</Text>
       </View>
     </SafeAreaView>
   );

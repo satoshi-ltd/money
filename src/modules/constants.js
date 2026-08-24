@@ -21,6 +21,7 @@ export const C = {
   EXPENSE_AS_INVESTMENT: 5,
 
   EVENT: {
+    CONFIRM: 'confirm',
     NOTIFICATION: 'notification',
   },
 
@@ -49,20 +50,21 @@ export const C = {
   PRIVACY_URL: 'https://www.satoshi-ltd.com/privacy-policy/',
 
   STATS_MONTHS_LIMIT: 12,
+  // Single-glyph forms only. Anything that would collide resolves to its ISO code via currencySymbol().
   SYMBOL: {
     USD: '$',
     EUR: '€',
     JPY: '¥',
     GBP: '£',
     CNY: '¥',
-    CAD: 'CA$',
-    AUD: 'AU$',
-    SGD: 'S$',
-    HKD: 'HK$',
+    CAD: '$',
+    AUD: '$',
+    SGD: '$',
+    HKD: '$',
     BTC: Platform.OS === 'android' && Platform.Version < 26 ? 'Ƀ' : '₿',
     ETH: 'Ξ',
     KRW: '₩',
-    MXN: 'Mex$',
+    MXN: '$',
     MYR: 'RM',
     RUB: '₽',
     THB: '฿',

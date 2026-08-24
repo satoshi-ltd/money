@@ -3,18 +3,18 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, useWindowDimensions } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Button, Chip, Footer, Icon, Logo, Text } from './components';
+import { Chip, Footer, Logo, Text } from './components';
 import { useApp, useStore } from './contexts';
-import { C, ICON, L10N, PREMIUM_ENABLED, eventEmitter, getNavigationTheme } from './modules';
+import { C, ICON, L10N, PREMIUM_ENABLED, eventEmitter, getNavigationTheme, sheetContentHeight, sheetDetents } from './modules';
 import {
   Account,
   Accounts,
-  BaseCurrency,
+  Category,
   Clone,
   Dashboard,
-  Language,
   Onboarding,
   Scheduled,
   ScheduledForm,
@@ -27,22 +27,33 @@ import {
 } from './screens';
 import { PurchaseService } from './services';
 import { theme } from './theme';
-import { viewOffset } from './theme/layout';
+import { rowHeight, viewOffset } from './theme/layout';
 
 const { EVENT, TX: { TYPE: { EXPENSE } } = {} } = C;
+
+const LATEST_ROWS = 3;
+
+// The weekday chips or the date row that replaces them, whichever is taller, plus the sentence reading the rule back.
+const SCHEDULED_REPEAT =
+  rowHeight + theme.spacing.md + theme.typography.lineHeights.body + theme.spacing.sm;
+
+// What each form is made of, so its height comes from the same tokens the form is built from.
+const FORM = {
+  account: { keyboard: true, rows: 3 },
+  category: { actions: 0, headings: 2, hero: true, rows: 6 },
+  clone: { keyboard: true, rows: 5 },
+  scheduled: { extra: SCHEDULED_REPEAT, headings: 1, keyboard: true, rows: 4, toggles: 2 },
+  transaction: { keyboard: true, rows: 5, toggles: 1 },
+};
+
+// The sheet is as tall as the category has to say, and no taller.
+const categoryRows = (merchants) => (merchants > 0 ? merchants : 0) + LATEST_ROWS;
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const styles = StyleSheet.create({
-  tabLabel: {
-    marginBottom: theme.spacing.xxs,
-  },
   premiumChip: { marginRight: viewOffset },
-  actionButton: {
-    marginHorizontal: theme.spacing.md,
-    top: -theme.spacing.sm,
-  },
 });
 
 const commonScreenOptions = (colors) => ({
@@ -57,6 +68,7 @@ const commonScreenOptions = (colors) => ({
 
 // eslint-disable-next-line react/prop-types
 const Tabs = ({ navigation = {} }) => {
+  const insets = useSafeAreaInsets();
   const { colors } = useApp();
   const { subscription } = useStore();
 
@@ -73,6 +85,8 @@ const Tabs = ({ navigation = {} }) => {
 
   const screenOptions = {
     ...commonScreenOptions(colors),
+    headerShown: false,
+    sceneStyle: { backgroundColor: colors.background, paddingTop: insets.top },
     headerLeft: () => <></>,
     headerRight: () => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -90,10 +104,9 @@ const Tabs = ({ navigation = {} }) => {
     },
   };
 
-  const tabBarIcon = ({ focused, icon }) => <Icon name={icon} size="l" tone={focused ? 'accent' : 'secondary'} />;
 
   const tabBarLabel = ({ focused, text }) => (
-    <Text style={styles.tabLabel} size="xs" tone={focused ? 'accent' : 'secondary'}>
+    <Text medium={focused} numberOfLines={1} size="xs" tone={focused ? undefined : 'muted'}>
       {text}
     </Text>
   );
@@ -103,7 +116,6 @@ const Tabs = ({ navigation = {} }) => {
       initialRouteName="dashboard"
       shifting
       screenOptions={screenOptions}
-      sceneContainerStyle={{ backgroundColor: colors.background }}
       tabBar={(props) => (
         <Footer {...props} onActionPress={() => navigation.navigate('transaction', { type: EXPENSE })} />
       )}
@@ -113,31 +125,7 @@ const Tabs = ({ navigation = {} }) => {
         component={Dashboard}
         options={{
           tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.HOME }),
-          tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.HOME }),
-          title: L10N.TOTAL_BALANCE,
-        }}
-      />
-      <Tab.Screen
-        name="stats"
-        component={Stats}
-        options={{
-          tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.ACTIVITY }),
-          tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.STATS }),
-          title: L10N.ACTIVITY,
-        }}
-      />
-      <Tab.Screen
-        name="transaction"
-        component={Transaction}
-        options={{
-          tabBarButton: () => (
-            <Button
-              icon={ICON.EXPENSE}
-              size="l"
-              onPress={() => navigation.navigate('transaction', { type: EXPENSE })}
-              style={styles.actionButton}
-            />
-          ),
+          title: L10N.NET_WORTH,
         }}
       />
       <Tab.Screen
@@ -145,8 +133,16 @@ const Tabs = ({ navigation = {} }) => {
         component={Accounts}
         options={{
           tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.ACCOUNTS }),
-          tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.ACCOUNTS }),
           title: L10N.ACCOUNTS,
+        }}
+      />
+      <Tab.Screen name="transaction" component={Transaction} />
+      <Tab.Screen
+        name="stats"
+        component={Stats}
+        options={{
+          tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.ACTIVITY }),
+          title: L10N.ACTIVITY,
         }}
       />
       <Tab.Screen
@@ -154,7 +150,6 @@ const Tabs = ({ navigation = {} }) => {
         component={Settings}
         options={{
           tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.SETTINGS }),
-          tabBarIcon: (props) => tabBarIcon({ ...props, icon: ICON.SETTINGS }),
           title: L10N.SETTINGS,
         }}
       />
@@ -164,16 +159,26 @@ const Tabs = ({ navigation = {} }) => {
 
 export const Navigator = () => {
   const { colors, theme: themeMode } = useApp();
+  const { bottom, top } = useSafeAreaInsets();
+  const { height: windowHeight } = useWindowDimensions();
   const { settings: { onboarded = true, pin } = {} } = useStore();
 
   const screenOptions = {
-    headerBackTitleVisible: false,
     headerShadowVisible: false,
     headerShown: false,
     contentStyle: { backgroundColor: colors.background },
   };
   const screen = { ...commonScreenOptions(colors) };
   const panel = { headerShown: false, presentation: 'card' };
+  // Android reads the detents once, at mount, so the height comes from tokens and is never measured.
+  const sheet = ({ keyboard, ...form }) => ({
+    contentStyle: { backgroundColor: colors.surface },
+    headerShown: false,
+    presentation: 'formSheet',
+    sheetAllowedDetents: sheetDetents(sheetContentHeight({ ...form, bottom }), windowHeight, { keyboard, topInset: top }),
+    sheetCornerRadius: theme.borderRadius.xl,
+    sheetGrabberVisible: false,
+  });
 
   return (
     <NavigationContainer theme={getNavigationTheme(colors)}>
@@ -184,7 +189,7 @@ export const Navigator = () => {
       />
 
       <Stack.Navigator
-        initialRouteName={onboarded ? (C.IS_DEV && pin ? 'main' : 'session') : 'onboarding'}
+        initialRouteName={!onboarded ? 'onboarding' : pin && !C.IS_DEV ? 'session' : 'main'}
         screenOptions={screenOptions}
       >
         <Stack.Screen name="onboarding" component={Onboarding} />
@@ -192,14 +197,17 @@ export const Navigator = () => {
         <Stack.Screen name="main" component={Tabs} />
         {/* transactions */}
         <Stack.Screen name="transactions" component={Transactions} options={panel} />
-        <Stack.Screen name="transaction" component={Transaction} options={panel} />
-        <Stack.Screen name="clone" component={Clone} options={panel} />
+        <Stack.Screen name="transaction" component={Transaction} options={sheet(FORM.transaction)} />
+        <Stack.Screen name="clone" component={Clone} options={sheet(FORM.clone)} />
         <Stack.Screen name="scheduled" component={Scheduled} options={panel} />
-        <Stack.Screen name="scheduledForm" component={ScheduledForm} options={panel} />
+        <Stack.Screen name="scheduledForm" component={ScheduledForm} options={sheet(FORM.scheduled)} />
         {/* -- settings */}
-        <Stack.Screen name="account" component={Account} options={panel} />
-        <Stack.Screen name="baseCurrency" component={BaseCurrency} options={panel} />
-        <Stack.Screen name="language" component={Language} options={panel} />
+        <Stack.Screen name="account" component={Account} options={sheet(FORM.account)} />
+        <Stack.Screen
+          name="category"
+          component={Category}
+          options={({ route }) => sheet({ ...FORM.category, rows: categoryRows(route.params?.merchants) })}
+        />
         {/* -- common */}
         {PREMIUM_ENABLED ? <Stack.Screen name="subscription" component={Subscription} options={panel} /> : null}
       </Stack.Navigator>

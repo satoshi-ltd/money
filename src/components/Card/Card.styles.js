@@ -1,23 +1,25 @@
 import { StyleSheet } from 'react-native';
 
 import { theme } from '../../theme';
+import { wellSize } from '../../theme/layout';
 
 export const getStyles = (colors) =>
   StyleSheet.create({
     base: {
-      backgroundColor: colors.surface,
-      borderRadius: theme.borderRadius.md,
-      padding: theme.spacing.sm,
-      overflow: 'hidden',
+      backgroundColor: 'transparent',
+      borderRadius: theme.borderRadius.none,
+      padding: 0,
     },
     active: {
-      backgroundColor: colors.accent,
+      backgroundColor: colors.accentSoft,
     },
     sizeS: {
-      height: theme.spacing.xl + theme.spacing.xs,
-      width: theme.spacing.xl + theme.spacing.xs,
-      padding: 0,
       alignItems: 'center',
+      backgroundColor: colors.surface,
+      borderRadius: theme.borderRadius.sm,
+      height: wellSize,
       justifyContent: 'center',
+      padding: 0,
+      width: wellSize,
     },
   });

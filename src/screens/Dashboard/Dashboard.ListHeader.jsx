@@ -1,139 +1,137 @@
 import PropTypes from 'prop-types';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 
-import { style } from './Dashboard.style';
+import { getStyles } from './Dashboard.style';
 import { queryAccounts } from './helpers';
-import { Button, CardAccount, Heading, InputField, InsightsCarousel, ScrollView, View } from '../../components';
-import { useStore } from '../../contexts';
-import { buildInsights, getProgressionPercentage, ICON, L10N } from '../../modules';
-import { theme } from '../../theme';
-import { cardAccountSnap } from '../../theme/layout';
+import { Delta, Eyebrow, Heading, MonthSummary, Pressable, PriceFriendly, Text, View } from '../../components';
+import { useApp, useStore } from '../../contexts';
+import {
+  buildInsights,
+  getProgressionPercentage,
+  L10N,
+  netWorthEyebrow,
+  percentText,
+  scheduledAhead,
+  verboseDate,
+} from '../../modules';
 
-let timeoutId;
-
-const DashboardListHeader = ({ navigate, onSearch, setPage }) => {
-  const { accounts = [], scheduledTxs = [], rates = {}, settings = {}, overall = {}, today, txs = [] } = useStore();
-  const { baseCurrency } = settings || {};
-  const chartStagger = Math.round(theme.animations.duration.quick / 5);
-
-  const [search, setSearch] = useState(false);
-  const [query, setQuery] = useState();
-
-  const handleSearch = () => {
-    setSearch((prevSearch) => {
-      setPage(1);
-      onSearch();
-      if (prevSearch) setQuery('');
-      return !prevSearch;
-    });
-  };
-
-  const onQueryChange = (value) => {
-    setQuery(value);
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
-      onSearch(value);
-    }, 350);
-  };
+const DashboardListHeader = ({ navigate }) => {
+  const store = useStore();
+  const { colors } = useApp();
+  const style = useMemo(() => getStyles(colors), [colors]);
+  const { accounts = [], scheduledTxs = [], rates = {}, settings = {}, overall = {}, today, txs = [] } = store;
+  const { baseCurrency, maskAmount } = settings || {};
 
   const sortedAccounts = queryAccounts({ accounts, query: undefined });
   const insights = useMemo(
-    () => buildInsights({ accounts, now: today, scheduledTxs, rates, settings: { ...settings, baseCurrency }, txs }),
+    () =>
+      buildInsights({
+        accounts,
+        now: today,
+        scheduledTxs,
+        rates,
+        settings: { ...settings, baseCurrency },
+        txs,
+      }),
     [accounts, scheduledTxs, rates, settings, baseCurrency, today, txs],
   );
-  const overallProgressionPercentage = useMemo(() => {
-    const next = getProgressionPercentage(overall?.currentBalance, overall?.currentMonth?.progression);
-    return Number.isFinite(next) ? next : undefined;
-  }, [overall?.currentBalance, overall?.currentMonth?.progression]);
-  const overallChartValues = useMemo(() => {
-    const values = overall?.chartBalance;
-    if (!Array.isArray(values)) return [];
-    return values.slice(-12);
-  }, [overall?.chartBalance]);
-
-  const balanceCard = useMemo(
-    () => ({
-      title: L10N.TOTAL_BALANCE,
-      value: overall?.currentBalance || 0,
-      chartValues: overallChartValues,
-      progressionPercentage: overallProgressionPercentage,
-    }),
-    [overall?.currentBalance, overallChartValues, overallProgressionPercentage],
+  const scheduled = useMemo(
+    () => scheduledAhead({ accounts, baseCurrency, now: today, rates, scheduledTxs }),
+    [accounts, baseCurrency, rates, scheduledTxs, today],
   );
 
-  const hasInsights = accounts.length > 0;
-
+  const progression = getProgressionPercentage(overall?.currentBalance, overall?.currentMonth?.progression);
+  const visibleAccounts = sortedAccounts.slice(0, 3);
   return (
     <>
-      {hasInsights ? (
-        <>
-          <View style={style.insightsHeading}>
-            <Heading value={L10N.INSIGHTS} offset />
+      {accounts.length > 0 ? (
+        <Pressable onPress={() => store.updateSettings?.({ maskAmount: !maskAmount })}>
+          <View style={style.hero}>
+            <Eyebrow>{netWorthEyebrow({ accounts: accounts.length, currency: baseCurrency })}</Eyebrow>
+            <PriceFriendly
+              bold
+              currency={baseCurrency}
+              size="hero"
+              style={style.heroValue}
+              value={overall?.currentBalance || 0}
+            />
+            <View row style={style.heroMeta}>
+              <Delta caption={L10N.THIS_MONTH.toLowerCase()} value={progression} />
+            </View>
           </View>
-          <InsightsCarousel
-            animateCharts
-            balanceCard={balanceCard}
-            currency={baseCurrency}
-            highlightBalanceCard
-            insights={insights}
-          />
-        </>
+        </Pressable>
       ) : null}
 
-      <View style={style.accountsHeading}>
-        <Heading value={L10N.ACCOUNTS} offset>
-          <Button icon={ICON.NEW} variant="outlined" size="s" onPress={() => navigate('account', { create: true })} />
-        </Heading>
-      </View>
+      {insights.length > 0 ? (
+        <View style={style.section}>
+          <Heading
+            eyebrow={verboseDate(new Date(today || Date.now()), {
+              month: 'long',
+            })}
+            value={L10N.THIS_MONTH}
+          />
+          <MonthSummary currency={baseCurrency} insights={insights} scheduled={scheduled} />
+        </View>
+      ) : null}
 
-      <ScrollView horizontal snapTo={cardAccountSnap} style={[style.scrollView]}>
-        {sortedAccounts.map((account, index) => {
-          const {
-            chartBalanceBase = [],
-            currentBalance,
-            currency,
-            currentMonth: { progressionCurrency },
-            hash,
-            title,
-          } = account;
+      <View style={style.section}>
+        <Heading value={L10N.ACCOUNTS}>
+          <Pressable onPress={() => navigate('accounts')}>
+            <Eyebrow>{`${L10N.SEE_ALL} ${accounts.length}`}</Eyebrow>
+          </Pressable>
+        </Heading>
+
+        {visibleAccounts.map(({ currency, currentBalance, currentBalanceBase, currentMonth, hash, title }) => {
+          const delta = getProgressionPercentage(currentBalance, currentMonth?.progressionCurrency);
+          const showBase = baseCurrency && currency !== baseCurrency;
 
           return (
-            <CardAccount
+            <Pressable
               key={hash}
-              balance={currentBalance}
-              chart={chartBalanceBase}
-              chartReveal={index < 6}
-              chartRevealDelay={index < 6 ? index * chartStagger : 0}
-              chartRevealResetKey={hash}
-              currency={currency}
-              operator
-              percentage={getProgressionPercentage(currentBalance, progressionCurrency)}
-              style={[
-                style.card,
-                index === 0 && style.firstCard,
-                index === sortedAccounts.length - 1 && style.lastCard,
-              ]}
-              title={title}
-              onPress={() => navigate('transactions', { account })}
-            />
+              onPress={() =>
+                navigate('transactions', {
+                  account: accounts.find((item) => item.hash === hash),
+                })
+              }
+            >
+              <View row style={style.accountRow}>
+                <View flex style={style.accountText}>
+                  <Text medium>{title}</Text>
+                  <Text size="xxs" tone="muted">
+                    {currency}
+                  </Text>
+                </View>
+                <View style={style.accountRight}>
+                  <PriceFriendly bold currency={currency} size="lg" value={currentBalance} />
+                  {showBase ? (
+                    <PriceFriendly
+                      currency={baseCurrency}
+                      showSymbol
+                      size="xs"
+                      tone="muted"
+                      value={currentBalanceBase || 0}
+                    />
+                  ) : Number.isFinite(delta) && delta !== 0 ? (
+                    <Delta plain value={delta} />
+                  ) : (
+                    <Text figure="xs" tone="muted">
+                      —
+                    </Text>
+                  )}
+                </View>
+              </View>
+            </Pressable>
           );
         })}
-      </ScrollView>
-      <View style={style.headingTight}>
-        <Heading value={L10N.LAST_TRANSACTIONS} offset>
-          <Button icon={!search ? ICON.SEARCH : ICON.CLOSE} variant="outlined" size="s" onPress={handleSearch} />
+      </View>
+
+      <View style={style.section}>
+        <Heading value={L10N.TRANSACTIONS}>
+          <Pressable onPress={() => navigate('transactions')}>
+            <Eyebrow>{L10N.SEE_ALL}</Eyebrow>
+          </Pressable>
         </Heading>
       </View>
-      {search && (
-        <InputField
-          first
-          last
-          placeholder={`${L10N.SEARCH}...`}
-          value={query}
-          onChange={onQueryChange}
-          style={style.inputSearch}
-        />
-      )}
     </>
   );
 };
@@ -142,8 +140,6 @@ DashboardListHeader.displayName = 'DashboardListHeader';
 
 DashboardListHeader.propTypes = {
   navigate: PropTypes.any,
-  onSearch: PropTypes.func,
-  setPage: PropTypes.func,
 };
 
 export { DashboardListHeader };

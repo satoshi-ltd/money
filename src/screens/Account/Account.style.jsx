@@ -1,15 +1,42 @@
 import { StyleSheet } from 'react-native';
 
 import { theme } from '../../theme';
-import { viewOffset } from '../../theme/layout';
+import { rowHeight } from '../../theme/layout';
 
-export const style = StyleSheet.create({
-  title: {
-    marginBottom: viewOffset / 2,
-  },
+const labelWidth = theme.spacing.xxl * 2 + theme.spacing.xs;
 
-  buttons: {
-    gap: viewOffset,
-    marginTop: theme.spacing.lg,
-  },
-});
+export const getStyles = (colors) =>
+  StyleSheet.create({
+    caption: {
+      marginBottom: theme.spacing.md,
+    },
+    group: {
+      backgroundColor: colors.surface,
+      borderRadius: theme.borderRadius.sm,
+      marginTop: theme.spacing.xs,
+    },
+    row: {
+      alignItems: 'center',
+      height: rowHeight,
+      paddingLeft: theme.spacing.md,
+      paddingRight: theme.spacing.xxs,
+    },
+    divider: {
+      borderTopColor: colors.border,
+      borderTopWidth: theme.hairline,
+    },
+    label: {
+      width: labelWidth,
+    },
+    field: {
+      backgroundColor: 'transparent',
+      borderWidth: 0,
+      flex: 1,
+      justifyContent: 'center',
+      minHeight: rowHeight,
+    },
+    buttons: {
+      gap: theme.spacing.sm,
+      marginTop: theme.spacing.md,
+    },
+  });

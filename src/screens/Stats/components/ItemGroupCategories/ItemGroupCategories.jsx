@@ -1,11 +1,12 @@
+import { useNavigation } from '@react-navigation/native';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { HorizontalChartItem } from './HorizontalChartItem';
-import { style } from './ItemGroupCategories.style';
-import { Heading, Pressable, PriceFriendly, View } from '../../../../components';
-import { useStore } from '../../../../contexts';
-import { C, L10N } from '../../../../modules';
+import { getStyles } from './ItemGroupCategories.style';
+import { Chip, Eyebrow, Heading, Pressable, View } from '../../../../components';
+import { useApp, useStore } from '../../../../contexts';
+import { C, ICON, L10N, rankInk } from '../../../../modules';
 import { orderByAmount } from '../../modules';
 
 const {
@@ -14,11 +15,16 @@ const {
   },
 } = C;
 
-const ItemGroupCategories = ({ color, dataSource, type }) => {
+const TOP_CATEGORIES = 3;
+
+const ItemGroupCategories = ({ dataSource, month, monthLabel, type, year }) => {
   const {
     settings: { baseCurrency },
   } = useStore();
-  const [expand, setExpand] = useState(undefined);
+  const { colors } = useApp();
+  const { navigate } = useNavigation();
+  const [showRest, setShowRest] = useState(false);
+  const style = useMemo(() => getStyles(colors), [colors]);
 
   const totals = [];
   let total = 0;
@@ -29,25 +35,34 @@ const ItemGroupCategories = ({ color, dataSource, type }) => {
     }
   });
 
+  const ordered = orderByAmount(totals);
+  const top = ordered.slice(0, TOP_CATEGORIES);
+  const rest = ordered.slice(TOP_CATEGORIES);
+  const restTotal = rest.reduce((sum, { amount }) => sum + amount, 0);
+
   return (
     <View style={style.container}>
-      <Heading color={color} value={type === EXPENSE ? L10N.EXPENSES : L10N.INCOMES} offset>
-        <PriceFriendly
-          bold
-          color={color}
-          currency={baseCurrency}
-          fixed={0}
-          operator
-          value={total * (type === EXPENSE ? -1 : 1)}
-        />
+      <Heading value={type === EXPENSE ? L10N.EXPENSES : L10N.INCOMES}>
+        {monthLabel ? <Chip iconRight={ICON.DOWN} label={monthLabel} variant="outline" /> : null}
       </Heading>
 
-      <View style={style.content}>
-        {orderByAmount(totals).map(({ key, amount }) => (
+      {[...top, ...(showRest ? rest : [])].map(({ key, amount }, index) => {
+        const color = rankInk(colors, index);
+
+        return (
           <Pressable
             key={key}
-            onPress={() => setExpand(expand !== key ? key : undefined)}
-            style={[style.touchable, expand && expand !== key && { opacity: 0.25 }]}
+            onPress={() =>
+              navigate('category', {
+                category: Number(key),
+                color,
+                merchants: Object.keys(dataSource[key] || {}).length,
+                month,
+                monthTotal: total,
+                type,
+                year,
+              })
+            }
           >
             <HorizontalChartItem
               color={color}
@@ -56,33 +71,38 @@ const ItemGroupCategories = ({ color, dataSource, type }) => {
               value={amount}
               width={Math.floor((amount / total) * 100)}
             />
-
-            {expand === key && (
-              <View style={style.detailGroup}>
-                {orderByAmount(dataSource[key]).map((item) => (
-                  <HorizontalChartItem
-                    key={`${key}-${item.key}`}
-                    color={color}
-                    currency={baseCurrency}
-                    detail
-                    title={item.key}
-                    value={item.amount}
-                    width={Math.floor((item.amount / amount) * 100)}
-                  />
-                ))}
-              </View>
-            )}
           </Pressable>
-        ))}
-      </View>
+        );
+      })}
+
+      {/* The summary was a dead end: a fifth of the spend sat behind a row that looked tappable and was not. */}
+      {rest.length ? (
+        <Pressable onPress={() => setShowRest(!showRest)}>
+          {showRest ? (
+            <View style={style.showLess}>
+              <Eyebrow style={style.showLessLabel}>{L10N.SHOW_LESS}</Eyebrow>
+            </View>
+          ) : (
+            <HorizontalChartItem
+              color={colors.textMuted}
+              currency={baseCurrency}
+              title={`${L10N.OTHERS} · ${rest.length}`}
+              value={restTotal}
+              width={Math.floor((restTotal / total) * 100)}
+            />
+          )}
+        </Pressable>
+      ) : null}
     </View>
   );
 };
 
 ItemGroupCategories.propTypes = {
-  color: PropTypes.string,
   dataSource: PropTypes.shape({}).isRequired,
+  month: PropTypes.number,
+  monthLabel: PropTypes.string,
   type: PropTypes.number.isRequired,
+  year: PropTypes.number,
 };
 
 export { ItemGroupCategories };

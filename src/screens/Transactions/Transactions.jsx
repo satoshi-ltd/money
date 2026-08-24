@@ -2,23 +2,24 @@ import PropTypes from 'prop-types';
 import React, { useMemo, useState } from 'react';
 import { SectionList } from 'react-native';
 
-import { queryLastTxs, querySearchTxs } from './modules';
+import { queryLastTxs } from './modules';
 import { TransactionsListHeader } from './Transactions.ListHeader';
 import { getStyles } from './Transactions.style';
-import { Banner, Panel, TransactionItem, TransactionsHeader } from '../../components';
+import { Button, EmptyState, FloatingAdd, Panel, TransactionItem, TransactionsHeader } from '../../components';
 import { useApp, useStore } from '../../contexts';
-import { C, L10N } from '../../modules';
+import { C, ICON, L10N } from '../../modules';
+
+const { TX: { TYPE: { EXPENSE } } = {} } = C;
 
 const Transactions = (props = {}) => {
   const { route = {}, navigation = {} } = props;
   const { goBack } = navigation;
   const { params: { account: routeAccount = {} } = {} } = route;
-  const { hash, chartBalanceBase: routeChartBalanceBase = [] } = routeAccount || {};
+  const { hash } = routeAccount || {};
   const { accounts = [], settings: { baseCurrency } = {} } = useStore();
   const { colors } = useApp();
   const style = useMemo(() => getStyles(colors), [colors]);
 
-  const [query, setQuery] = useState();
   const [page, setPage] = useState(1);
 
   const dataSource = useMemo(() => {
@@ -29,32 +30,45 @@ const Transactions = (props = {}) => {
   const sections = useMemo(() => {
     if (!dataSource?.hash) return [];
 
-    const search = querySearchTxs({ account: dataSource, page, query });
-    if (search) return search;
-
     return queryLastTxs(dataSource.txs, page);
-  }, [dataSource, page, query]);
+  }, [dataSource, page]);
 
   const { currency = baseCurrency } = dataSource;
   const title = dataSource?.title || L10N.TRANSACTIONS;
-  const chartBalanceBase = dataSource?.chartBalanceBase || routeChartBalanceBase;
 
   return (
-    <Panel title={title} onBack={goBack} disableScroll>
+    <Panel
+      title={title}
+      onBack={goBack}
+      rightElement={
+        dataSource?.hash ? (
+          <Button size="s" variant="outlined" onPress={() => navigation.navigate('account', dataSource)}>
+            {L10N.EDIT}
+          </Button>
+        ) : undefined
+      }
+      disableScroll
+      floatingElement={
+        <FloatingAdd onPress={() => navigation.navigate('transaction', { account: dataSource, type: EXPENSE })} />
+      }
+    >
       <SectionList
         initialNumToRender={C.TRANSACTIONS_PER_PAGE}
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"
         keyExtractor={(item, index) => `${item.hash || item.timestamp}-${index}`}
-        ListEmptyComponent={() => <Banner align="center" title={L10N.NO_TRANSACTIONS} />}
-        ListHeaderComponent={
-          <TransactionsListHeader
-            chartBalanceBase={chartBalanceBase}
-            dataSource={dataSource}
-            navigation={navigation}
-            onSearch={setQuery}
-            setPage={setPage}
+        ListEmptyComponent={
+          <EmptyState
+            action={L10N.EMPTY_TRANSACTIONS_ACTION}
+            caption={L10N.EMPTY_TRANSACTIONS_CAPTION}
+            icon={ICON.RECEIPT}
+            title={L10N.EMPTY_TRANSACTIONS}
+            variant="outlined"
+            onAction={() => navigation.navigate('transaction', { account: dataSource, type: EXPENSE })}
           />
+        }
+        ListHeaderComponent={
+          <TransactionsListHeader dataSource={dataSource} />
         }
         renderItem={({ item }) => <TransactionItem {...item} currency={currency} />}
         renderSectionHeader={({ section }) => <TransactionsHeader {...section} />}

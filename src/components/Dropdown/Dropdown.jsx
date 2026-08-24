@@ -1,33 +1,44 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, StyleSheet, TouchableOpacity } from 'react-native';
+import { Animated, Modal, StyleSheet, TouchableOpacity, View as RNView, useWindowDimensions } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { dropdownOrigin, dropdownPlacement } from './helpers';
 import { useApp } from '../../contexts';
+import { ICON } from '../../modules';
 import { useMotion } from '../../hooks/useMotion';
 import { Icon, ScrollView, Text, View } from '../../primitives';
 import { theme } from '../../theme';
+import { dropdownWidth, rowHeight, wellSize } from '../../theme/layout';
+
+const EDGE = theme.spacing.md;
+const OFFSET = theme.spacing.xs;
 
 const Dropdown = ({
+  align = 'right',
   visible,
   onClose,
   options = [],
   selected,
   onSelect,
   renderOption,
-  position = 'bottom',
-  maxItems = 6,
+  position = 'auto',
+  maxItems = 8,
   itemHeight: itemHeightProp,
   optionStyle,
-  width = 200,
+  width = dropdownWidth,
 }) => {
   const { colors } = useApp();
   const { animateValue, createValue } = useMotion();
+  const { bottom: bottomInset, top: topInset } = useSafeAreaInsets();
+  const { height: windowHeight } = useWindowDimensions();
   const scrollRef = useRef(null);
-  const [measuredItemHeight, setMeasuredItemHeight] = useState();
+  const boxRef = useRef(null);
+  const measured = useRef(false);
+  const [anchor, setAnchor] = useState();
 
   const fadeAnim = createValue(0);
   const scaleAnim = createValue(0.95);
-  const fallbackItemHeight = 42;
-  const itemHeight = itemHeightProp || measuredItemHeight || fallbackItemHeight;
+  const itemHeight = itemHeightProp || rowHeight;
 
   useEffect(() => {
     if (visible) {
@@ -40,11 +51,16 @@ const Dropdown = ({
   }, [visible, animateValue, fadeAnim, scaleAnim]);
 
   const renderDefaultOption = (option, isSelected) => (
-    <View style={styles.optionContent}>
-      <Text tone={isSelected ? 'accent' : undefined} bold={isSelected} size="s">
+    <View row style={styles.optionContent}>
+      {option.symbol ? (
+        <View style={[styles.well, { backgroundColor: colors.surface }]}>
+          <Text figure={option.symbolSize || 'xs'}>{option.symbol}</Text>
+        </View>
+      ) : null}
+      <Text flex medium={isSelected} numberOfLines={1} size="s">
         {option.label}
       </Text>
-      {isSelected ? <Icon name="check" tone="accent" /> : null}
+      {isSelected ? <Icon name={ICON.CHECK} size="s" tone="accent" /> : null}
     </View>
   );
 
@@ -53,33 +69,47 @@ const Dropdown = ({
     return renderOption ? renderOption(option, isSelected) : renderDefaultOption(option, isSelected);
   };
 
-  const getDropdownStyle = () => {
-    const calculatedMaxHeight = Math.min(options.length, maxItems) * itemHeight;
+  // Measured once per open, then the list sizes and flips to whatever room the anchor actually has.
+  const handleLayout = () => {
+    if (measured.current) return;
+    boxRef.current?.measureInWindow((x, y, measuredWidth) => {
+      measured.current = true;
+      setAnchor({ left: x, top: y, width: measuredWidth });
+    });
+  };
 
-    const baseStyle = {
+  const placement = dropdownPlacement({
+    anchorTop: anchor?.top,
+    bottomInset,
+    count: options.length,
+    edge: EDGE,
+    itemHeight,
+    maxItems,
+    offset: OFFSET,
+    topInset,
+    windowHeight,
+  });
+
+  const getDropdownStyle = () => {
+    const height = placement.height;
+    const side = position === 'auto' ? placement.side : position;
+
+    const base = {
+      borderColor: colors.border,
+      backgroundColor: colors.background,
+      height,
       opacity: fadeAnim,
+      position: 'absolute',
       transform: [{ scale: scaleAnim }],
-      maxHeight: calculatedMaxHeight,
       width,
     };
 
-    let positionStyle = {};
-
-    if (position === 'bottom') {
-      positionStyle = { position: 'absolute', top: 8, left: 0, zIndex: 1001 };
-    } else if (position === 'top') {
-      positionStyle = { position: 'absolute', top: -calculatedMaxHeight - 8, left: 0, zIndex: 1001 };
-    } else if (position === 'right') {
-      positionStyle = { position: 'absolute', top: -32, left: 60, zIndex: 1001 };
-    } else if (position === 'left') {
-      positionStyle = { position: 'absolute', top: -32, right: 60, zIndex: 1001 };
-    }
+    if (!anchor) return [styles.dropdownRelative, base, styles.hidden];
 
     return [
       styles.dropdownRelative,
-      baseStyle,
-      positionStyle,
-      { backgroundColor: colors.surface, borderColor: colors.border },
+      base,
+      dropdownOrigin({ align, anchor, edge: EDGE, height, offset: OFFSET, side, topInset, width }),
     ];
   };
 
@@ -97,76 +127,75 @@ const Dropdown = ({
 
   return (
     <>
-      <TouchableOpacity activeOpacity={1} onPress={onClose} style={styles.backdrop} />
-      <Animated.View style={getDropdownStyle()}>
-        <ScrollView
-          bounces={false}
-          ref={scrollRef}
-          showsVerticalScrollIndicator={options.length > maxItems}
-          style={[styles.scrollView, { maxHeight: Math.min(options.length, maxItems) * itemHeight }]}
-        >
-          {options.map((option, index) => (
-            <TouchableOpacity
-              activeOpacity={0.7}
-              key={option.id || index}
-              onLayout={
-                index === 0
-                  ? (event) => {
-                      const height = event.nativeEvent.layout.height;
-                      if (height && height !== measuredItemHeight) setMeasuredItemHeight(height);
-                    }
-                  : undefined
-              }
-              onPress={() => onSelect(option)}
-              style={[
-                styles.option,
-                optionStyle,
-                index === options.length - 1 && styles.lastOption,
-                { borderBottomColor: colors.border },
-              ]}
-            >
-              {renderOptionContent(option)}
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </Animated.View>
+      <RNView onLayout={handleLayout} ref={boxRef} style={styles.probe} />
+      <Modal animationType="none" onRequestClose={onClose} statusBarTranslucent transparent visible>
+        <TouchableOpacity activeOpacity={1} onPress={onClose} style={styles.backdrop} />
+        <Animated.View style={getDropdownStyle()}>
+          <ScrollView bounces={false} ref={scrollRef} showsVerticalScrollIndicator style={styles.scrollView}>
+            {options.map((option, index) => (
+              <TouchableOpacity
+                activeOpacity={0.7}
+                key={option.id || index}
+                onPress={() => onSelect(option)}
+                style={[
+                  styles.option,
+                  optionStyle,
+                  index === options.length - 1 && styles.lastOption,
+                  { borderBottomColor: colors.border },
+                ]}
+              >
+                {renderOptionContent(option)}
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </Animated.View>
+      </Modal>
     </>
   );
 };
 
 const styles = StyleSheet.create({
   backdrop: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  hidden: {
+    opacity: 0,
+  },
+  // Stays behind in the row so the list, which lives in its own window, still knows where its trigger is.
+  probe: {
+    height: 0,
+    left: 0,
     position: 'absolute',
-    top: -1000,
-    left: -1000,
-    right: -1000,
-    bottom: -1000,
-    zIndex: 999,
+    right: 0,
+    top: 0,
   },
   dropdownRelative: {
-    borderRadius: theme.borderRadius.sm,
-    borderWidth: StyleSheet.hairlineWidth,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: theme.spacing.xs },
-    shadowOpacity: 0.15,
-    shadowRadius: theme.spacing.md,
-    elevation: 8,
+    borderRadius: theme.borderRadius.none,
+    borderWidth: theme.hairline,
+    ...theme.shadows.overlay,
   },
   scrollView: {
     maxHeight: '100%',
   },
   option: {
-    paddingVertical: theme.spacing.sm,
-    paddingHorizontal: theme.spacing.md,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: theme.hairline,
+    height: rowHeight,
+    justifyContent: 'center',
+    paddingHorizontal: theme.spacing.sm,
   },
   lastOption: {
     borderBottomWidth: 0,
   },
   optionContent: {
-    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: theme.spacing.sm,
+  },
+  well: {
+    alignItems: 'center',
+    borderRadius: theme.borderRadius.sm,
+    height: wellSize,
+    justifyContent: 'center',
+    width: wellSize,
   },
 });
 

@@ -5,7 +5,7 @@ import { getStyles } from './Chip.styles';
 import { useApp } from '../../contexts';
 import { Icon, Pressable, Text, View } from '../../primitives';
 
-const Chip = ({ icon, label, onPress, shape = 'pill', size = 'xs', style, variant = 'muted' }) => {
+const Chip = ({ icon, iconRight, label, onPress, shape = 'pill', size = 'xs', style, variant = 'muted' }) => {
   const { colors } = useApp();
   const styles = useMemo(() => getStyles(colors), [colors]);
 
@@ -15,6 +15,8 @@ const Chip = ({ icon, label, onPress, shape = 'pill', size = 'xs', style, varian
   const variantStyle =
     variant === 'accent'
       ? styles.variantAccent
+      : variant === 'soft'
+      ? styles.variantSoft
       : variant === 'outline'
       ? styles.variantOutline
       : variant === 'inverse'
@@ -25,7 +27,13 @@ const Chip = ({ icon, label, onPress, shape = 'pill', size = 'xs', style, varian
   const shapeStyle = shape === 'circle' ? styles.shapeCircle : styles.shapePill;
 
   const contentTone =
-    variant === 'accent' ? 'onAccent' : variant === 'inverse' ? 'onInverse' : variant === 'outline' ? 'secondary' : 'secondary';
+    variant === 'accent'
+      ? 'onAccent'
+      : variant === 'soft'
+      ? 'onAccentSoft'
+      : variant === 'inverse'
+      ? 'onInverse'
+      : 'secondary';
 
   return (
     <Container
@@ -34,9 +42,10 @@ const Chip = ({ icon, label, onPress, shape = 'pill', size = 'xs', style, varian
       style={[styles.base, variantStyle, sizeStyle, shapeStyle, style]}
     >
       {icon ? <Icon name={icon} tone={contentTone} size="xxs" /> : null}
-      <Text bold size="xs" tone={contentTone}>
+      <Text medium tone={contentTone} style={styles.label}>
         {label}
       </Text>
+      {iconRight ? <Icon name={iconRight} tone={contentTone} size="xxs" /> : null}
     </Container>
   );
 };

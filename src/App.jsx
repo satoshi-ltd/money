@@ -5,7 +5,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { Navigator } from './App.Navigator';
-import { ErrorBoundary, Notification } from './components';
+import { Confirm, ErrorBoundary, Notification } from './components';
 import { StoreProvider } from './contexts';
 
 const styles = StyleSheet.create({
@@ -17,11 +17,10 @@ const styles = StyleSheet.create({
 export const App = () => {
   const [ready] = useFonts({
     'font-default': require('../assets/fonts/EuclidCircularA-Regular.ttf'),
+    'font-medium': require('../assets/fonts/EuclidCircularA-Medium.ttf'),
     'font-bold': require('../assets/fonts/EuclidCircularA-SemiBold.ttf'),
-    'font-default-secondary': require('../assets/fonts/CanelaText-Regular.otf'),
-    'font-bold-secondary': require('../assets/fonts/CanelaText-Bold.otf'),
-
-    'shield-icons': require('../assets/fonts/Shield-Icons.ttf'),
+    'font-mono': require('../assets/fonts/GeistMono-Regular.ttf'),
+    'font-mono-medium': require('../assets/fonts/GeistMono-Medium.ttf'),
   });
 
   return ready ? (
@@ -33,6 +32,7 @@ export const App = () => {
           </StoreProvider>
         </ErrorBoundary>
         <Notification />
+        <Confirm />
       </SafeAreaProvider>
     </GestureHandlerRootView>
   ) : null;

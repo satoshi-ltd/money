@@ -1,11 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { Alert } from 'react-native';
 
 import { style } from './Clone.style';
 import { Button, Panel, View } from '../../components';
 import { useStore } from '../../contexts';
-import { C, L10N } from '../../modules';
+import { C, eventEmitter, L10N } from '../../modules';
 import { FormTransaction } from '../Transaction/components'; // ! TODO: Should be a /component
 
 const {
@@ -53,17 +52,15 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack } = {} }) => 
     if (edit) await updateTx({ hash: dataSource.hash, ...payload });
     else if (clone) await createTx(payload);
     else if (remove) {
-      Alert.alert(L10N.CONFIRM_DELETION, L10N.CONFIRM_DELETION_CAPTION, [
-        { text: L10N.CANCEL, style: 'cancel' },
-        {
-          text: L10N.ACCEPT,
-          style: 'destructive',
-          onPress: async () => {
-            await deleteTx({ hash });
-            goBack();
-          },
+      eventEmitter.emit(C.EVENT.CONFIRM, {
+        title: L10N.CONFIRM_DELETION,
+        caption: L10N.CONFIRM_DELETION_CAPTION,
+        actionLabel: L10N.DELETE,
+        onAction: async () => {
+          await deleteTx({ hash });
+          goBack();
         },
-      ]);
+      });
     }
 
     if (!remove) goBack();
@@ -78,11 +75,11 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack } = {} }) => 
 
   const disableClone = isDirty || !account?.hash;
 
-  const headerTitle =
+  const typeLabel =
     type === C?.TX?.TYPE?.TRANSFER ? L10N.SWAP : type === C?.TX?.TYPE?.INCOME ? L10N.INCOME : L10N.EXPENSE;
 
   return (
-    <Panel offset title={headerTitle} onBack={goBack}>
+    <Panel offset sheet title={typeLabel} onBack={goBack}>
       {state.form?.category !== undefined && (
         <FormTransaction
           {...state}
@@ -99,11 +96,11 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack } = {} }) => 
       )}
 
       <View row style={style.buttons}>
-        <Button variant="outlined" onPress={() => handleSubmit({ remove: true })} grow>
+        <Button variant="dangerSoft" onPress={() => handleSubmit({ remove: true })} grow>
           {L10N.DELETE}
         </Button>
         <Button disabled={disableClone} variant="outlined" onPress={() => handleSubmit({ clone: true })} grow>
-          {L10N.CLONE}
+          {L10N.DUPLICATE}
         </Button>
         <Button disabled={!state.valid} onPress={() => handleSubmit({ edit: true })} grow>
           {L10N.SAVE}

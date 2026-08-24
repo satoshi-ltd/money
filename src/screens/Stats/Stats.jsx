@@ -1,18 +1,18 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useScrollToTop } from '@react-navigation/native';
 
-import { Chart, ItemGroupCategories, StatsRangeToggle } from './components';
-import { queryMonth, queryChart } from './modules';
+import { ItemGroupCategories, MonthKpis } from './components';
+import { queryMonth, queryChart, rangeDelta, RANGE_ALL, RANGE_VALUES, selectedRange as resolveRange } from './modules';
 import { style } from './Stats.style';
-import { Screen, View } from '../../components';
-import { useApp, useStore } from '../../contexts';
-import { C, getMonthDiff, L10N } from '../../modules';
+import { Chart, FlowChart, Masthead, Screen, SegmentedToggle, View } from '../../components';
+import { useStore } from '../../contexts';
+import { C, getLastMonths, getMonthDiff, L10N, netWorthEyebrow } from '../../modules';
 
 const {
   STATS_MONTHS_LIMIT,
-  TX: { TYPE: { EXPENSE, INCOME } = {} },
+  TX: { TYPE: { EXPENSE } = {} },
 } = C;
-const MAX_STATS_MONTHS = 48;
+const MAX_STATS_MONTHS = 120;
 
 let debounceTimeout;
 
@@ -21,8 +21,8 @@ const Stats = () => {
   useScrollToTop(scrollRef);
 
   const store = useStore();
-  const { colors } = useApp();
   const {
+    accounts = [],
     settings: { baseCurrency, statsRangeMonths = STATS_MONTHS_LIMIT } = {},
     overall = {},
     txs = [],
@@ -30,7 +30,7 @@ const Stats = () => {
   } = store;
 
   const monthsLimit = useMemo(() => {
-    if (statsRangeMonths && statsRangeMonths > 0) return Math.min(statsRangeMonths, MAX_STATS_MONTHS);
+    if (RANGE_VALUES.includes(statsRangeMonths) && statsRangeMonths > 0) return statsRangeMonths;
     const chartLength = overall?.chartBalance?.length || 0;
     if (chartLength > 0) return Math.min(chartLength, MAX_STATS_MONTHS);
     if (txs.length > 0) {
@@ -52,16 +52,23 @@ const Stats = () => {
 
   const rangeOptions = useMemo(
     () => [
+      { label: L10N.STATS_FLOW_6M, value: 6 },
       { label: L10N.STATS_RANGE_1Y, value: 12 },
-      { label: L10N.STATS_RANGE_2Y, value: 24 },
-      { label: L10N.STATS_RANGE_4Y, value: 48 },
+      { label: L10N.RANGE_ALL, value: RANGE_ALL },
     ],
     [],
   );
 
-  const selectedRange = statsRangeMonths === 0 ? MAX_STATS_MONTHS : Math.min(statsRangeMonths, MAX_STATS_MONTHS);
+  const selectedRange = resolveRange(statsRangeMonths);
+  const rangeCaption =
+    selectedRange === RANGE_ALL
+      ? L10N.STATS_RANGE_ALL_CAPTION
+      : selectedRange === 6
+        ? L10N.STATS_FLOW_6M_CAPTION
+        : L10N.STATS_RANGE_1Y_CAPTION;
   const handleRangeChange = (value) => updateSettings({ statsRangeMonths: value });
   const chart = useMemo(() => queryChart(store, monthsLimit), [store, monthsLimit]);
+  const rangeChange = useMemo(() => rangeDelta(chart.balance), [chart.balance]);
 
   const handlePointerIndex = (next) => {
     clearTimeout(debounceTimeout);
@@ -75,55 +82,68 @@ const Stats = () => {
     [store, safePointerIndex, monthsLimit],
   );
   const { expenses = {}, incomes = {} } = monthData;
-  const chartProps = { currency: baseCurrency, monthsLimit, pointerIndex: safePointerIndex };
-  const color = colors.accent;
-  const colorExpense = colors.text;
-  const colorExpenseBars = colors.textSecondary;
+  const monthTotals = useMemo(() => {
+    const sum = (group) =>
+      Object.values(group).reduce(
+        (total, entries) => total + Object.values(entries).reduce((amount, value) => amount + value, 0),
+        0,
+      );
+    return { expenses: sum(expenses), incomes: sum(incomes) };
+  }, [expenses, incomes]);
+  const months = useMemo(() => getLastMonths(monthsLimit), [monthsLimit]);
+  const selectedMonth = months[safePointerIndex];
+  const monthLabel = selectedMonth ? `${L10N.MONTHS[selectedMonth.month]} ${selectedMonth.year}` : undefined;
 
   return (
-    <Screen ref={scrollRef} style={style.screen}>
-      <Chart
-        {...chartProps}
-        allowNegative
-        color={color}
-        headingRight={<StatsRangeToggle onChange={handleRangeChange} options={rangeOptions} value={selectedRange} />}
-        scaleMode="median"
-        title={L10N.TOTAL_BALANCE}
-        values={chart.balance}
-        onPointerChange={handlePointerIndex}
-      />
+    <>
+      <Masthead section={L10N.ACTIVITY}>
+        <SegmentedToggle compact options={rangeOptions} value={selectedRange} onChange={handleRangeChange} />
+      </Masthead>
+      <Screen ref={scrollRef} style={style.screen}>
 
-      <Chart
-        {...chartProps}
-        compact
-        color={[color, colorExpense]}
-        hideMonth
-        multipleData
-        scaleMode="median"
-        title={`${L10N.INCOMES} & ${L10N.EXPENSES}`}
-        style={style.chartGap}
-        values={[chart.incomes, chart.expenses]}
-        onPointerChange={handlePointerIndex}
-      />
+        <Chart
+          currency={baseCurrency}
+          caption={rangeCaption}
+          delta={rangeChange}
+          eyebrow={netWorthEyebrow({ accounts: accounts.length, currency: baseCurrency })}
+          heroValue={overall?.currentBalance || 0}
+          monthsLimit={monthsLimit}
+          pointerIndex={safePointerIndex}
+          style={style.chartGap}
+          values={chart.balance}
+          onPointerChange={handlePointerIndex}
+        />
 
-      {Object.keys(incomes).length > 0 || Object.keys(expenses).length > 0 ? (
-        <View style={style.sectionGap}>
-          {Object.keys(incomes).length > 0 && <ItemGroupCategories color={color} type={INCOME} dataSource={incomes} />}
-          {Object.keys(expenses).length > 0 && (
-            <ItemGroupCategories color={colorExpenseBars} type={EXPENSE} dataSource={expenses} />
-          )}
-        </View>
-      ) : null}
+        <FlowChart
+          currency={baseCurrency}
+          expenses={chart.expenses}
+          incomes={chart.incomes}
+          monthsLimit={monthsLimit}
+          selectedIndex={safePointerIndex}
+          style={style.chartGap}
+          onSelectMonth={handlePointerIndex}
+        />
 
-      <Chart
-        {...chartProps}
-        color={colors.text}
-        scaleMode="median"
-        title={L10N.TRANSFERS}
-        values={chart.transfers}
-        onPointerChange={handlePointerIndex}
-      />
-    </Screen>
+        <MonthKpis
+          currency={baseCurrency}
+          expenses={monthTotals.expenses}
+          incomes={monthTotals.incomes}
+          title={selectedMonth ? L10N.MONTHS[selectedMonth.month] : ''}
+        />
+
+        {Object.keys(expenses).length > 0 ? (
+          <View style={style.sectionGap}>
+            <ItemGroupCategories
+              dataSource={expenses}
+              month={selectedMonth?.month}
+              monthLabel={monthLabel}
+              type={EXPENSE}
+              year={selectedMonth?.year}
+            />
+          </View>
+        ) : null}
+      </Screen>
+    </>
   );
 };
 

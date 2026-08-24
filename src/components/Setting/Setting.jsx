@@ -4,7 +4,6 @@ import { ActivityIndicator, Switch } from 'react-native';
 import { useApp } from '../../contexts';
 import { ICON } from '../../modules';
 import { Icon, Pressable, Text, View } from '../../primitives';
-import Card from '../Card';
 import { getStyles } from './Setting.styles';
 
 const resolveOptionLabel = (option) => option?.text || option?.label || option?.caption || option?.value;
@@ -12,8 +11,7 @@ const resolveOptionLabel = (option) => option?.text || option?.label || option?.
 const Setting = ({
   activity,
   disabled,
-  icon,
-  iconTone,
+  divider,
   subtitleTone,
   titleTone,
   onChange,
@@ -53,25 +51,16 @@ const Setting = ({
       {...props}
       disabled={disabled}
       onPress={isToggle ? undefined : handlePress}
-      style={[styles.container, disabled && styles.disabled, style]}
+      style={[styles.container, divider ? styles.divider : null, disabled && styles.disabled, style]}
     >
       <View style={styles.row}>
         <View style={styles.left}>
-          {icon ? (
-            <Card style={styles.iconCard} size="s">
-              <Icon name={icon} tone={iconTone || 'primary'} />
-            </Card>
-          ) : null}
           <View flex>
-            {titleTone ? (
-              <Text bold tone={titleTone}>
-                {title}
-              </Text>
-            ) : (
-              <Text bold>{title}</Text>
-            )}
+            <Text medium tone={titleTone}>
+              {title}
+            </Text>
             {subtitle ? (
-              <Text tone={subtitleTone || 'secondary'} size="s">
+              <Text size="xs" tone={subtitleTone || 'muted'}>
                 {subtitle}
               </Text>
             ) : null}
@@ -84,18 +73,19 @@ const Setting = ({
         ) : isToggle ? (
           <Switch
             disabled={disabled}
-            thumbColor={colors.background}
-            trackColor={{ false: colors.border, true: colors.accent }}
+            ios_backgroundColor={colors.surfaceSoft}
+            thumbColor={colors.surface}
+            trackColor={{ false: colors.surfaceSoft, true: colors.accent }}
             style={styles.switch}
             value={!!value}
             onValueChange={onValueChange}
           />
         ) : options?.length ? (
-          <Text tone="secondary" style={styles.rightText} size="s">
+          <Text size="s" style={styles.rightText} tone="muted">
             {resolveOptionLabel(selectedOption)}
           </Text>
         ) : type === 'navigation' ? (
-          <Icon name={ICON.RIGHT} tone="secondary" />
+          <Icon name={ICON.RIGHT} size="s" tone="muted" />
         ) : null}
       </View>
     </Pressable>

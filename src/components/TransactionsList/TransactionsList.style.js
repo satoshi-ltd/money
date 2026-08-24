@@ -1,24 +1,48 @@
 import { StyleSheet } from 'react-native';
 
+import { theme } from '../../theme';
 import { viewOffset } from '../../theme/layout';
 
 export const getStyles = (colors) =>
   StyleSheet.create({
-    content: {
-      alignItems: 'center',
-      paddingHorizontal: viewOffset,
-      gap: viewOffset / 2,
-      paddingVertical: viewOffset / 2,
-      width: '100%',
-    },
     headerContainer: {
+      alignItems: 'baseline',
       backgroundColor: colors.background,
+      borderBottomColor: colors.border,
+      borderBottomWidth: theme.hairline,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginHorizontal: viewOffset,
+      marginTop: theme.spacing.sm + 2,
+      paddingBottom: theme.spacing.xs - 2,
     },
-    date: {
-      marginTop: viewOffset / 2,
-      marginLeft: viewOffset,
+
+    row: {
+      alignItems: 'center',
+      backgroundColor: colors.background,
+      borderBottomColor: colors.border,
+      borderBottomWidth: theme.hairline,
+      gap: theme.spacing.sm,
+      marginHorizontal: viewOffset,
+      paddingVertical: theme.spacing.xs + 2,
+    },
+    time: {
+      width: theme.spacing.xl + 2,
     },
     text: {
-      flex: 1,
+      gap: 1,
+    },
+    amount: {
+      alignItems: 'flex-end',
+      gap: 1,
+    },
+
+    swipeActions: {
+      flexDirection: 'row',
+    },
+    swipeAction: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: theme.spacing.xxl + theme.spacing.xl,
     },
   });

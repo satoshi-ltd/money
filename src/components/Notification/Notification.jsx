@@ -108,13 +108,7 @@ export const Notification = () => {
       {
         translateY: anim.interpolate({
           inputRange: [0, 1],
-          outputRange: [-12, 0],
-        }),
-      },
-      {
-        scale: anim.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0.98, 1],
+          outputRange: [-24, 0],
         }),
       },
     ],
@@ -125,7 +119,7 @@ export const Notification = () => {
       style={[
         style.notification,
         error ? style.alert : style.accent,
-        { top: Math.max(0, top) + theme.spacing.xs },
+        { paddingTop: Math.max(0, top) },
         animatedStyle,
       ]}
     >

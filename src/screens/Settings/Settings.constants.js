@@ -1,4 +1,4 @@
-import { C, ICON, L10N } from '../../modules';
+import { C, L10N } from '../../modules';
 
 const { PRIVACY_URL, TERMS_URL } = C;
 
@@ -10,7 +10,6 @@ const PREMIUM = (isPremium, subscription) => [
         ? L10N.PREMIUM_LIFETIME
         : L10N.PREMIUM_YEARLY
       : undefined,
-    icon: ICON.STAR,
     id: 1,
     text: L10N.SUBSCRIPTION,
   },
@@ -19,7 +18,6 @@ const PREMIUM = (isPremium, subscription) => [
     ? [
         {
           callback: 'handleRestorePurchases',
-          icon: ICON.CART,
           id: 2,
           text: L10N.RESTORE_PURCHASES,
         },
@@ -30,49 +28,44 @@ const PREMIUM = (isPremium, subscription) => [
 const DATA = () => [
   {
     callback: 'handleUpdateRates',
-    icon: ICON.UPDATE,
     id: 1,
     text: L10N.SYNC_RATES_CTA,
   },
   {
-    callback: 'handleExport',
-    icon: ICON.BACKUP,
-    id: 2,
-    text: L10N.EXPORT_DATA,
-  },
-  {
     callback: 'handleImport',
-    icon: ICON.RESTORE,
     id: 3,
     text: L10N.IMPORT_DATA,
   },
   {
     callback: 'handleExportCsv',
-    icon: ICON.CSV,
     id: 4,
     text: L10N.EXPORT_CSV,
   },
 ];
 
-const PREFERENCES = () => [
-  {
-    icon: ICON.SWAP,
-    screen: 'baseCurrency',
-    text: L10N.CHOOSE_CURRENCY,
-  },
+const APPEARANCE_OPTIONS = [
+  { label: L10N.APPEARANCE_SYSTEM, symbol: '◐', symbolSize: 'lg', value: 'system' },
+  { label: L10N.APPEARANCE_LIGHT, symbol: '○', symbolSize: 'lg', value: 'light' },
+  { label: L10N.APPEARANCE_DARK, symbol: '●', symbolSize: 'lg', value: 'dark' },
+];
+
+const LANGUAGE_OPTIONS = [
+  { label: 'English', symbol: 'EN', value: 'en' },
+  { label: 'Español', symbol: 'ES', value: 'es' },
+  { label: 'Português', symbol: 'PT', value: 'pt' },
+  { label: 'Français', symbol: 'FR', value: 'fr' },
+  { label: 'Deutsch', symbol: 'DE', value: 'de' },
 ];
 
 const ABOUT = () => [
   {
-    icon: ICON.FILE,
     url: TERMS_URL,
     text: L10N.TERMS,
   },
   {
-    icon: ICON.FILE,
     url: PRIVACY_URL,
     text: L10N.PRIVACY,
   },
 ];
 
-export { ABOUT, DATA, PREMIUM, PREFERENCES };
+export { ABOUT, APPEARANCE_OPTIONS, DATA, LANGUAGE_OPTIONS, PREMIUM };

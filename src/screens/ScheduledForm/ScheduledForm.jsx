@@ -1,28 +1,27 @@
+import DateTimePicker from '@react-native-community/datetimepicker';
 import PropTypes from 'prop-types';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Alert, InteractionManager, useWindowDimensions } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Platform } from 'react-native';
 
-import { style } from './ScheduledForm.style';
+import { getStyles } from './ScheduledForm.style';
 import {
   Button,
-  CardOption,
-  Field,
-  Heading,
-  InputAccount,
-  InputAmount,
-  InputDate,
-  InputField,
-  InputGroupOption,
+  Dropdown,
+  Eyebrow,
+  FieldRow,
+  Input,
+  Modal,
   Panel,
   Pressable,
-  ScrollView,
+  SegmentedToggle,
   Text,
   View,
 } from '../../components';
 import { useApp, useStore } from '../../contexts';
-import { C, getIcon, L10N } from '../../modules';
-import { optionSnap } from '../../theme/layout';
+import { C, currencySymbol, eventEmitter, getNextOccurrenceAt, L10N, verboseDate } from '../../modules';
 import { queryCategories } from '../Transaction/helpers/queryCategories';
+
+const isNumber = /^[0-9]+([,.][0-9]+)?$|^[0-9]+([,.][0-9]+)?[.,]$/;
 
 const {
   TX: {
@@ -30,14 +29,17 @@ const {
   },
 } = C;
 
-const weekdayLabel = (day) => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][day] || '?';
+const weekdayLabel = (day, language) =>
+  new Intl.DateTimeFormat(language || 'en', { weekday: 'short' }).format(new Date(2023, 0, 1 + Number(day)));
+
+const weekdayInitial = (day, language) => weekdayLabel(day, language).charAt(0).toUpperCase();
 
 const ScheduledForm = ({ navigation = {}, route = {} }) => {
   const { goBack } = navigation;
   const { params: { id } = {} } = route;
-  const { colors } = useApp();
-  const { width } = useWindowDimensions();
-  const scrollRef = useRef(null);
+  const { colors, language } = useApp();
+  const style = useMemo(() => getStyles(colors), [colors]);
+  const { settings: { theme: themeMode } = {}, session: { locale } = {} } = useStore();
 
   const { accounts = [], scheduledTxs = [], createScheduled, deleteScheduled, updateScheduled } = useStore();
 
@@ -85,26 +87,14 @@ const ScheduledForm = ({ navigation = {}, route = {} }) => {
   }, [kind]);
 
   const categories = useMemo(() => queryCategories({ type }), [type]);
+  const [showAccounts, setShowAccounts] = useState(false);
+  const [showCategories, setShowCategories] = useState(false);
+  const [openDate, setOpenDate] = useState(false);
 
-  useEffect(() => {
-    const index = categories.findIndex(({ key }) => key === category);
-    if (index < 0) return;
-
-    const x = Math.max(0, (index - 1) * optionSnap);
-    let cancelled = false;
-    const task = InteractionManager.runAfterInteractions(() => {
-      if (cancelled) return;
-      requestAnimationFrame(() => {
-        if (cancelled) return;
-        scrollRef.current?.scrollTo({ x, animated: true });
-      });
-    });
-
-    return () => {
-      cancelled = true;
-      task?.cancel?.();
-    };
-  }, [categories, category]);
+  const handleAmount = (raw = '') => {
+    if (!isNumber.test(raw) || raw.length === 0) return setValue(undefined);
+    setValue(raw.replace(',', '.'));
+  };
 
   const typeOptions = [
     { label: L10N.EXPENSE, value: EXPENSE },
@@ -157,100 +147,178 @@ const ScheduledForm = ({ navigation = {}, route = {} }) => {
 
   const handleDelete = () => {
     if (!existing?.id) return;
-    Alert.alert(L10N.CONFIRM_DELETION, L10N.CONFIRM_DELETION_CAPTION, [
-      { text: L10N.CANCEL, style: 'cancel' },
-      {
-        text: L10N.DELETE,
-        style: 'destructive',
-        onPress: async () => {
-          await deleteScheduled({ id: existing.id });
-          goBack();
-        },
+    eventEmitter.emit(C.EVENT.CONFIRM, {
+      title: L10N.CONFIRM_DELETION,
+      caption: L10N.CONFIRM_DELETION_CAPTION,
+      actionLabel: L10N.DELETE,
+      onAction: async () => {
+        await deleteScheduled({ id: existing.id });
+        goBack();
       },
-    ]);
+    });
   };
 
+  const previewPattern =
+    kind === 'monthly'
+      ? { kind, interval: 1, byMonthDay: Math.max(1, Math.min(31, Number(byMonthDay) || 1)) }
+      : { kind, interval: 1, byWeekday: (byWeekday || []).map((d) => Number(d)) };
+  const previewNextAt = getNextOccurrenceAt({ scheduled: { startAt, pattern: previewPattern }, afterAt: Date.now() });
+  const previewCaption =
+    kind === 'monthly'
+      ? L10N.SCHEDULED_CAPTION_MONTHLY({ day: Number(byMonthDay) || 1 })
+      : L10N.SCHEDULED_CAPTION_WEEKLY({
+          days: [...new Set((byWeekday || []).map((d) => Number(d)))]
+            .sort((a, b) => a - b)
+            .map((d) => weekdayLabel(d, language))
+            .join(', '),
+        });
+
+  const categoryLabel = categories.find(({ key }) => key === category)?.caption;
+  const accountOptions = accounts.map((item) => ({
+    account: item,
+    id: item.hash,
+    label: item.title,
+    symbol: item.currency,
+  }));
+  const categoryOptions = categories.map((item) => ({ id: item.key, label: item.caption }));
+  const symbol = currencySymbol(currentAccount?.currency);
+
   return (
-    <Panel offset title={existing ? L10N.SCHEDULED_EDIT : L10N.SCHEDULED_NEW} onBack={goBack}>
-      <View style={style.section}>
-        <Heading value={L10N.CATEGORY} />
-        <ScrollView horizontal ref={scrollRef} snapTo={optionSnap} style={[{ width }, style.categoryScroll]}>
-          {categories.map((item, index) => (
-            <CardOption
-              key={item.key}
-              highlight={category === item.key}
-              icon={getIcon({ type, category: item.key })}
-              legend={item.caption}
-              onPress={() => setCategory(item.key)}
-              style={[style.option, index === categories.length - 1 ? { marginRight: 0 } : null]}
-            />
-          ))}
-        </ScrollView>
-      </View>
-
-      <Heading value={L10N.DETAILS} />
-
-      <InputGroupOption
-        first
-        label={L10N.TYPE}
+    <Panel offset sheet title={L10N.SCHEDULED_ONE} onBack={goBack}>
+      <SegmentedToggle
         options={typeOptions}
+        style={style.section}
         value={type}
         onChange={(nextValue) => setType(nextValue)}
       />
 
-      <InputAccount accounts={accounts} onSelect={(a) => setAccount(a.hash)} selected={currentAccount} />
+      <View style={style.group}>
+        <FieldRow label={L10N.CONCEPT}>
+          <Input placeholder="..." style={style.rowInput} value={title} onChange={setTitle} />
+        </FieldRow>
 
-      <InputAmount account={currentAccount} currency={currentAccount?.currency} value={value} onChange={setValue} />
+        <FieldRow divider label={L10N.AMOUNT}>
+          <Input
+            keyboardType="decimal-pad"
+            placeholder="0"
+            style={style.rowFigure}
+            value={value !== undefined && value !== null ? value.toString() : ''}
+            onChange={handleAmount}
+          />
+          <Text figure="sm" tone="muted">
+            {symbol}
+          </Text>
+        </FieldRow>
 
-      <InputField label={L10N.CONCEPT} value={title} onChange={setTitle} />
+        <View style={[style.rowWrap, showAccounts && style.rowWrapOpen]}>
+          <FieldRow chevron divider label={L10N.ACCOUNT} onPress={() => setShowAccounts(true)}>
+            <Text medium numberOfLines={1} size="s">
+              {currentAccount?.title}
+            </Text>
+          </FieldRow>
+          <Dropdown
+            options={accountOptions}
+            selected={currentAccount?.hash}
+            visible={showAccounts}
+            onClose={() => setShowAccounts(false)}
+            onSelect={(option) => {
+              setShowAccounts(false);
+              if (option?.account) setAccount(option.account.hash);
+            }}
+          />
+        </View>
 
-      <InputGroupOption
-        label={L10N.SCHEDULED_FREQUENCY}
+        <View style={[style.rowWrap, showCategories && style.rowWrapOpen]}>
+          <FieldRow chevron divider label={L10N.CATEGORY} onPress={() => setShowCategories(true)}>
+            <Text medium numberOfLines={1} size="s">
+              {categoryLabel || '...'}
+            </Text>
+          </FieldRow>
+          <Dropdown
+            options={categoryOptions}
+            selected={category}
+            visible={showCategories}
+            onClose={() => setShowCategories(false)}
+            onSelect={(option) => {
+              setShowCategories(false);
+              setCategory(option.id);
+            }}
+          />
+        </View>
+      </View>
+
+      <Eyebrow style={style.repeatLabel}>{L10N.SCHEDULED_FREQUENCY}</Eyebrow>
+      <SegmentedToggle
         options={kindOptions}
+        style={style.section}
         value={kind}
         onChange={(nextValue) => setKind(nextValue)}
       />
 
       {kind === 'weekly' ? (
-        <Field last style={style.dayField}>
-          <View style={[style.dayRow, { backgroundColor: colors.surface }]}>
-            {Array.from({ length: 7 }).map((_, d) => {
-              const selected = (byWeekday || []).includes(d);
-              return (
-                <Pressable
-                  key={`dow-${d}`}
-                  onPress={() => toggleDay(d)}
-                  style={[
-                    style.dayChip,
-                    {
-                      backgroundColor: selected ? colors.accent : 'transparent',
-                    },
-                  ]}
-                >
-                  <Text align="center" bold size="s" tone={selected ? 'onAccent' : 'secondary'}>
-                    {weekdayLabel(d)}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        </Field>
+        <View row style={style.dayRow}>
+          {Array.from({ length: 7 }).map((_, d) => {
+            const selected = (byWeekday || []).includes(d);
+            return (
+              <Pressable
+                key={`dow-${d}`}
+                onPress={() => toggleDay(d)}
+                style={[style.dayChip, selected && style.dayChipSelected]}
+              >
+                <Text align="center" bold={selected} medium={!selected} size="s" tone={selected ? 'onAccent' : 'muted'}>
+                  {weekdayInitial(d, language)}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
       ) : (
-        <InputDate
-          last
-          label={L10N.DATE}
-          minimumDate={new Date()}
-          value={new Date(startAt)}
-          onChange={(value) => {
-            setStartAt(value.getTime());
-            setByMonthDay(value.getDate());
-          }}
-        />
+        <View style={style.group}>
+          <FieldRow chevron label={L10N.DATE} onPress={() => setOpenDate(true)}>
+            <Text medium size="s">
+              {verboseDate(new Date(startAt), { locale, day: 'numeric', month: 'short', year: 'numeric' })}
+            </Text>
+          </FieldRow>
+        </View>
       )}
+
+      {openDate ? (
+        <Modal onClose={() => setOpenDate(false)}>
+          <DateTimePicker
+            accentColor={colors.accent}
+            is24Hour
+            minimumDate={new Date()}
+            mode="date"
+            display={Platform.OS === 'ios' ? 'inline' : 'calendar'}
+            textColor={colors.text}
+            themeVariant={themeMode}
+            value={new Date(startAt)}
+            onChange={(event, nextDate) => {
+              if (!nextDate) return;
+              setStartAt(nextDate.getTime());
+              setByMonthDay(nextDate.getDate());
+              setOpenDate(false);
+            }}
+          />
+        </Modal>
+      ) : null}
+
+      {Number.isFinite(previewNextAt) ? (
+        <View row style={style.preview}>
+          <Text flex size="s" tone="muted">
+            {`${previewCaption} \u00B7 ${verboseDate(new Date(previewNextAt), {
+              locale: language,
+              weekday: 'short',
+              day: 'numeric',
+              month: 'short',
+            })}`}
+          </Text>
+        </View>
+      ) : null}
 
       <View row style={style.footer}>
         {existing?.id ? (
-          <Button variant="outlined" onPress={handleDelete} grow>
+          <Button variant="dangerSoft" onPress={handleDelete} grow>
             {L10N.DELETE}
           </Button>
         ) : null}

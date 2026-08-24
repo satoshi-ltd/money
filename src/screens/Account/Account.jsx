@@ -1,19 +1,20 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
-import { Alert } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
 
-import { style } from './Account.style';
+import { getStyles } from './Account.style';
 import { Button, Heading, InputAmount, InputCurrency, InputField, Panel, Text, View } from '../../components';
-import { useStore } from '../../contexts';
-import { C, L10N } from '../../modules';
+import { useApp, useStore } from '../../contexts';
+import { C, eventEmitter, L10N } from '../../modules';
 import { ServiceRates } from '../../services';
 
-const { CURRENCY } = C;
+const { CURRENCY, EVENT } = C;
 
 const INITIAL_STATE = { balance: 0, currency: undefined, title: undefined };
 
 const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate } = {} }) => {
   const { settings: { baseCurrency } = {}, createAccount, updateAccount, deleteAccount, updateRates } = useStore();
+  const { colors } = useApp();
+  const style = useMemo(() => getStyles(colors), [colors]);
   const [busy, setBusy] = useState(false);
   const [form, setForm] = useState(INITIAL_STATE);
 
@@ -35,21 +36,19 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
     });
   };
 
-  const handleDelete = async () => {
-    Alert.alert(L10N.CONFIRM_DELETION, L10N.CONFIRM_ACCOUNT_DELETION_CAPTION, [
-      { text: L10N.CANCEL, style: 'cancel' },
-      {
-        text: L10N.ACCEPT,
-        style: 'destructive',
-        onPress: async () => {
-          setBusy(true);
-          await deleteAccount(params);
-          goBack();
-          goBack();
-          setBusy(false);
-        },
+  const handleDelete = () => {
+    eventEmitter.emit(EVENT.CONFIRM, {
+      title: L10N.CONFIRM_DELETION,
+      caption: L10N.CONFIRM_ACCOUNT_DELETION_CAPTION,
+      actionLabel: L10N.DELETE,
+      onAction: async () => {
+        setBusy(true);
+        await deleteAccount(params);
+        goBack();
+        goBack();
+        setBusy(false);
       },
-    ]);
+    });
   };
 
   const handleSubmit = async () => {
@@ -72,40 +71,61 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
   const headerTitle = firstAccount ? L10N.FIRST_ACCOUNT : editMode ? L10N.SETTINGS : `${L10N.NEW} ${L10N.ACCOUNT}`;
 
   return (
-    <Panel offset title={headerTitle} onBack={firstAccount ? undefined : goBack}>
-      {firstAccount && (
-        <View style={style.title}>
-          <Text tone="secondary" size="s">
-            {L10N.FIRST_ACCOUNT_CAPTION}
-          </Text>
-        </View>
-      )}
+    <Panel offset sheet title={headerTitle} onBack={firstAccount ? undefined : goBack}>
+      {firstAccount ? (
+        <Text size="s" tone="secondary" style={style.caption}>
+          {L10N.FIRST_ACCOUNT_CAPTION}
+        </Text>
+      ) : null}
 
       <Heading value={L10N.DETAILS} />
 
-      <InputCurrency first value={form.currency} onChange={(currency) => handleChange('currency', currency)} />
+      <View style={style.group}>
+        <View row style={style.row}>
+          <Text size="s" tone="muted" style={style.label}>
+            {L10N.CURRENCY}
+          </Text>
+          <InputCurrency
+            label={null}
+            style={style.field}
+            value={form.currency}
+            onChange={(currency) => handleChange('currency', currency)}
+          />
+        </View>
 
-      <InputAmount
-        account={{ currency: form.currency }}
-        label={L10N.INITIAL_BALANCE}
-        value={form.balance}
-        onChange={(value) => handleChange('balance', value)}
-      />
+        <View row style={[style.row, style.divider]}>
+          <Text size="s" tone="muted" style={style.label}>
+            {L10N.INITIAL_BALANCE}
+          </Text>
+          <InputAmount
+            account={{ currency: form.currency }}
+            label={null}
+            style={style.field}
+            value={form.balance}
+            onChange={(value) => handleChange('balance', value)}
+          />
+        </View>
 
-      <InputField last label={L10N.NAME} value={form.title} onChange={(value) => handleChange('title', value)} />
+        <View row style={[style.row, style.divider]}>
+          <Text size="s" tone="muted" style={style.label}>
+            {L10N.NAME}
+          </Text>
+          <InputField style={style.field} value={form.title} onChange={(value) => handleChange('title', value)} />
+        </View>
+      </View>
 
       <View row style={style.buttons}>
-        {hash && (
-          <Button disabled={busy} variant="outlined" onPress={handleDelete} grow>
+        {hash ? (
+          <Button disabled={busy} grow variant="dangerSoft" onPress={handleDelete}>
             {L10N.DELETE}
           </Button>
-        )}
-        {!firstAccount && (
-          <Button disabled={busy} variant="outlined" onPress={goBack} grow>
-            {L10N.CLOSE}
+        ) : null}
+        {!firstAccount ? (
+          <Button disabled={busy} grow variant="outlined" onPress={goBack}>
+            {L10N.CANCEL}
           </Button>
-        )}
-        <Button disabled={busy || !form.currency || !form.title} onPress={handleSubmit} grow>
+        ) : null}
+        <Button disabled={busy || !form.currency || !form.title} grow onPress={handleSubmit}>
           {L10N.SAVE}
         </Button>
       </View>

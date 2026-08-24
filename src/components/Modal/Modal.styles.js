@@ -20,8 +20,8 @@ export const getStyles = (colors) =>
       justifyContent: 'flex-end',
     },
     sheet: {
-      borderTopLeftRadius: theme.borderRadius.md,
-      borderTopRightRadius: theme.borderRadius.md,
+      borderTopLeftRadius: theme.borderRadius.xl,
+      borderTopRightRadius: theme.borderRadius.xl,
       overflow: 'hidden',
       backgroundColor: colors.background,
       maxHeight: '90%',

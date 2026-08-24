@@ -1,13 +1,18 @@
 import { StyleSheet } from 'react-native';
 
 import { theme } from '../../theme';
+import { rowHeight } from '../../theme/layout';
 
 export const getStyles = (colors) =>
   StyleSheet.create({
     container: {
-      paddingVertical: theme.spacing.xxs,
-      borderRadius: theme.borderRadius.md,
-      backgroundColor: colors.background,
+      backgroundColor: 'transparent',
+      justifyContent: 'center',
+      minHeight: rowHeight,
+    },
+    divider: {
+      borderTopColor: colors.border,
+      borderTopWidth: theme.hairline,
     },
     row: {
       flexDirection: 'row',
@@ -21,10 +26,6 @@ export const getStyles = (colors) =>
       gap: theme.spacing.sm,
       flex: 1,
     },
-    iconCard: {
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
     disabled: {
       opacity: 0.6,
     },
@@ -32,6 +33,6 @@ export const getStyles = (colors) =>
       textAlign: 'right',
     },
     switch: {
-      transform: [{ scaleX: 0.85 }, { scaleY: 0.85 }],
+      transform: [{ scaleX: 0.9 }, { scaleY: 0.9 }],
     },
   });

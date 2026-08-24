@@ -1,115 +1,75 @@
 import PropTypes from 'prop-types';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 
-import { ButtonSummary } from './components';
 import { getStyles } from './Transactions.style';
-import { Button, Heading, InputField, InsightsCarousel, View } from '../../components';
+import { Delta, Eyebrow, PriceFriendly, Text, View } from '../../components';
 import { useApp, useStore } from '../../contexts';
-import { buildInsights, getProgressionPercentage, C, ICON, L10N } from '../../modules';
+import { accountBalanceEyebrow, C, getProgressionPercentage, ICON, L10N, monthFlow, percentText } from '../../modules';
 
 const {
   TX: {
     TYPE: { INCOME, EXPENSE, TRANSFER },
   },
 } = C;
-let timeoutId;
 
-const TransactionsListHeader = ({ chartBalanceBase, dataSource, navigation, onSearch, setPage }) => {
-  const { accounts = [], rates = {}, scheduledTxs = [], settings: { baseCurrency } = {}, today } = useStore();
+const TransactionsListHeader = ({ dataSource }) => {
+  const { accounts = [], settings: { baseCurrency } = {}, today } = useStore();
   const { colors } = useApp();
-  const style = React.useMemo(() => getStyles(colors), [colors]);
+  const style = useMemo(() => getStyles(colors), [colors]);
   const { currency = baseCurrency, ...rest } = dataSource;
 
-  const [search, setSearch] = useState(false);
-  const [query, setQuery] = useState();
-
-  const handleSearch = () => {
-    setSearch((prevSearch) => {
-      setPage(1);
-      onSearch();
-      if (prevSearch) setQuery('');
-      return !prevSearch;
-    });
-  };
-
-  const onQueryChange = (value) => {
-    setQuery(value);
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
-      onSearch(value);
-    }, 350);
-  };
-
-  const handleEdit = () => {
-    navigation.navigate('account', dataSource);
-  };
-
-  const handleTransaction = (type) => {
-    navigation.navigate('transaction', { account: dataSource, type });
-  };
-
-  const accountInsights = useMemo(() => {
-    if (!dataSource?.hash) return [];
-    return buildInsights({
-      accounts: [dataSource],
-      now: today,
-      rates,
-      scheduledTxs: scheduledTxs.filter(({ account }) => account === dataSource.hash),
-      settings: { baseCurrency: currency },
-      txs: dataSource.txs || [],
-    });
-  }, [currency, dataSource, rates, scheduledTxs, today]);
-
-  const progressionPercentage = useMemo(() => {
+  const monthLabel = L10N.MONTHS[new Date(today || Date.now()).getMonth()];
+  const progression = useMemo(() => {
     const next = getProgressionPercentage(rest?.currentBalance, rest?.currentMonth?.progressionCurrency);
     return Number.isFinite(next) ? next : undefined;
   }, [rest?.currentBalance, rest?.currentMonth?.progressionCurrency]);
 
-  const balanceCard = useMemo(
-    () => ({
-      title: L10N.TOTAL_BALANCE,
-      value: rest?.currentBalance || 0,
-      chartValues: Array.isArray(chartBalanceBase) ? chartBalanceBase.slice(-12) : [],
-      progressionPercentage,
-    }),
-    [chartBalanceBase, progressionPercentage, rest?.currentBalance],
-  );
+  const flow = useMemo(() => monthFlow(dataSource?.txs || [], today), [dataSource?.txs, today]);
+  const flowMax = Math.max(flow.incomes, flow.expenses, 1);
 
   return (
     <>
       {dataSource?.hash ? (
         <>
-          <View style={style.insightsTop}>
-            <Heading value={L10N.INSIGHTS} offset />
+          <View style={style.balance}>
+            <Eyebrow>{accountBalanceEyebrow(currency)}</Eyebrow>
+            <PriceFriendly bold currency={currency} size="hero" value={rest?.currentBalance || 0} />
+            <View row style={style.balanceRow}>
+              <Delta caption={L10N.THIS_MONTH.toLowerCase()} value={progression} />
+            </View>
           </View>
-          <InsightsCarousel balanceCard={balanceCard} currency={currency} insights={accountInsights} />
+
+          {flow.incomes > 0 || flow.expenses > 0 ? (
+            <View style={style.flow}>
+              <Eyebrow style={style.monthLabel}>{monthLabel}</Eyebrow>
+              <View style={style.flowRows}>
+                <View row style={style.flowRow}>
+                  <Text size="s" style={style.flowLabel} tone="muted">
+                    {L10N.INCOMES}
+                  </Text>
+                  <View style={style.flowBar}>
+                    <View style={[style.flowFillIncome, { width: `${(flow.incomes * 100) / flowMax}%` }]} />
+                  </View>
+                  <View style={style.flowValue}>
+                    <PriceFriendly currency={currency} operator size="md" value={flow.incomes} />
+                  </View>
+                </View>
+                <View row style={style.flowRow}>
+                  <Text size="s" style={style.flowLabel} tone="muted">
+                    {L10N.EXPENSES}
+                  </Text>
+                  <View style={style.flowBar}>
+                    <View style={[style.flowFillExpense, { width: `${(flow.expenses * 100) / flowMax}%` }]} />
+                  </View>
+                  <View style={style.flowValue}>
+                    <PriceFriendly currency={currency} size="md" value={-flow.expenses} />
+                  </View>
+                </View>
+              </View>
+            </View>
+          ) : null}
         </>
       ) : null}
-
-      <View style={style.headerWrap}>
-        <View row style={style.buttons}>
-          <ButtonSummary icon={ICON.INCOME} text={L10N.INCOME} onPress={() => handleTransaction(INCOME)} />
-          <ButtonSummary icon={ICON.EXPENSE} text={L10N.EXPENSE} onPress={() => handleTransaction(EXPENSE)} />
-          {accounts.length > 1 && (
-            <ButtonSummary icon={ICON.SWAP} text={L10N.SWAP} onPress={() => handleTransaction(TRANSFER)} />
-          )}
-          <ButtonSummary icon={ICON.SETTINGS} text={L10N.SETTINGS} onPress={handleEdit} />
-        </View>
-
-        <Heading value={L10N.TRANSACTIONS}>
-          <Button icon={!search ? ICON.SEARCH : ICON.CLOSE} variant="outlined" size="s" onPress={handleSearch} />
-        </Heading>
-        {search && (
-          <InputField
-            first
-            last
-            placeholder={`${L10N.SEARCH}...`}
-            value={query}
-            onChange={onQueryChange}
-            style={style.inputSearch}
-          />
-        )}
-      </View>
     </>
   );
 };
@@ -117,11 +77,7 @@ const TransactionsListHeader = ({ chartBalanceBase, dataSource, navigation, onSe
 TransactionsListHeader.displayName = 'TransactionsListHeader';
 
 TransactionsListHeader.propTypes = {
-  chartBalanceBase: PropTypes.any,
   dataSource: PropTypes.any,
-  navigation: PropTypes.any,
-  onSearch: PropTypes.func,
-  setPage: PropTypes.func,
 };
 
 export { TransactionsListHeader };

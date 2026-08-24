@@ -1,172 +1,140 @@
 import PropTypes from 'prop-types';
-import React, { useMemo, useRef, useState } from 'react';
-import { useWindowDimensions } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { DEFAULT_SURVEY_DATA, SLIDES } from './Onboarding.constants';
-import { Slide } from './Onboarding.Slide';
+import { Account } from './Onboarding.Account';
+import { Cover } from './Onboarding.Cover';
+import { Currency } from './Onboarding.Currency';
+import { Passcode } from './Onboarding.Passcode';
 import { getStyles } from './Onboarding.style';
-import { isValidEmail } from './utils/isValidEmail';
-import { Button, ScrollView, View } from '../../components';
+import { Button, Eyebrow, Masthead, Pressable, ScrollView, Text, View } from '../../components';
 import { useApp, useStore } from '../../contexts';
-import { useKeyboardInset } from '../../hooks';
 import { C, eventEmitter, L10N } from '../../modules';
-import { LeadService } from '../../services';
-import { theme } from '../../theme';
+import { ServiceRates } from '../../services';
 
-const Onboarding = ({ navigation: { navigate } }) => {
-  const scrollview = useRef(null);
-  const { colors, language } = useApp();
-  const styles = useMemo(() => getStyles(colors), [colors]);
-  const store = useStore();
-  const { settings = {}, updateSettings } = store;
-  const { width } = useWindowDimensions();
-  const keyboardInset = useKeyboardInset();
+const { CURRENCY, EVENT } = C;
+const COVER = 0;
+const STEP_CURRENCY = 1;
+const STEP_ACCOUNT = 2;
+const STEP_PASSCODE = 3;
+const STEPS = 4;
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [surveyData, setSurveyData] = useState(() => {
-    const answers = settings?.userProfile?.answers || {};
-    const marketingLead = settings?.marketingLead || {};
-    return {
-      ...DEFAULT_SURVEY_DATA,
-      ...answers,
-      email: marketingLead.email || DEFAULT_SURVEY_DATA.email,
-    };
-  });
+const folio = (step) => `${`${step + 1}`.padStart(2, '0')} / ${`${STEPS}`.padStart(2, '0')}`;
 
-  const handleScroll = (event) => {
-    const offset = event.nativeEvent.contentOffset.x;
-    const index = Math.round(offset / event.nativeEvent.layoutMeasurement.width);
-    setCurrentIndex(index);
+const Onboarding = ({ navigation: { reset } = {} }) => {
+  const { colors } = useApp();
+  const { createAccount, rates = {}, settings = {}, updateRates, updateSettings } = useStore();
+  const style = useMemo(() => getStyles(colors), [colors]);
+
+  const [step, setStep] = useState(COVER);
+  const [currency, setCurrency] = useState(settings.baseCurrency || CURRENCY);
+  const [title, setTitle] = useState('');
+  const [balance, setBalance] = useState('');
+  const [pin, setPin] = useState('');
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (pin.length === 4) finish(pin);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pin]);
+
+  const finish = async (passcode) => {
+    if (busy) return;
+    setBusy(true);
+
+    await updateSettings({ baseCurrency: currency, onboarded: true, ...(passcode ? { pin: passcode } : {}) });
+    if (title.trim()) await createAccount({ balance: Number(balance) || 0, currency, title: title.trim() });
+
+    reset({ index: 0, routes: [{ name: 'main' }] });
   };
 
-  const spaceXL = theme.spacing.xl;
-  const lastSlide = currentIndex === SLIDES.length - 1;
-  const currentSlide = SLIDES[currentIndex] || {};
-  const is = {
-    last: lastSlide,
-    lead: currentSlide?.type === 'lead',
-    survey: !!currentSlide?.type && currentSlide?.type !== 'lead',
+  const handleCurrency = async (next) => {
+    setCurrency(next);
+    if (next === rates.currency) return;
+
+    const nextRates = await ServiceRates.get({ baseCurrency: next, latest: false })['catch'](() => undefined);
+    if (nextRates) await updateRates({ ...nextRates, currency: next });
+    else eventEmitter.emit(EVENT.NOTIFICATION, { error: true, title: L10N.ERROR_SERVICE_RATES });
   };
 
-  const slideSize = width - spaceXL * 2;
+  const isPasscode = step === STEP_PASSCODE;
 
-  const persistProfile = async (partialAnswers, { completedAt } = {}) => {
-    const baseAnswers = settings?.userProfile?.answers || {};
-    const patch = partialAnswers || {};
-    const merged = { ...baseAnswers, ...patch };
-
-    // Only store survey-relevant fields (avoid persisting transient lead fields inside userProfile).
-    delete merged.email;
-
-    // Drop empty-string values to keep the profile compact.
-    const answers = Object.fromEntries(Object.entries(merged).filter(([, v]) => v !== '' && v !== undefined));
-
-    const nextUserProfile = {
-      ...(settings?.userProfile || {}),
-      version: 1,
-      answers,
-      completedAt: completedAt !== undefined ? completedAt : settings?.userProfile?.completedAt,
-    };
-
-    await updateSettings({ userProfile: nextUserProfile });
-  };
-
-  const scrollToIndex = (index) => {
-    if (!scrollview.current) return;
-    scrollview.current.scrollTo({ x: width * index, animated: true });
-  };
-
-  const handleSurveyChange = async (field, value) => {
-    const nextSurveyData = { ...surveyData, [field]: value };
-    setSurveyData(nextSurveyData);
-
-    await persistProfile({ [field]: value });
-
-    // Auto-advance on any survey selection.
-    scrollToIndex(Math.min(SLIDES.length - 1, currentIndex + 1));
-  };
-
-  const handleLeadEmail = (email) => setSurveyData((prev) => ({ ...prev, email }));
-
-  const leadEmailValid = isValidEmail(surveyData.email);
-  const leadEmailPresent = `${surveyData.email || ''}`.trim().length > 0;
-
-  const handleNext = async () => {
-    if (is.last) {
-      // Lead capture: optional. We only send if the user provided a valid email.
-      if (is.lead && leadEmailPresent && leadEmailValid) {
-        const email = `${surveyData.email || ''}`.trim();
-        const { fingerprint } = settings || {};
-        const profile = settings?.userProfile?.answers || {};
-
-        try {
-          const response = await LeadService.send({
-            consent: true,
-            email,
-            fingerprint,
-            language,
-            profile,
-            version: C.VERSION,
-          });
-          await updateSettings({
-            marketingLead: { email, consent: true, sentAt: Date.now(), remote: response || true },
-          });
-        } catch {
-          // Do not block onboarding if the network fails.
-          await updateSettings({
-            marketingLead: { email, consent: true, sentAt: Date.now(), remote: false },
-          });
-          eventEmitter.emit(C.EVENT.NOTIFICATION, { error: true, title: L10N.LEAD_SEND_FAILED });
-        }
-      } else if (is.lead && !leadEmailPresent) {
-        // Explicitly persist "no lead" choice (keeps defaults, but updates local email if needed).
-        await updateSettings({
-          marketingLead: { email: '', consent: false, sentAt: undefined, remote: undefined },
-        });
-      }
-
-      await persistProfile(surveyData, { completedAt: settings?.userProfile?.completedAt || Date.now() });
-      await updateSettings({ onboarded: true });
-      navigate('session');
-    } else if (scrollview.current) {
-      let nextIndex = currentIndex + 1;
-      nextIndex = Math.min(SLIDES.length - 1, nextIndex);
-      scrollview.current.scrollTo({ x: width * nextIndex, animated: true });
-    }
+  const handleSkip = () => {
+    if (isPasscode) return finish();
+    setTitle('');
+    setBalance('');
+    setStep(STEP_PASSCODE);
   };
 
   return (
-    <SafeAreaView
-      edges={['top', 'bottom']}
-      style={[styles.screen, keyboardInset ? { paddingBottom: keyboardInset } : null]}
-    >
-      <ScrollView horizontal ref={scrollview} snapTo={width} onScroll={handleScroll}>
-        {SLIDES.map((slide, index) => (
-          <Slide
-            key={`slide-${index}`}
-            leadEmail={surveyData.email}
-            slide={slide}
-            slideSize={slideSize}
-            styles={styles}
-            surveyValue={slide?.type && slide.type !== 'lead' ? surveyData[slide.type] : undefined}
-            width={width}
-            onLeadEmailChange={handleLeadEmail}
-            onSurveyChange={handleSurveyChange}
-          />
-        ))}
-      </ScrollView>
+    <SafeAreaView edges={['top', 'bottom']} style={style.screen}>
+      <Masthead eyebrow={step === COVER ? 'môney' : `môney · ${L10N.ONB_SETUP}`}>
+        {step === COVER ? (
+          <Eyebrow>{L10N.ONB_EST}</Eyebrow>
+        ) : (
+          <Text figure="xs" tone="muted">
+            {folio(step)}
+          </Text>
+        )}
+      </Masthead>
 
-      <View row style={styles.footer}>
-        <View flex />
+      {isPasscode ? (
+        <View flex>
+          <Passcode style={style} value={pin} onChange={setPin} />
+        </View>
+      ) : (
+        <ScrollView contentContainerStyle={style.content} keyboardShouldPersistTaps="handled">
+          {step === COVER ? <Cover style={style} /> : null}
+          {step === STEP_CURRENCY ? (
+            <Currency rates={rates} style={style} value={currency} onChange={handleCurrency} />
+          ) : null}
+          {step === STEP_ACCOUNT ? (
+            <Account
+              balance={balance}
+              currency={currency}
+              style={style}
+              title={title}
+              onBalance={setBalance}
+              onCurrency={() => setStep(STEP_CURRENCY)}
+              onTitle={setTitle}
+            />
+          ) : null}
+        </ScrollView>
+      )}
 
-        <Button disabled={is.survey && !surveyData[currentSlide?.type]} onPress={handleNext} style={styles.button}>
-          {is.lead ? L10N.START : is.last ? L10N.START : L10N.NEXT}
-        </Button>
+      <View style={style.footer}>
+        {step === STEP_CURRENCY ? (
+          <Text size="xs" tone="muted">
+            {L10N.ONB_CURRENCY_NOTE}
+          </Text>
+        ) : null}
+
+        {isPasscode ? null : (
+          <Button disabled={busy} onPress={() => setStep(step + 1)}>
+            {step === COVER ? L10N.ONB_START : L10N.CONTINUE}
+          </Button>
+        )}
+
+        {step === COVER ? (
+          <View row style={style.footerMeta}>
+            <Text figure="xs" tone="muted">
+              {folio(step)}
+            </Text>
+            <Eyebrow>{L10N.ONB_COVER_FOOTNOTE}</Eyebrow>
+          </View>
+        ) : null}
+
+        {step === STEP_ACCOUNT || isPasscode ? (
+          <Pressable disabled={busy} style={style.footerCentered} onPress={handleSkip}>
+            <Eyebrow>{isPasscode ? L10N.ONB_PIN_SKIP : L10N.ONB_SKIP}</Eyebrow>
+          </Pressable>
+        ) : null}
       </View>
     </SafeAreaView>
   );
 };
+
+Onboarding.displayName = 'Onboarding';
 
 Onboarding.propTypes = {
   navigation: PropTypes.any,

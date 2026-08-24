@@ -1,19 +1,33 @@
 import { StyleSheet } from 'react-native';
 
 import { theme } from '../../theme';
-import { viewOffset } from '../../theme/layout';
+
+const DOT_SIZE = 14;
+const DOT_GAP = 18;
 
 export const getStyles = (colors) =>
   StyleSheet.create({
     safeAreaView: {
       flex: 1,
       backgroundColor: colors.background,
-      justifyContent: 'flex-end',
     },
 
     content: {
       alignItems: 'center',
-      gap: viewOffset,
+      flex: 1,
+      gap: theme.spacing.md,
+    },
+    spacerTop: {
+      flex: 1.2,
+    },
+    spacerMiddle: {
+      flex: 1,
+    },
+    caption: {
+      marginTop: theme.spacing.xxs * -1,
+    },
+    version: {
+      marginTop: theme.spacing.xs,
     },
 
     pinCode: {
@@ -22,14 +36,17 @@ export const getStyles = (colors) =>
     },
 
     pin: {
-      backgroundColor: colors.border,
-      borderRadius: theme.spacing.md / 2,
-      height: theme.spacing.md,
-      marginHorizontal: theme.spacing.sm,
-      width: theme.spacing.md,
+      backgroundColor: 'transparent',
+      borderColor: colors.textMuted,
+      borderRadius: theme.borderRadius.full,
+      borderWidth: 1.5,
+      height: DOT_SIZE,
+      marginHorizontal: DOT_GAP / 2,
+      width: DOT_SIZE,
     },
 
     pinActive: {
       backgroundColor: colors.accent,
+      borderColor: colors.accent,
     },
   });

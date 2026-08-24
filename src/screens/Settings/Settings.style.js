@@ -3,32 +3,34 @@ import { StyleSheet } from 'react-native';
 import { theme } from '../../theme';
 import { viewOffset } from '../../theme/layout';
 
-export const style = StyleSheet.create({
-  screen: {
-    paddingBottom: theme.spacing.xxl * 3,
-    paddingTop: viewOffset,
-  },
+export const getStyles = (colors) =>
+  StyleSheet.create({
+    screen: {
+      paddingBottom: theme.spacing.xxl * 3,
+    },
 
-  group: {
-    gap: theme.spacing.xs,
-  },
+    backup: {
+      alignItems: 'center',
+      backgroundColor: colors.accentSoft,
+      borderRadius: theme.borderRadius.none,
+      gap: theme.spacing.sm,
+      paddingHorizontal: viewOffset,
+      paddingVertical: theme.spacing.md - 2,
+    },
+    backupCaption: {
+      opacity: 0.75,
+    },
 
-  hint: {
-    marginTop: theme.spacing.xs,
-  },
+    group: {
+      marginTop: theme.spacing.lg,
+      paddingHorizontal: viewOffset,
+    },
+    groupLabel: {
+      marginBottom: theme.spacing.xxs,
+    },
 
-  offset: {
-    marginHorizontal: viewOffset,
-    width: 'auto',
-  },
-
-  dropdownWrap: {
-    position: 'relative',
-  },
-
-  idsBlock: {
-    marginTop: theme.spacing.xs,
-    width: '100%',
-    alignItems: 'center',
-  },
-});
+    version: {
+      marginTop: theme.spacing.xl,
+      paddingHorizontal: viewOffset,
+    },
+  });

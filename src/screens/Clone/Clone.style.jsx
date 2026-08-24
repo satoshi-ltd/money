@@ -1,15 +1,10 @@
 import { StyleSheet } from 'react-native';
 
 import { theme } from '../../theme';
-import { viewOffset } from '../../theme/layout';
 
 export const style = StyleSheet.create({
-  title: {
-    marginBottom: viewOffset,
-  },
-
   buttons: {
-    gap: viewOffset,
-    marginTop: theme.spacing.lg,
+    gap: theme.spacing.xs,
+    marginTop: theme.spacing.md,
   },
 });

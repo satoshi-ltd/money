@@ -1,40 +1,84 @@
 import { StyleSheet } from 'react-native';
 
 import { theme } from '../../theme';
-import { cardGap, viewOffset } from '../../theme/layout';
+import { rowHeight, viewOffset } from '../../theme/layout';
 
-export const style = StyleSheet.create({
-  screen: {
-    paddingBottom: theme.spacing.xxl * 2,
-    paddingTop: viewOffset,
-  },
+export const getStyles = (colors) =>
+  StyleSheet.create({
+    screen: {
+      paddingBottom: theme.spacing.xxl * 2,
+    },
+    empty: {
+      flexGrow: 1,
+      paddingBottom: 0,
+    },
 
-  scrollView: {
-    marginBottom: theme.spacing.lg,
-  },
+    hero: {
+      gap: theme.spacing.xxs,
+      marginTop: theme.spacing.sm + 2,
+      paddingHorizontal: viewOffset,
+    },
+    heroValue: {
+      marginTop: theme.spacing.xxs,
+    },
 
-  card: {
-    marginLeft: cardGap,
-  },
+    distribution: {
+      gap: theme.spacing.xs,
+      marginTop: theme.spacing.sm,
+      paddingHorizontal: viewOffset,
+    },
+    bar: {
+      borderRadius: theme.borderRadius.none,
+      height: 10,
+      overflow: 'hidden',
+    },
+    legend: {
+      flexWrap: 'wrap',
+      gap: theme.spacing.sm,
+    },
+    legendItem: {
+      alignItems: 'center',
+      gap: theme.spacing.xxs + 2,
+    },
+    dot: {
+      borderRadius: theme.borderRadius.full,
+      height: 7,
+      width: 7,
+    },
 
-  firstCard: {
-    marginLeft: viewOffset,
-  },
+    toolbar: {
+      marginTop: theme.spacing.md,
+      paddingHorizontal: viewOffset,
+    },
 
-  lastCard: {
-    marginRight: viewOffset,
-  },
-
-  iconSpacing: {
-    marginRight: viewOffset / 2,
-  },
-  item: {
-    alignItems: 'center',
-    paddingHorizontal: viewOffset,
-    paddingVertical: viewOffset / 2,
-    width: '100%',
-  },
-  text: {
-    flex: 1,
-  },
-});
+    section: {
+      marginTop: theme.spacing.md,
+      paddingHorizontal: viewOffset,
+    },
+    accountRow: {
+      alignItems: 'center',
+      borderBottomColor: colors.border,
+      borderBottomWidth: theme.hairline,
+      gap: theme.spacing.sm,
+      minHeight: rowHeight + theme.spacing.md,
+      paddingVertical: theme.spacing.xs + 2,
+    },
+    accountText: {
+      gap: 2,
+    },
+    accountMeta: {
+      alignItems: 'baseline',
+      gap: theme.spacing.xs,
+    },
+    accountRight: {
+      alignItems: 'flex-end',
+      gap: 2,
+    },
+    totalRow: {
+      alignItems: 'center',
+      borderTopColor: colors.rule,
+      borderTopWidth: theme.hairline,
+      marginTop: theme.spacing.xs,
+      paddingTop: theme.spacing.sm,
+    },
+  });

@@ -1,21 +1,24 @@
 import { StyleSheet } from 'react-native';
 
-import { theme } from '../../../../theme';
+const KEY_HEIGHT = 54;
+const KEYPAD_OFFSET = 30;
 
 export const style = StyleSheet.create({
   container: {
     flex: 0,
     flexDirection: 'row',
     flexWrap: 'wrap',
+    paddingHorizontal: KEYPAD_OFFSET,
     width: '100%',
   },
 
   pressable: {
-    width: '33.3%',
+    width: '33.333%',
   },
 
   key: {
     alignItems: 'center',
-    marginVertical: theme.spacing.sm,
+    height: KEY_HEIGHT,
+    justifyContent: 'center',
   },
 });

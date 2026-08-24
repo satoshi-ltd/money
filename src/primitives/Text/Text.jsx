@@ -4,49 +4,39 @@ import { Text as RNText } from 'react-native';
 import { getStyles } from './Text.styles';
 import { useApp } from '../../contexts';
 
-const Text = ({ align, bold, tone, flex, size, uppercase, style, ...props }) => {
+const SIZES = { xxl: 'title', xl: 'heading', l: 'subtitle', m: 'body', s: 'caption', xs: 'tiny', xxs: 'micro' };
+const FIGURES = { hero: 'figureHero', xl: 'figureXl', lg: 'figureLg', md: 'figureMd', sm: 'figureSm', xs: 'figureXs' };
+const TONES = {
+  secondary: 'toneSecondary',
+  muted: 'toneMuted',
+  positive: 'tonePositive',
+  accent: 'toneAccent',
+  danger: 'toneDanger',
+  warning: 'toneWarning',
+  onAccent: 'toneOnAccent',
+  onAccentSoft: 'toneOnAccentSoft',
+  onInverse: 'toneOnInverse',
+};
+
+const Text = ({ align, bold, figure, flex, medium, mono, size, style, tone, uppercase, ...props }) => {
   const { colors } = useApp();
   const styles = useMemo(() => getStyles(colors), [colors]);
-  const sizeStyle =
-    size === 'xl'
-      ? styles.title
-      : size === 'l'
-      ? styles.subtitle
-      : size === 'm'
-      ? styles.body
-      : size === 's'
-      ? styles.caption
-      : size === 'xs'
-      ? styles.tiny
-      : null;
 
-  const toneStyle =
-    tone === 'secondary' || tone === 'muted'
-      ? styles.toneSecondary
-      : tone === 'accent'
-      ? styles.toneAccent
-      : tone === 'danger'
-      ? styles.toneDanger
-      : tone === 'warning'
-      ? styles.toneWarning
-      : tone === 'onAccent'
-      ? styles.toneOnAccent
-      : tone === 'onInverse'
-      ? styles.toneOnInverse
-      : styles.tonePrimary;
-
-  const alignStyle =
-    align === 'center' ? styles.alignCenter : align === 'right' ? styles.alignRight : align ? styles.alignLeft : null;
+  const isMono = mono || figure !== undefined;
+  const weightStyle = bold ? styles.bold : medium ? styles.medium : null;
 
   return (
     <RNText
       {...props}
       style={[
         styles.base,
-        sizeStyle,
-        bold ? styles.bold : null,
-        toneStyle,
-        alignStyle,
+        SIZES[size] ? styles[SIZES[size]] : null,
+        isMono ? styles.mono : null,
+        isMono && (bold || medium) ? styles.monoMedium : null,
+        !isMono ? weightStyle : null,
+        FIGURES[figure] ? styles[FIGURES[figure]] : null,
+        styles[TONES[tone]] || styles.tonePrimary,
+        align === 'center' ? styles.alignCenter : align === 'right' ? styles.alignRight : align ? styles.alignLeft : null,
         flex ? styles.flex : null,
         uppercase ? styles.uppercase : null,
         style,

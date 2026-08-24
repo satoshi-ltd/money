@@ -1,79 +1,65 @@
 import { StyleSheet } from 'react-native';
 
 import { theme } from '../../theme';
+import { buttonHeight } from '../../theme/layout';
 
 export const getStyles = (colors) =>
   StyleSheet.create({
     base: {
       alignItems: 'center',
-      justifyContent: 'center',
+      borderRadius: theme.borderRadius.sm,
       flexDirection: 'row',
-      borderRadius: theme.borderRadius.md,
-      paddingHorizontal: theme.spacing.md,
-      paddingVertical: theme.spacing.sm,
       gap: theme.spacing.xs,
-      minHeight: 44,
+      justifyContent: 'center',
+      minHeight: buttonHeight,
+      paddingHorizontal: theme.spacing.md,
     },
-    grow: {
-      flex: 1,
-    },
+    grow: { flex: 1 },
     small: {
+      minHeight: theme.spacing.xl,
       paddingHorizontal: theme.spacing.sm,
-      paddingVertical: theme.spacing.xs,
-      minHeight: 36,
     },
     large: {
-      paddingHorizontal: theme.spacing.lg,
-      paddingVertical: theme.spacing.md,
-      minHeight: 52,
+      minHeight: buttonHeight,
     },
     iconOnly: {
+      height: theme.spacing.xl + 2,
+      minHeight: theme.spacing.xl + 2,
+      minWidth: theme.spacing.xl + 2,
       paddingHorizontal: 0,
-      paddingVertical: 0,
-      width: theme.spacing.xl + theme.spacing.sm,
-      height: theme.spacing.xl + theme.spacing.sm,
-      minWidth: theme.spacing.xl + theme.spacing.sm,
-      minHeight: theme.spacing.xl + theme.spacing.sm,
+      width: theme.spacing.xl + 2,
     },
     iconOnlySmall: {
-      width: theme.spacing.xl,
-      height: theme.spacing.xl,
-      minWidth: theme.spacing.xl,
-      minHeight: theme.spacing.xl,
+      height: theme.spacing.lg + theme.spacing.xs,
+      minHeight: theme.spacing.lg + theme.spacing.xs,
+      minWidth: theme.spacing.lg + theme.spacing.xs,
+      width: theme.spacing.lg + theme.spacing.xs,
     },
     iconOnlyLarge: {
-      width: theme.spacing.xxl,
-      height: theme.spacing.xxl,
-      minWidth: theme.spacing.xxl,
-      minHeight: theme.spacing.xxl,
+      height: theme.spacing.xxl - 2,
+      minHeight: theme.spacing.xxl - 2,
+      minWidth: theme.spacing.xxl - 2,
+      width: theme.spacing.xxl - 2,
     },
-    primary: {
-      backgroundColor: colors.accent,
-    },
-    secondary: {
-      backgroundColor: colors.inverse,
-    },
-    ghost: {
-      backgroundColor: 'transparent',
-    },
+
+    primary: { backgroundColor: colors.accent },
+    secondary: { backgroundColor: colors.inverse },
+    ghost: { backgroundColor: 'transparent' },
     outlined: {
       backgroundColor: 'transparent',
-      borderWidth: 1,
       borderColor: colors.border,
+      borderWidth: theme.hairline,
     },
-    disabledPrimary: {
-      backgroundColor: colors.border,
-    },
-    disabledSecondary: {
-      backgroundColor: colors.border,
-    },
-    disabledOutlined: {
-      borderColor: colors.border,
-    },
-    disabledGhost: {
+    danger: { backgroundColor: colors.danger },
+    dangerSoft: {
       backgroundColor: 'transparent',
+      borderColor: colors.danger,
+      borderWidth: theme.hairline,
     },
-    pressed: {
-      opacity: 0.92,
-    },
+
+    disabledPrimary: { backgroundColor: colors.surfaceSoft },
+    disabledSecondary: { backgroundColor: colors.surfaceSoft },
+    disabledOutlined: { borderColor: colors.border },
+    disabledGhost: { backgroundColor: 'transparent' },
+    disabled: { opacity: 0.55 },
   });

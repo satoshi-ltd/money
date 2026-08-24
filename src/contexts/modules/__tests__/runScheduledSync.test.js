@@ -9,6 +9,12 @@ jest.mock('../../../services', () => ({
 const { EXPENSE } = C.TX.TYPE;
 const DAY = C.MS_IN_DAY;
 
+// A Wednesday: these cases materialise by weekday, so a real clock makes them pass or fail by the day of the week.
+const FROZEN = new Date('2026-08-26T09:00:00Z');
+
+beforeAll(() => jest.useFakeTimers({ doNotFake: ['nextTick'] }).setSystemTime(FROZEN));
+afterAll(() => jest.useRealTimers());
+
 const createStore = (data) => {
   let key;
 

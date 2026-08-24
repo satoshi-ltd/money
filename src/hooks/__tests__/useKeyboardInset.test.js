@@ -33,25 +33,25 @@ describe('hooks/useKeyboardInset', () => {
   test('reports the keyboard height Android sends, and forgets it on hide', () => {
     const { renderer, values } = render();
 
-    expect(values[0]).toBe(0);
+    expect(values[0]).toEqual({ height: 0, top: 0 });
 
-    act(() => listeners.keyboardDidShow({ endCoordinates: { height: 312 } }));
-    expect(values[values.length - 1]).toBe(312);
+    act(() => listeners.keyboardDidShow({ endCoordinates: { height: 312, screenY: 540 } }));
+    expect(values[values.length - 1]).toEqual({ height: 312, top: 540 });
 
     act(() => listeners.keyboardDidHide());
-    expect(values[values.length - 1]).toBe(0);
+    expect(values[values.length - 1]).toEqual({ height: 0, top: 0 });
 
     act(() => renderer.unmount());
   });
 
-  test('ignores an event without a usable height', () => {
+  test('ignores the spurious event Android sends with a negative height', () => {
     const { renderer, values } = render();
 
     act(() => listeners.keyboardDidShow({}));
-    expect(values[values.length - 1]).toBe(0);
-
     act(() => listeners.keyboardDidShow({ endCoordinates: { height: 0 } }));
-    expect(values[values.length - 1]).toBe(0);
+    act(() => listeners.keyboardDidShow({ endCoordinates: { height: -24, screenY: 899 } }));
+
+    expect(values[values.length - 1]).toEqual({ height: 0, top: 0 });
 
     act(() => renderer.unmount());
   });

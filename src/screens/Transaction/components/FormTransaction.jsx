@@ -1,25 +1,29 @@
+import DateTimePicker from '@react-native-community/datetimepicker';
 import PropTypes from 'prop-types';
-import React, { useEffect, useMemo, useRef } from 'react';
-import { InteractionManager, useWindowDimensions } from 'react-native';
+import React, { useMemo, useState } from 'react';
+import { Platform } from 'react-native';
 
 import { style } from './FormTransaction.style';
+import { Chip, Dropdown, FieldRow, Input, Modal, PriceFriendly, Text, View } from '../../../components';
+import { useApp, useStore } from '../../../contexts';
 import {
-  CardOption,
-  Heading,
-  InputAccount,
-  InputAmount,
-  InputDate,
-  InputField,
-  InputTypeTransaction,
-  ScrollView,
-} from '../../../components';
-import { useStore } from '../../../contexts';
-import { C, getIcon, L10N, suggestAccount, suggestAmount, suggestCategory } from '../../../modules';
-import { optionSnap } from '../../../theme/layout';
+  C,
+  currencySymbol,
+  ICON,
+  L10N,
+  repeatSuggestion,
+  suggestAccount,
+  suggestAmount,
+  suggestCategory,
+  verboseDate,
+} from '../../../modules';
 import { queryCategories } from '../helpers';
 
 const EXPENSE = C?.TX?.TYPE?.EXPENSE ?? 0;
 const INCOME = C?.TX?.TYPE?.INCOME ?? 1;
+
+const isNumber = /^[0-9]+([,.][0-9]+)?$|^[0-9]+([,.][0-9]+)?[.,]$/;
+const DATE_FORMAT = { day: 'numeric', month: 'short', year: 'numeric' };
 
 const FormTransaction = ({
   account = {},
@@ -36,22 +40,33 @@ const FormTransaction = ({
   onAutoSelectType,
   onManualAmountChange,
   onManualCategorySelect,
-  onTypeChange,
   onSelectAccount,
   showAccount = false,
   showCategory = true,
   showDate = true,
-  showType = true,
   type = EXPENSE,
 } = {}) => {
-  const scrollview = useRef(null);
-  const { width } = useWindowDimensions();
-  const { settings = {} } = useStore();
+  const { colors } = useApp();
+  const { session: { locale } = {}, settings = {}, txs = [] } = useStore();
+  const { theme: themeMode } = settings;
   const safeForm = form || {};
   const safeType = type ?? EXPENSE;
 
+  const [suggestion, setSuggestion] = useState();
+  const [showAccounts, setShowAccounts] = useState(false);
+  const [showCategories, setShowCategories] = useState(false);
+  const [openDate, setOpenDate] = useState(false);
+  const [applied, setApplied] = useState();
+
+  const computeValid = (next) =>
+    (showCategory ? next.category !== undefined : true) &&
+    typeof next.title === 'string' &&
+    next.title.trim() !== '' &&
+    next.value > 0;
+
   const handleField = (field, fieldValue) => {
     let next = { ...safeForm, [field]: fieldValue };
+    let applied;
 
     if (autoSuggest && field === 'title') {
       const title = fieldValue;
@@ -84,8 +99,10 @@ const FormTransaction = ({
         onAutoSelectType(otherType);
         next = { ...next, category: suggestedOther };
         effectiveType = otherType;
+        applied = { ...applied, category: suggestedOther, type: otherType };
       } else if (showCategory && next.category === undefined && suggestedCurrent !== undefined) {
         next = { ...next, category: suggestedCurrent };
+        applied = { ...applied, category: suggestedCurrent };
       }
 
       let effectiveAccountHash = account?.hash;
@@ -98,28 +115,74 @@ const FormTransaction = ({
           if (nextAccount) {
             effectiveAccountHash = suggestedHash;
             onAutoSelectAccount(nextAccount);
+            applied = { ...applied, account: nextAccount };
           }
         }
       }
 
       // Auto-fill amount only when stable and only if the user hasn't touched the amount field.
       if (!amountTouched && amountEmpty && effectiveAccountHash) {
-        const suggested = suggestAmount(settings.autoAmount, { title, type: effectiveType, account: effectiveAccountHash });
-        if (suggested !== undefined) next = { ...next, value: suggested };
+        const suggested = suggestAmount(settings.autoAmount, {
+          title,
+          type: effectiveType,
+          account: effectiveAccountHash,
+        });
+        if (suggested !== undefined) {
+          next = { ...next, value: suggested };
+          applied = { ...applied, value: suggested };
+        }
+      }
+
+      if (applied) {
+        setSuggestion({
+          applied,
+          previousAccount: account,
+          previousCategory: safeForm.category,
+          previousType: safeType,
+          previousValue: safeForm.value,
+        });
       }
     }
 
-    if (autoSuggest && field === 'value' && !amountTouched) onManualAmountChange?.();
+    if (autoSuggest && field === 'value' && !amountTouched) {
+      onManualAmountChange?.();
+      setSuggestion(undefined);
+    }
 
-    onChange({
-      form: next,
-      valid:
-        (showCategory ? next.category !== undefined : true) &&
-        typeof next.title === 'string' &&
-        next.title.trim() !== '' &&
-        next.value > 0,
-    });
+    onChange({ form: next, valid: computeValid(next) });
   };
+
+  const handleAmount = (raw = '') => {
+    if (!isNumber.test(raw) || raw.length === 0) return handleField('value', undefined);
+    handleField('value', raw.replace(',', '.'));
+  };
+
+  const dismissSuggestion = () => {
+    const { applied, previousAccount, previousCategory, previousType, previousValue } = suggestion;
+
+    if (applied.type !== undefined) onAutoSelectType?.(previousType);
+    if (applied.account && previousAccount?.hash) onAutoSelectAccount?.(previousAccount);
+
+    const next = {
+      ...safeForm,
+      ...(applied.category !== undefined ? { category: previousCategory } : {}),
+      ...(applied.value !== undefined ? { value: previousValue } : {}),
+    };
+    setSuggestion(undefined);
+    onChange({ form: next, valid: computeValid(next) });
+  };
+
+  const suggestionLabel = suggestion
+    ? [
+        suggestion.applied.category !== undefined
+          ? L10N.CATEGORIES[suggestion.applied.type ?? safeType]?.[suggestion.applied.category]
+          : undefined,
+        suggestion.applied.account?.title,
+        suggestion.applied.value,
+      ]
+        .filter((part) => part !== undefined)
+        .join(' · ')
+    : undefined;
 
   const categories = queryCategories({ type: safeType });
 
@@ -134,109 +197,169 @@ const FormTransaction = ({
     return [...preferred, ...categories.filter(({ key }) => !preferred.find((item) => item.key === key))];
   }, [account?.txs, categories]);
 
-  useEffect(() => {
-    if (!showCategory) return;
-    const index = sortedCategories.findIndex(({ key }) => key === safeForm.category);
-    if (index < 0) return;
-
-    // Run after layout; avoid fighting user scroll on unrelated form edits.
-    const x = Math.max(0, (index - 1) * optionSnap);
-    let cancelled = false;
-    const task = InteractionManager.runAfterInteractions(() => {
-      if (cancelled) return;
-      requestAnimationFrame(() => {
-        if (cancelled) return;
-        scrollview.current?.scrollTo({ x, animated: true });
-      });
-    });
-
-    return () => {
-      cancelled = true;
-      task?.cancel?.();
-    };
-  }, [safeForm.category, showCategory, sortedCategories]);
   const showAccountInput = showAccount && accountsList.length && onSelectAccount;
+  const accountOptions = useMemo(
+    () => accountsList.map((item) => ({ account: item, id: item.hash, label: item.title, symbol: item.currency })),
+    [accountsList],
+  );
 
-  const detailRows = [
-    showType ? 'type' : null,
-    showAccountInput ? 'account' : null,
-    showDate ? 'date' : null,
-    'concept',
-    'amount',
-  ].filter(Boolean);
-  const isFirst = (name) => detailRows[0] === name;
-  const isLast = (name) => detailRows[detailRows.length - 1] === name;
+  // Once you have accepted one, stop offering the next: after an explicit tap, more proposals read as second-guessing.
+  const proposal = useMemo(
+    () =>
+      autoSuggest && safeForm.title !== applied
+        ? repeatSuggestion(txs, { prefix: safeForm.title || '', type: safeType })
+        : undefined,
+    [applied, autoSuggest, safeForm.title, safeType, txs],
+  );
+  const proposalAccount = proposal ? accountsList.find(({ hash }) => hash === proposal.account) : undefined;
+
+  // One tap writes the whole entry: the concept, what it cost, where from and under what.
+  const applyProposal = () => {
+    setApplied(proposal.title);
+    if (proposalAccount && proposalAccount.hash !== account?.hash) onSelectAccount?.(proposalAccount);
+    onManualCategorySelect?.();
+    onManualAmountChange?.();
+    setSuggestion(undefined);
+    onChange({
+      form: { ...safeForm, category: proposal.category, title: proposal.title, value: proposal.value },
+      valid: true,
+    });
+  };
+
+  const symbol = currencySymbol(account.currency);
+
+  const dateValue = safeForm.timestamp ? new Date(safeForm.timestamp) : new Date();
+  const isToday = dateValue.toDateString() === new Date().toDateString();
+  const dateLabel = isToday
+    ? `${L10N.TODAY}, ${verboseDate(dateValue, { locale, day: 'numeric', month: 'short' })}`
+    : verboseDate(dateValue, { locale, ...DATE_FORMAT });
 
   return (
     <>
-      {showCategory && (
-        <>
-          <Heading value={L10N.CATEGORY} />
-
-          <ScrollView horizontal ref={scrollview} snapTo={optionSnap} style={[{ width }, style.scrollView]}>
-            {sortedCategories.map((item, index) => (
-              <CardOption
-                key={item.key}
-                highlight={safeForm.category === item.key}
-                icon={getIcon({ type: safeType, category: item.key })}
-                legend={item.caption}
-                onPress={() => {
-                  onManualCategorySelect?.();
-                  handleField('category', item.key);
-                }}
-                style={[
-                  style.option,
-                  index === 0 && style.firstOption,
-                  index === sortedCategories.length - 1 && style.lastOption,
-                ]}
-              />
-            ))}
-          </ScrollView>
-        </>
-      )}
-
-      <Heading value={L10N.DETAILS} />
-
-      {showType ? (
-        <InputTypeTransaction first={isFirst('type')} last={isLast('type')} value={safeType} onChange={onTypeChange} />
-      ) : null}
-
-      {showAccountInput ? (
-        <InputAccount
-          accounts={accountsList}
-          first={isFirst('account')}
-          last={isLast('account')}
-          onSelect={onSelectAccount}
-          selected={account}
+      {suggestionLabel ? (
+        <Chip
+          iconRight={ICON.CLOSE}
+          label={`${L10N.SUGGESTED}: ${suggestionLabel}`}
+          variant="soft"
+          style={style.suggestion}
+          onPress={dismissSuggestion}
         />
       ) : null}
 
-      {showDate && (
-        <InputDate
-          first={isFirst('date')}
-          last={isLast('date')}
-          maximumDate={new Date()}
-          value={safeForm.timestamp ? new Date(safeForm.timestamp) : new Date()}
-          onChange={(value) => handleField('timestamp', value.getTime())}
-        />
-      )}
+      <View style={style.group}>
+        <FieldRow label={L10N.CONCEPT}>
+          <Input
+            placeholder="..."
+            style={style.rowInput}
+            value={safeForm.title}
+            onChange={(value) => handleField('title', value)}
+          />
+        </FieldRow>
 
-      <InputField
-        first={isFirst('concept')}
-        last={isLast('concept')}
-        label={L10N.CONCEPT}
-        value={safeForm.title}
-        onChange={(value) => handleField('title', value)}
-      />
+        {proposal ? (
+          <FieldRow divider label="" onPress={applyProposal}>
+            <Text medium numberOfLines={1} size="s">
+              {proposal.title}
+            </Text>
+            {proposalAccount ? (
+              <Text numberOfLines={1} size="xs" tone="muted">
+                {proposalAccount.title}
+              </Text>
+            ) : null}
+            <PriceFriendly
+              currency={proposalAccount?.currency || account.currency}
+              size="md"
+              tone="accent"
+              value={proposal.value}
+            />
+          </FieldRow>
+        ) : null}
 
-      <InputAmount
-        first={isFirst('amount')}
-        account={account}
-        currency={account.currency}
-        value={safeForm.value}
-        onChange={(value) => handleField('value', value)}
-        last={isLast('amount')}
-      />
+        <FieldRow divider label={L10N.AMOUNT}>
+          <Input
+            keyboardType="decimal-pad"
+            placeholder="0"
+            style={style.rowFigure}
+            value={safeForm.value !== undefined && safeForm.value !== null ? safeForm.value.toString() : ''}
+            onChange={handleAmount}
+          />
+          <Text figure="sm" tone="muted">
+            {symbol}
+          </Text>
+        </FieldRow>
+
+        {showAccountInput ? (
+          <View style={[style.rowWrap, showAccounts && style.rowWrapOpen]}>
+            <FieldRow chevron divider label={L10N.ACCOUNT} onPress={() => setShowAccounts(true)}>
+              <Text medium numberOfLines={1} size="s">
+                {`${account.title} ·`}
+              </Text>
+              <PriceFriendly currency={account.currency} size="md" value={account.currentBalance || 0} />
+            </FieldRow>
+            <Dropdown
+              options={accountOptions}
+              selected={account?.hash}
+              visible={showAccounts}
+              onClose={() => setShowAccounts(false)}
+              onSelect={(option) => {
+                setShowAccounts(false);
+                if (option?.account) onSelectAccount?.(option.account);
+              }}
+            />
+          </View>
+        ) : null}
+
+        {showCategory ? (
+          <View style={[style.rowWrap, showCategories && style.rowWrapOpen]}>
+            <FieldRow chevron divider label={L10N.CATEGORY} onPress={() => setShowCategories(true)}>
+              <Text medium numberOfLines={1} size="s">
+                {sortedCategories.find(({ key }) => key === safeForm.category)?.caption || '…'}
+              </Text>
+            </FieldRow>
+            <Dropdown
+              options={sortedCategories.map(({ caption, key }) => ({ id: key, label: caption, value: key }))}
+              selected={safeForm.category}
+              visible={showCategories}
+              onClose={() => setShowCategories(false)}
+              onSelect={(option) => {
+                setShowCategories(false);
+                onManualCategorySelect?.();
+                setSuggestion(undefined);
+                handleField('category', option.value);
+              }}
+            />
+          </View>
+        ) : null}
+
+        {showDate ? (
+          <FieldRow chevron divider label={L10N.DATE} onPress={() => setOpenDate(true)}>
+            <Text medium size="s">
+              {dateLabel}
+            </Text>
+          </FieldRow>
+        ) : null}
+
+      </View>
+
+      {openDate ? (
+        <Modal onClose={() => setOpenDate(false)}>
+          <DateTimePicker
+            accentColor={colors.accent}
+            is24Hour
+            maximumDate={new Date()}
+            mode="date"
+            display={Platform.OS === 'ios' ? 'inline' : 'calendar'}
+            textColor={colors.text}
+            themeVariant={themeMode}
+            value={dateValue}
+            onChange={(event, nextDate) => {
+              if (!nextDate) return;
+              handleField('timestamp', nextDate.getTime());
+              setOpenDate(false);
+            }}
+          />
+        </Modal>
+      ) : null}
     </>
   );
 };
@@ -253,14 +376,12 @@ FormTransaction.propTypes = {
   form: PropTypes.shape({}).isRequired,
   showCategory: PropTypes.bool,
   showDate: PropTypes.bool,
-  showType: PropTypes.bool,
   type: PropTypes.number,
   onChange: PropTypes.func.isRequired,
   onAutoSelectAccount: PropTypes.func,
   onAutoSelectType: PropTypes.func,
   onManualAmountChange: PropTypes.func,
   onManualCategorySelect: PropTypes.func,
-  onTypeChange: PropTypes.func,
   onSelectAccount: PropTypes.func,
   showAccount: PropTypes.bool,
 };

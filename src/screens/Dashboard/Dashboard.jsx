@@ -6,18 +6,30 @@ import { useScrollToTop } from '@react-navigation/native';
 import { DashboardListHeader } from './Dashboard.ListHeader';
 import { style } from './Dashboard.style';
 import { queryLastTxs, querySearchTxs } from './helpers';
-import { Screen, TransactionItem, TransactionsHeader } from '../../components';
+import { Masthead, Screen, TransactionItem, TransactionsHeader } from '../../components';
 import { useStore } from '../../contexts';
-import { C } from '../../modules';
+import { C, ledgerDate } from '../../modules';
 
 const Dashboard = ({ navigation: { navigate } = {} }) => {
-  const { accounts = [], txs = [] } = useStore();
+  const { accounts = [], session: { locale } = {}, today, txs = [] } = useStore();
   const listRef = useRef(null);
   useScrollToTop(listRef);
 
   const [lastTxs, setLastTxs] = useState([]);
   const [query, setQuery] = useState();
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState(false);
+
+  const handleSearch = () => {
+    setPage(1);
+    setQuery(undefined);
+    setSearch((previous) => !previous);
+  };
+
+  const handleQuery = (value) => {
+    setPage(1);
+    setQuery(value);
+  };
 
   useEffect(() => {
     if (!accounts.length) navigate('account', { firstAccount: true });
@@ -32,13 +44,21 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
 
   return (
     <Screen disableScroll>
+      <Masthead
+        query={query}
+        searching={search}
+        section={ledgerDate(new Date(today || Date.now()), locale)}
+        onQueryChange={handleQuery}
+        onSearch={handleSearch}
+      />
+
       <SectionList
         ref={listRef}
         initialNumToRender={C.TRANSACTIONS_PER_PAGE}
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"
         keyExtractor={(item, index) => `${item.hash || item.timestamp}-${index}`}
-        ListHeaderComponent={<DashboardListHeader navigate={navigate} onSearch={setQuery} setPage={setPage} />}
+        ListHeaderComponent={search ? null : <DashboardListHeader navigate={navigate} />}
         renderItem={({ item }) => <TransactionItem {...item} />}
         renderSectionHeader={({ section }) => <TransactionsHeader {...section} />}
         sections={querySearchTxs({ accounts, page, query, txs }) || lastTxs}

@@ -2,71 +2,86 @@ import { StyleSheet } from 'react-native';
 
 import { theme } from '../../theme';
 
+const { figureLineHeights, figureSizes, fontFaces, lineHeights, sizes, tracking } = theme.typography;
+
 export const getStyles = (colors) =>
   StyleSheet.create({
     base: {
-      fontSize: theme.typography.sizes.body,
-      lineHeight: theme.typography.lineHeights.body,
-      fontFamily: 'font-default',
+      fontSize: sizes.body,
+      lineHeight: lineHeights.body,
+      fontFamily: fontFaces.regular,
       color: colors.text,
+    },
+    medium: {
+      fontFamily: fontFaces.medium,
     },
     bold: {
-      fontFamily: 'font-bold',
+      fontFamily: fontFaces.bold,
     },
+
     title: {
-      fontSize: theme.typography.sizes.title,
-      lineHeight: theme.typography.lineHeights.title,
+      fontSize: sizes.title,
+      lineHeight: lineHeights.title,
+      letterSpacing: tracking.title,
+    },
+    heading: {
+      fontSize: sizes.heading,
+      lineHeight: lineHeights.heading,
+      letterSpacing: -0.22,
     },
     subtitle: {
-      fontSize: theme.typography.sizes.subtitle,
-      lineHeight: theme.typography.lineHeights.subtitle,
+      fontSize: sizes.subtitle,
+      lineHeight: lineHeights.subtitle,
     },
     body: {
-      fontSize: theme.typography.sizes.body,
-      lineHeight: theme.typography.lineHeights.body,
+      fontSize: sizes.body,
+      lineHeight: lineHeights.body,
     },
     caption: {
-      fontSize: theme.typography.sizes.caption,
-      lineHeight: theme.typography.lineHeights.caption,
+      fontSize: sizes.caption,
+      lineHeight: lineHeights.caption,
     },
     tiny: {
-      fontSize: theme.typography.sizes.tiny,
-      lineHeight: theme.typography.lineHeights.tiny,
+      fontSize: sizes.tiny,
+      lineHeight: lineHeights.tiny,
     },
-    tonePrimary: {
-      color: colors.text,
+    micro: {
+      fontSize: sizes.micro,
+      lineHeight: lineHeights.micro,
     },
-    toneSecondary: {
-      color: colors.textSecondary,
+
+    mono: {
+      fontFamily: fontFaces.mono,
+      fontVariant: ['tabular-nums'],
+      letterSpacing: tracking.figure,
     },
-    toneAccent: {
-      color: colors.accent,
+    monoMedium: {
+      fontFamily: fontFaces.monoMedium,
     },
-    toneDanger: {
-      color: colors.danger,
-    },
-    toneWarning: {
-      color: colors.warning,
-    },
-    toneOnAccent: {
-      color: colors.onAccent || colors.text,
-    },
-    toneOnInverse: {
-      color: colors.onInverse,
-    },
-    alignLeft: {
-      textAlign: 'left',
-    },
-    alignCenter: {
-      textAlign: 'center',
-    },
-    alignRight: {
-      textAlign: 'right',
-    },
-    flex: {
-      flex: 1,
-    },
+    figureXs: { fontSize: figureSizes.xs, lineHeight: figureLineHeights.xs, letterSpacing: 0 },
+    figureSm: { fontSize: figureSizes.sm, lineHeight: figureLineHeights.sm },
+    figureMd: { fontSize: figureSizes.md, lineHeight: figureLineHeights.md },
+    figureLg: { fontSize: figureSizes.lg, lineHeight: figureLineHeights.lg },
+    figureXl: { fontSize: figureSizes.xl, lineHeight: figureLineHeights.xl },
+    figureHero: { fontSize: figureSizes.hero, lineHeight: figureLineHeights.hero, letterSpacing: -1.4 },
+
+    tonePrimary: { color: colors.text },
+    toneSecondary: { color: colors.textSecondary },
+    toneMuted: { color: colors.textMuted },
+    tonePositive: { color: colors.positive },
+    toneAccent: { color: colors.accent },
+    toneDanger: { color: colors.danger },
+    toneWarning: { color: colors.warning },
+    toneOnAccent: { color: colors.onAccent },
+    toneOnAccentSoft: { color: colors.onAccentSoft },
+    toneOnInverse: { color: colors.onInverse },
+
+    alignLeft: { textAlign: 'left' },
+    alignCenter: { textAlign: 'center' },
+    alignRight: { textAlign: 'right' },
+    flex: { flex: 1 },
     uppercase: {
       textTransform: 'uppercase',
+      letterSpacing: tracking.eyebrow,
     },
   });

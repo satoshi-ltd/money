@@ -1,3 +1,2 @@
-export * from './Chart';
 export * from './ItemGroupCategories';
-export * from './StatsRangeToggle';
+export * from './MonthKpis';

@@ -1,15 +1,26 @@
 import PropTypes from 'prop-types';
-import React, { useRef, useState } from 'react';
-import { Alert, Linking } from 'react-native';
+import React, { useMemo, useRef, useState } from 'react';
+import { Linking } from 'react-native';
 import { useScrollToTop } from '@react-navigation/native';
 
 import { getLatestRates } from './helpers';
-import { ABOUT, DATA, PREMIUM, PREFERENCES } from './Settings.constants';
-import { style } from './Settings.style';
-import { Chip, Heading, Icon, Screen, Setting, Text, View } from '../../components';
-import { useStore } from '../../contexts';
-import { C, eventEmitter, hasPremiumAccess, ICON, L10N, PREMIUM_ENABLED } from '../../modules';
-import { BackupService, NotificationsService, PurchaseService } from '../../services';
+import { ABOUT, APPEARANCE_OPTIONS, DATA, LANGUAGE_OPTIONS, PREMIUM } from './Settings.constants';
+import { getStyles } from './Settings.style';
+import { Chip, Eyebrow, Icon, Masthead, Pressable, Screen, Setting, SettingSelect, Text, View } from '../../components';
+import { useApp, useStore } from '../../contexts';
+import {
+  backupAge,
+  C,
+  currencySymbol,
+  eventEmitter,
+  hasPremiumAccess,
+  ICON,
+  L10N,
+  PREMIUM_ENABLED,
+  verboseDate,
+} from '../../modules';
+import { setLanguage } from '../../i18n';
+import { BackupService, NotificationsService, PurchaseService, ServiceRates } from '../../services';
 
 const { EVENT } = C;
 
@@ -18,6 +29,8 @@ const Settings = ({ navigation = {} }) => {
   useScrollToTop(scrollRef);
 
   const store = useStore();
+  const { colors, themePreference } = useApp();
+  const style = useMemo(() => getStyles(colors), [colors]);
 
   const [activity, setActivity] = useState({});
 
@@ -27,6 +40,7 @@ const Settings = ({ navigation = {} }) => {
     scheduledTxs = [],
     resetAppData,
     updateSettings,
+    updateRates,
     updateSubscription,
     updateTheme,
     settings = {},
@@ -34,7 +48,7 @@ const Settings = ({ navigation = {} }) => {
     txs = [],
   } = store;
 
-  const { baseCurrency, language = 'en', lastRatesUpdate = '', reminders, theme } = settings;
+  const { backupAt, baseCurrency, language = 'en', lastRatesUpdate = '', reminders } = settings;
 
   const isPremium = hasPremiumAccess(subscription);
   const subscriptionStatus = subscription?.productIdentifier
@@ -64,8 +78,18 @@ const Settings = ({ navigation = {} }) => {
     if (!isPremium) return handleSubscription('export');
 
     try {
-      const ok = await BackupService.export({ accounts, scheduledTxs, settings, txs });
-      if (ok) eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.CONFIRM_EXPORT_SUCCESS });
+      const ok = await BackupService.export({
+        accounts,
+        scheduledTxs,
+        settings,
+        txs,
+      });
+      if (ok) {
+        await updateSettings({ backupAt: Date.now() });
+        eventEmitter.emit(EVENT.NOTIFICATION, {
+          title: L10N.CONFIRM_EXPORT_SUCCESS,
+        });
+      }
     } catch (error) {
       handleError(error);
     }
@@ -76,7 +100,10 @@ const Settings = ({ navigation = {} }) => {
 
     try {
       const ok = await BackupService.exportCsv({ accounts, settings, txs });
-      if (ok) eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.CONFIRM_EXPORT_SUCCESS });
+      if (ok)
+        eventEmitter.emit(EVENT.NOTIFICATION, {
+          title: L10N.CONFIRM_EXPORT_SUCCESS,
+        });
     } catch (error) {
       handleError(error);
     }
@@ -86,20 +113,21 @@ const Settings = ({ navigation = {} }) => {
     const backup = await BackupService.import().catch(handleError);
 
     if (backup) {
-      Alert.alert(L10N.CONFIRM_IMPORT, L10N.CONFIRM_IMPORT_CAPTION(backup), [
-        { text: L10N.CANCEL, style: 'cancel' },
-        {
-          text: L10N.ACCEPT,
-          onPress: async () => {
-            const { settings: { theme } = {} } = backup || {};
+      eventEmitter.emit(EVENT.CONFIRM, {
+        title: L10N.CONFIRM_IMPORT,
+        caption: L10N.CONFIRM_IMPORT_CAPTION(backup),
+        actionLabel: L10N.ACCEPT,
+        onAction: async () => {
+          const { settings: { theme } = {} } = backup || {};
 
-            if (theme) updateTheme(theme);
-            await importBackup(backup);
-            navigation.navigate('dashboard');
-            eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.CONFIRM_IMPORT_SUCCESS });
-          },
+          if (theme) updateTheme(theme);
+          await importBackup(backup);
+          navigation.navigate('dashboard');
+          eventEmitter.emit(EVENT.NOTIFICATION, {
+            title: L10N.CONFIRM_IMPORT_SUCCESS,
+          });
         },
-      ]);
+      });
     }
   };
 
@@ -124,50 +152,86 @@ const Settings = ({ navigation = {} }) => {
       .then((activeSubscription) => {
         if (activeSubscription?.productIdentifier) {
           updateSubscription(activeSubscription);
-          eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.PURCHASE_RESTORED });
+          eventEmitter.emit(EVENT.NOTIFICATION, {
+            title: L10N.PURCHASE_RESTORED,
+          });
         } else {
-          eventEmitter.emit(EVENT.NOTIFICATION, { title: L10N.PURCHASES_NOT_FOUND });
+          eventEmitter.emit(EVENT.NOTIFICATION, {
+            title: L10N.PURCHASES_NOT_FOUND,
+          });
         }
-        setActivity((prev) => ({ ...(prev || {}), handleRestorePurchases: false }));
+        setActivity((prev) => ({
+          ...(prev || {}),
+          handleRestorePurchases: false,
+        }));
       })
       .catch((error) => {
-        setActivity((prev) => ({ ...(prev || {}), handleRestorePurchases: false }));
+        setActivity((prev) => ({
+          ...(prev || {}),
+          handleRestorePurchases: false,
+        }));
         handleError(error);
       });
   };
 
-  const handleError = () => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, text: L10N.ERROR_TRY_AGAIN });
+  const handleError = () =>
+    eventEmitter.emit(EVENT.NOTIFICATION, {
+      error: true,
+      text: L10N.ERROR_TRY_AGAIN,
+    });
 
-  const handleTheme = () => {
-    const nextTheme = theme === 'light' ? 'dark' : 'light';
-    updateTheme(nextTheme);
-    updateSettings({ theme: nextTheme });
+  const handleTheme = (next) => {
+    updateTheme(next);
+    updateSettings({ theme: next });
   };
 
-  const RightValueChevron = ({ value }) => (
+  const currencyOptions = Object.keys(C.SYMBOL).map((code) => ({
+    label: L10N.CURRENCY_NAME[code] || code,
+    symbol: currencySymbol(code),
+    value: code,
+  }));
+
+  const handleBaseCurrency = async (next) => {
+    const nextRates = await ServiceRates.get({ baseCurrency: next, latest: false })['catch'](() => undefined);
+    if (!nextRates) return eventEmitter.emit(EVENT.NOTIFICATION, { error: true, title: L10N.ERROR_SERVICE_RATES });
+    await updateRates({ ...nextRates, currency: next });
+  };
+
+  const RightValueChevron = ({ figure, value }) => (
     <View row align="center" gap="xxs">
-      <Text tone="secondary" size="s">
-        {value}
-      </Text>
-      <Icon name={ICON.RIGHT} tone="secondary" />
+      {figure ? (
+        <Text figure="sm" tone="muted">
+          {value}
+        </Text>
+      ) : (
+        <Text size="s" tone="muted">
+          {value}
+        </Text>
+      )}
+      <Icon name={ICON.RIGHT} size="s" tone="muted" />
     </View>
   );
 
   const RightCountChevron = ({ count }) => (
     <View row align="center" gap="xxs">
-      <Chip label={count} variant="accent" shape={count < 10 ? 'circle' : 'pill'} />
-      <Icon name={ICON.RIGHT} tone="secondary" />
+      <Text figure="sm" tone="muted">
+        {count}
+      </Text>
+      <Icon name={ICON.RIGHT} size="s" tone="muted" />
     </View>
   );
 
   const RightPremiumChevron = () => (
     <View row align="center" gap="xxs">
       <Chip label={L10N.PREMIUM} variant="muted" />
-      <Icon name={ICON.RIGHT} tone="secondary" />
+      <Icon name={ICON.RIGHT} size="s" tone="muted" />
     </View>
   );
 
-  const handleLanguage = () => navigation.navigate('language');
+  const handleLanguage = async (next) => {
+    updateSettings({ language: next });
+    await setLanguage(next);
+  };
 
   const handleChangeReminder = (next) => {
     const value = typeof next === 'object' ? next.value : next ? 1 : 0;
@@ -176,71 +240,52 @@ const Settings = ({ navigation = {} }) => {
   };
 
   const handleLogout = () => {
-    Alert.alert(L10N.CONFIRM_LOG_OUT, L10N.CONFIRM_LOG_OUT_CAPTION, [
-      { text: L10N.CANCEL, style: 'cancel' },
-      {
-        text: L10N.ACCEPT,
-        style: 'destructive',
-        onPress: async () => {
-          await updateSettings({ onboarded: false });
-          // Settings lives inside Tabs -> Stack. Reset the root stack to onboarding.
-          const root = navigation?.getParent?.()?.getParent?.();
-          if (root?.reset) root.reset({ index: 0, routes: [{ name: 'onboarding' }] });
-          else navigation?.navigate?.('onboarding');
-        },
+    eventEmitter.emit(EVENT.CONFIRM, {
+      title: L10N.CONFIRM_LOG_OUT,
+      caption: L10N.CONFIRM_LOG_OUT_CAPTION,
+      actionLabel: L10N.ACCEPT,
+      onAction: () => {
+        // Settings lives inside Tabs -> Stack, so the root stack owns the lock screen.
+        const root = navigation?.getParent?.()?.getParent?.();
+        if (root?.reset) root.reset({ index: 0, routes: [{ name: 'session' }] });
+        else navigation?.navigate?.('session');
       },
-    ]);
+    });
   };
 
   const handleResetData = () => {
-    Alert.alert(L10N.RESET_DATA, L10N.RESET_DATA_CAPTION, [
-      { text: L10N.CANCEL, style: 'cancel' },
-      {
-        text: L10N.NEXT,
-        style: 'destructive',
-        onPress: () => {
-          Alert.alert(L10N.RESET_DATA_CONFIRM, L10N.RESET_DATA_CONFIRM_CAPTION, [
-            { text: L10N.CANCEL, style: 'cancel' },
-            {
-              text: L10N.RESET_DATA_ACTION,
-              style: 'destructive',
-              onPress: async () => {
-                await resetAppData?.();
-                const root = navigation?.getParent?.()?.getParent?.();
-                if (root?.reset) root.reset({ index: 0, routes: [{ name: 'onboarding' }] });
-                else navigation?.navigate?.('onboarding');
-              },
-            },
-          ]);
-        },
+    eventEmitter.emit(EVENT.CONFIRM, {
+      title: L10N.RESET_DATA,
+      caption: L10N.RESET_DATA_CAPTION,
+      actionLabel: L10N.NEXT,
+      onAction: () => {
+        eventEmitter.emit(EVENT.CONFIRM, {
+          title: L10N.RESET_DATA_CONFIRM,
+          caption: L10N.RESET_DATA_CONFIRM_CAPTION,
+          actionLabel: L10N.RESET_DATA_ACTION,
+          onAction: async () => {
+            await resetAppData?.();
+            const root = navigation?.getParent?.()?.getParent?.();
+            if (root?.reset) root.reset({ index: 0, routes: [{ name: 'onboarding' }] });
+            else navigation?.navigate?.('onboarding');
+          },
+        });
       },
-    ]);
+    });
   };
 
-  const revenueCatCustomerId = subscription?.customerInfo?.originalAppUserId;
-
-  const currentLanguageLabel =
-    language === 'es'
-      ? L10N.LANGUAGE_ES
-      : language === 'pt'
-      ? L10N.LANGUAGE_PT
-      : language === 'fr'
-      ? L10N.LANGUAGE_FR
-      : language === 'de'
-      ? L10N.LANGUAGE_DE
-      : L10N.LANGUAGE_EN;
   const scheduledCount = scheduledTxs.length;
   const backupReminderEnabled = (reminders?.[0] ?? 1) === 1;
   const resolvedLocale =
     language === 'es'
       ? 'es-ES'
       : language === 'pt'
-      ? 'pt-PT'
-      : language === 'fr'
-      ? 'fr-FR'
-      : language === 'de'
-      ? 'de-DE'
-      : 'en-US';
+        ? 'pt-PT'
+        : language === 'fr'
+          ? 'fr-FR'
+          : language === 'de'
+            ? 'de-DE'
+            : 'en-US';
   const lastRatesDate = lastRatesUpdate ? new Date(lastRatesUpdate) : null;
   const lastRatesUpdatedValue = (() => {
     if (!lastRatesDate || Number.isNaN(lastRatesDate.getTime())) return '';
@@ -249,7 +294,10 @@ const Settings = ({ navigation = {} }) => {
 
     if (isToday) {
       // Time-only is easier to scan when the date is obvious.
-      return lastRatesDate.toLocaleTimeString(resolvedLocale, { hour: '2-digit', minute: '2-digit' });
+      return lastRatesDate.toLocaleTimeString(resolvedLocale, {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
     }
 
     return lastRatesDate.toLocaleString(resolvedLocale, {
@@ -265,188 +313,175 @@ const Settings = ({ navigation = {} }) => {
 
     // Matches NotificationsService.reminders() weekly trigger: Sunday at 08:00 local time.
     const sunday = new Date(2024, 0, 7, 8, 0, 0, 0); // Sunday
-    const weekday = sunday.toLocaleDateString(resolvedLocale, { weekday: 'short' });
-    const time = sunday.toLocaleTimeString(resolvedLocale, { hour: '2-digit', minute: '2-digit' });
+    const weekday = sunday.toLocaleDateString(resolvedLocale, {
+      weekday: 'short',
+    });
+    const time = sunday.toLocaleTimeString(resolvedLocale, {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
 
     return `${L10N.SCHEDULED_PATTERN_WEEKLY} - ${weekday} ${time}`;
   })();
+
+  const { stale: backupStale } = backupAge(backupAt);
+  const backupCaption = backupAt
+    ? `${L10N.BACKUP_LAST} \u00B7 ${verboseDate(new Date(backupAt), { locale: resolvedLocale, relative: true })}`
+    : L10N.BACKUP_NEVER;
   const handleScheduledPress = () =>
     navigation.navigate(
       scheduledTxs.length ? 'scheduled' : 'scheduledForm',
       scheduledTxs.length ? undefined : { create: true },
     );
 
-  const settingProps = {};
-
   return (
-    <Screen ref={scrollRef} gap offset style={style.screen}>
-      <Heading value={L10N.SETTINGS} />
+    <>
+      <Masthead section={L10N.SETTINGS} />
+      <Screen ref={scrollRef} style={style.screen}>
+        <Pressable onPress={handleExport}>
+          <View row style={style.backup}>
+            {backupStale ? <Icon name={ICON.ALERT} tone="onAccentSoft" /> : null}
+            <View flex>
+              <Text medium size="s" tone="onAccentSoft">
+                {L10N.EXPORT_DATA}
+              </Text>
+              <Text size="xxs" style={style.backupCaption} tone="onAccentSoft">
+                {backupCaption}
+              </Text>
+            </View>
+            <Chip label={L10N.BACKUP_CTA} size="s" variant="inverse" onPress={handleExport} />
+          </View>
+        </Pressable>
 
-      <View style={PREMIUM_ENABLED ? style.group : undefined}>
         {PREMIUM_ENABLED ? (
-          <Text bold size="s">
-            {L10N.PREMIUM.toUpperCase()}
-          </Text>
+          <View style={style.group}>
+            <Eyebrow style={style.groupLabel}>{L10N.PREMIUM}</Eyebrow>
+            {PREMIUM(isPremium, subscription).map(({ disabled, id, text, ...rest }, index) => (
+              <Setting
+                activity={rest.callback ? activity?.[rest.callback] : undefined}
+                divider={index > 0}
+                key={`premium-${id}`}
+                disabled={disabled}
+                title={text}
+                type={rest.callback === 'handleRestorePurchases' ? 'action' : 'navigation'}
+                right={
+                  rest.callback === 'handleSubscription' ? (
+                    isPremium ? (
+                      <RightValueChevron value={subscriptionStatus} />
+                    ) : (
+                      <RightPremiumChevron />
+                    )
+                  ) : undefined
+                }
+                onPress={rest.callback ? () => handleOption(rest) : undefined}
+              />
+            ))}
+          </View>
         ) : null}
-        {(PREMIUM_ENABLED ? PREMIUM(isPremium, subscription) : []).map(({ disabled, icon, id, text, ...rest }) => (
-          <Setting
-            {...settingProps}
-            activity={rest.callback ? activity?.[rest.callback] : undefined}
-            key={`premium-${id}`}
-            disabled={disabled}
-            icon={icon}
-            title={text}
-            type={rest.callback === 'handleRestorePurchases' ? 'action' : 'navigation'}
-            right={
-              rest.callback === 'handleSubscription'
-                ? isPremium
-                  ? <RightValueChevron value={subscriptionStatus} />
-                  : <RightPremiumChevron />
-                : undefined
-            }
-            onPress={rest.callback ? () => handleOption(rest) : undefined}
-          />
-        ))}
-      </View>
 
-      <View style={style.group}>
-        <Text bold size="s">
-          {L10N.DATA.toUpperCase()}
-        </Text>
-        {DATA().map(({ disabled, icon, id, text, ...rest }) => {
-          const isUpdateRates = rest.callback === 'handleUpdateRates';
-          const isExportBackup = rest.callback === 'handleExport';
-          const isExportCsv = rest.callback === 'handleExportCsv';
-          const gated = !isPremium && (isExportBackup || isExportCsv);
-          const showSpinner = isUpdateRates && activity?.handleUpdateRates;
+        <View style={style.group}>
+          <Eyebrow style={style.groupLabel}>{L10N.DATA}</Eyebrow>
+          {DATA().map(({ disabled, id, text, ...rest }, index) => {
+            const isUpdateRates = rest.callback === 'handleUpdateRates';
+            const isExportBackup = rest.callback === 'handleExport';
+            const isExportCsv = rest.callback === 'handleExportCsv';
+            const gated = !isPremium && (isExportBackup || isExportCsv);
+            const showSpinner = isUpdateRates && activity?.handleUpdateRates;
 
-          return (
-            <Setting
-              {...settingProps}
-              key={`data-${id}`}
-              disabled={disabled}
-              icon={icon}
-              title={text}
-              type="navigation"
-              activity={showSpinner}
-              right={
-                showSpinner
-                  ? undefined
-                  : gated
-                  ? <RightPremiumChevron />
-                  : isUpdateRates && lastRatesUpdatedValue
-                  ? <RightValueChevron value={lastRatesUpdatedValue} />
-                  : <Icon name={ICON.RIGHT} tone="secondary" />
-              }
-              onPress={rest.callback ? () => handleOption(rest) : undefined}
-            />
-          );
-        })}
-      </View>
-
-      <View style={style.group}>
-        <Text bold size="s">
-          {L10N.PREFERENCES.toUpperCase()}
-        </Text>
-        <Setting
-          {...settingProps}
-          icon={ICON.THEME}
-          title={L10N.APPEARANCE}
-          subtitle={theme === 'dark' ? L10N.APPERANCE_DARK : L10N.APPERANCE_LIGHT}
-          type="toggle"
-          value={theme === 'dark'}
-          onValueChange={handleTheme}
-        />
-        <Setting
-          {...settingProps}
-          icon={ICON.LANGUAGE}
-          title={L10N.LANGUAGE}
-          type="navigation"
-          onPress={handleLanguage}
-          right={<RightValueChevron value={currentLanguageLabel} />}
-        />
-        {PREFERENCES().map(({ disabled, icon, text, ...rest }, index) => (
-          <Setting
-            {...settingProps}
-            activity={rest.callback ? activity?.[rest.callback] : undefined}
-            key={`preference-${index}`}
-            {...{ disabled, icon, title: text }}
-            right={
-              rest.screen === 'baseCurrency' ? <RightValueChevron value={L10N.CURRENCY_NAME[baseCurrency]} /> : undefined
-            }
-            onPress={() => handleOption(rest)}
-          />
-        ))}
-        <Setting
-          {...settingProps}
-          icon={ICON.SCHEDULED}
-          title={L10N.SCHEDULED}
-          type="navigation"
-          right={
-            scheduledCount
-              ? <RightCountChevron count={scheduledCount} />
-              : <RightValueChevron value={L10N.NEW} />
-          }
-          onPress={handleScheduledPress}
-        />
-        <Setting
-          {...settingProps}
-          subtitle={backupReminderSubtitle}
-          icon={ICON.BELL}
-          type="toggle"
-          value={backupReminderEnabled}
-          onValueChange={handleChangeReminder}
-          title={L10N.REMINDER_BACKUP}
-        />
-      </View>
-
-      <View style={style.group}>
-        <Text bold size="s">
-          {L10N.ABOUT.toUpperCase()}
-        </Text>
-        {ABOUT().map(({ disabled, icon, text, ...rest }, index) => (
-          <Setting
-            {...settingProps}
-            activity={rest.callback ? activity?.[rest.callback] : undefined}
-            key={`about-${index}`}
-            {...{ disabled, icon, title: text }}
-            onPress={() => handleOption(rest)}
-          />
-        ))}
-      </View>
-
-      <View style={style.group}>
-        <Text bold size="s">
-          {L10N.ACCOUNT_ACTIONS.toUpperCase()}
-        </Text>
-
-        <Setting
-          icon={ICON.BACK}
-          title={L10N.LOG_OUT}
-          type="action"
-          onPress={handleLogout}
-        />
-        <Setting
-          icon={ICON.ALERT}
-          iconTone="danger"
-          title={L10N.RESET_DATA}
-          titleTone="danger"
-          subtitle={L10N.RESET_DATA_CAPTION}
-          subtitleTone="secondary"
-          type="action"
-          onPress={handleResetData}
-        />
-
-        <View style={style.idsBlock}>
-          <Text align="center" size="xs" tone="secondary">{`Money v${C.VERSION}`}</Text>
-          {revenueCatCustomerId ? (
-            <Text align="center" selectable size="xs" tone="secondary">
-              {revenueCatCustomerId}
-            </Text>
-          ) : null}
+            return (
+              <Setting
+                divider={index > 0}
+                key={`data-${id}`}
+                disabled={disabled}
+                title={text}
+                type="navigation"
+                activity={showSpinner}
+                right={
+                  showSpinner ? undefined : gated ? (
+                    <RightPremiumChevron />
+                  ) : isUpdateRates && lastRatesUpdatedValue ? (
+                    <RightValueChevron figure value={lastRatesUpdatedValue} />
+                  ) : (
+                    <Icon name={ICON.RIGHT} size="s" tone="muted" />
+                  )
+                }
+                onPress={rest.callback ? () => handleOption(rest) : undefined}
+              />
+            );
+          })}
         </View>
-      </View>
-    </Screen>
+
+        <View style={style.group}>
+          <Eyebrow style={style.groupLabel}>{L10N.PREFERENCES}</Eyebrow>
+          <SettingSelect
+            options={APPEARANCE_OPTIONS}
+            title={L10N.APPEARANCE}
+            value={themePreference}
+            onChange={handleTheme}
+          />
+          <SettingSelect
+            divider
+            options={LANGUAGE_OPTIONS}
+            title={L10N.LANGUAGE}
+            value={language}
+            onChange={handleLanguage}
+          />
+          <SettingSelect
+            divider
+            options={currencyOptions}
+            title={L10N.CHOOSE_CURRENCY}
+            value={baseCurrency}
+            onChange={handleBaseCurrency}
+          />
+          <Setting
+            divider
+            title={L10N.SCHEDULED}
+            type="navigation"
+            right={
+              scheduledCount ? <RightCountChevron count={scheduledCount} /> : <RightValueChevron value={L10N.NEW} />
+            }
+            onPress={handleScheduledPress}
+          />
+          <Setting
+            divider
+            right={
+              <Text medium={backupReminderEnabled} size="s" tone={backupReminderEnabled ? undefined : 'muted'}>
+                {backupReminderEnabled ? L10N.ON : L10N.OFF}
+              </Text>
+            }
+            subtitle={backupReminderSubtitle}
+            title={L10N.REMINDER_BACKUP}
+            type="action"
+            onPress={() => handleChangeReminder(!backupReminderEnabled)}
+          />
+        </View>
+
+        <View style={style.group}>
+          <Eyebrow style={style.groupLabel}>{L10N.ABOUT}</Eyebrow>
+          {ABOUT().map(({ disabled, text, ...rest }, index) => (
+            <Setting
+              divider={index > 0}
+              activity={rest.callback ? activity?.[rest.callback] : undefined}
+              key={`about-${index}`}
+              {...{ disabled, title: text }}
+              onPress={() => handleOption(rest)}
+            />
+          ))}
+        </View>
+
+        <View style={style.group}>
+          <Eyebrow style={style.groupLabel}>{L10N.ACCOUNT_ACTIONS}</Eyebrow>
+          <Setting title={L10N.LOG_OUT} type="action" onPress={handleLogout} />
+          <Setting divider title={L10N.RESET_DATA} titleTone="danger" type="action" onPress={handleResetData} />
+        </View>
+
+        <View style={style.version}>
+          <Text align="center" size="xxs" tone="muted">
+            {`môney v${C.VERSION} · ${L10N.PRIVACY_PROMISE}`}
+          </Text>
+        </View>
+      </Screen>
+    </>
   );
 };
 

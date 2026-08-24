@@ -1,79 +1,159 @@
 import { StyleSheet } from 'react-native';
 
-import { IMAGE_SIZE } from './Onboarding.constants';
 import { theme } from '../../theme';
-import { viewOffset } from '../../theme/layout';
+import { fieldHeight, rowHeight, viewOffset, wellSize } from '../../theme/layout';
 
 export const getStyles = (colors) =>
   StyleSheet.create({
     screen: {
-      flex: 1,
       backgroundColor: colors.background,
-    },
-
-    slide: {
-      alignItems: 'flex-start',
       flex: 1,
-      gap: theme.spacing.lg,
-      justifyContent: 'flex-end',
-      padding: theme.spacing.xl,
-      paddingBottom: theme.spacing.xl + theme.spacing.xl,
     },
-
-    image: {
-      height: IMAGE_SIZE * 1.2,
-      marginBottom: viewOffset,
-      width: IMAGE_SIZE,
+    content: {
+      flexGrow: 1,
+      paddingBottom: theme.spacing.md,
     },
-
+    pad: {
+      paddingHorizontal: viewOffset,
+    },
     footer: {
+      gap: theme.spacing.sm,
+      paddingHorizontal: viewOffset,
+      paddingTop: theme.spacing.md,
+    },
+    footerMeta: {
       alignItems: 'center',
-      paddingBottom: theme.spacing.xl,
-      paddingHorizontal: theme.spacing.xl,
-      paddingTop: viewOffset,
-      justifyContent: 'flex-end',
+      justifyContent: 'space-between',
+    },
+    footerCentered: {
+      alignItems: 'center',
+      justifyContent: 'center',
     },
 
-    button: {
-      width: '33%',
+    coverTop: {
+      paddingTop: theme.spacing.xl + theme.spacing.xxs,
+    },
+    stepTop: {
+      paddingTop: theme.spacing.lg + theme.spacing.xxs,
     },
 
-    // ---- survey / lead
-    surveyWrap: {
-      width: '100%',
+    headline: {
+      marginTop: theme.spacing.lg + theme.spacing.xxs,
     },
-
-    surveyHeader: {
-      width: '100%',
+    caption: {
+      marginTop: theme.spacing.xs,
+      maxWidth: 300,
+    },
+    note: {
+      alignItems: 'flex-start',
       gap: theme.spacing.xs,
     },
 
-    surveyOptions: {
-      gap: theme.spacing.sm,
-      width: '100%',
-      marginTop: theme.spacing.md,
+    claims: {
+      marginTop: theme.spacing.lg,
+    },
+    claim: {
+      alignItems: 'flex-start',
+      gap: theme.spacing.xs,
+      paddingVertical: theme.spacing.xs + 1,
+    },
+    claimDivider: {
+      borderTopColor: colors.border,
+      borderTopWidth: theme.hairline,
+    },
+    claimIndex: {
+      width: 18,
     },
 
-    optionCard: {
-      borderWidth: 1,
+    searchOffset: {
+      marginTop: theme.spacing.md,
+      marginBottom: theme.spacing.xxs,
+    },
+    search: {
+      alignItems: 'center',
       borderColor: colors.border,
-      backgroundColor: colors.surface,
-      borderRadius: theme.borderRadius.lg,
-      padding: theme.spacing.md,
-      gap: theme.spacing.xxs,
+      borderRadius: theme.borderRadius.sm,
+      borderWidth: theme.hairline,
+      gap: theme.spacing.xs,
+      height: fieldHeight,
+      paddingHorizontal: theme.spacing.sm,
+    },
+    searchInput: {
+      flex: 1,
+      height: fieldHeight,
     },
 
-    optionCardSelected: {
-      borderColor: colors.accent,
-    },
-
-    leadForm: {
-      width: '100%',
+    row: {
+      alignItems: 'center',
+      flexDirection: 'row',
       gap: theme.spacing.sm,
+      height: rowHeight,
+    },
+    rowDivider: {
+      borderTopColor: colors.border,
+      borderTopWidth: theme.hairline,
+    },
+    well: {
+      alignItems: 'center',
+      backgroundColor: colors.surface,
+      borderRadius: theme.borderRadius.sm,
+      height: wellSize,
+      justifyContent: 'center',
+      width: wellSize,
+    },
+
+    rule: {
+      backgroundColor: colors.border,
+      height: theme.hairline,
+    },
+    fields: {
+      marginTop: theme.spacing.lg,
+    },
+    field: {
+      alignItems: 'center',
+      gap: theme.spacing.xs,
+      height: rowHeight + theme.spacing.xxs,
+    },
+    fieldRow: {
+      flexDirection: 'row',
+    },
+    fieldKey: {
+      width: 104,
+    },
+    fieldValue: {
+      flex: 1,
+      textAlign: 'right',
+    },
+    fieldInput: {
+      flex: 1,
+      height: rowHeight,
+      textAlign: 'right',
+    },
+    fieldFigure: {
+      fontFamily: theme.typography.fontFaces.mono,
+    },
+    noteOffset: {
       marginTop: theme.spacing.md,
     },
 
-    leadHint: {
-      marginTop: theme.spacing.xxs,
+    pins: {
+      gap: theme.spacing.md + 2,
+      justifyContent: 'center',
+      marginTop: theme.spacing.xl,
+    },
+    pin: {
+      borderRadius: theme.borderRadius.full,
+      height: 14,
+      width: 14,
+    },
+    pinOn: {
+      backgroundColor: colors.accent,
+    },
+    pinOff: {
+      borderColor: colors.textMuted,
+      borderWidth: 1.5,
+    },
+    keyboard: {
+      paddingHorizontal: theme.spacing.xl - 2,
     },
   });

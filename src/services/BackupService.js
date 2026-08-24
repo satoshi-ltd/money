@@ -7,7 +7,7 @@ import { parseAccount } from '../contexts/reducers/modules';
 import { SCHEMA_VERSION } from '../contexts/store.constants';
 import { L10N } from '../modules';
 
-const OMITTED_SETTINGS = ['autoAccount', 'autoAmount', 'autoCategory', 'pin'];
+const OMITTED_SETTINGS = ['autoAccount', 'autoAmount', 'autoCategory', 'backupAt', 'pin'];
 
 const exportableSettings = (settings = {}) =>
   Object.fromEntries(Object.entries(settings).filter(([key]) => !OMITTED_SETTINGS.includes(key)));

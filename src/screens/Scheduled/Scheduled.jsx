@@ -2,12 +2,13 @@ import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
 import { getStyles } from './Scheduled.style';
-import { Button, Card, Icon, Panel, Pressable, PriceFriendly, ScrollView, Text, View } from '../../components';
+import { Button, Eyebrow, Panel, Pressable, PriceFriendly, ScrollView, Text, View } from '../../components';
 import { useApp, useStore } from '../../contexts';
-import { C, exchange, getNextOccurrenceAt, ICON, L10N } from '../../modules';
+import { C, exchange, getNextOccurrenceAt, ICON, L10N, monthlyImpact, verboseDate } from '../../modules';
 
 const INCOME = C?.TX?.TYPE?.INCOME ?? 1;
 const MS_IN_DAY = C?.MS_IN_DAY ?? 24 * 60 * 60 * 1000;
+const NO_DATE = '—';
 
 const LANGUAGE_TO_LOCALE = {
   de: 'de-DE',
@@ -72,6 +73,10 @@ const Scheduled = ({ navigation = {} }) => {
   const { accounts = [], rates = {}, scheduledTxs = [], settings: { baseCurrency } = {} } = useStore();
 
   const accountMap = useMemo(() => new Map(accounts.map((a) => [a.hash, a])), [accounts]);
+  const impact = useMemo(
+    () => monthlyImpact({ accounts, baseCurrency, rates, scheduledTxs }),
+    [accounts, baseCurrency, rates, scheduledTxs],
+  );
   const now = Date.now();
 
   const enriched = useMemo(
@@ -122,77 +127,95 @@ const Scheduled = ({ navigation = {} }) => {
   const handleEdit = (scheduled) => navigate('scheduledForm', { id: scheduled.id });
 
   return (
-    <Panel offset title={L10N.SCHEDULED} onBack={goBack} disableScroll>
-      <ScrollView contentContainerStyle={style.content}>
-        <Button grow style={style.topCta} onPress={handleNew}>
-          {L10N.SCHEDULED_ADD_CTA}
-        </Button>
+    <Panel
+      disableScroll
+      offset
+      style={style.screen}
+      subtitle={`${scheduledTxs.length} ${L10N.SCHEDULED_ACTIVE}`}
+      title={L10N.SCHEDULED}
+      onBack={goBack}
+      rightElement={<Button icon={ICON.ADD} variant="outlined" onPress={handleNew} />}
+    >
+      <ScrollView contentContainerStyle={style.content} style={style.list}>
+        <View style={style.summary}>
+          <Eyebrow>{`${L10N.SCHEDULED_IMPACT} · ${baseCurrency}`}</Eyebrow>
+          <PriceFriendly bold operator currency={baseCurrency} size="xl" value={impact} />
+          <Text size="xxs" tone="muted">
+            {L10N.SCHEDULED_IMPACT_CAPTION}
+          </Text>
+        </View>
 
         {sections.length === 0 ? (
-          <Card style={style.emptyCard}>
-            <View row style={style.emptyHeader}>
-              <Card size="s">
-                <Icon name={ICON.SCHEDULED} />
-              </Card>
-              <View flex>
-                <Text bold>{L10N.SCHEDULED_EMPTY}</Text>
-                <Text size="s" tone="secondary">
-                  {L10N.SCHEDULED_EMPTY_GUIDE}
-                </Text>
-              </View>
-            </View>
-          </Card>
+          <View style={style.empty}>
+            <Text medium>{L10N.SCHEDULED_EMPTY}</Text>
+            <Text size="s" tone="muted">
+              {L10N.SCHEDULED_EMPTY_GUIDE}
+            </Text>
+          </View>
         ) : (
-          <>
-            {sections.map((section) => (
-              <View key={section.key} style={style.section}>
-                <Text bold size="m" style={style.sectionTitle}>
-                  {section.title}
-                </Text>
+          sections.map((section) => (
+            <View key={section.key} style={style.section}>
+              <Eyebrow style={style.sectionTitle}>{section.title}</Eyebrow>
 
-                {section.items.map(({ scheduled, nextAt }) => {
-                  const account = accountMap.get(scheduled.account);
-                  const currency = account?.currency;
-                  const pattern = formatPattern(scheduled, language);
-                  const baseAmount =
-                    baseCurrency && currency && baseCurrency !== currency
-                      ? exchange(scheduled.value, currency, baseCurrency, rates, nextAt || scheduled.startAt)
-                      : undefined;
+              {section.items.map(({ scheduled, nextAt }) => {
+                const account = accountMap.get(scheduled.account);
+                const currency = account?.currency;
+                const isIncome = scheduled.type === INCOME;
+                const signed = isIncome ? scheduled.value : -scheduled.value;
+                const dated = Number.isFinite(nextAt);
+                const base =
+                  baseCurrency && currency && baseCurrency !== currency
+                    ? exchange(scheduled.value, currency, baseCurrency, rates, nextAt || scheduled.startAt)
+                    : undefined;
 
-                  return (
-                    <View key={scheduled.id} style={style.item}>
-                      <Pressable onPress={() => handleEdit(scheduled)}>
-                        <View row style={style.row}>
-                          <Card size="s">
-                            <Icon name={scheduled.type === INCOME ? ICON.INCOME : ICON.EXPENSE} />
-                          </Card>
-                          <View flex>
-                            <Text bold numberOfLines={1}>
-                              {scheduled.title}
-                            </Text>
-                            <Text size="s" tone="secondary" numberOfLines={1}>
-                              {pattern}
-                            </Text>
-                          </View>
-                          <View style={style.right}>
-                            <PriceFriendly
-                              bold
-                              currency={currency}
-                              tone={scheduled.type === INCOME ? 'accent' : undefined}
-                              value={scheduled.value}
-                            />
-                            {baseAmount !== undefined ? (
-                              <PriceFriendly currency={baseCurrency} size="s" tone="secondary" value={baseAmount} />
-                            ) : null}
-                          </View>
-                        </View>
-                      </Pressable>
+                return (
+                  <Pressable key={scheduled.id} onPress={() => handleEdit(scheduled)}>
+                    <View row style={style.row}>
+                      <View style={style.when}>
+                        <Eyebrow>
+                          {dated ? verboseDate(new Date(nextAt), { locale: language, weekday: 'short' }) : ''}
+                        </Eyebrow>
+                        <Text figure="xs" tone="muted">
+                          {dated
+                            ? verboseDate(new Date(nextAt), { locale: language, day: 'numeric', month: 'short' })
+                            : NO_DATE}
+                        </Text>
+                      </View>
+
+                      <View flex style={style.text}>
+                        <Text medium numberOfLines={1}>
+                          {scheduled.title}
+                        </Text>
+                        <Text size="xxs" tone="muted" numberOfLines={1}>
+                          {formatPattern(scheduled, language)}
+                        </Text>
+                      </View>
+
+                      <View style={style.amount}>
+                        <PriceFriendly
+                          bold
+                          currency={currency}
+                          operator
+                          showSymbol={baseCurrency !== currency}
+                          size="md"
+                          value={signed}
+                        />
+                        {base !== undefined ? (
+                          <PriceFriendly
+                            currency={baseCurrency}
+                            showSymbol
+                            size="xs"
+                            tone="muted"
+                            value={isIncome ? base : -base}
+                          />
+                        ) : null}
+                      </View>
                     </View>
-                  );
-                })}
-              </View>
-            ))}
-          </>
+                  </Pressable>
+                );
+              })}
+            </View>
+          ))
         )}
       </ScrollView>
     </Panel>

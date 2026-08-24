@@ -5,9 +5,9 @@ import TestRenderer, { act } from 'react-test-renderer';
 import Screen from '../Screen';
 
 jest.mock('../../../contexts', () => ({ useApp: () => ({ colors: {} }) }));
-jest.mock('../../../hooks', () => ({ useKeyboardInset: () => mockInset }));
+jest.mock('../../../hooks', () => ({ useKeyboardInset: () => mockKeyboard }));
 
-let mockInset = 0;
+let mockKeyboard = { height: 0, top: 0 };
 
 const render = (props) => {
   let renderer;
@@ -24,11 +24,11 @@ const heightOf = ({ props }) => {
 
 describe('components/Screen', () => {
   afterEach(() => {
-    mockInset = 0;
+    mockKeyboard = { height: 0, top: 0 };
   });
 
   test('reserves the space the keyboard takes so the content can clear it', () => {
-    mockInset = 312;
+    mockKeyboard = { height: 312, top: 540 };
 
     const spacers = render({}).findAllByType(RNView).filter((node) => heightOf(node) === 312);
 

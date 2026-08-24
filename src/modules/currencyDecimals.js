@@ -2,4 +2,5 @@ import { C } from './constants';
 
 const { FIXED } = C;
 
-export const currencyDecimals = (value = 0, currency) => (value < 10000 ? FIXED[currency] || 2 : 0);
+// Figures always show their cents (muted); only currencies without minor units drop them.
+export const currencyDecimals = (_value = 0, currency) => (FIXED[currency] !== undefined ? FIXED[currency] : 2);

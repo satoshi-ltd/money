@@ -4,14 +4,16 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { FormTransaction, FormTransfer } from './components';
 import { createTransaction, createTransfer } from './helpers';
 import { style } from './Transaction.style';
-import { Button, Panel, View } from '../../components';
+import { Button, Panel, SegmentedToggle, View } from '../../components';
 import { useStore } from '../../contexts';
-import { C, L10N, PREMIUM_ENABLED } from '../../modules';
+import { C, frequentCategory, L10N, PREMIUM_ENABLED } from '../../modules';
 import { sortAccounts } from '../../modules/sortAccounts';
 import { PurchaseService } from '../../services';
 
 const TIMEOUT = C?.TIMEOUT;
-const TRANSFER = C?.TX?.TYPE?.TRANSFER ?? 0;
+const EXPENSE = C?.TX?.TYPE?.EXPENSE ?? 0;
+const INCOME = C?.TX?.TYPE?.INCOME ?? 1;
+const TRANSFER = C?.TX?.TYPE?.TRANSFER ?? 2;
 const ONE_DAY = 24 * 60 * 60 * 1000;
 
 const INITIAL_STATE = { form: {}, valid: false };
@@ -19,14 +21,15 @@ const INITIAL_STATE = { form: {}, valid: false };
 const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigation: { goBack } = {} }) => {
   const store = useStore();
   const { accounts = [], subscription, txs = [], updateSubscription } = store;
-  const initialType = type ?? C?.TX?.TYPE?.EXPENSE ?? 0;
+  const initialType = type ?? EXPENSE;
+  const [isTransfer, setIsTransfer] = useState(initialType === TRANSFER);
   const [account, setAccount] = useState(params.account);
   const [accountTouched, setAccountTouched] = useState(false);
   const [categoryTouched, setCategoryTouched] = useState(false);
   const [amountTouched, setAmountTouched] = useState(false);
   const [typeTouched, setTypeTouched] = useState(false);
   const [typeAutoLocked, setTypeAutoLocked] = useState(false);
-  const [txType, setTxType] = useState(initialType);
+  const [txType, setTxType] = useState(initialType === TRANSFER ? EXPENSE : initialType);
   const [busy, setBusy] = useState(false);
   // const [dataSource, setDataSource] = useState({});
 
@@ -41,8 +44,18 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
   useEffect(() => {
     // We want a clean form when the user manually changes account.
     // For transfers we keep the old behavior (reset on any account change).
-    if (type === TRANSFER) setState(INITIAL_STATE);
-  }, [account, type]);
+    if (isTransfer) setState(INITIAL_STATE);
+  }, [account, isTransfer]);
+
+  useEffect(() => {
+    if (isTransfer || categoryTouched) return;
+    const suggested = frequentCategory({ account: account?.hash, txs, type: txType });
+    if (suggested === undefined) return;
+
+    setState((current) =>
+      current.form.category === suggested ? current : { ...current, form: { ...current.form, category: suggested } },
+    );
+  }, [account?.hash, categoryTouched, isTransfer, txs, txType]);
 
   const handleUserSelectAccount = (next) => {
     setAccountTouched(true);
@@ -80,12 +93,34 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
   const handleManualAmountChange = () => setAmountTouched(true);
 
   const currentAccount = account || sortedAccounts[0];
-  const isAccountScoped = !!params?.account?.hash;
+
+  const typeOptions = [
+    { label: L10N.EXPENSE, value: EXPENSE },
+    { label: L10N.INCOME, value: INCOME },
+    ...(sortedAccounts.length > 1 ? [{ label: L10N.SWAP, value: TRANSFER }] : []),
+  ];
+
+  const handleModeChange = (next) => {
+    if (next === TRANSFER) {
+      if (!isTransfer) {
+        setIsTransfer(true);
+        setState(INITIAL_STATE);
+      }
+      return;
+    }
+    if (isTransfer) {
+      setIsTransfer(false);
+      setState(INITIAL_STATE);
+      setTxType(next);
+      return;
+    }
+    handleManualTypeChange(next);
+  };
 
   const handleSubmit = async () => {
     setBusy(true);
     setTimeout(async () => {
-      const method = type === TRANSFER ? createTransfer : createTransaction;
+      const method = isTransfer ? createTransfer : createTransaction;
       const value = await method({ props: { account: currentAccount, type: txType }, state, store });
       if (value) goBack();
       setBusy(false);
@@ -104,16 +139,21 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
   };
 
   const { valid } = state;
-  const Form = type === TRANSFER ? FormTransfer : FormTransaction;
-  const title =
-    type === TRANSFER ? L10N.SWAP : txType === C?.TX?.TYPE?.INCOME ? L10N.INCOME : L10N.EXPENSE;
+  const Form = isTransfer ? FormTransfer : FormTransaction;
+  const title = isTransfer ? L10N.SWAP : txType === INCOME ? L10N.INCOME : L10N.EXPENSE;
 
   return (
-    <Panel offset title={title} onBack={goBack}>
+    <Panel offset sheet title={L10N.TRANSACTION} onBack={goBack}>
+      <SegmentedToggle
+        options={typeOptions}
+        style={style.typeToggle}
+        value={isTransfer ? TRANSFER : txType}
+        onChange={handleModeChange}
+      />
       {currentAccount ? (
         <Form
           {...{ account: currentAccount, type: txType }}
-          {...(type !== TRANSFER
+          {...(!isTransfer
             ? {
                 accountsList: sortedAccounts,
                 onSelectAccount: handleUserSelectAccount,
@@ -129,10 +169,10 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
                 typeAutoLocked,
                 autoSuggest: true,
                 showAccount: true,
-                showType: !isAccountScoped,
+                showType: false,
               }
             : {})}
-          {...(type === TRANSFER
+          {...(isTransfer
             ? {
                 accountsList: sortedAccounts,
                 onSelectAccount: setAccount,
@@ -145,11 +185,8 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
       ) : null}
 
       <View row style={style.footer}>
-        <Button disabled={busy} variant="outlined" onPress={goBack} grow>
-          {L10N.CLOSE}
-        </Button>
         <Button disabled={busy || !valid} onPress={handleSubmit} grow>
-          {L10N.SAVE}
+          {`${L10N.SAVE} ${title.toLowerCase()}`}
         </Button>
       </View>
     </Panel>

@@ -3,18 +3,21 @@ import { StyleSheet } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useApp } from '../../contexts';
+import { ICON } from '../../modules';
+import { View } from '../../primitives';
+import { theme } from '../../theme';
 import { viewOffset } from '../../theme/layout';
-import Header from '../Header';
+import { IconButton } from '../IconButton';
+import { Masthead } from '../Masthead';
 import Screen from '../Screen';
 
 const Panel = ({
   children,
+  floatingElement,
   title,
   onBack,
-  leftElement,
+  sheet = false,
   rightElement,
-  showBorder = false,
-  transparent = false,
   disableScroll = false,
   style,
   ...props
@@ -22,34 +25,33 @@ const Panel = ({
   const { bottom } = useSafeAreaInsets();
   const { colors } = useApp();
   const paddingBottom = viewOffset + bottom;
-  const showHeader = title !== undefined || onBack || leftElement || rightElement;
-  const baseColor = colors.background;
+  const showHeader = title !== undefined || onBack || rightElement;
+  const baseColor = sheet ? colors.surface : colors.background;
   const dynamic = useMemo(
     () =>
       StyleSheet.create({
-        safeArea: { flex: 1, backgroundColor: baseColor },
-        headerBg: { backgroundColor: baseColor },
+        safeArea: { flex: 1, backgroundColor: baseColor, paddingTop: sheet ? theme.spacing.sm : 0 },
         screen: { paddingBottom },
       }),
-    [baseColor, paddingBottom],
+    [baseColor, colors.border, paddingBottom, sheet],
   );
 
   return (
-    <SafeAreaView edges={['top']} style={dynamic.safeArea}>
-      {showHeader ? (
-        <Header
-          title={title ?? ''}
-          onBack={onBack}
-          leftElement={leftElement}
-          rightElement={rightElement}
-          showBorder={showBorder}
-          transparent={transparent}
-          style={!transparent ? dynamic.headerBg : null}
-        />
+    <SafeAreaView edges={sheet ? [] : ['top']} style={dynamic.safeArea}>
+      {sheet ? (
+        <Masthead rule={false} section={title}>
+          {rightElement}
+          {onBack ? <IconButton icon={ICON.CLOSE} onPress={onBack} /> : null}
+        </Masthead>
+      ) : showHeader ? (
+        <Masthead section={title} onBack={onBack}>
+          {rightElement}
+        </Masthead>
       ) : null}
-      <Screen disableScroll={disableScroll} {...props} style={[style, dynamic.screen]}>
+      <Screen disableScroll={disableScroll} keyboardSpacer={!sheet} {...props} style={[style, dynamic.screen, { backgroundColor: baseColor }]}>
         {children}
       </Screen>
+      {floatingElement}
     </SafeAreaView>
   );
 };

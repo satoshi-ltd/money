@@ -20,8 +20,10 @@ const Button = ({ children, disabled, grow, icon, loading, onPress, size, style,
     ? 'secondary'
     : resolvedVariant === 'primary'
     ? 'onAccent'
-    : resolvedVariant === 'secondary'
+    : resolvedVariant === 'secondary' || resolvedVariant === 'danger'
     ? 'onInverse'
+    : resolvedVariant === 'dangerSoft'
+    ? 'danger'
     : 'primary';
 
   const sizeStyle = resolvedSize === 's' ? styles.small : resolvedSize === 'l' ? styles.large : null;
@@ -41,6 +43,10 @@ const Button = ({ children, disabled, grow, icon, loading, onPress, size, style,
       ? styles.secondary
       : resolvedVariant === 'ghost'
       ? styles.ghost
+      : resolvedVariant === 'danger'
+      ? styles.danger
+      : resolvedVariant === 'dangerSoft'
+      ? styles.dangerSoft
       : styles.primary;
 
   const disabledVariantStyle =

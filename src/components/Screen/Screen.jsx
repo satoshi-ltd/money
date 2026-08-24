@@ -9,19 +9,19 @@ import { getFocusedInput, ScrollView, View } from '../../primitives';
 const isAndroid = Platform.OS === 'android';
 const FOCUS_MARGIN = 24;
 
-const Screen = React.forwardRef(({ children, disableScroll, gap, offset, style, ...props }, ref) => {
+const Screen = React.forwardRef(({ children, disableScroll, gap, keyboardSpacer = true, offset, style, ...props }, ref) => {
   const { colors } = useApp();
   const styles = useMemo(() => getStyles(colors), [colors]);
-  const keyboardInset = useKeyboardInset();
+  const { height: keyboardHeight, top: keyboardTop } = useKeyboardInset();
 
   const innerRef = useRef();
-  const viewportRef = useRef(0);
+  const offsetRef = useRef(0);
   const scrollRef = ref || innerRef;
 
-  const handleLayout = useCallback(
+  const handleScroll = useCallback(
     (event) => {
-      viewportRef.current = event.nativeEvent.layout.height;
-      props.onLayout?.(event);
+      offsetRef.current = event.nativeEvent.contentOffset.y;
+      props.onScroll?.(event);
     },
     [props],
   );
@@ -29,24 +29,16 @@ const Screen = React.forwardRef(({ children, disableScroll, gap, offset, style, 
   const scrollFocusedIntoView = useCallback(() => {
     const scroll = scrollRef.current;
     const input = getFocusedInput();
-    if (!scroll || !input || !keyboardInset) return;
+    if (!scroll || !input?.measureInWindow || !keyboardTop) return;
 
-    const content = scroll.getInnerViewNode?.();
-    if (!content) return;
-
-    input.measureLayout(
-      content,
-      (x, y, width, height) => {
-        const visible = viewportRef.current - keyboardInset;
-        const overflow = y + height + FOCUS_MARGIN - visible;
-        if (overflow > 0) scroll.scrollTo({ y: overflow, animated: true });
-      },
-      () => {},
-    );
-  }, [keyboardInset, scrollRef]);
+    input.measureInWindow((x, y, width, height) => {
+      const overflow = y + height + FOCUS_MARGIN - keyboardTop;
+      if (overflow > 0) scroll.scrollTo({ y: offsetRef.current + overflow, animated: true });
+    });
+  }, [keyboardTop, scrollRef]);
 
   const contentStyle = [styles.base, offset && styles.offset, gap && styles.gap, style];
-  const keyboardSpacer = keyboardInset ? <View style={{ height: keyboardInset }} /> : null;
+  const spacer = keyboardSpacer && keyboardHeight ? <View style={{ height: keyboardHeight }} /> : null;
 
   if (disableScroll) {
     return (
@@ -61,13 +53,16 @@ const Screen = React.forwardRef(({ children, disableScroll, gap, offset, style, 
       ref={scrollRef}
       automaticallyAdjustKeyboardInsets={!isAndroid}
       keyboardDismissMode="on-drag"
+      nestedScrollEnabled
+      scrollEventThrottle={16}
       {...props}
       contentContainerStyle={contentStyle}
-      onLayout={handleLayout}
+      style={styles.flex}
+      onScroll={handleScroll}
       onContentSizeChange={scrollFocusedIntoView}
     >
       {children}
-      {keyboardSpacer}
+      {spacer}
     </ScrollView>
   );
 });
