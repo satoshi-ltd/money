@@ -1,4 +1,4 @@
-import { rebaseRates, seedRates, ServiceRates } from '../RatesService';
+import { ratesOrSeed, rebaseRates, seedRates, ServiceRates } from '../RatesService';
 import SEED from '../../modules/ratesSeed.json';
 
 const table = { AUD: 1.5, BTC: 0.000013, EUR: 0.86, THB: 32.6, USD: 1, XAU: 0.00022 };
@@ -34,6 +34,24 @@ describe('services/RatesService seed', () => {
     const { [key]: rebased } = seedRates('EUR');
 
     expect(rebased.THB).toBeCloseTo(base.THB / base.EUR, 6);
+  });
+
+  // `{}` is truthy, so `stored || seed` silently kept an empty cache and every foreign balance read 0.00.
+  test('an empty cache is no cache: it falls back to the seed like a missing one', () => {
+    [undefined, null, {}].forEach((empty) => {
+      expect(Object.keys(ratesOrSeed(empty, 'USD')).length).toBeGreaterThan(12);
+    });
+  });
+
+  test('a cache with months in it is left exactly as it was found', () => {
+    const cached = { '2026-01': { USD: 1 } };
+
+    expect(ratesOrSeed(cached, 'USD')).toBe(cached);
+  });
+
+  test('what it hands back is a month map, with no currency key mixed in', () => {
+    expect(ratesOrSeed({}, 'USD').currency).toBeUndefined();
+    expect(Object.keys(ratesOrSeed({}, 'USD')).every((key) => /^\d{4}-\d{2}$/.test(key))).toBe(true);
   });
 
   test('an unknown base leaves the series out rather than inventing one', () => {

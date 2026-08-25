@@ -22,7 +22,6 @@ jest.mock('../../../services', () => ({
     import: jest.fn(() => Promise.resolve(undefined)),
   },
   NotificationsService: { reminders: jest.fn() },
-  PurchaseService: { getProducts: jest.fn(() => Promise.resolve([])), restore: jest.fn(() => Promise.resolve({})) },
   ServiceRates: { get: jest.fn(() => Promise.resolve({})) },
 }));
 

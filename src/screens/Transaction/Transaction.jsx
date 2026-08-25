@@ -6,21 +6,19 @@ import { createTransaction, createTransfer } from './helpers';
 import { style } from './Transaction.style';
 import { Button, Panel, SegmentedToggle, View } from '../../components';
 import { useStore } from '../../contexts';
-import { C, frequentCategory, L10N, PREMIUM_ENABLED } from '../../modules';
+import { C, frequentCategory, L10N } from '../../modules';
 import { sortAccounts } from '../../modules/sortAccounts';
-import { PurchaseService } from '../../services';
 
 const TIMEOUT = C?.TIMEOUT;
 const EXPENSE = C?.TX?.TYPE?.EXPENSE ?? 0;
 const INCOME = C?.TX?.TYPE?.INCOME ?? 1;
 const TRANSFER = C?.TX?.TYPE?.TRANSFER ?? 2;
-const ONE_DAY = 24 * 60 * 60 * 1000;
 
 const INITIAL_STATE = { form: {}, valid: false };
 
 const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigation: { goBack } = {} }) => {
   const store = useStore();
-  const { accounts = [], subscription, txs = [], updateSubscription } = store;
+  const { accounts = [], txs = [] } = store;
   const initialType = type ?? EXPENSE;
   const [isTransfer, setIsTransfer] = useState(initialType === TRANSFER);
   const [account, setAccount] = useState(params.account);
@@ -124,17 +122,6 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
       const value = await method({ props: { account: currentAccount, type: txType }, state, store });
       if (value) goBack();
       setBusy(false);
-
-      if (PREMIUM_ENABLED && subscription?.productIdentifier && txs.length) {
-        const lastTxDate = txs[txs.length - 1].timestamp;
-        if (Date.now() - lastTxDate > ONE_DAY) {
-          PurchaseService.checkSubscription(subscription).then((activeSubscription) => {
-            if (!activeSubscription) {
-              updateSubscription({});
-            }
-          });
-        }
-      }
     }, TIMEOUT.BUSY);
   };
 

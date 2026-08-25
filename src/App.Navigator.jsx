@@ -3,12 +3,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { Platform, StyleSheet, useWindowDimensions } from 'react-native';
+import { Platform, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Chip, Footer, Logo, Text } from './components';
+import { Footer, Logo, Text } from './components';
 import { useApp, useStore } from './contexts';
-import { C, ICON, L10N, PREMIUM_ENABLED, eventEmitter, getNavigationTheme, sheetContentHeight, sheetDetents } from './modules';
+import { C, L10N, getNavigationTheme, sheetContentHeight, sheetDetents } from './modules';
 import {
   Account,
   Accounts,
@@ -21,15 +21,13 @@ import {
   Session,
   Settings,
   Stats,
-  Subscription,
   Transaction,
   Transactions,
 } from './screens';
-import { PurchaseService } from './services';
 import { theme } from './theme';
-import { rowHeight, viewOffset } from './theme/layout';
+import { rowHeight } from './theme/layout';
 
-const { EVENT, TX: { TYPE: { EXPENSE } } = {} } = C;
+const { TX: { TYPE: { EXPENSE } } = {} } = C;
 
 const LATEST_ROWS = 3;
 
@@ -52,10 +50,6 @@ const categoryRows = (merchants) => (merchants > 0 ? merchants : 0) + LATEST_ROW
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const styles = StyleSheet.create({
-  premiumChip: { marginRight: viewOffset },
-});
-
 const commonScreenOptions = (colors) => ({
   headerBackVisible: false,
   headerShown: true,
@@ -70,38 +64,15 @@ const commonScreenOptions = (colors) => ({
 const Tabs = ({ navigation = {} }) => {
   const insets = useSafeAreaInsets();
   const { colors } = useApp();
-  const { subscription } = useStore();
 
   // ! TODO: Somehow we should use new accent
-
-  const handleSubscription = () => {
-    if (!PREMIUM_ENABLED) return;
-    PurchaseService.getProducts()
-      .then((plans) => {
-        navigation.navigate('subscription', { plans });
-      })
-      .catch(() => eventEmitter.emit(EVENT.NOTIFICATION, { error: true, text: L10N.ERROR_TRY_AGAIN }));
-  };
 
   const screenOptions = {
     ...commonScreenOptions(colors),
     headerShown: false,
     sceneStyle: { backgroundColor: colors.background, paddingTop: insets.top },
     headerLeft: () => <></>,
-    headerRight: () => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      return PREMIUM_ENABLED && !subscription?.productIdentifier ? (
-        <Chip
-          onPress={handleSubscription}
-          icon={ICON.STAR}
-          label={L10N.PREMIUM}
-          style={styles.premiumChip}
-          variant="muted"
-        />
-      ) : (
-        <></>
-      );
-    },
+    headerRight: () => <></>,
   };
 
 
@@ -208,8 +179,6 @@ export const Navigator = () => {
           component={Category}
           options={({ route }) => sheet({ ...FORM.category, rows: categoryRows(route.params?.merchants) })}
         />
-        {/* -- common */}
-        {PREMIUM_ENABLED ? <Stack.Screen name="subscription" component={Subscription} options={panel} /> : null}
       </Stack.Navigator>
     </NavigationContainer>
   );

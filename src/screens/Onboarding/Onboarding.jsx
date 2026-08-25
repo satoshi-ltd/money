@@ -7,7 +7,7 @@ import { Cover } from './Onboarding.Cover';
 import { Currency } from './Onboarding.Currency';
 import { Passcode } from './Onboarding.Passcode';
 import { getStyles } from './Onboarding.style';
-import { Button, Eyebrow, Masthead, Pressable, ScrollView, Text, View } from '../../components';
+import { Button, Eyebrow, Masthead, ScrollView, Text, View } from '../../components';
 import { useApp, useStore } from '../../contexts';
 import { C, eventEmitter, L10N } from '../../modules';
 import { rebaseRates, ServiceRates } from '../../services';
@@ -31,19 +31,29 @@ const Onboarding = ({ navigation: { reset } = {} }) => {
   const [title, setTitle] = useState('');
   const [balance, setBalance] = useState('');
   const [pin, setPin] = useState('');
+  const [confirm, setConfirm] = useState('');
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (pin.length === 4) finish(pin);
+    if (confirm.length < 4) return;
+
+    if (confirm === pin) {
+      finish(pin);
+      return;
+    }
+
+    eventEmitter.emit(EVENT.NOTIFICATION, { error: true, title: L10N.ONB_PIN_MISMATCH });
+    setPin('');
+    setConfirm('');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pin]);
+  }, [confirm]);
 
   const finish = async (passcode) => {
     if (busy) return;
     setBusy(true);
 
-    await updateSettings({ baseCurrency: currency, onboarded: true, ...(passcode ? { pin: passcode } : {}) });
-    if (title.trim()) await createAccount({ balance: Number(balance) || 0, currency, title: title.trim() });
+    await updateSettings({ baseCurrency: currency, onboarded: true, pin: passcode });
+    await createAccount({ balance: Number(balance) || 0, currency, title: title.trim() });
 
     reset({ index: 0, routes: [{ name: 'main' }] });
   };
@@ -60,29 +70,27 @@ const Onboarding = ({ navigation: { reset } = {} }) => {
   };
 
   const isPasscode = step === STEP_PASSCODE;
-
-  const handleSkip = () => {
-    if (isPasscode) return finish();
-    setTitle('');
-    setBalance('');
-    setStep(STEP_PASSCODE);
-  };
+  const confirming = pin.length === 4;
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={style.screen}>
-      <Masthead eyebrow={step === COVER ? 'môney' : `môney · ${L10N.ONB_SETUP}`}>
-        {step === COVER ? (
-          <Eyebrow>{L10N.ONB_EST}</Eyebrow>
-        ) : (
+      <Masthead eyebrow="môney">
+        <View row align="center" gap="xs">
+          <Eyebrow>{L10N.ONB_SETUP}</Eyebrow>
           <Text figure="xs" tone="muted">
             {folio(step)}
           </Text>
-        )}
+        </View>
       </Masthead>
 
       {isPasscode ? (
         <View flex>
-          <Passcode style={style} value={pin} onChange={setPin} />
+          <Passcode
+            confirming={confirming}
+            style={style}
+            value={confirming ? confirm : pin}
+            onChange={confirming ? setConfirm : setPin}
+          />
         </View>
       ) : (
         <ScrollView contentContainerStyle={style.content} keyboardShouldPersistTaps="handled">
@@ -112,25 +120,11 @@ const Onboarding = ({ navigation: { reset } = {} }) => {
         ) : null}
 
         {isPasscode ? null : (
-          <Button disabled={busy} onPress={() => setStep(step + 1)}>
+          <Button disabled={busy || (step === STEP_ACCOUNT && !title.trim())} onPress={() => setStep(step + 1)}>
             {step === COVER ? L10N.ONB_START : L10N.CONTINUE}
           </Button>
         )}
 
-        {step === COVER ? (
-          <View row style={style.footerMeta}>
-            <Text figure="xs" tone="muted">
-              {folio(step)}
-            </Text>
-            <Eyebrow>{L10N.ONB_COVER_FOOTNOTE}</Eyebrow>
-          </View>
-        ) : null}
-
-        {step === STEP_ACCOUNT || isPasscode ? (
-          <Pressable disabled={busy} style={style.footerCentered} onPress={handleSkip}>
-            <Eyebrow>{isPasscode ? L10N.ONB_PIN_SKIP : L10N.ONB_SKIP}</Eyebrow>
-          </Pressable>
-        ) : null}
       </View>
     </SafeAreaView>
   );

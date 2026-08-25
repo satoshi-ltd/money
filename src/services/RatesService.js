@@ -70,6 +70,15 @@ export const rebaseRates = (rates = {}, baseCurrency = CURRENCY) => {
 
 export const seedRates = (baseCurrency = CURRENCY) => rebaseRates(SEED.rates, baseCurrency);
 
+// The store defaults its rates to {}, which is truthy: a cache is judged by the months it holds, never
+// by whether it exists. Without this every foreign balance reads 0.00 until a fetch lands, and offline none does.
+export const ratesOrSeed = (rates, baseCurrency = CURRENCY) => {
+  if (Object.keys(rates || {}).length) return rates;
+
+  const { currency, ...seeded } = seedRates(baseCurrency);
+  return seeded;
+};
+
 export const ServiceRates = {
   // `known` reduces the whole series to the months nobody has yet; the current one is always re-read.
   get: async ({ baseCurrency = CURRENCY, known = {} } = {}) => {

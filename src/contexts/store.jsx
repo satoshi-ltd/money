@@ -10,11 +10,6 @@ import {
   buildAutoAccountCatalog,
   buildAutoAmountCatalog,
   buildAutoCategoryCatalog,
-  C,
-  eventEmitter,
-  L10N,
-  maybeUnlockPremiumFromAccounts,
-  PREMIUM_ENABLED,
 } from '../modules';
 import {
   // -- account
@@ -31,13 +26,12 @@ import {
   deleteScheduled,
   // -- settings
   updateSettings,
-  updateSubscription,
   updateRates,
   importBackup,
   resetAppData,
 } from './reducers';
 import { DEFAULTS, FILENAME } from './store.constants';
-import { PurchaseService, rebaseRates, seedRates, ServiceRates, StorageService } from '../services';
+import { ratesOrSeed, rebaseRates, ServiceRates, StorageService } from '../services';
 
 const RATES_SYNC_INTERVAL = 6 * 60 * 60 * 1000;
 
@@ -110,38 +104,17 @@ const StoreProvider = ({ children }) => {
         await store.get('settings').save(migrated.settings);
       }
 
-      const prevSubscription = (await store.get('subscription')?.value) || {};
-      const { shouldUnlock } = maybeUnlockPremiumFromAccounts({ accounts: migrated.accounts, subscription: prevSubscription });
-      const nextSubscription = shouldUnlock
-        ? { ...prevSubscription, productIdentifier: 'lifetime', unlockedBy: 'btc', unlockedAt: Date.now() }
-        : prevSubscription;
-
-      if (shouldUnlock) {
-        await store.wipe('subscription');
-        await store.get('subscription').save(nextSubscription);
-      }
-
-      // The build ships a rate series so a first run with no network can still convert.
-      const { currency: _seedBase, ...seededRates } = seedRates(migrated.settings?.baseCurrency);
+      const rates = ratesOrSeed(await store.get('rates')?.value, migrated.settings?.baseCurrency);
 
       setState({
         store,
         accounts: migrated.accounts,
         scheduledTxs: migrated.scheduledTxs,
         settings: migrated.settings,
-        subscription: nextSubscription,
-        rates: (await store.get('rates')?.value) || seededRates,
+        rates,
         txs: migrated.txs,
       });
 
-      if (shouldUnlock) {
-        setTimeout(() => {
-          eventEmitter.emit(C.EVENT.NOTIFICATION, {
-            title: L10N.PREMIUM_UNLOCKED_TITLE,
-            text: L10N.PREMIUM_UNLOCKED_CAPTION,
-          });
-        }, 0);
-      }
     })().catch(setBootError);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -150,39 +123,6 @@ const StoreProvider = ({ children }) => {
     if (!state.store) return undefined;
 
     let disposed = false;
-
-    const syncSubscription = async ({ forceRefresh = false } = {}) => {
-      if (!PREMIUM_ENABLED) return;
-      const current = stateRef.current;
-      if (!current?.store) return;
-
-      try {
-        const nextSubscription = await PurchaseService.syncSubscription({ forceRefresh });
-        if (disposed) return;
-
-        const latest = stateRef.current;
-        if (!latest?.store) return;
-
-        const currentProductIdentifier = latest.subscription?.productIdentifier;
-        const nextProductIdentifier = nextSubscription?.productIdentifier;
-        const currentIsBtcLifetime = currentProductIdentifier === 'lifetime' && latest.subscription?.unlockedBy === 'btc';
-        const nextIsLifetime = nextProductIdentifier === 'lifetime';
-        const currentHasCustomerInfo = !!latest.subscription?.customerInfo;
-        const nextHasCustomerInfo = !!nextSubscription?.customerInfo;
-
-        if (currentIsBtcLifetime && !nextIsLifetime) return;
-        if (currentProductIdentifier === nextProductIdentifier) {
-          if (nextHasCustomerInfo && !currentHasCustomerInfo) {
-            await updateSubscription({ ...latest.subscription, ...nextSubscription }, [latest, setState]);
-          }
-          return;
-        }
-
-        await updateSubscription(nextSubscription, [latest, setState]);
-      } catch (error) {
-        // We keep last known local subscription when RevenueCat cannot be reached.
-      }
-    };
 
     const syncRates = async () => {
       const current = stateRef.current;
@@ -207,7 +147,6 @@ const StoreProvider = ({ children }) => {
 
     syncRatesRef.current = syncRates;
 
-    syncSubscription({ forceRefresh: true });
     syncRates();
     const ratesIntervalId = setInterval(() => {
       syncRates();
@@ -235,7 +174,6 @@ const StoreProvider = ({ children }) => {
           txs: nextMigrated.txs,
         }));
         await syncRates();
-        await syncSubscription({ forceRefresh: true });
       })();
     });
 
@@ -281,7 +219,6 @@ const StoreProvider = ({ children }) => {
         // -- settings
         updateSettings: (...props) => updateSettings(...props, [state, setState]),
         updateRates: (...props) => updateRates(...props, [state, setState]),
-        updateSubscription: (...props) => updateSubscription(...props, [state, setState]),
         updateTheme: (theme) => updateSettings({ theme }, [state, setState]),
         importBackup: (...props) => importBackup(...props, [state, setState]),
         resetAppData: (...props) => resetAppData(...props, [state, setState]),

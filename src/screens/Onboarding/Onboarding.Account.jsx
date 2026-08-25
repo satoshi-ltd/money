@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { Icon, Input, Pressable, Text, View } from '../../components';
+import { FieldRow, Icon, Input, Text, View } from '../../components';
 import { C, ICON, L10N } from '../../modules';
 
 const { SYMBOL } = C;
@@ -18,42 +18,28 @@ const Account = ({ balance, currency, onBalance, onCurrency, onTitle, style, tit
     </View>
 
     <View style={[style.pad, style.fields]}>
-      <View style={style.rule} />
+      <FieldRow label={L10N.NAME}>
+        <Input placeholder="…" style={style.rowInput} value={title} onChange={onTitle} />
+      </FieldRow>
 
-      <View row style={style.field}>
-        <Text size="s" tone="muted" style={style.fieldKey}>
-          {L10N.NAME}
-        </Text>
-        <Input placeholder="…" style={style.fieldInput} value={title} onChange={onTitle} />
-      </View>
-
-      <Pressable style={[style.field, style.rowDivider, style.fieldRow]} onPress={onCurrency}>
-        <Text size="s" tone="muted" style={style.fieldKey}>
-          {L10N.CURRENCY}
-        </Text>
-        <Text medium style={style.fieldValue}>
+      <FieldRow chevron divider label={L10N.CURRENCY} onPress={onCurrency}>
+        <Text medium numberOfLines={1} size="s">
           {`${currency} · ${L10N.CURRENCY_NAME[currency] || currency}`}
         </Text>
-        <Icon name={ICON.RIGHT} size="xs" tone="muted" />
-      </Pressable>
+      </FieldRow>
 
-      <View row style={[style.field, style.rowDivider]}>
-        <Text size="s" tone="muted" style={style.fieldKey}>
-          {L10N.ONB_OPENING_BALANCE}
-        </Text>
+      <FieldRow divider label={L10N.BALANCE}>
         <Input
           keyboardType="decimal-pad"
           placeholder="0"
-          style={[style.fieldInput, style.fieldFigure]}
+          style={style.rowFigure}
           value={balance}
           onChange={onBalance}
         />
         <Text figure="sm" tone="muted">
           {SYMBOL[currency] || currency}
         </Text>
-      </View>
-
-      <View style={style.rule} />
+      </FieldRow>
     </View>
 
     <View row style={[style.pad, style.note, style.noteOffset]}>

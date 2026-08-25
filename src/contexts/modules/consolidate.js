@@ -7,7 +7,6 @@ export const consolidate = ({
   now: nowProp,
   rates = {},
   settings = {},
-  subscription = {},
   txs = [],
   scheduledTxs = [],
   accounts: storeAccounts = [],
@@ -80,7 +79,6 @@ export const consolidate = ({
     rates,
     scheduledTxs,
     settings,
-    subscription,
     txs,
   };
 };

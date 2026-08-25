@@ -1,15 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { Heading, Logo, Text, View } from '../../components';
+import { Heading, Mark, Text, View } from '../../components';
 import { L10N } from '../../modules';
 
-const CLAIMS = [1, 2, 3];
+const CLAIMS = [1, 2, 3, 4];
 
 const Cover = ({ style }) => (
   <>
     <View style={[style.pad, style.coverTop]}>
-      <Logo size={22} />
+      <Mark size={56} />
       <Text bold size="xxl" style={style.headline}>
         {L10N.ONB_COVER_TITLE}
       </Text>

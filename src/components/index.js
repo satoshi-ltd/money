@@ -24,6 +24,7 @@ export * from './InputAmount';
 export * from './InputCurrency';
 export * from './InputField';
 export * from './Logo';
+export * from './Mark';
 export * from './Masthead';
 export * from './MonthSummary';
 export * from './Notification';

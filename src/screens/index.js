@@ -15,5 +15,4 @@ export * from './Category';
 export * from './Clone';
 export * from './Scheduled';
 export * from './ScheduledForm';
-export * from './Subscription';
 export * from './Transaction';

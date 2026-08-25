@@ -48,6 +48,17 @@ export const C = {
 
   STATS_MONTHS_LIMIT: 12,
   // Single-glyph forms only. Anything that would collide resolves to its ISO code via currencySymbol().
+  // The onboarding picker is drawn from this; every code in SYMBOL belongs to exactly one group.
+  CURRENCY_GROUPS: [
+    { id: 'GLOBAL', codes: ['USD', 'EUR', 'JPY', 'GBP', 'CHF', 'CNY'] },
+    { id: 'AMERICAS', codes: ['CAD', 'BRL', 'MXN'] },
+    { id: 'APAC', codes: ['AUD', 'NZD', 'SGD', 'HKD', 'TWD', 'KRW'] },
+    { id: 'ASIA', codes: ['INR', 'IDR', 'MYR', 'PHP', 'THB', 'VND'] },
+    { id: 'MEA', codes: ['AED', 'TRY'] },
+    { id: 'CRYPTO', codes: ['BTC', 'ETH', 'XRP', 'USDT', 'USDC'] },
+    { id: 'METAL', codes: ['XAU', 'XAG'] },
+  ],
+
   SYMBOL: {
     USD: '$',
     EUR: '€',
@@ -56,6 +67,8 @@ export const C = {
     CHF: 'Fr',
     CNY: '¥',
     CAD: '$',
+    BRL: 'R$',
+    MXN: '$',
     AUD: '$',
     NZD: '$',
     SGD: '$',
@@ -70,8 +83,6 @@ export const C = {
     VND: '₫',
     AED: 'AED',
     TRY: '₺',
-    BRL: 'R$',
-    MXN: '$',
     BTC: Platform.OS === 'android' && Platform.Version < 26 ? 'Ƀ' : '₿',
     ETH: 'Ξ',
     XRP: 'XRP',

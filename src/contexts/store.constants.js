@@ -47,7 +47,6 @@ const DEFAULTS = {
     theme: 'light',
   },
   rates: {},
-  subscription: {},
   accounts: [],
   scheduledTxs: [],
   txs: [],

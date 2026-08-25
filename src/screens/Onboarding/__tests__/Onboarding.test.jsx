@@ -31,6 +31,7 @@ jest.mock('../../../components', () => {
     Button: ({ children, onPress, disabled }) =>
       MockReact.createElement(ReactNative.View, { onPress, disabled }, MockReact.createElement(ReactNative.Text, null, children)),
     Logo: () => MockReact.createElement(ReactNative.Text, null, 'MÔNEY'),
+    Mark: () => MockReact.createElement(ReactNative.Text, null, 'MÔ'),
     Heading: ({ eyebrow, value }) =>
       MockReact.createElement(
         ReactNative.View,
@@ -38,6 +39,8 @@ jest.mock('../../../components', () => {
         MockReact.createElement(ReactNative.Text, null, value),
         MockReact.createElement(ReactNative.Text, null, eyebrow),
       ),
+    FieldRow: ({ children, label }) =>
+      MockReact.createElement(ReactNative.View, null, MockReact.createElement(ReactNative.Text, null, label), children),
     Icon: ({ name, tone }) => MockReact.createElement(ReactNative.View, { accessibilityLabel: name, tone }),
     Input: (props) => MockReact.createElement(ReactNative.View, props),
     Masthead: ({ children, eyebrow }) =>
@@ -74,12 +77,13 @@ const collect = (children) => {
 
 const allText = (root) => root.findAllByType(RNText).map((node) => collect(node.props.children));
 
+let lastRenderer;
+
 const render = () => {
-  let renderer;
   act(() => {
-    renderer = TestRenderer.create(<Onboarding navigation={{ reset: mockReset }} />);
+    lastRenderer = TestRenderer.create(<Onboarding navigation={{ reset: mockReset }} />);
   });
-  return renderer.root;
+  return lastRenderer.root;
 };
 
 const advance = async (root, label) => {
@@ -87,6 +91,19 @@ const advance = async (root, label) => {
   await act(async () => {
     node.props.onPress();
   });
+};
+
+const button = (root, label) =>
+  root.findAll((item) => item.props?.onPress && collect(item.props.children).includes(label)).pop();
+
+const punch = async (root, digits) => {
+  for (const digit of digits) {
+    const keyboard = root.findByProps({ testID: 'numkeyboard' });
+    // eslint-disable-next-line no-await-in-loop
+    await act(async () => {
+      keyboard.props.onPress(digit);
+    });
+  }
 };
 
 const type = (root, placeholder, text) => {
@@ -108,21 +125,32 @@ beforeEach(() => {
 });
 
 describe('screens/Onboarding', () => {
-  test('opens on the cover with the mark, the headline and three numbered claims', () => {
+  test('opens on the cover with the mark, the headline and four numbered claims', () => {
     const text = allText(render());
 
-    expect(text).toContain('MÔNEY');
+    // The masthead already carries the wordmark: the cover shows the icon, not a second MÔNEY.
+    expect(text).toContain('MÔ');
     expect(text).toContain(L10N.ONB_COVER_TITLE);
-    expect(text).toEqual(expect.arrayContaining(['01', '02', '03']));
+    expect(text).toEqual(expect.arrayContaining(['01', '02', '03', '04']));
     expect(text).toContain(L10N.ONB_START);
   });
 
-  test('the cover carries its folio in the footer, later steps in the masthead', async () => {
+  // The promise is the product: it must survive a refactor that quietly reintroduces a tracker.
+  test('the cover says out loud that nothing is measured', () => {
+    const text = allText(render());
+
+    expect(text).toContain(L10N.ONB_CLAIM_3);
+    expect(text).toContain(L10N.ONB_CLAIM_3_CAPTION);
+    expect(text).toContain(L10N.ONB_COVER_CAPTION);
+  });
+
+  // The wordmark owns the left of the masthead everywhere in the app; the step count reads on the right.
+  test('every step counts itself in the masthead, and the mark keeps the left to itself', async () => {
     const root = render();
-    expect(allText(root)).toContain('01 / 04');
+    expect(allText(root)).toEqual(expect.arrayContaining(['môney', L10N.ONB_SETUP, '01 / 04']));
 
     await advance(root, L10N.ONB_START);
-    expect(allText(root)).toContain('02 / 04');
+    expect(allText(root)).toEqual(expect.arrayContaining(['môney', L10N.ONB_SETUP, '02 / 04']));
   });
 
   // Picking a currency during onboarding must land with the network off: the seeded series is converted in place.
@@ -149,14 +177,7 @@ describe('screens/Onboarding', () => {
     type(root, '0', '8412.90');
 
     await advance(root, L10N.CONTINUE);
-
-    for (const digit of [1, 2, 3, 4]) {
-      const keyboard = root.findByProps({ testID: 'numkeyboard' });
-      // eslint-disable-next-line no-await-in-loop
-      await act(async () => {
-        keyboard.props.onPress(digit);
-      });
-    }
+    await punch(root, [1, 2, 3, 4, 1, 2, 3, 4]);
 
     expect(mockUpdateSettings).toHaveBeenCalledWith(
       expect.objectContaining({ baseCurrency: 'EUR', onboarded: true, pin: '1234' }),
@@ -165,27 +186,66 @@ describe('screens/Onboarding', () => {
     expect(mockReset).toHaveBeenCalledWith({ index: 0, routes: [{ name: 'main' }] });
   });
 
-  test('skipping the passcode finishes without one', async () => {
-    const root = render();
-    await advance(root, L10N.ONB_START);
-    await advance(root, L10N.CONTINUE);
-    await advance(root, L10N.CONTINUE);
-    await advance(root, L10N.ONB_PIN_SKIP);
-
-    expect(mockUpdateSettings).toHaveBeenCalledWith({ baseCurrency: 'EUR', onboarded: true });
-    expect(mockCreateAccount).not.toHaveBeenCalled();
-  });
-
-  test('skipping the account step discards what was typed into it', async () => {
+  // An effect that returns its async work hands React a promise where it wants a cleanup, and the
+  // screen only blows up when it unmounts — which is exactly what finishing onboarding does.
+  test('finishing tears the screen down without a render error', async () => {
     const root = render();
     await advance(root, L10N.ONB_START);
     await advance(root, L10N.CONTINUE);
 
     type(root, '…', 'N26');
 
-    await advance(root, L10N.ONB_SKIP);
-    await advance(root, L10N.ONB_PIN_SKIP);
+    await advance(root, L10N.CONTINUE);
+    await punch(root, [1, 2, 3, 4, 1, 2, 3, 4]);
 
-    expect(mockCreateAccount).not.toHaveBeenCalled();
+    expect(() => act(() => lastRenderer.unmount())).not.toThrow();
+  });
+
+  // The passcode cannot be recovered, so a typo has to be caught here rather than at the next launch.
+  test('the passcode is asked twice, and a second entry that differs starts it over', async () => {
+    const root = render();
+    await advance(root, L10N.ONB_START);
+    await advance(root, L10N.CONTINUE);
+
+    type(root, '…', 'N26');
+
+    await advance(root, L10N.CONTINUE);
+    await punch(root, [1, 2, 3, 4]);
+
+    expect(allText(root)).toContain(L10N.ONB_PIN_CONFIRM_TITLE);
+
+    await punch(root, [9, 9, 9, 9]);
+
+    expect(mockUpdateSettings).not.toHaveBeenCalled();
+    expect(mockReset).not.toHaveBeenCalled();
+    expect(allText(root)).toContain(L10N.ONB_PIN_TITLE);
+  });
+
+  // môney is useless without somewhere to put money: the step that opens the first account has no way past it.
+  test('the account step will not continue until the account has a name', async () => {
+    const root = render();
+    await advance(root, L10N.ONB_START);
+    await advance(root, L10N.CONTINUE);
+
+    expect(button(root, L10N.CONTINUE).props.disabled).toBe(true);
+
+    type(root, '…', 'N26');
+
+    expect(button(root, L10N.CONTINUE).props.disabled).toBe(false);
+  });
+
+  // Everything the app promises rests on the ledger being on this device and locked: neither step is optional.
+  test('no step offers a way out of naming the account or setting the passcode', async () => {
+    const root = render();
+    await advance(root, L10N.ONB_START);
+    await advance(root, L10N.CONTINUE);
+
+    expect(button(root, L10N.CONTINUE).props.disabled).toBe(true);
+
+    type(root, '…', 'N26');
+    await advance(root, L10N.CONTINUE);
+    await punch(root, [1, 2, 3, 4]);
+
+    expect(mockReset).not.toHaveBeenCalled();
   });
 });

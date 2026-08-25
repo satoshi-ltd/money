@@ -2,29 +2,6 @@ import { C, L10N } from '../../modules';
 
 const { PRIVACY_URL, TERMS_URL } = C;
 
-const PREMIUM = (isPremium, subscription) => [
-  {
-    callback: 'handleSubscription',
-    caption: isPremium
-      ? subscription?.productIdentifier?.split('.')?.[0] === 'lifetime'
-        ? L10N.PREMIUM_LIFETIME
-        : L10N.PREMIUM_YEARLY
-      : undefined,
-    id: 1,
-    text: L10N.SUBSCRIPTION,
-  },
-  // Restore purchases is only relevant when not premium.
-  ...(!isPremium
-    ? [
-        {
-          callback: 'handleRestorePurchases',
-          id: 2,
-          text: L10N.RESTORE_PURCHASES,
-        },
-      ]
-    : []),
-];
-
 const DATA = () => [
   {
     callback: 'handleUpdateRates',
@@ -68,4 +45,4 @@ const ABOUT = () => [
   },
 ];
 
-export { ABOUT, APPEARANCE_OPTIONS, DATA, LANGUAGE_OPTIONS, PREMIUM };
+export { ABOUT, APPEARANCE_OPTIONS, DATA, LANGUAGE_OPTIONS };

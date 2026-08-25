@@ -1,22 +1,16 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React from 'react';
 
-import { Icon, Input, Pressable, Text, View } from '../../components';
+import { Eyebrow, Icon, Pressable, Text, View } from '../../components';
 import { getLastRates } from '../../components/InputAmount/helpers';
 import { C, ICON, L10N } from '../../modules';
 
-const { SYMBOL } = C;
+const { CURRENCY_GROUPS, SYMBOL } = C;
 
 const formatRate = (rate) => rate.toLocaleString('en-US', { maximumFractionDigits: rate >= 100 ? 0 : rate >= 1 ? 2 : 4 });
 
 const Currency = ({ onChange, rates = {}, style, value }) => {
-  const [query, setQuery] = useState('');
-
   const latestRates = getLastRates(rates);
-  const needle = query.trim().toLowerCase();
-  const currencies = Object.keys(SYMBOL).filter(
-    (item) => !needle || item.toLowerCase().includes(needle) || `${L10N.CURRENCY_NAME[item] || ''}`.toLowerCase().includes(needle),
-  );
 
   return (
     <>
@@ -29,46 +23,38 @@ const Currency = ({ onChange, rates = {}, style, value }) => {
         </Text>
       </View>
 
-      <View style={[style.pad, style.searchOffset]}>
-        <View row style={style.search}>
-          <Icon name={ICON.SEARCH} size="s" tone="muted" />
-          <Input
-            placeholder={L10N.ONB_CURRENCY_SEARCH}
-            style={style.searchInput}
-            value={query}
-            onChange={setQuery}
-          />
+      {CURRENCY_GROUPS.map(({ codes, id }, group) => (
+        <View key={id} style={[style.pad, group === 0 ? style.groupFirst : style.groupOffset]}>
+          <Eyebrow style={style.groupLabel}>{L10N.CURRENCY_GROUP[id] || id}</Eyebrow>
+
+          {codes.map((item, index) => {
+            const rate = latestRates[item];
+
+            return (
+              <Pressable key={item} style={[style.row, index > 0 && style.rowDivider]} onPress={() => onChange(item)}>
+                <View style={style.well}>
+                  <Text figure="sm">{SYMBOL[item] || item}</Text>
+                </View>
+                <View flex>
+                  <Text medium numberOfLines={1}>
+                    {item}
+                  </Text>
+                  <Text size="xxs" tone="muted" numberOfLines={1}>
+                    {L10N.CURRENCY_NAME[item] || item}
+                  </Text>
+                </View>
+                {value === item ? (
+                  <Icon name={ICON.CHECK} tone="accent" />
+                ) : Number.isFinite(rate) ? (
+                  <Text figure="xs" tone="muted">
+                    {formatRate(rate)}
+                  </Text>
+                ) : null}
+              </Pressable>
+            );
+          })}
         </View>
-      </View>
-
-      <View style={style.pad}>
-        {currencies.map((item, index) => {
-          const rate = latestRates[item];
-
-          return (
-            <Pressable key={item} style={[style.row, index > 0 && style.rowDivider]} onPress={() => onChange(item)}>
-              <View style={style.well}>
-                <Text figure="sm">{SYMBOL[item] || item}</Text>
-              </View>
-              <View flex>
-                <Text medium numberOfLines={1}>
-                  {item}
-                </Text>
-                <Text size="xxs" tone="muted" numberOfLines={1}>
-                  {L10N.CURRENCY_NAME[item] || item}
-                </Text>
-              </View>
-              {value === item ? (
-                <Icon name={ICON.CHECK} tone="accent" />
-              ) : Number.isFinite(rate) ? (
-                <Text figure="xs" tone="muted">
-                  {formatRate(rate)}
-                </Text>
-              ) : null}
-            </Pressable>
-          );
-        })}
-      </View>
+      ))}
     </>
   );
 };

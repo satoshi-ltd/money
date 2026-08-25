@@ -2019,11 +2019,6 @@
   dependencies:
     nanoid "^3.3.11"
 
-"@revenuecat/purchases-typescript-internal@13.37.0":
-  version "13.37.0"
-  resolved "https://registry.yarnpkg.com/@revenuecat/purchases-typescript-internal/-/purchases-typescript-internal-13.37.0.tgz#8aa5ee664c86c73c424cf69e729d7917f3becc9f"
-  integrity sha512-2s10V0HA8ZaSVKZDKfZIO9E4dCTr8mCd2SLiNKEZfnaA/lASpixX5sJLOi8T/vCl4p4gQ5A3IzPHlQ6ySgg4Bg==
-
 "@rtsao/scc@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@rtsao/scc/-/scc-1.1.0.tgz#927dd2fae9bc3361403ac2c7a00c32ddce9ad7e8"
@@ -6236,13 +6231,6 @@ react-native-is-edge-to-edge@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/react-native-is-edge-to-edge/-/react-native-is-edge-to-edge-1.2.1.tgz#64e10851abd9d176cbf2b40562f751622bde3358"
   integrity sha512-FLbPWl/MyYQWz+KwqOZsSyj2JmLKglHatd3xLZWskXOpRaio4LfEDEz8E/A6uD8QoTHW6Aobw1jbEwK7KMgR7Q==
-
-react-native-purchases@^8.4.1:
-  version "8.11.5"
-  resolved "https://registry.yarnpkg.com/react-native-purchases/-/react-native-purchases-8.11.5.tgz#d74ec4fd6f4b136ba33648cb67d4d18bf44ecfcd"
-  integrity sha512-Q3UjVMmhTM/CoTH8fAy51fARRkeb1jnJ9E+Hmhw9UujjlNx8vCurgTtJRD+3yceIFlYpUsnHkKnWMk2Z9gJyDQ==
-  dependencies:
-    "@revenuecat/purchases-typescript-internal" "13.37.0"
 
 react-native-safe-area-context@~5.6.0:
   version "5.6.2"

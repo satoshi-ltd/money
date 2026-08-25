@@ -31,27 +31,6 @@ export const NotificationsService = {
     await NotificationsService.syncScheduled({ scheduledTxs, txs });
   },
 
-  notifyPremiumUnlocked: async () => {
-    try {
-      const Notifications = await getNotifications();
-      if (!Notifications) return;
-      const permission = await Notifications.getPermissionsAsync();
-      if (permission.status !== GRANTED) return;
-
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          title: L10N.PREMIUM_UNLOCKED_TITLE,
-          body: L10N.PREMIUM_UNLOCKED_CAPTION,
-          sound: true,
-          data: { kind: 'btc-premium' },
-        },
-        trigger: null,
-      });
-    } catch {
-      return;
-    }
-  },
-
   clearAll: async () => {
     try {
       const Notifications = await getNotifications();

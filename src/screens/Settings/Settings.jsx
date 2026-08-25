@@ -4,7 +4,7 @@ import { Linking } from 'react-native';
 import { useScrollToTop } from '@react-navigation/native';
 
 import { getLatestRates } from './helpers';
-import { ABOUT, APPEARANCE_OPTIONS, DATA, LANGUAGE_OPTIONS, PREMIUM } from './Settings.constants';
+import { ABOUT, APPEARANCE_OPTIONS, DATA, LANGUAGE_OPTIONS } from './Settings.constants';
 import { getStyles } from './Settings.style';
 import { Chip, Eyebrow, Icon, Masthead, Pressable, Screen, Setting, SettingSelect, Text, View } from '../../components';
 import { useApp, useStore } from '../../contexts';
@@ -13,14 +13,12 @@ import {
   C,
   currencySymbol,
   eventEmitter,
-  hasPremiumAccess,
   ICON,
   L10N,
-  PREMIUM_ENABLED,
   verboseDate,
 } from '../../modules';
 import { setLanguage } from '../../i18n';
-import { BackupService, NotificationsService, PurchaseService } from '../../services';
+import { BackupService, NotificationsService } from '../../services';
 
 const { EVENT } = C;
 
@@ -40,21 +38,12 @@ const Settings = ({ navigation = {} }) => {
     scheduledTxs = [],
     resetAppData,
     updateSettings,
-    updateSubscription,
     updateTheme,
     settings = {},
-    subscription,
     txs = [],
   } = store;
 
   const { backupAt, baseCurrency, language = 'en', lastRatesUpdate = '', reminders } = settings;
-
-  const isPremium = hasPremiumAccess(subscription);
-  const subscriptionStatus = subscription?.productIdentifier
-    ? subscription?.productIdentifier?.split('.')?.[0] === 'lifetime'
-      ? L10N.PREMIUM_LIFETIME
-      : L10N.PREMIUM_YEARLY
-    : undefined;
 
   const handleUpdateRates = async () => {
     setActivity((prev) => ({ ...(prev || {}), handleUpdateRates: true }));
@@ -65,17 +54,13 @@ const Settings = ({ navigation = {} }) => {
   const handleOption = ({ callback, screen, url }) => {
     if (url) Linking.openURL(url);
     if (screen) navigation.navigate(screen);
-    else if (callback === 'handleSubscription') handleSubscription();
     else if (callback === 'handleExport') handleExport();
     else if (callback === 'handleExportCsv') handleExportCsv();
     else if (callback === 'handleImport') handleImport();
     else if (callback === 'handleUpdateRates') handleUpdateRates();
-    else if (callback === 'handleRestorePurchases') handleRestorePurchases();
   };
 
   const handleExport = async () => {
-    if (!isPremium) return handleSubscription('export');
-
     try {
       const ok = await BackupService.export({
         accounts,
@@ -95,8 +80,6 @@ const Settings = ({ navigation = {} }) => {
   };
 
   const handleExportCsv = async () => {
-    if (!isPremium) return handleSubscription('export');
-
     try {
       const ok = await BackupService.exportCsv({ accounts, settings, txs });
       if (ok)
@@ -128,49 +111,6 @@ const Settings = ({ navigation = {} }) => {
         },
       });
     }
-  };
-
-  const handleSubscription = () => {
-    if (!PREMIUM_ENABLED) return;
-    if (subscription?.productIdentifier) navigation.navigate('subscription');
-    setActivity((prev) => ({ ...(prev || {}), handleSubscription: true }));
-    PurchaseService.getProducts()
-      .then((plans) => {
-        navigation.navigate('subscription', { plans });
-        setActivity((prev) => ({ ...(prev || {}), handleSubscription: false }));
-      })
-      .catch((error) => {
-        setActivity((prev) => ({ ...(prev || {}), handleSubscription: false }));
-        handleError(error);
-      });
-  };
-
-  const handleRestorePurchases = () => {
-    setActivity((prev) => ({ ...(prev || {}), handleRestorePurchases: true }));
-    PurchaseService.restore()
-      .then((activeSubscription) => {
-        if (activeSubscription?.productIdentifier) {
-          updateSubscription(activeSubscription);
-          eventEmitter.emit(EVENT.NOTIFICATION, {
-            title: L10N.PURCHASE_RESTORED,
-          });
-        } else {
-          eventEmitter.emit(EVENT.NOTIFICATION, {
-            title: L10N.PURCHASES_NOT_FOUND,
-          });
-        }
-        setActivity((prev) => ({
-          ...(prev || {}),
-          handleRestorePurchases: false,
-        }));
-      })
-      .catch((error) => {
-        setActivity((prev) => ({
-          ...(prev || {}),
-          handleRestorePurchases: false,
-        }));
-        handleError(error);
-      });
   };
 
   const handleError = () =>
@@ -213,13 +153,6 @@ const Settings = ({ navigation = {} }) => {
       <Text figure="sm" tone="muted">
         {count}
       </Text>
-      <Icon name={ICON.RIGHT} size="s" tone="muted" />
-    </View>
-  );
-
-  const RightPremiumChevron = () => (
-    <View row align="center" gap="xxs">
-      <Chip label={L10N.PREMIUM} variant="muted" />
       <Icon name={ICON.RIGHT} size="s" tone="muted" />
     </View>
   );
@@ -349,39 +282,10 @@ const Settings = ({ navigation = {} }) => {
           </View>
         </Pressable>
 
-        {PREMIUM_ENABLED ? (
-          <View style={style.group}>
-            <Eyebrow style={style.groupLabel}>{L10N.PREMIUM}</Eyebrow>
-            {PREMIUM(isPremium, subscription).map(({ disabled, id, text, ...rest }, index) => (
-              <Setting
-                activity={rest.callback ? activity?.[rest.callback] : undefined}
-                divider={index > 0}
-                key={`premium-${id}`}
-                disabled={disabled}
-                title={text}
-                type={rest.callback === 'handleRestorePurchases' ? 'action' : 'navigation'}
-                right={
-                  rest.callback === 'handleSubscription' ? (
-                    isPremium ? (
-                      <RightValueChevron value={subscriptionStatus} />
-                    ) : (
-                      <RightPremiumChevron />
-                    )
-                  ) : undefined
-                }
-                onPress={rest.callback ? () => handleOption(rest) : undefined}
-              />
-            ))}
-          </View>
-        ) : null}
-
         <View style={style.group}>
           <Eyebrow style={style.groupLabel}>{L10N.DATA}</Eyebrow>
           {DATA().map(({ disabled, id, text, ...rest }, index) => {
             const isUpdateRates = rest.callback === 'handleUpdateRates';
-            const isExportBackup = rest.callback === 'handleExport';
-            const isExportCsv = rest.callback === 'handleExportCsv';
-            const gated = !isPremium && (isExportBackup || isExportCsv);
             const showSpinner = isUpdateRates && activity?.handleUpdateRates;
 
             return (
@@ -393,9 +297,7 @@ const Settings = ({ navigation = {} }) => {
                 type="navigation"
                 activity={showSpinner}
                 right={
-                  showSpinner ? undefined : gated ? (
-                    <RightPremiumChevron />
-                  ) : isUpdateRates && lastRatesUpdatedValue ? (
+                  showSpinner ? undefined : isUpdateRates && lastRatesUpdatedValue ? (
                     <RightValueChevron figure value={lastRatesUpdatedValue} />
                   ) : (
                     <Icon name={ICON.RIGHT} size="s" tone="muted" />

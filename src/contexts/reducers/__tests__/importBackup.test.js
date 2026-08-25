@@ -2,7 +2,7 @@ import { importBackup } from '../importBackup';
 import { createTestStore } from '../../../test/createTestStore';
 
 jest.mock('../../../services', () => ({
-  NotificationsService: { notifyPremiumUnlocked: jest.fn(() => Promise.resolve()) },
+  ratesOrSeed: jest.requireActual('../../../services/RatesService').ratesOrSeed,
 }));
 
 const backup = (baseCurrency, settings = {}) => ({
@@ -22,15 +22,31 @@ const createState = async (settings = {}) => {
 };
 
 describe('contexts/reducers/importBackup', () => {
-  test('drops the cached rates when the backup uses another base currency', async () => {
+  // Leaving the cache empty made every foreign balance read 0.00 until a fetch landed, which offline never does.
+  test('a backup in another base currency lands on the bundled series, never on nothing', async () => {
     const { state, store } = await createState();
     const setState = jest.fn();
 
     await importBackup(backup('JPY'), [state, setState]);
 
-    expect(store.get('rates').value).toEqual({});
+    const written = store.get('rates').value;
+    const [month] = Object.keys(written);
+
+    expect(Object.keys(written).length).toBeGreaterThan(12);
+    expect(written[month].JPY).toBe(1);
+    expect(written[month].USD).toBeGreaterThan(0);
     expect(store.get('settings').value.ratesBaseCurrency).toBeUndefined();
-    expect(setState.mock.calls[0][0]({ rates: state.rates }).rates).toEqual({});
+    expect(setState.mock.calls[0][0]({ rates: state.rates }).rates).toEqual(written);
+  });
+
+  test('a cache that is empty rather than absent is still no cache at all', async () => {
+    const store = await createTestStore({ rates: {}, settings: {} });
+    const state = { rates: {}, settings: { baseCurrency: 'EUR', ratesBaseCurrency: 'EUR' }, store };
+    const setState = jest.fn();
+
+    await importBackup(backup('EUR'), [state, setState]);
+
+    expect(Object.keys(store.get('rates').value).length).toBeGreaterThan(12);
   });
 
   test('keeps the cached rates when the base currency matches', async () => {

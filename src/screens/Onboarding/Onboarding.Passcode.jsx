@@ -7,24 +7,24 @@ import { NumKeyboard } from '../Session/components';
 
 const SLOTS = [0, 1, 2, 3];
 
-const Passcode = ({ onChange, style, value = '' }) => (
+const Passcode = ({ confirming = false, onChange, style, value = '' }) => (
   <>
     <View style={[style.pad, style.stepTop]}>
       <Text bold size="xl">
-        {L10N.ONB_PIN_TITLE}
+        {confirming ? L10N.ONB_PIN_CONFIRM_TITLE : L10N.ONB_PIN_TITLE}
       </Text>
       <Text size="s" tone="secondary" style={style.caption}>
-        {L10N.ONB_PIN_CAPTION}
+        {confirming ? L10N.ONB_PIN_CONFIRM_CAPTION : L10N.ONB_PIN_CAPTION}
       </Text>
-    </View>
-
-    <View row style={style.pins}>
-      {SLOTS.map((index) => (
-        <View key={index} style={[style.pin, value.length > index ? style.pinOn : style.pinOff]} />
-      ))}
     </View>
 
     <View flex style={style.keyboard}>
+      <View row style={style.pins}>
+        {SLOTS.map((index) => (
+          <View key={index} style={[style.pin, value.length > index ? style.pinOn : style.pinOff]} />
+        ))}
+      </View>
+
       <NumKeyboard
         onDelete={() => onChange(value.slice(0, -1))}
         onPress={(number) => value.length < 4 && onChange(`${value}${number}`)}
@@ -34,6 +34,7 @@ const Passcode = ({ onChange, style, value = '' }) => (
 );
 
 Passcode.propTypes = {
+  confirming: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
   style: PropTypes.object.isRequired,
   value: PropTypes.string,

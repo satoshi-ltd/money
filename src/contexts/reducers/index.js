@@ -12,7 +12,6 @@ export * from './updateScheduled';
 export * from './deleteScheduled';
 // -- settings
 export * from './updateSettings';
-export * from './updateSubscription';
 export * from './updateRates';
 export * from './importBackup';
 export * from './resetAppData';

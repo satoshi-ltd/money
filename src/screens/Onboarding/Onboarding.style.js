@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 import { theme } from '../../theme';
-import { fieldHeight, rowHeight, viewOffset, wellSize } from '../../theme/layout';
+import { rowHeight, viewOffset, wellSize } from '../../theme/layout';
 
 export const getStyles = (colors) =>
   StyleSheet.create({
@@ -18,16 +18,9 @@ export const getStyles = (colors) =>
     },
     footer: {
       gap: theme.spacing.sm,
+      paddingBottom: theme.spacing.md,
       paddingHorizontal: viewOffset,
       paddingTop: theme.spacing.md,
-    },
-    footerMeta: {
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
-    footerCentered: {
-      alignItems: 'center',
-      justifyContent: 'center',
     },
 
     coverTop: {
@@ -38,7 +31,7 @@ export const getStyles = (colors) =>
     },
 
     headline: {
-      marginTop: theme.spacing.lg + theme.spacing.xxs,
+      marginTop: theme.spacing.xl,
     },
     caption: {
       marginTop: theme.spacing.xs,
@@ -65,22 +58,14 @@ export const getStyles = (colors) =>
       width: 18,
     },
 
-    searchOffset: {
+    groupOffset: {
       marginTop: theme.spacing.md,
-      marginBottom: theme.spacing.xxs,
     },
-    search: {
-      alignItems: 'center',
-      borderColor: colors.border,
-      borderRadius: theme.borderRadius.sm,
-      borderWidth: theme.hairline,
-      gap: theme.spacing.xs,
-      height: fieldHeight,
-      paddingHorizontal: theme.spacing.sm,
+    groupFirst: {
+      marginTop: theme.spacing.lg,
     },
-    searchInput: {
-      flex: 1,
-      height: fieldHeight,
+    groupLabel: {
+      marginBottom: theme.spacing.xs,
     },
 
     row: {
@@ -102,35 +87,26 @@ export const getStyles = (colors) =>
       width: wellSize,
     },
 
-    rule: {
-      backgroundColor: colors.border,
-      height: theme.hairline,
+    rowInput: {
+      flex: 1,
+      fontFamily: theme.typography.fontFaces.medium,
+      fontSize: theme.typography.sizes.caption,
+      minHeight: 0,
+      paddingHorizontal: 0,
+      paddingVertical: 0,
+      textAlign: 'right',
+    },
+    rowFigure: {
+      flex: 1,
+      fontFamily: theme.typography.fontFaces.monoMedium,
+      fontSize: theme.typography.figureSizes.md,
+      minHeight: 0,
+      paddingHorizontal: 0,
+      paddingVertical: 0,
+      textAlign: 'right',
     },
     fields: {
       marginTop: theme.spacing.lg,
-    },
-    field: {
-      alignItems: 'center',
-      gap: theme.spacing.xs,
-      height: rowHeight + theme.spacing.xxs,
-    },
-    fieldRow: {
-      flexDirection: 'row',
-    },
-    fieldKey: {
-      width: 104,
-    },
-    fieldValue: {
-      flex: 1,
-      textAlign: 'right',
-    },
-    fieldInput: {
-      flex: 1,
-      height: rowHeight,
-      textAlign: 'right',
-    },
-    fieldFigure: {
-      fontFamily: theme.typography.fontFaces.mono,
     },
     noteOffset: {
       marginTop: theme.spacing.md,
@@ -139,7 +115,7 @@ export const getStyles = (colors) =>
     pins: {
       gap: theme.spacing.md + 2,
       justifyContent: 'center',
-      marginTop: theme.spacing.xl,
+      marginBottom: theme.spacing.xl,
     },
     pin: {
       borderRadius: theme.borderRadius.full,
@@ -154,6 +130,8 @@ export const getStyles = (colors) =>
       borderWidth: 1.5,
     },
     keyboard: {
+      justifyContent: 'flex-end',
+      paddingBottom: theme.spacing.md,
       paddingHorizontal: theme.spacing.xl - 2,
     },
   });

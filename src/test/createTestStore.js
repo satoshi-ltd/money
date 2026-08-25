@@ -34,6 +34,6 @@ const memoryAdapter = (seed) =>
 export const createTestStore = (seed = {}) =>
   new StorageService({
     adapter: memoryAdapter(seed),
-    defaults: { accounts: [], rates: {}, scheduledTxs: [], settings: {}, subscription: {}, txs: [] },
+    defaults: { accounts: [], rates: {}, scheduledTxs: [], settings: {}, txs: [] },
     filename: 'money',
   });
