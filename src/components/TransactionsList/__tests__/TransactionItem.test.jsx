@@ -72,7 +72,7 @@ describe('components/TransactionItem', () => {
     expect(allText(incomeRenderer.root)).toContain('+');
   });
 
-  test('a foreign-currency transaction shows both amounts, each naming its currency', () => {
+  test('a foreign-currency transaction shows both amounts, and only the foreign one is marked', () => {
     let renderer;
     act(() => {
       renderer = TestRenderer.create(<TransactionItem {...TX} currency="USD" />);
@@ -80,7 +80,7 @@ describe('components/TransactionItem', () => {
     const text = allText(renderer.root);
 
     expect(text).toContain('$');
-    expect(text).toContain('€');
+    expect(text).not.toContain('€');
     expect(text).not.toContain('≈');
   });
 

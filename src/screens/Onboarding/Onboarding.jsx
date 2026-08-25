@@ -101,6 +101,7 @@ const Onboarding = ({ navigation: { reset } = {} }) => {
           {step === STEP_ACCOUNT ? (
             <Account
               balance={balance}
+              baseCurrency={settings.baseCurrency}
               currency={currency}
               style={style}
               title={title}

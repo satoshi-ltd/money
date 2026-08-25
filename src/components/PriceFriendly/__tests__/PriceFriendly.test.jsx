@@ -4,10 +4,16 @@ import TestRenderer, { act } from 'react-test-renderer';
 
 import { PriceFriendly } from '../PriceFriendly';
 
+let mockSettings = {};
+
 jest.mock('../../../contexts', () => ({
   useApp: () => ({ colors: { text: '#15140F', textMuted: '#8A8474', positive: '#A87B14' } }),
-  useStore: () => ({ settings: {} }),
+  useStore: () => ({ settings: mockSettings }),
 }));
+
+beforeEach(() => {
+  mockSettings = {};
+});
 
 const render = (props) => {
   let renderer;
@@ -25,6 +31,31 @@ const collect = (children) => {
 };
 
 const flatText = (root) => collect(root.findAllByType(RNText)[0]?.props?.children);
+
+// The rule lives here rather than at each call site: seven of them disagreed about it, and two had it right.
+describe('components/PriceFriendly base currency', () => {
+  test('the currency the reader already thinks in never repeats its symbol', () => {
+    mockSettings = { baseCurrency: 'EUR' };
+
+    expect(flatText(render({ showSymbol: true, value: 1200 }))).not.toContain('€');
+  });
+
+  test('a foreign amount is marked, which is the only reason a symbol is worth the space', () => {
+    mockSettings = { baseCurrency: 'EUR' };
+
+    expect(flatText(render({ currency: 'USD', showSymbol: true, value: 1200 }))).toContain('$');
+  });
+
+  test('with no base currency known, nothing is assumed to be foreign', () => {
+    expect(flatText(render({ showSymbol: true, value: 1200 }))).toContain('€');
+  });
+
+  test('a caller that asks for no symbol still gets none', () => {
+    mockSettings = { baseCurrency: 'EUR' };
+
+    expect(flatText(render({ currency: 'USD', value: 1200 }))).not.toContain('$');
+  });
+});
 
 describe('components/PriceFriendly', () => {
   test('negatives carry a real minus sign and never a positive tone', () => {

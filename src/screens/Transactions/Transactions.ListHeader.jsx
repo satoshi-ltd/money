@@ -33,7 +33,7 @@ const TransactionsListHeader = ({ dataSource }) => {
         <>
           <View style={style.balance}>
             <Eyebrow>{accountBalanceEyebrow(currency)}</Eyebrow>
-            <PriceFriendly bold currency={currency} size="hero" value={rest?.currentBalance || 0} />
+            <PriceFriendly bold currency={currency} showSymbol size="hero" value={rest?.currentBalance || 0} />
             <View row style={style.balanceRow}>
               <Delta caption={L10N.THIS_MONTH.toLowerCase()} value={progression} />
             </View>
@@ -51,7 +51,7 @@ const TransactionsListHeader = ({ dataSource }) => {
                     <View style={[style.flowFillIncome, { width: `${(flow.incomes * 100) / flowMax}%` }]} />
                   </View>
                   <View style={style.flowValue}>
-                    <PriceFriendly currency={currency} operator size="md" value={flow.incomes} />
+                    <PriceFriendly currency={currency} operator showSymbol size="md" value={flow.incomes} />
                   </View>
                 </View>
                 <View row style={style.flowRow}>

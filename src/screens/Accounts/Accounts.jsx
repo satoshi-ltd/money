@@ -160,7 +160,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
                     </Text>
                   </View>
                   <View style={style.accountRight}>
-                    <PriceFriendly bold currency={currency} size="lg" value={currentBalance} />
+                    <PriceFriendly bold currency={currency} showSymbol size="lg" value={currentBalance} />
                     <View row style={style.accountMeta}>
                       {showBase ? (
                         <PriceFriendly

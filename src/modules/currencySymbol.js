@@ -14,3 +14,8 @@ export const currencySymbol = (currency) => {
   if (!currency) return '';
   return AMBIGUOUS.has(currency) ? currency : SYMBOL[currency] || currency;
 };
+
+// An amount already denominated in the currency the reader thinks in needs no mark. Kept beside the symbol
+// itself so the two cannot drift: the pickers still want a glyph for every currency, amounts do not.
+export const foreignSymbol = (currency, baseCurrency) =>
+  currency && currency !== baseCurrency ? currencySymbol(currency) : '';

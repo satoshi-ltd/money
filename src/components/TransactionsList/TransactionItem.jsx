@@ -103,7 +103,7 @@ const TransactionItem = ({
               bold
               currency={currency}
               operator={type !== EXPENSE}
-              showSymbol={baseCurrency !== currency}
+              showSymbol
               size="md"
               value={signed}
             />

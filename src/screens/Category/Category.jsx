@@ -50,12 +50,10 @@ const Category = ({ navigation: { goBack, navigate } = {}, route: { params = {} 
       {delta !== undefined ? (
         <View row style={style.delta}>
           <Delta decimals={0} inverted plain value={delta} />
-          <Text flex size="xs" tone="muted">
-            {`${L10N.VS_YOUR_AVERAGE(AVERAGE_MONTHS)} `}
-            <Text figure="xs" tone="muted">
-              {average.toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}
-            </Text>
+          <Text size="xs" tone="muted">
+            {L10N.VS_YOUR_AVERAGE(AVERAGE_MONTHS)}
           </Text>
+          <PriceFriendly currency={baseCurrency} size="xs" tone="muted" value={average} />
         </View>
       ) : null}
 

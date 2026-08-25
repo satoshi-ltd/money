@@ -2,11 +2,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { FieldRow, Icon, Input, Text, View } from '../../components';
-import { C, ICON, L10N } from '../../modules';
+import { foreignSymbol, ICON, L10N } from '../../modules';
 
-const { SYMBOL } = C;
-
-const Account = ({ balance, currency, onBalance, onCurrency, onTitle, style, title }) => (
+const Account = ({ balance, baseCurrency, currency, onBalance, onCurrency, onTitle, style, title }) => (
   <>
     <View style={[style.pad, style.stepTop]}>
       <Text bold size="xl">
@@ -37,7 +35,7 @@ const Account = ({ balance, currency, onBalance, onCurrency, onTitle, style, tit
           onChange={onBalance}
         />
         <Text figure="sm" tone="muted">
-          {SYMBOL[currency] || currency}
+          {foreignSymbol(currency, baseCurrency)}
         </Text>
       </FieldRow>
     </View>
@@ -53,6 +51,7 @@ const Account = ({ balance, currency, onBalance, onCurrency, onTitle, style, tit
 
 Account.propTypes = {
   balance: PropTypes.string,
+  baseCurrency: PropTypes.string,
   currency: PropTypes.string.isRequired,
   onBalance: PropTypes.func.isRequired,
   onCurrency: PropTypes.func.isRequired,

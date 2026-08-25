@@ -120,7 +120,7 @@ describe('screens/Scheduled', () => {
     expect(componentsBy(render(), 'price').filter((node) => node.props.size === 'md')).toHaveLength(0);
   });
 
-  test('a foreign scheduled row is marked, the same as a foreign transaction row', () => {
+  test('each row carries its own account currency, and the marking is decided by PriceFriendly', () => {
     mockStore = {
       ...mockStore,
       accounts: [
@@ -138,8 +138,8 @@ describe('screens/Scheduled', () => {
     const rows = componentsBy(render(), 'price').filter(({ props }) => props.size === 'md');
     const [base, foreign] = [rows.find((r) => r.props.currency === 'EUR'), rows.find((r) => r.props.currency === 'USD')];
 
-    expect(foreign.props.showSymbol).toBe(true);
-    expect(base.props.showSymbol).toBe(false);
+    expect(foreign.props.currency).toBe('USD');
+    expect(base.props.currency).toBe('EUR');
   });
 
   test('the impact eyebrow names the currency the whole screen is denominated in', () => {

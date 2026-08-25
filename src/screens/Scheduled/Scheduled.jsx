@@ -196,7 +196,7 @@ const Scheduled = ({ navigation = {} }) => {
                           bold
                           currency={currency}
                           operator
-                          showSymbol={baseCurrency !== currency}
+                          showSymbol
                           size="md"
                           value={signed}
                         />

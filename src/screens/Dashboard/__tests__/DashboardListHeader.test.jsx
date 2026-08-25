@@ -97,10 +97,11 @@ describe('screens/Dashboard/ListHeader', () => {
   });
 
   test('a foreign-currency account shows its converted amount', () => {
-    const converted = componentsBy(render(), 'price').filter((node) => node.props.showSymbol === true);
+    const converted = componentsBy(render(), 'price').filter(
+      (node) => node.props.currency === 'EUR' && node.props.size === 'xs',
+    );
 
     expect(converted).toHaveLength(1);
-    expect(converted[0].props.currency).toBe('EUR');
   });
 
   test('hides the hero when there are no accounts', () => {

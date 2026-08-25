@@ -18,7 +18,7 @@ import {
   View,
 } from '../../components';
 import { useApp, useStore } from '../../contexts';
-import { C, currencySymbol, eventEmitter, getNextOccurrenceAt, L10N, verboseDate } from '../../modules';
+import { C, foreignSymbol, eventEmitter, getNextOccurrenceAt, L10N, verboseDate } from '../../modules';
 import { queryCategories } from '../Transaction/helpers/queryCategories';
 
 const isNumber = /^[0-9]+([,.][0-9]+)?$|^[0-9]+([,.][0-9]+)?[.,]$/;
@@ -39,7 +39,7 @@ const ScheduledForm = ({ navigation = {}, route = {} }) => {
   const { params: { id } = {} } = route;
   const { colors, language } = useApp();
   const style = useMemo(() => getStyles(colors), [colors]);
-  const { settings: { theme: themeMode } = {}, session: { locale } = {} } = useStore();
+  const { settings: { baseCurrency, theme: themeMode } = {}, session: { locale } = {} } = useStore();
 
   const { accounts = [], scheduledTxs = [], createScheduled, deleteScheduled, updateScheduled } = useStore();
 
@@ -181,7 +181,7 @@ const ScheduledForm = ({ navigation = {}, route = {} }) => {
     symbol: item.currency,
   }));
   const categoryOptions = categories.map((item) => ({ id: item.key, label: item.caption }));
-  const symbol = currencySymbol(currentAccount?.currency);
+  const symbol = foreignSymbol(currentAccount?.currency, baseCurrency);
 
   return (
     <Panel offset sheet title={L10N.SCHEDULED_ONE} onBack={goBack}>

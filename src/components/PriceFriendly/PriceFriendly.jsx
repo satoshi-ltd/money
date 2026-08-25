@@ -29,8 +29,11 @@ const PriceFriendly = ({
   value = 0,
   ...others
 }) => {
-  const { settings: { maskAmount } = {} } = useStore();
+  const { settings: { baseCurrency, maskAmount } = {} } = useStore();
   const masked = propMaskAmount || maskAmount;
+  // The base currency is the one the reader already thinks in, so its symbol is noise on every screen.
+  // Decided here rather than at each call site: seven of them disagreed about it.
+  const marked = showSymbol && !!currency && currency !== baseCurrency;
 
   const decimals = fixed !== undefined ? fixed : currencyDecimals(value, currency);
   const absolute = Math.abs(value);
@@ -70,7 +73,7 @@ const PriceFriendly = ({
             {cents}
           </Text>
         ) : null}
-        {showSymbol && currency ? (
+        {marked ? (
           <Text {...textProps} tone="muted" style={colorStyle}>
             {withThinSpace(currencySymbol(currency))}
           </Text>

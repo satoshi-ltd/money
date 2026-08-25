@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { Dropdown, FieldRow, Input, PriceFriendly, Text, View } from '../../../components';
 import { useStore } from '../../../contexts';
-import { currencySymbol, L10N, roundToCurrency } from '../../../modules';
+import { foreignSymbol, L10N, roundToCurrency } from '../../../modules';
 import { computeTransferExchange, getAccount, queryAvailableAccounts } from '../helpers';
 import { style } from './FormTransaction.style';
 
@@ -108,7 +108,7 @@ const FormTransaction = ({ account = {}, accountsList = [], form = {}, onChange,
         onChange={(next) => handleField(field, next)}
       />
       <Text figure="sm" tone="muted">
-        {currencySymbol(selected?.currency)}
+        {foreignSymbol(selected?.currency, baseCurrency)}
       </Text>
     </FieldRow>
   );

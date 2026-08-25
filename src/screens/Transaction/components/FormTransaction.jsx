@@ -8,7 +8,7 @@ import { Chip, Dropdown, FieldRow, Input, Modal, PriceFriendly, Text, View } fro
 import { useApp, useStore } from '../../../contexts';
 import {
   C,
-  currencySymbol,
+  foreignSymbol,
   ICON,
   L10N,
   repeatSuggestion,
@@ -226,7 +226,7 @@ const FormTransaction = ({
     });
   };
 
-  const symbol = currencySymbol(account.currency);
+  const symbol = foreignSymbol(account.currency, settings.baseCurrency);
 
   const dateValue = safeForm.timestamp ? new Date(safeForm.timestamp) : new Date();
   const isToday = dateValue.toDateString() === new Date().toDateString();
@@ -294,7 +294,7 @@ const FormTransaction = ({
               <Text medium numberOfLines={1} size="s">
                 {`${account.title} ·`}
               </Text>
-              <PriceFriendly currency={account.currency} size="md" value={account.currentBalance || 0} />
+              <PriceFriendly currency={account.currency} showSymbol size="md" value={account.currentBalance || 0} />
             </FieldRow>
             <Dropdown
               options={accountOptions}

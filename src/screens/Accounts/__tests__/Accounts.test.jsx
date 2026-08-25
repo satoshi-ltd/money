@@ -200,11 +200,11 @@ describe('screens/Accounts', () => {
     expect(eyebrow).toContain('EUR');
   });
 
-  test('a foreign-currency account shows its converted base amount', () => {
-    const converted = componentsBy(render(), 'price').filter((node) => node.props.showSymbol === true);
+  test('a foreign-currency account shows its converted base amount beside its own', () => {
+    const prices = componentsBy(render(), 'price');
+    const converted = prices.filter((node) => node.props.currency === 'EUR' && node.props.size === 'xs');
 
     expect(converted).toHaveLength(3);
-    expect(converted.every((node) => node.props.currency === 'EUR')).toBe(true);
   });
 
   test('a total row closes the list under a strong rule', () => {

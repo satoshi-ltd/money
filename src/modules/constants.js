@@ -29,8 +29,8 @@ export const C = {
     JPY: 0,
     PLN: 0,
     THB: 0,
-    XAU: 0,
-    XAG: 0,
+    XAU: 4,
+    XAG: 4,
   },
 
   INCOME_AS_INVESTMENT: 2,

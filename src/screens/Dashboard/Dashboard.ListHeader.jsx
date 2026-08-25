@@ -96,7 +96,7 @@ const DashboardListHeader = ({ navigate }) => {
                   </Text>
                 </View>
                 <View style={style.accountRight}>
-                  <PriceFriendly bold currency={currency} size="lg" value={currentBalance} />
+                  <PriceFriendly bold currency={currency} showSymbol size="lg" value={currentBalance} />
                   {showBase ? (
                     <PriceFriendly
                       currency={baseCurrency}
