@@ -2,6 +2,7 @@ import React from 'react';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import { ItemGroupCategories } from '../ItemGroupCategories';
+import { L10N } from '../../../../../modules';
 
 const mockNavigate = jest.fn();
 
@@ -41,15 +42,17 @@ const DATA_SOURCE = {
   8: { vet: 25 },
 };
 
-const render = () => {
+const render = (props) => {
   let renderer;
   act(() => {
     renderer = TestRenderer.create(
-      <ItemGroupCategories dataSource={DATA_SOURCE} month={7} type={0} year={2026} />,
+      <ItemGroupCategories dataSource={DATA_SOURCE} month={7} type={0} year={2026} {...props} />,
     );
   });
   return renderer.root;
 };
+
+const heading = (root) => root.findAllByProps({ testID: 'heading' })[0].props;
 
 const componentsBy = (root, testID) =>
   root.findAllByProps({ testID }).filter((node) => typeof node.type === 'function');
@@ -57,6 +60,20 @@ const componentsBy = (root, testID) =>
 beforeEach(() => mockNavigate.mockClear());
 
 describe('screens/Stats/ItemGroupCategories', () => {
+  test('the same block reads the month either way, expenses or incomes', () => {
+    expect(heading(render()).value).toBe(L10N.EXPENSES);
+    expect(heading(render({ type: 1 })).value).toBe(L10N.INCOMES);
+  });
+
+  // It was a chip with a chevron and no onPress: a control that invited a tap and did nothing, for a month
+  // the chart above already commands.
+  test('the month is written, not offered as a control that goes nowhere', () => {
+    const root = render({ monthLabel: 'August 2026' });
+
+    expect(heading(root).eyebrow).toBe('August 2026');
+    expect(root.findAllByProps({ testID: 'chip' })).toHaveLength(0);
+  });
+
   test('tapping a category opens the sheet instead of expanding in place', () => {
     const root = render();
     act(() => componentsBy(root, 'pressable')[0].props.onPress());

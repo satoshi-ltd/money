@@ -10,7 +10,7 @@ import { C, getLastMonths, getMonthDiff, L10N, netWorthEyebrow } from '../../mod
 
 const {
   STATS_MONTHS_LIMIT,
-  TX: { TYPE: { EXPENSE } = {} },
+  TX: { TYPE: { EXPENSE, INCOME } = {} },
 } = C;
 const MAX_STATS_MONTHS = 120;
 
@@ -128,7 +128,7 @@ const Stats = () => {
           currency={baseCurrency}
           expenses={monthTotals.expenses}
           incomes={monthTotals.incomes}
-          title={selectedMonth ? L10N.MONTHS[selectedMonth.month] : ''}
+          title={monthLabel || ''}
         />
 
         {Object.keys(expenses).length > 0 ? (
@@ -142,6 +142,19 @@ const Stats = () => {
             />
           </View>
         ) : null}
+
+        {Object.keys(incomes).length > 0 ? (
+          <View style={style.sectionGap}>
+            <ItemGroupCategories
+              dataSource={incomes}
+              month={selectedMonth?.month}
+              monthLabel={monthLabel}
+              type={INCOME}
+              year={selectedMonth?.year}
+            />
+          </View>
+        ) : null}
+
       </Screen>
     </>
   );

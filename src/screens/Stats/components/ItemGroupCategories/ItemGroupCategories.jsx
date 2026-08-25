@@ -4,7 +4,7 @@ import React, { useMemo, useState } from 'react';
 
 import { HorizontalChartItem } from './HorizontalChartItem';
 import { getStyles } from './ItemGroupCategories.style';
-import { Chip, Eyebrow, Heading, Pressable, View } from '../../../../components';
+import { Eyebrow, Heading, Pressable, View } from '../../../../components';
 import { useApp, useStore } from '../../../../contexts';
 import { C, ICON, L10N, rankInk } from '../../../../modules';
 import { orderByAmount } from '../../modules';
@@ -42,9 +42,7 @@ const ItemGroupCategories = ({ dataSource, month, monthLabel, type, year }) => {
 
   return (
     <View style={style.container}>
-      <Heading value={type === EXPENSE ? L10N.EXPENSES : L10N.INCOMES}>
-        {monthLabel ? <Chip iconRight={ICON.DOWN} label={monthLabel} variant="outline" /> : null}
-      </Heading>
+      <Heading eyebrow={monthLabel} value={type === EXPENSE ? L10N.EXPENSES : L10N.INCOMES} />
 
       {[...top, ...(showRest ? rest : [])].map(({ key, amount }, index) => {
         const color = rankInk(colors, index);
