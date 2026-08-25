@@ -70,15 +70,12 @@ export const EN = {
   THIS_MONTH: 'This month',
   CASHFLOW: 'Cash flow',
   STATS_FLOW_6M_CAPTION: 'last 6 months',
-  STATS_FLOW_6Q_CAPTION: 'last 6 quarters',
   BACKUP_CTA: 'Back up',
   NET_WORTH: 'Net worth',
   OTHERS: 'Others',
   RANGE_ALL: 'All',
-  ADD: 'Add',
   SCHEDULED_IMPACT: 'Monthly impact',
   DUPLICATE: 'Duplicate',
-  TX_EDIT: 'Edit transaction',
   SUGGESTED: 'Suggested',
   ALL: 'All',
   ABOUT: 'About Money',
@@ -86,16 +83,10 @@ export const EN = {
   ACCEPT: 'Accept',
   ACTIVITY: 'Analytics',
   AMOUNT: 'Amount',
-  ANNUALY: 'Annualy',
   DATA: 'Data',
 
   APPEARANCE: 'Appearance',
-  APPERANCE_DARK: 'Dark mode',
-  APPERANCE_LIGHT: 'Light mode',
-
-
   CANCEL: 'Cancel',
-  CANCEL_ANYTIME: 'Cancel anytime',
   CATEGORIES: [
     {
       // Expenses
@@ -131,8 +122,6 @@ export const EN = {
   ],
 
   CHOOSE_CURRENCY: 'Base Currency',
-  CLONE: 'Clone',
-  CLOSE: 'Close',
   CONCEPT: 'Concept',
   CONFIRM_DELETION: 'Confirm deletion',
   CONFIRM_DELETION_CAPTION: 'Confirm permanent deletion of this transaction? This action is irreversible.',
@@ -185,8 +174,6 @@ export const EN = {
     XRP: 'XRP',
   },
   CURRENCY: 'Currency',
-  CURRENCIES: 'Currencies',
-
   DELETE: 'Delete',
 
   ERROR: 'Something went wrong.',
@@ -210,20 +197,7 @@ export const EN = {
   INCOMES: 'Incomes',
   INITIAL_BALANCE: 'Initial balance',
   INFO: 'Info',
-  LAST_TRANSACTIONS: 'Recent activity',
-
   LANGUAGE: 'Language',
-  LANGUAGE_EN: 'English',
-  LANGUAGE_ES: 'Spanish',
-  LANGUAGE_PT: 'Portuguese',
-  LANGUAGE_FR: 'French',
-  LANGUAGE_DE: 'German',
-
-  LIFETIME: 'Lifetime',
-
-  MONTH: 'month',
-  MAX: 'max',
-  MIN: 'min',
   MONTHS: [
     'January',
     'February',
@@ -242,61 +216,9 @@ export const EN = {
   NAME: 'Name',
   NEW: 'New',
   NEXT: 'Next',
-  NO_TRANSACTIONS: "You don't have any transaction.",
-
-  ONBOARDING_FINANCES: 'Your Finances Anywhere',
-  ONBOARDING_FINANCES_CAPTION:
-    'Access your accounts and make transactions from your mobile phone, no matter where you are.',
-  ONBOARDING_PRIVACY: 'Privacy First',
-  ONBOARDING_PRIVACY_CAPTION:
-    'Protect your personal data with Money, which doesn’t collect or share information with third parties.',
-  ONBOARDING_SIMPLIFY: 'Simplify Your Finances',
-  ONBOARDING_SIMPLIFY_CAPTION:
-    'Money’s built-in intelligence helps you understand your spending and make better financial decisions.',
-  ONBOARDING_WELCOME: 'Welcome to Money!',
-  ONBOARDING_WELCOME_CAPTION: 'Explore seamless and secure management of your multicurrency accounts. Welcome aboard!',
-
-  // ---- onboarding survey (local-only)
-  ONBOARDING_Q_PRIMARY_GOAL_TITLE: 'What will you use Money for?',
-  ONBOARDING_Q_PRIMARY_GOAL_CAPTION: 'This helps us tailor defaults and guidance to your style.',
-  ONBOARDING_OPT_PRIMARY_GOAL_SPENDING: 'Track spending',
-  ONBOARDING_OPT_PRIMARY_GOAL_SAVINGS: 'Savings & goals',
-  ONBOARDING_OPT_PRIMARY_GOAL_DEBT: 'Pay off debt',
-  ONBOARDING_OPT_PRIMARY_GOAL_INCOME: 'Track income (variable)',
-  ONBOARDING_OPT_PRIMARY_GOAL_TRAVEL: 'Travel / multi-currency',
-
-  ONBOARDING_Q_TRACKING_FREQUENCY_TITLE: 'How often will you log transactions?',
-  ONBOARDING_Q_TRACKING_FREQUENCY_CAPTION: 'We can keep things lightweight or more structured based on your cadence.',
-  ONBOARDING_OPT_FREQUENCY_DAILY: 'Daily',
-  ONBOARDING_OPT_FREQUENCY_WEEKLY: 'Weekly',
-  ONBOARDING_OPT_FREQUENCY_MONTH_END: 'End of month',
-  ONBOARDING_OPT_FREQUENCY_OCCASIONAL: 'Occasionally',
-
-  ONBOARDING_Q_DETAIL_LEVEL_TITLE: 'How detailed do you want categories to be?',
-  ONBOARDING_Q_DETAIL_LEVEL_CAPTION: 'A simpler setup is faster. A detailed setup gives deeper insights.',
-  ONBOARDING_OPT_DETAIL_SIMPLE: 'Simple',
-  ONBOARDING_OPT_DETAIL_NORMAL: 'Normal',
-  ONBOARDING_OPT_DETAIL_DETAILED: 'Very detailed',
-
-  ONBOARDING_Q_ACCOUNTS_COUNT_TITLE: 'How many accounts do you manage?',
-  ONBOARDING_Q_ACCOUNTS_COUNT_CAPTION: 'This helps us understand your tracking complexity.',
-  ONBOARDING_OPT_ACCOUNTS_1: '1 account',
-  ONBOARDING_OPT_ACCOUNTS_2_3: '2-3 accounts',
-  ONBOARDING_OPT_ACCOUNTS_4_PLUS: '4+ accounts',
-
-  ONBOARDING_Q_INCOME_PATTERN_TITLE: 'Your income is…',
-  ONBOARDING_Q_INCOME_PATTERN_CAPTION: 'Knowing this helps us tailor the experience to your reality.',
-  ONBOARDING_OPT_INCOME_FIXED: 'Fixed (monthly)',
-  ONBOARDING_OPT_INCOME_WEEKLY: 'Weekly',
-  ONBOARDING_OPT_INCOME_VARIABLE: 'Variable (freelance)',
-  ONBOARDING_OPT_INCOME_MIXED: 'Mixed',
-
-
   LOG_OUT: 'Log out',
   CONFIRM_LOG_OUT: 'Log out?',
   CONFIRM_LOG_OUT_CAPTION: 'This will take you back to start. Your data will stay on this device.',
-  LEAD_SEND_FAILED: 'Could not send. Please try again.',
-
   PIN: 'Your PIN code',
   PENDING: 'pending',
   PIN_CHOOSE: 'Choose PIN code',
@@ -305,8 +227,6 @@ export const EN = {
   REMINDER_BACKUP: 'Backup Reminder',
   REMINDER_BACKUP_CAPTION: 'Get backup alerts.',
   SCHEDULED: 'Scheduled transactions',
-  SCHEDULED_NEW: 'New scheduled transaction',
-  SCHEDULED_EDIT: 'Edit scheduled transaction',
   SCHEDULED_FREQUENCY: 'Frequency',
   SCHEDULED_PATTERN_WEEKLY: 'Weekly',
   SCHEDULED_PATTERN_MONTHLY: 'Monthly',
@@ -330,7 +250,6 @@ export const EN = {
   SCHEDULED_AUTOCREATE_LIMIT: 'Generated 100 scheduled transactions. Open Scheduled transactions to review.',
   SCHEDULED_EMPTY: 'No schedules.',
   SCHEDULED_EMPTY_GUIDE: 'Create recurring income and expenses. We will auto-create entries on due dates.',
-  SCHEDULED_ADD_CTA: 'Add scheduled transaction',
   SCHEDULED_SECTION_UPCOMING: 'Upcoming 7 days',
   SCHEDULED_SECTION_MONTH: 'Rest of month',
   SCHEDULED_SECTION_LATER: 'Later',
@@ -342,17 +261,8 @@ export const EN = {
   RESET_DATA_ACTION: 'Reset data',
   SEND: 'Send',
   STATS_RANGE_1Y: '1Y',
-  STATS_RANGE_2Y: '2Y',
-  STATS_RANGE_4Y: '4Y',
   STATS_FLOW_6M: '6M',
-  STATS_FLOW_6Q: '6Q',
-
   SAVE: 'Save',
-  SCALE_KEY: {
-    min: 'Low',
-    med: 'Median',
-    max: 'High',
-  },
   SCHEDULE_BACKUP: 'Secure Your Finances!',
   SCHEDULE_BACKUP_CAPTION:
     "Don't forget to perform your weekly backup. Keep your financial information safe and up-to-date. It's quick and easy. Do it now!",
@@ -364,17 +274,12 @@ export const EN = {
   DATE: 'Date',
   DESTINATION: 'To',
   SETTINGS: 'Settings',
-  TYPE: 'Type',
-  START: 'Start',
-  START_TRIAL: 'Start free 7 day trial',
   SYNC_RATES_CTA: 'Update Rates',
   SWAP: 'Swap',
 
   TERMS: 'Terms',
   TODAY: 'Today',
   TRANSACTIONS: 'Transactions',
-  TRANSFERS: 'Transfers',
-
   ACCOUNTS: 'Accounts',
   YESTERDAY: 'Yesterday',
 };
@@ -451,15 +356,12 @@ export const PT = {
   THIS_MONTH: 'Este mês',
   CASHFLOW: 'Fluxo',
   STATS_FLOW_6M_CAPTION: 'últimos 6 meses',
-  STATS_FLOW_6Q_CAPTION: 'últimos 6 trimestres',
   BACKUP_CTA: 'Copiar',
   NET_WORTH: 'Patrimônio total',
   OTHERS: 'Outros',
   RANGE_ALL: 'Tudo',
-  ADD: 'Adicionar',
   SCHEDULED_IMPACT: 'Impacto mensal',
   DUPLICATE: 'Duplicar',
-  TX_EDIT: 'Editar movimento',
   SUGGESTED: 'Sugerido',
   ALL: 'Todas',
   ABOUT: 'Sobre o Money',
@@ -467,16 +369,10 @@ export const PT = {
   ACCEPT: 'Aceitar',
   ACTIVITY: 'Análises',
   AMOUNT: 'Valor',
-  ANNUALY: 'Anual',
   DATA: 'Dados',
 
   APPEARANCE: 'Aparência',
-  APPERANCE_DARK: 'Modo escuro',
-  APPERANCE_LIGHT: 'Modo claro',
-
-
   CANCEL: 'Cancelar',
-  CANCEL_ANYTIME: 'Cancele quando quiser',
   CATEGORIES: [
     {
       // Expenses
@@ -512,8 +408,6 @@ export const PT = {
   ],
 
   CHOOSE_CURRENCY: 'Moeda base',
-  CLONE: 'Clonar',
-  CLOSE: 'Fechar',
   CONCEPT: 'Conceito',
   CONFIRM_DELETION: 'Confirmar exclusão',
   CONFIRM_DELETION_CAPTION: 'Confirmar exclusão permanente desta transação? Esta ação é irreversível.',
@@ -566,8 +460,6 @@ export const PT = {
     XRP: 'XRP',
   },
   CURRENCY: 'Moeda',
-  CURRENCIES: 'Moedas',
-
   DELETE: 'Excluir',
 
   ERROR: 'Algo deu errado.',
@@ -590,18 +482,7 @@ export const PT = {
   INCOME: 'Receita',
   INCOMES: 'Receitas',
   INITIAL_BALANCE: 'Saldo inicial',
-  LAST_TRANSACTIONS: 'Atividade recente',
-
   LANGUAGE: 'Idioma',
-  LANGUAGE_EN: 'Inglês',
-  LANGUAGE_ES: 'Espanhol',
-  LANGUAGE_PT: 'Português',
-  LANGUAGE_FR: 'Francês',
-  LANGUAGE_DE: 'Alemão',
-
-  LIFETIME: 'Vitalício',
-
-  MONTH: 'mês',
   MONTHS: [
     'Janeiro',
     'Fevereiro',
@@ -616,65 +497,12 @@ export const PT = {
     'Novembro',
     'Dezembro',
   ],
-  MAX: 'máx',
-  MIN: 'mín',
-
   NAME: 'Nome',
   NEW: 'Novo',
   NEXT: 'Próximo',
-  NO_TRANSACTIONS: 'Você não tem nenhuma transação.',
-
-  ONBOARDING_FINANCES: 'Suas finanças em qualquer lugar',
-  ONBOARDING_FINANCES_CAPTION: 'Acesse suas contas e registre transações pelo celular, onde estiver.',
-  ONBOARDING_PRIVACY: 'Privacidade em primeiro lugar',
-  ONBOARDING_PRIVACY_CAPTION:
-    'Proteja seus dados pessoais com o Money, que não coleta nem compartilha informações com terceiros.',
-  ONBOARDING_SIMPLIFY: 'Simplifique suas finanças',
-  ONBOARDING_SIMPLIFY_CAPTION: 'A inteligência do Money ajuda você a entender seus gastos e tomar melhores decisões.',
-  ONBOARDING_WELCOME: 'Bem-vindo ao Money!',
-  ONBOARDING_WELCOME_CAPTION: 'Gerencie suas contas multicurrency de forma simples e segura.',
-
-  // ---- onboarding survey (local-only)
-  ONBOARDING_Q_PRIMARY_GOAL_TITLE: 'Para que você vai usar o Money?',
-  ONBOARDING_Q_PRIMARY_GOAL_CAPTION: 'Isso nos ajuda a ajustar padrões e orientações ao seu estilo.',
-  ONBOARDING_OPT_PRIMARY_GOAL_SPENDING: 'Controlar gastos',
-  ONBOARDING_OPT_PRIMARY_GOAL_SAVINGS: 'Poupança e metas',
-  ONBOARDING_OPT_PRIMARY_GOAL_DEBT: 'Sair de dívidas',
-  ONBOARDING_OPT_PRIMARY_GOAL_INCOME: 'Controlar renda (variável)',
-  ONBOARDING_OPT_PRIMARY_GOAL_TRAVEL: 'Viagens / multi-moeda',
-
-  ONBOARDING_Q_TRACKING_FREQUENCY_TITLE: 'Com que frequência você vai registrar transações?',
-  ONBOARDING_Q_TRACKING_FREQUENCY_CAPTION: 'Podemos manter tudo simples ou mais estruturado conforme seu ritmo.',
-  ONBOARDING_OPT_FREQUENCY_DAILY: 'Diário',
-  ONBOARDING_OPT_FREQUENCY_WEEKLY: 'Semanal',
-  ONBOARDING_OPT_FREQUENCY_MONTH_END: 'Fim do mês',
-  ONBOARDING_OPT_FREQUENCY_OCCASIONAL: 'Ocasionalmente',
-
-  ONBOARDING_Q_DETAIL_LEVEL_TITLE: 'Quão detalhadas devem ser as categorias?',
-  ONBOARDING_Q_DETAIL_LEVEL_CAPTION: 'Um setup simples é mais rápido. Um detalhado gera insights mais profundos.',
-  ONBOARDING_OPT_DETAIL_SIMPLE: 'Simples',
-  ONBOARDING_OPT_DETAIL_NORMAL: 'Normal',
-  ONBOARDING_OPT_DETAIL_DETAILED: 'Muito detalhado',
-
-  ONBOARDING_Q_ACCOUNTS_COUNT_TITLE: 'Quantas contas você gerencia?',
-  ONBOARDING_Q_ACCOUNTS_COUNT_CAPTION: 'Isso nos ajuda a entender a complexidade do seu controle.',
-  ONBOARDING_OPT_ACCOUNTS_1: '1 conta',
-  ONBOARDING_OPT_ACCOUNTS_2_3: '2-3 contas',
-  ONBOARDING_OPT_ACCOUNTS_4_PLUS: '4+ contas',
-
-  ONBOARDING_Q_INCOME_PATTERN_TITLE: 'Sua renda é…',
-  ONBOARDING_Q_INCOME_PATTERN_CAPTION: 'Saber disso nos ajuda a adaptar a experiência à sua realidade.',
-  ONBOARDING_OPT_INCOME_FIXED: 'Fixa (mensal)',
-  ONBOARDING_OPT_INCOME_WEEKLY: 'Semanal',
-  ONBOARDING_OPT_INCOME_VARIABLE: 'Variável (freelance)',
-  ONBOARDING_OPT_INCOME_MIXED: 'Mista',
-
-
   LOG_OUT: 'Sair',
   CONFIRM_LOG_OUT: 'Sair?',
   CONFIRM_LOG_OUT_CAPTION: 'Isso te leva de volta ao início. Seus dados permanecem neste dispositivo.',
-  LEAD_SEND_FAILED: 'Não foi possível enviar. Tente novamente.',
-
   PIN: 'Seu código PIN',
   PENDING: 'pendentes',
   PIN_CHOOSE: 'Escolha um PIN',
@@ -683,8 +511,6 @@ export const PT = {
   REMINDER_BACKUP: 'Lembrete de backup',
   REMINDER_BACKUP_CAPTION: 'Receba alertas de backup.',
   SCHEDULED: 'Transações agendadas',
-  SCHEDULED_NEW: 'Nova transação agendada',
-  SCHEDULED_EDIT: 'Editar transação agendada',
   SCHEDULED_FREQUENCY: 'Frequência',
   SCHEDULED_PATTERN_WEEKLY: 'Semanal',
   SCHEDULED_PATTERN_MONTHLY: 'Mensal',
@@ -694,7 +520,6 @@ export const PT = {
   SCHEDULED_AUTOCREATE_LIMIT: 'Foram geradas 100 transações agendadas. Abra Transações agendadas para revisar.',
   SCHEDULED_EMPTY: 'Sem programações',
   SCHEDULED_EMPTY_GUIDE: 'Crie receitas e despesas recorrentes. Vamos gerar lançamentos automaticamente no vencimento.',
-  SCHEDULED_ADD_CTA: 'Adicionar transação agendada',
   SCHEDULED_SECTION_UPCOMING: 'Próximos 7 dias',
   SCHEDULED_SECTION_MONTH: 'Resto do mês',
   SCHEDULED_SECTION_LATER: 'Mais tarde',
@@ -706,17 +531,8 @@ export const PT = {
   RESET_DATA_ACTION: 'Redefinir dados',
   SEND: 'Enviar',
   STATS_RANGE_1Y: '1A',
-  STATS_RANGE_2Y: '2A',
-  STATS_RANGE_4Y: '4A',
   STATS_FLOW_6M: '6M',
-  STATS_FLOW_6Q: '6T',
-
   SAVE: 'Salvar',
-  SCALE_KEY: {
-    min: 'Baixo',
-    med: 'Mediana',
-    max: 'Alto',
-  },
   SCHEDULE_BACKUP: 'Proteja suas finanças!',
   SCHEDULE_BACKUP_CAPTION:
     'Não se esqueça de fazer seu backup semanal. Mantenha seus dados seguros e atualizados. É rápido e fácil. Faça agora!',
@@ -728,17 +544,12 @@ export const PT = {
   DATE: 'Data',
   DESTINATION: 'Para',
   SETTINGS: 'Ajustes',
-  TYPE: 'Tipo',
-  START: 'Começar',
-  START_TRIAL: 'Comece teste grátis de 7 dias',
   SYNC_RATES_CTA: 'Atualizar taxas',
   SWAP: 'Câmbio',
 
   TERMS: 'Termos',
   TODAY: 'Hoje',
   TRANSACTIONS: 'Transações',
-  TRANSFERS: 'Transferências',
-
   ACCOUNTS: 'Contas',
   INFO: 'Info',
   YESTERDAY: 'Ontem',
@@ -815,15 +626,12 @@ export const FR = {
   THIS_MONTH: 'Ce mois',
   CASHFLOW: 'Flux',
   STATS_FLOW_6M_CAPTION: '6 derniers mois',
-  STATS_FLOW_6Q_CAPTION: '6 derniers trimestres',
   BACKUP_CTA: 'Sauvegarder',
   NET_WORTH: 'Patrimoine total',
   OTHERS: 'Autres',
   RANGE_ALL: 'Tout',
-  ADD: 'Ajouter',
   SCHEDULED_IMPACT: 'Impact mensuel',
   DUPLICATE: 'Dupliquer',
-  TX_EDIT: 'Modifier la transaction',
   SUGGESTED: 'Suggéré',
   ALL: 'Toutes',
   ABOUT: 'À propos de Money',
@@ -831,16 +639,10 @@ export const FR = {
   ACCEPT: 'Accepter',
   ACTIVITY: 'Analyses',
   AMOUNT: 'Montant',
-  ANNUALY: 'Annuel',
   DATA: 'Données',
 
   APPEARANCE: 'Apparence',
-  APPERANCE_DARK: 'Mode sombre',
-  APPERANCE_LIGHT: 'Mode clair',
-
-
   CANCEL: 'Annuler',
-  CANCEL_ANYTIME: 'Annulez à tout moment',
   CATEGORIES: [
     {
       // Expenses
@@ -876,8 +678,6 @@ export const FR = {
   ],
 
   CHOOSE_CURRENCY: 'Devise de base',
-  CLONE: 'Cloner',
-  CLOSE: 'Fermer',
   CONCEPT: 'Concept',
   CONFIRM_DELETION: 'Confirmer la suppression',
   CONFIRM_DELETION_CAPTION: 'Confirmer la suppression permanente de cette transaction ? Cette action est irréversible.',
@@ -930,8 +730,6 @@ export const FR = {
     XRP: 'XRP',
   },
   CURRENCY: 'Devise',
-  CURRENCIES: 'Devises',
-
   DELETE: 'Supprimer',
 
   ERROR: 'Une erreur est survenue.',
@@ -954,18 +752,7 @@ export const FR = {
   INCOME: 'Revenu',
   INCOMES: 'Revenus',
   INITIAL_BALANCE: 'Solde initial',
-  LAST_TRANSACTIONS: 'Activité récente',
-
   LANGUAGE: 'Langue',
-  LANGUAGE_EN: 'Anglais',
-  LANGUAGE_ES: 'Espagnol',
-  LANGUAGE_PT: 'Portugais',
-  LANGUAGE_FR: 'Français',
-  LANGUAGE_DE: 'Allemand',
-
-  LIFETIME: 'À vie',
-
-  MONTH: 'mois',
   MONTHS: [
     'Janvier',
     'Février',
@@ -980,68 +767,12 @@ export const FR = {
     'Novembre',
     'Décembre',
   ],
-  MAX: 'max',
-  MIN: 'min',
-
   NAME: 'Nom',
   NEW: 'Nouveau',
   NEXT: 'Suivant',
-  NO_TRANSACTIONS: "Vous n'avez aucune transaction.",
-
-  ONBOARDING_FINANCES: 'Vos finances partout',
-  ONBOARDING_FINANCES_CAPTION:
-    'Accédez à vos comptes et enregistrez des transactions depuis votre téléphone, où que vous soyez.',
-  ONBOARDING_PRIVACY: 'La confidentialité d’abord',
-  ONBOARDING_PRIVACY_CAPTION:
-    'Protégez vos données personnelles avec Money, qui ne collecte ni ne partage d’informations avec des tiers.',
-  ONBOARDING_SIMPLIFY: 'Simplifiez vos finances',
-  ONBOARDING_SIMPLIFY_CAPTION:
-    'L’intelligence intégrée de Money vous aide à comprendre vos dépenses et à prendre de meilleures décisions.',
-  ONBOARDING_WELCOME: 'Bienvenue sur Money !',
-  ONBOARDING_WELCOME_CAPTION: 'Gérez vos comptes multidevises simplement et en toute sécurité.',
-
-  // ---- onboarding survey (local-only)
-  ONBOARDING_Q_PRIMARY_GOAL_TITLE: 'Pourquoi allez-vous utiliser Money ?',
-  ONBOARDING_Q_PRIMARY_GOAL_CAPTION: 'Cela nous aide à adapter les réglages et conseils à votre style.',
-  ONBOARDING_OPT_PRIMARY_GOAL_SPENDING: 'Suivre les dépenses',
-  ONBOARDING_OPT_PRIMARY_GOAL_SAVINGS: 'Épargne et objectifs',
-  ONBOARDING_OPT_PRIMARY_GOAL_DEBT: 'Rembourser des dettes',
-  ONBOARDING_OPT_PRIMARY_GOAL_INCOME: 'Suivre les revenus (variables)',
-  ONBOARDING_OPT_PRIMARY_GOAL_TRAVEL: 'Voyages / multi-devises',
-
-  ONBOARDING_Q_TRACKING_FREQUENCY_TITLE: 'À quelle fréquence allez-vous enregistrer des transactions ?',
-  ONBOARDING_Q_TRACKING_FREQUENCY_CAPTION:
-    'Nous pouvons garder les choses simples ou plus structurées selon votre rythme.',
-  ONBOARDING_OPT_FREQUENCY_DAILY: 'Tous les jours',
-  ONBOARDING_OPT_FREQUENCY_WEEKLY: 'Chaque semaine',
-  ONBOARDING_OPT_FREQUENCY_MONTH_END: 'Fin de mois',
-  ONBOARDING_OPT_FREQUENCY_OCCASIONAL: 'Occasionnellement',
-
-  ONBOARDING_Q_DETAIL_LEVEL_TITLE: 'Quel niveau de détail pour les catégories ?',
-  ONBOARDING_Q_DETAIL_LEVEL_CAPTION: 'Un setup simple est plus rapide. Un setup détaillé offre de meilleurs insights.',
-  ONBOARDING_OPT_DETAIL_SIMPLE: 'Simple',
-  ONBOARDING_OPT_DETAIL_NORMAL: 'Normal',
-  ONBOARDING_OPT_DETAIL_DETAILED: 'Très détaillé',
-
-  ONBOARDING_Q_ACCOUNTS_COUNT_TITLE: 'Combien de comptes gérez-vous ?',
-  ONBOARDING_Q_ACCOUNTS_COUNT_CAPTION: 'Cela nous aide à comprendre la complexité de votre suivi.',
-  ONBOARDING_OPT_ACCOUNTS_1: '1 compte',
-  ONBOARDING_OPT_ACCOUNTS_2_3: '2-3 comptes',
-  ONBOARDING_OPT_ACCOUNTS_4_PLUS: '4+ comptes',
-
-  ONBOARDING_Q_INCOME_PATTERN_TITLE: 'Vos revenus sont…',
-  ONBOARDING_Q_INCOME_PATTERN_CAPTION: 'Cela nous aide à adapter l’expérience à votre réalité.',
-  ONBOARDING_OPT_INCOME_FIXED: 'Fixes (mensuels)',
-  ONBOARDING_OPT_INCOME_WEEKLY: 'Hebdomadaires',
-  ONBOARDING_OPT_INCOME_VARIABLE: 'Variables (freelance)',
-  ONBOARDING_OPT_INCOME_MIXED: 'Mixtes',
-
-
   LOG_OUT: 'Déconnexion',
   CONFIRM_LOG_OUT: 'Se déconnecter ?',
   CONFIRM_LOG_OUT_CAPTION: 'Cela vous ramène au début. Vos données restent sur cet appareil.',
-  LEAD_SEND_FAILED: 'Impossible d’envoyer. Réessayez.',
-
   PIN: 'Votre code PIN',
   PENDING: 'en attente',
   PIN_CHOOSE: 'Choisissez un PIN',
@@ -1050,8 +781,6 @@ export const FR = {
   REMINDER_BACKUP: 'Rappel de sauvegarde',
   REMINDER_BACKUP_CAPTION: 'Recevez des alertes de sauvegarde.',
   SCHEDULED: 'Transactions planifiées',
-  SCHEDULED_NEW: 'Nouvelle transaction planifiée',
-  SCHEDULED_EDIT: 'Modifier la transaction planifiée',
   SCHEDULED_FREQUENCY: 'Fréquence',
   SCHEDULED_PATTERN_WEEKLY: 'Hebdomadaire',
   SCHEDULED_PATTERN_MONTHLY: 'Mensuelle',
@@ -1063,7 +792,6 @@ export const FR = {
   SCHEDULED_EMPTY: 'Aucune planification',
   SCHEDULED_EMPTY_GUIDE:
     'Créez des revenus et dépenses récurrents. Nous générons automatiquement les entrées à la date prévue.',
-  SCHEDULED_ADD_CTA: 'Ajouter une transaction planifiée',
   SCHEDULED_SECTION_UPCOMING: '7 prochains jours',
   SCHEDULED_SECTION_MONTH: 'Reste du mois',
   SCHEDULED_SECTION_LATER: 'Plus tard',
@@ -1075,17 +803,8 @@ export const FR = {
   RESET_DATA_ACTION: 'Réinitialiser les données',
   SEND: 'Envoyer',
   STATS_RANGE_1Y: '1A',
-  STATS_RANGE_2Y: '2A',
-  STATS_RANGE_4Y: '4A',
   STATS_FLOW_6M: '6M',
-  STATS_FLOW_6Q: '6T',
-
   SAVE: 'Enregistrer',
-  SCALE_KEY: {
-    min: 'Bas',
-    med: 'Médiane',
-    max: 'Élevé',
-  },
   SCHEDULE_BACKUP: 'Protégez vos finances !',
   SCHEDULE_BACKUP_CAPTION:
     'N’oubliez pas d’effectuer votre sauvegarde hebdomadaire. Gardez vos informations financières à jour et en sécurité. C’est rapide et facile. Faites-le maintenant !',
@@ -1097,17 +816,12 @@ export const FR = {
   DATE: 'Date',
   DESTINATION: 'À',
   SETTINGS: 'Paramètres',
-  TYPE: 'Type',
-  START: 'Commencer',
-  START_TRIAL: 'Commencer l’essai gratuit de 7 jours',
   SYNC_RATES_CTA: 'Mettre à jour les taux',
   SWAP: 'Change',
 
   TERMS: 'Conditions',
   TODAY: 'Aujourd’hui',
   TRANSACTIONS: 'Transactions',
-  TRANSFERS: 'Transferts',
-
   ACCOUNTS: 'Comptes',
   INFO: 'Info',
   YESTERDAY: 'Hier',
@@ -1184,15 +898,12 @@ export const DE = {
   THIS_MONTH: 'Dieser Monat',
   CASHFLOW: 'Fluss',
   STATS_FLOW_6M_CAPTION: 'letzte 6 Monate',
-  STATS_FLOW_6Q_CAPTION: 'letzte 6 Quartale',
   BACKUP_CTA: 'Sichern',
   NET_WORTH: 'Gesamtvermögen',
   OTHERS: 'Sonstige',
   RANGE_ALL: 'Alle',
-  ADD: 'Hinzufügen',
   SCHEDULED_IMPACT: 'Monatlicher Effekt',
   DUPLICATE: 'Duplizieren',
-  TX_EDIT: 'Buchung bearbeiten',
   SUGGESTED: 'Vorschlag',
   ALL: 'Alle',
   ABOUT: 'Über Money',
@@ -1200,16 +911,10 @@ export const DE = {
   ACCEPT: 'Akzeptieren',
   ACTIVITY: 'Analysen',
   AMOUNT: 'Betrag',
-  ANNUALY: 'Jährlich',
   DATA: 'Daten',
 
   APPEARANCE: 'Erscheinungsbild',
-  APPERANCE_DARK: 'Dunkelmodus',
-  APPERANCE_LIGHT: 'Hellmodus',
-
-
   CANCEL: 'Abbrechen',
-  CANCEL_ANYTIME: 'Jederzeit kündbar',
   CATEGORIES: [
     {
       // Expenses
@@ -1245,8 +950,6 @@ export const DE = {
   ],
 
   CHOOSE_CURRENCY: 'Basiswährung',
-  CLONE: 'Klonen',
-  CLOSE: 'Schließen',
   CONCEPT: 'Konzept',
   CONFIRM_DELETION: 'Löschen bestätigen',
   CONFIRM_DELETION_CAPTION: 'Möchten Sie diese Transaktion dauerhaft löschen? Diese Aktion ist irreversibel.',
@@ -1299,8 +1002,6 @@ export const DE = {
     XRP: 'XRP',
   },
   CURRENCY: 'Währung',
-  CURRENCIES: 'Währungen',
-
   DELETE: 'Löschen',
 
   ERROR: 'Etwas ist schiefgelaufen.',
@@ -1323,18 +1024,7 @@ export const DE = {
   INCOME: 'Einnahme',
   INCOMES: 'Einnahmen',
   INITIAL_BALANCE: 'Startsaldo',
-  LAST_TRANSACTIONS: 'Letzte Aktivitäten',
-
   LANGUAGE: 'Sprache',
-  LANGUAGE_EN: 'Englisch',
-  LANGUAGE_ES: 'Spanisch',
-  LANGUAGE_PT: 'Portugiesisch',
-  LANGUAGE_FR: 'Französisch',
-  LANGUAGE_DE: 'Deutsch',
-
-  LIFETIME: 'Lebenslang',
-
-  MONTH: 'Monat',
   MONTHS: [
     'Januar',
     'Februar',
@@ -1349,67 +1039,12 @@ export const DE = {
     'November',
     'Dezember',
   ],
-  MAX: 'max',
-  MIN: 'min',
-
   NAME: 'Name',
   NEW: 'Neu',
   NEXT: 'Weiter',
-  NO_TRANSACTIONS: 'Sie haben keine Transaktionen.',
-
-  ONBOARDING_FINANCES: 'Ihre Finanzen überall',
-  ONBOARDING_FINANCES_CAPTION:
-    'Greifen Sie von Ihrem Handy aus auf Ihre Konten zu und erfassen Sie Transaktionen, wo immer Sie sind.',
-  ONBOARDING_PRIVACY: 'Datenschutz zuerst',
-  ONBOARDING_PRIVACY_CAPTION:
-    'Schützen Sie Ihre persönlichen Daten mit Money, das keine Informationen sammelt oder mit Dritten teilt.',
-  ONBOARDING_SIMPLIFY: 'Vereinfachen Sie Ihre Finanzen',
-  ONBOARDING_SIMPLIFY_CAPTION: 'Money hilft Ihnen, Ihre Ausgaben zu verstehen und bessere Entscheidungen zu treffen.',
-  ONBOARDING_WELCOME: 'Willkommen bei Money!',
-  ONBOARDING_WELCOME_CAPTION: 'Verwalten Sie Ihre Multicurrency-Konten einfach und sicher.',
-
-  // ---- onboarding survey (local-only)
-  ONBOARDING_Q_PRIMARY_GOAL_TITLE: 'Wofür wirst du Money nutzen?',
-  ONBOARDING_Q_PRIMARY_GOAL_CAPTION: 'Das hilft uns, Defaults und Hinweise an deinen Stil anzupassen.',
-  ONBOARDING_OPT_PRIMARY_GOAL_SPENDING: 'Ausgaben verfolgen',
-  ONBOARDING_OPT_PRIMARY_GOAL_SAVINGS: 'Sparen & Ziele',
-  ONBOARDING_OPT_PRIMARY_GOAL_DEBT: 'Schulden abbauen',
-  ONBOARDING_OPT_PRIMARY_GOAL_INCOME: 'Einnahmen verfolgen (variabel)',
-  ONBOARDING_OPT_PRIMARY_GOAL_TRAVEL: 'Reisen / Multi-Währung',
-
-  ONBOARDING_Q_TRACKING_FREQUENCY_TITLE: 'Wie oft wirst du Transaktionen erfassen?',
-  ONBOARDING_Q_TRACKING_FREQUENCY_CAPTION:
-    'Wir können es leichtgewichtig oder strukturierter halten, je nach Rhythmus.',
-  ONBOARDING_OPT_FREQUENCY_DAILY: 'Täglich',
-  ONBOARDING_OPT_FREQUENCY_WEEKLY: 'Wöchentlich',
-  ONBOARDING_OPT_FREQUENCY_MONTH_END: 'Monatsende',
-  ONBOARDING_OPT_FREQUENCY_OCCASIONAL: 'Gelegentlich',
-
-  ONBOARDING_Q_DETAIL_LEVEL_TITLE: 'Wie detailliert sollen Kategorien sein?',
-  ONBOARDING_Q_DETAIL_LEVEL_CAPTION: 'Ein einfaches Setup ist schneller. Ein detailliertes liefert tiefere Insights.',
-  ONBOARDING_OPT_DETAIL_SIMPLE: 'Einfach',
-  ONBOARDING_OPT_DETAIL_NORMAL: 'Normal',
-  ONBOARDING_OPT_DETAIL_DETAILED: 'Sehr detailliert',
-
-  ONBOARDING_Q_ACCOUNTS_COUNT_TITLE: 'Wie viele Konten verwaltest du?',
-  ONBOARDING_Q_ACCOUNTS_COUNT_CAPTION: 'Das hilft uns, die Komplexität deines Trackings zu verstehen.',
-  ONBOARDING_OPT_ACCOUNTS_1: '1 Konto',
-  ONBOARDING_OPT_ACCOUNTS_2_3: '2-3 Konten',
-  ONBOARDING_OPT_ACCOUNTS_4_PLUS: '4+ Konten',
-
-  ONBOARDING_Q_INCOME_PATTERN_TITLE: 'Dein Einkommen ist…',
-  ONBOARDING_Q_INCOME_PATTERN_CAPTION: 'So können wir die Erfahrung besser an deine Realität anpassen.',
-  ONBOARDING_OPT_INCOME_FIXED: 'Fix (monatlich)',
-  ONBOARDING_OPT_INCOME_WEEKLY: 'Wöchentlich',
-  ONBOARDING_OPT_INCOME_VARIABLE: 'Variabel (freelance)',
-  ONBOARDING_OPT_INCOME_MIXED: 'Gemischt',
-
-
   LOG_OUT: 'Abmelden',
   CONFIRM_LOG_OUT: 'Abmelden?',
   CONFIRM_LOG_OUT_CAPTION: 'Das bringt dich zurück zum Anfang. Deine Daten bleiben auf diesem Gerät.',
-  LEAD_SEND_FAILED: 'Senden fehlgeschlagen. Bitte erneut versuchen.',
-
   PIN: 'Ihre PIN',
   PENDING: 'ausstehend',
   PIN_CHOOSE: 'PIN wählen',
@@ -1418,8 +1053,6 @@ export const DE = {
   REMINDER_BACKUP: 'Backup-Erinnerung',
   REMINDER_BACKUP_CAPTION: 'Backup-Erinnerungen erhalten.',
   SCHEDULED: 'Geplante Transaktionen',
-  SCHEDULED_NEW: 'Neue geplante Transaktion',
-  SCHEDULED_EDIT: 'Geplante Transaktion bearbeiten',
   SCHEDULED_FREQUENCY: 'Frequenz',
   SCHEDULED_PATTERN_WEEKLY: 'Wöchentlich',
   SCHEDULED_PATTERN_MONTHLY: 'Monatlich',
@@ -1430,7 +1063,6 @@ export const DE = {
   SCHEDULED_EMPTY: 'Keine Planungen',
   SCHEDULED_EMPTY_GUIDE:
     'Erstelle wiederkehrende Einnahmen und Ausgaben. Wir erzeugen die Buchungen automatisch am Fälligkeitsdatum.',
-  SCHEDULED_ADD_CTA: 'Geplante Transaktion hinzufügen',
   SCHEDULED_SECTION_UPCOMING: 'Nächste 7 Tage',
   SCHEDULED_SECTION_MONTH: 'Rest des Monats',
   SCHEDULED_SECTION_LATER: 'Später',
@@ -1442,17 +1074,8 @@ export const DE = {
   RESET_DATA_ACTION: 'Daten zurücksetzen',
   SEND: 'Senden',
   STATS_RANGE_1Y: '1J',
-  STATS_RANGE_2Y: '2J',
-  STATS_RANGE_4Y: '4J',
   STATS_FLOW_6M: '6M',
-  STATS_FLOW_6Q: '6T',
-
   SAVE: 'Speichern',
-  SCALE_KEY: {
-    min: 'Niedrig',
-    med: 'Median',
-    max: 'Hoch',
-  },
   SCHEDULE_BACKUP: 'Schützen Sie Ihre Finanzen!',
   SCHEDULE_BACKUP_CAPTION:
     'Vergessen Sie nicht, Ihr wöchentliches Backup zu erstellen. Halten Sie Ihre Finanzdaten sicher und aktuell. Es ist schnell und einfach. Machen Sie es jetzt!',
@@ -1464,17 +1087,12 @@ export const DE = {
   DATE: 'Datum',
   DESTINATION: 'An',
   SETTINGS: 'Einstellungen',
-  TYPE: 'Typ',
-  START: 'Start',
-  START_TRIAL: '7 Tage gratis testen',
   SYNC_RATES_CTA: 'Kurse aktualisieren',
   SWAP: 'Wechsel',
 
   TERMS: 'Bedingungen',
   TODAY: 'Heute',
   TRANSACTIONS: 'Transaktionen',
-  TRANSFERS: 'Überweisungen',
-
   ACCOUNTS: 'Konten',
   INFO: 'Info',
   YESTERDAY: 'Gestern',
@@ -1551,15 +1169,12 @@ export const ES = {
   THIS_MONTH: 'Este mes',
   CASHFLOW: 'Flujo',
   STATS_FLOW_6M_CAPTION: 'últimos 6 meses',
-  STATS_FLOW_6Q_CAPTION: 'últimos 6 trimestres',
   BACKUP_CTA: 'Copiar',
   NET_WORTH: 'Patrimonio total',
   OTHERS: 'Otros',
   RANGE_ALL: 'Todo',
-  ADD: 'Añadir',
   SCHEDULED_IMPACT: 'Impacto mensual',
   DUPLICATE: 'Duplicar',
-  TX_EDIT: 'Editar movimiento',
   SUGGESTED: 'Sugerido',
   ALL: 'Todas',
   ABOUT: 'Acerca de Money',
@@ -1567,16 +1182,10 @@ export const ES = {
   ACCEPT: 'Aceptar',
   ACTIVITY: 'Analíticas',
   AMOUNT: 'Importe',
-  ANNUALY: 'Anual',
   DATA: 'Datos',
 
   APPEARANCE: 'Apariencia',
-  APPERANCE_DARK: 'Modo oscuro',
-  APPERANCE_LIGHT: 'Modo claro',
-
-
   CANCEL: 'Cancelar',
-  CANCEL_ANYTIME: 'Cancela cuando quieras',
   CATEGORIES: [
     {
       // Expenses
@@ -1612,8 +1221,6 @@ export const ES = {
   ],
 
   CHOOSE_CURRENCY: 'Moneda base',
-  CLONE: 'Clonar',
-  CLOSE: 'Cerrar',
   CONCEPT: 'Concepto',
   CONFIRM_DELETION: 'Confirmar eliminación',
   CONFIRM_DELETION_CAPTION: '¿Eliminar permanentemente esta transacción? Esta acción es irreversible.',
@@ -1666,8 +1273,6 @@ export const ES = {
     XRP: 'XRP',
   },
   CURRENCY: 'Moneda',
-  CURRENCIES: 'Monedas',
-
   DELETE: 'Eliminar',
 
   ERROR: 'Algo salió mal.',
@@ -1691,20 +1296,7 @@ export const ES = {
   INCOMES: 'Ingresos',
   INITIAL_BALANCE: 'Saldo inicial',
   INFO: 'Info',
-  LAST_TRANSACTIONS: 'Actividad reciente',
-
   LANGUAGE: 'Idioma',
-  LANGUAGE_EN: 'Inglés',
-  LANGUAGE_ES: 'Español',
-  LANGUAGE_PT: 'Portugués',
-  LANGUAGE_FR: 'Francés',
-  LANGUAGE_DE: 'Alemán',
-
-  LIFETIME: 'De por vida',
-
-  MONTH: 'mes',
-  MAX: 'máx',
-  MIN: 'mín',
   MONTHS: [
     'Enero',
     'Febrero',
@@ -1723,60 +1315,9 @@ export const ES = {
   NAME: 'Nombre',
   NEW: 'Nuevo',
   NEXT: 'Siguiente',
-  NO_TRANSACTIONS: 'No tienes ninguna transacción.',
-
-  ONBOARDING_FINANCES: 'Tus finanzas en cualquier lugar',
-  ONBOARDING_FINANCES_CAPTION: 'Accede a tus cuentas y registra transacciones desde tu móvil, estés donde estés.',
-  ONBOARDING_PRIVACY: 'Privacidad primero',
-  ONBOARDING_PRIVACY_CAPTION:
-    'Protege tus datos personales con Money, que no recopila ni comparte información con terceros.',
-  ONBOARDING_SIMPLIFY: 'Simplifica tus finanzas',
-  ONBOARDING_SIMPLIFY_CAPTION:
-    'La inteligencia integrada de Money te ayuda a entender tus gastos y tomar mejores decisiones.',
-  ONBOARDING_WELCOME: '¡Bienvenido a Money!',
-  ONBOARDING_WELCOME_CAPTION: 'Gestiona tus cuentas multicurrency de forma simple y segura.',
-
-  // ---- onboarding survey (local-only)
-  ONBOARDING_Q_PRIMARY_GOAL_TITLE: '¿Para qué vas a usar Money?',
-  ONBOARDING_Q_PRIMARY_GOAL_CAPTION: 'Esto nos ayuda a ajustar los valores por defecto a tu estilo.',
-  ONBOARDING_OPT_PRIMARY_GOAL_SPENDING: 'Controlar gastos',
-  ONBOARDING_OPT_PRIMARY_GOAL_SAVINGS: 'Ahorrar / metas',
-  ONBOARDING_OPT_PRIMARY_GOAL_DEBT: 'Salir de deudas',
-  ONBOARDING_OPT_PRIMARY_GOAL_INCOME: 'Controlar ingresos (variables)',
-  ONBOARDING_OPT_PRIMARY_GOAL_TRAVEL: 'Viajes / multi-moneda',
-
-  ONBOARDING_Q_TRACKING_FREQUENCY_TITLE: '¿Con qué frecuencia vas a registrar movimientos?',
-  ONBOARDING_Q_TRACKING_FREQUENCY_CAPTION: 'Podemos mantenerlo simple o más estructurado según tu ritmo.',
-  ONBOARDING_OPT_FREQUENCY_DAILY: 'Diario',
-  ONBOARDING_OPT_FREQUENCY_WEEKLY: 'Semanal',
-  ONBOARDING_OPT_FREQUENCY_MONTH_END: 'A fin de mes',
-  ONBOARDING_OPT_FREQUENCY_OCCASIONAL: 'Ocasional',
-
-  ONBOARDING_Q_DETAIL_LEVEL_TITLE: '¿Qué tan detallado querés categorizar?',
-  ONBOARDING_Q_DETAIL_LEVEL_CAPTION: 'Un setup simple es más rápido. Uno detallado da mejores insights.',
-  ONBOARDING_OPT_DETAIL_SIMPLE: 'Simple',
-  ONBOARDING_OPT_DETAIL_NORMAL: 'Normal',
-  ONBOARDING_OPT_DETAIL_DETAILED: 'Muy detallado',
-
-  ONBOARDING_Q_ACCOUNTS_COUNT_TITLE: '¿Cuántas cuentas manejás?',
-  ONBOARDING_Q_ACCOUNTS_COUNT_CAPTION: 'Esto nos ayuda a entender la complejidad de tu control.',
-  ONBOARDING_OPT_ACCOUNTS_1: '1 cuenta',
-  ONBOARDING_OPT_ACCOUNTS_2_3: '2-3 cuentas',
-  ONBOARDING_OPT_ACCOUNTS_4_PLUS: '4+ cuentas',
-
-  ONBOARDING_Q_INCOME_PATTERN_TITLE: 'Tus ingresos son…',
-  ONBOARDING_Q_INCOME_PATTERN_CAPTION: 'Esto nos ayuda a adaptar la experiencia a tu realidad.',
-  ONBOARDING_OPT_INCOME_FIXED: 'Fijos (mensual)',
-  ONBOARDING_OPT_INCOME_WEEKLY: 'Por semana',
-  ONBOARDING_OPT_INCOME_VARIABLE: 'Variables (freelance)',
-  ONBOARDING_OPT_INCOME_MIXED: 'Mixtos',
-
-
   LOG_OUT: 'Salir',
   CONFIRM_LOG_OUT: '¿Salir?',
   CONFIRM_LOG_OUT_CAPTION: 'Esto te devuelve al inicio. Tus datos se quedan en este dispositivo.',
-  LEAD_SEND_FAILED: 'No se pudo enviar. Probá de nuevo.',
-
   PIN: 'Tu código PIN',
   PENDING: 'pendientes',
   PIN_CHOOSE: 'Elige un PIN',
@@ -1785,8 +1326,6 @@ export const ES = {
   REMINDER_BACKUP: 'Recordatorio de backup',
   REMINDER_BACKUP_CAPTION: 'Recibe alertas de backup.',
   SCHEDULED: 'Transacciones programadas',
-  SCHEDULED_NEW: 'Nueva transacción programada',
-  SCHEDULED_EDIT: 'Editar transacción programada',
   SCHEDULED_FREQUENCY: 'Frecuencia',
   SCHEDULED_PATTERN_WEEKLY: 'Semanal',
   SCHEDULED_PATTERN_MONTHLY: 'Mensual',
@@ -1798,7 +1337,6 @@ export const ES = {
   SCHEDULED_EMPTY: 'No hay programaciones',
   SCHEDULED_EMPTY_GUIDE:
     'Crea ingresos y gastos recurrentes. Generaremos los movimientos automáticamente en cada vencimiento.',
-  SCHEDULED_ADD_CTA: 'Añadir transacción programada',
   SCHEDULED_SECTION_UPCOMING: 'Próximos 7 días',
   SCHEDULED_SECTION_MONTH: 'Resto del mes',
   SCHEDULED_SECTION_LATER: 'Más adelante',
@@ -1810,17 +1348,8 @@ export const ES = {
   RESET_DATA_ACTION: 'Restablecer datos',
   SEND: 'Enviar',
   STATS_RANGE_1Y: '1A',
-  STATS_RANGE_2Y: '2A',
-  STATS_RANGE_4Y: '4A',
   STATS_FLOW_6M: '6M',
-  STATS_FLOW_6Q: '6T',
-
   SAVE: 'Guardar',
-  SCALE_KEY: {
-    min: 'Bajo',
-    med: 'Mediana',
-    max: 'Alto',
-  },
   SCHEDULE_BACKUP: '¡Protege tus finanzas!',
   SCHEDULE_BACKUP_CAPTION:
     'No olvides hacer tu backup semanal. Mantén tus datos seguros y al día. Es rápido y fácil. ¡Hazlo ahora!',
@@ -1832,17 +1361,12 @@ export const ES = {
   DATE: 'Fecha',
   DESTINATION: 'A',
   SETTINGS: 'Ajustes',
-  TYPE: 'Tipo',
-  START: 'Empezar',
-  START_TRIAL: 'Empieza prueba gratis 7 días',
   SYNC_RATES_CTA: 'Actualizar tasas',
   SWAP: 'Cambio',
 
   TERMS: 'Términos',
   TODAY: 'Hoy',
   TRANSACTIONS: 'Transacciones',
-  TRANSFERS: 'Transferencias',
-
   ACCOUNTS: 'Cuentas',
   YESTERDAY: 'Ayer',
 };

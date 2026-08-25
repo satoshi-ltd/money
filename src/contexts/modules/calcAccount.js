@@ -19,7 +19,6 @@ export const calcAccount = ({
   const exchangeProps = [currency, baseCurrency, rates];
   let currentBalance = Number.isFinite(balance) ? balance : 0;
   let currentMonthTxs = 0;
-  let hasMissingRate = false;
   let expenses = 0;
   let expensesBase = 0;
   let incomes = 0;
@@ -37,9 +36,7 @@ export const calcAccount = ({
     const date = new Date(timestamp);
     const monthIndex = getMonthDiff(genesisDate, date);
     const converted = currency !== baseCurrency ? exchange(value, ...exchangeProps, timestamp) : value;
-    const isConverted = Number.isFinite(converted);
-    if (!isConverted) hasMissingRate = true;
-    const valueBase = isConverted ? converted : 0;
+    const valueBase = Number.isFinite(converted) ? converted : 0;
     const signedValue = isExpense ? -value : value;
     const signedValueBase = isExpense ? -valueBase : valueBase;
 
@@ -77,12 +74,9 @@ export const calcAccount = ({
       index === months
         ? exchange(value, ...exchangeProps)
         : exchange(value, ...exchangeProps, new Date(genesisDate.getFullYear(), genesisDate.getMonth() + index, 1));
-    if (Number.isFinite(converted)) return converted;
-    hasMissingRate = true;
-    return 0;
+    return Number.isFinite(converted) ? converted : 0;
   });
   const currentBalanceBase = exchange(currentBalance, ...exchangeProps);
-  if (!Number.isFinite(currentBalanceBase)) hasMissingRate = true;
 
   return {
     ...account,
@@ -91,7 +85,6 @@ export const calcAccount = ({
     chartBalanceBase: [...chartBalance],
     currentBalance,
     currentBalanceBase,
-    hasMissingRate,
     currentMonth: {
       expenses,
       expensesBase,

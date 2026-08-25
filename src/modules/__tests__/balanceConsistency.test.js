@@ -32,11 +32,10 @@ describe('balance consistency', () => {
       txs: [],
     });
 
+    // An account nobody can convert contributes nothing to the total rather than a wrong figure.
     expect(state.overall.currentBalance).toBe(100);
-    expect(state.overall.hasMissingRate).toBe(true);
-    expect(state.accounts[0].hasMissingRate).toBe(false);
-    expect(state.accounts[1].hasMissingRate).toBe(true);
     expect(state.accounts[1].currentBalance).toBe(500);
+    expect(state.accounts[1].currentBalanceBase).toBeUndefined();
   });
 
   test('reads the current month from the date it is given', () => {
