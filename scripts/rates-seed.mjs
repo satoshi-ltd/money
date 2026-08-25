@@ -23,11 +23,18 @@ const origins = (date) => [
   `https://${date}.currency-api.pages.dev/v1/currencies/${BASE}.json`,
 ];
 
+let datasetDate;
+
 const readDay = async (date) => {
   for (const url of origins(date)) {
     try {
       const response = await fetch(url);
-      if (response.ok) return (await response.json())[BASE];
+      if (response.ok) {
+        const json = await response.json();
+        // The feed dates itself; trusting it beats trusting the clock of whoever runs the release.
+        if (date === 'latest' && json.date) datasetDate = json.date;
+        return json[BASE];
+      }
     } catch {
       // try the next origin
     }
@@ -41,7 +48,10 @@ const months = () => {
   const now = new Date();
   for (let at = new Date(start); at <= now; at.setUTCMonth(at.getUTCMonth() + 1)) {
     const key = at.toISOString().slice(0, 7);
-    out.push({ date: out.length === 0 ? START : `${key}-01`, key });
+    // The month in progress is priced today, not on its first: the service asks for `latest` and the seed must
+    // agree, or a build shipped on the 25th values bitcoin at the price it had three weeks earlier.
+    const current = key === now.toISOString().slice(0, 7);
+    out.push({ date: current ? 'latest' : out.length === 0 ? START : `${key}-01`, key });
   }
   return out;
 };
@@ -61,5 +71,5 @@ for (const { date, key } of months()) {
 const keys = Object.keys(rates).sort();
 if (!keys.length) throw new Error('[rates-seed] no month could be read');
 
-fs.writeFileSync(OUT, `${JSON.stringify({ currency: BASE.toUpperCase(), rates }, undefined, 2)}\n`);
+fs.writeFileSync(OUT, `${JSON.stringify({ currency: BASE.toUpperCase(), date: datasetDate, rates }, undefined, 2)}\n`);
 console.log(`${OUT}: ${keys.length} months, ${keys[0]} to ${keys[keys.length - 1]}, ${(fs.statSync(OUT).size / 1024).toFixed(1)} KB`);

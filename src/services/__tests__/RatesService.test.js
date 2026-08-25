@@ -39,19 +39,39 @@ describe('services/RatesService seed', () => {
   // `{}` is truthy, so `stored || seed` silently kept an empty cache and every foreign balance read 0.00.
   test('an empty cache is no cache: it falls back to the seed like a missing one', () => {
     [undefined, null, {}].forEach((empty) => {
-      expect(Object.keys(ratesOrSeed(empty, 'USD')).length).toBeGreaterThan(12);
+      const { rates, seeded } = ratesOrSeed(empty, 'USD');
+
+      expect(seeded).toBe(true);
+      expect(Object.keys(rates).length).toBeGreaterThan(12);
     });
   });
 
-  test('a cache with months in it is left exactly as it was found', () => {
+  test('a cache downloaded after the build is left exactly as it was found', () => {
     const cached = { '2026-01': { USD: 1 } };
+    const { rates, seeded } = ratesOrSeed(cached, 'USD', '2099-01-01T00:00:00.000Z');
 
-    expect(ratesOrSeed(cached, 'USD')).toBe(cached);
+    expect(seeded).toBe(false);
+    expect(rates).toBe(cached);
+  });
+
+  // A device that once stored the seed kept those prices for ever, and shipping fresher rates changed nothing.
+  test('a cache older than the build loses to the build', () => {
+    const cached = { '2026-01': { USD: 1 } };
+    const { rates, seeded } = ratesOrSeed(cached, 'USD', '2024-01-01T00:00:00.000Z');
+
+    expect(seeded).toBe(true);
+    expect(Object.keys(rates).length).toBeGreaterThan(12);
+  });
+
+  test('a cache nobody can date is treated as older than the build', () => {
+    expect(ratesOrSeed({ '2026-01': { USD: 1 } }, 'USD').seeded).toBe(true);
   });
 
   test('what it hands back is a month map, with no currency key mixed in', () => {
-    expect(ratesOrSeed({}, 'USD').currency).toBeUndefined();
-    expect(Object.keys(ratesOrSeed({}, 'USD')).every((key) => /^\d{4}-\d{2}$/.test(key))).toBe(true);
+    const { rates } = ratesOrSeed({}, 'USD');
+
+    expect(rates.currency).toBeUndefined();
+    expect(Object.keys(rates).every((key) => /^\d{4}-\d{2}$/.test(key))).toBe(true);
   });
 
   test('an unknown base leaves the series out rather than inventing one', () => {

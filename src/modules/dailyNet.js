@@ -1,5 +1,6 @@
 import { C } from './constants';
 import { exchange } from './exchange';
+import { isInternalTransfer } from './isInternalTransfer';
 
 const {
   TX: {
@@ -7,15 +8,19 @@ const {
   },
 } = C;
 
-export const dailyNet = (txs = [], { baseCurrency, rates = {} } = {}) =>
-  txs.reduce((total, { currency, timestamp, type, value = 0 } = {}) => {
-    if (type !== EXPENSE && type !== INCOME) return total;
+// Currency lives on the account, never on the transaction: reading it from the transaction quietly summed
+// euros with baht and stamped the base symbol on the result.
+export const dailyNet = (txs = [], { accounts = [], baseCurrency, rates = {} } = {}) => {
+  const currencyOf = new Map(accounts.map(({ currency, hash }) => [hash, currency]));
 
-    const base =
-      !currency || !baseCurrency || currency === baseCurrency
-        ? value
-        : exchange(value, currency, baseCurrency, rates, timestamp);
+  return txs.reduce((total, tx = {}) => {
+    const { account, type, value = 0 } = tx;
+    if ((type !== EXPENSE && type !== INCOME) || isInternalTransfer(tx)) return total;
+
+    const currency = currencyOf.get(account) || baseCurrency;
+    const base = !baseCurrency || currency === baseCurrency ? value : exchange(value, currency, baseCurrency, rates);
     if (!Number.isFinite(base)) return total;
 
     return total + (type === EXPENSE ? -base : base);
   }, 0);
+};

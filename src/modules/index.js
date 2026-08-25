@@ -29,7 +29,6 @@ export * from './monthlyImpact';
 export * from './rankInk';
 export * from './recurrence';
 export * from './repeatSuggestion';
-export * from './scheduledAhead';
 export * from './sheetDetent';
 export * from './verboseDate';
 export * from './verboseTime';

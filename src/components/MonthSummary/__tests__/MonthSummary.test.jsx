@@ -29,10 +29,7 @@ jest.mock('../../PriceFriendly', () => {
   return { PriceFriendly: (props) => MockReact.createElement(ReactNative.View, { testID: 'price', ...props }) };
 });
 
-const INSIGHTS = [
-  { type: 'trend', meta: { baseline: 2118.15, day: 23, spent: 2970.89 }, value: 40 },
-  { type: 'pace', value: 3321.05 },
-];
+const INSIGHTS = [{ type: 'trend', meta: { baseline: 2118.15, day: 23, direction: 'over', spent: 2970.89 }, value: 40 }];
 
 const render = (props) => {
   let renderer;
@@ -43,6 +40,13 @@ const render = (props) => {
 };
 
 const percent = (value) => Number(`${value}`.replace('%', ''));
+
+const prices = (root) => root.findAllByProps({ testID: 'price' }).map(({ props }) => props);
+
+const texts = (root) =>
+  root
+    .findAllByType(RNText)
+    .flatMap(({ props }) => (typeof props.children === 'string' ? [props.children] : []));
 
 const flats = (root) =>
   root
@@ -66,43 +70,91 @@ describe('components/MonthSummary', () => {
 
   test('keeping under the pace paints no ink at all', () => {
     const styles = flats(
-      render({ insights: [{ type: 'trend', meta: { baseline: 2118.15, day: 23, spent: 1200 }, value: -24 }] }),
+      render({
+        insights: [{ type: 'trend', meta: { baseline: 2118.15, day: 23, direction: 'under', spent: 1200 }, value: -24 }],
+      }),
     );
 
     expect(percent(styles.find((flat) => flat.backgroundColor === ACCENT).width)).toBeCloseTo((1200 / 2118.15) * 100, 4);
     expect(styles.filter((flat) => flat.backgroundColor === TEXT && flat.height === '100%')).toHaveLength(0);
   });
 
-  // Spending under the pace is the wanted direction, so it takes the accent like any other delta.
-  test('under the pace takes the accent, over it stays plain ink', () => {
-    const over = render().findAllByType(RNText).find((node) => `${node.props.children}`.includes('above pace'));
-    expect(over.props.tone).toBeUndefined();
-    expect(over.props.medium).toBe(true);
+  // A young ledger used to render the heading over an empty card, because the whole lead was skipped.
+  test('with no baseline it still says what was spent, and draws no bar to lie with', () => {
+    const root = render({ insights: [{ type: 'trend', meta: { day: 12, spent: 240 } }] });
 
-    const under = render({
-      insights: [{ type: 'trend', meta: { baseline: 2118.15, day: 23, spent: 1200 }, value: -24 }],
-    })
-      .findAllByType(RNText)
-      .find((node) => `${node.props.children}`.includes('below pace'));
-    expect(under.props.tone).toBe('positive');
-    expect(under.props.medium).toBe(true);
+    expect(prices(root)).toEqual(expect.arrayContaining([expect.objectContaining({ value: 240 })]));
+    expect(flats(root).filter((flat) => flat.backgroundColor === ACCENT)).toHaveLength(0);
+    expect(texts(root)).not.toContain(L10N.ABOVE_PACE);
   });
 
-  test('the bar is a flat block, never a pill', () => {
-    const fill = flats(render()).find((flat) => flat.backgroundColor === ACCENT);
+  test('the direction comes from the module, so a flat month is never called above pace', () => {
+    const root = render({
+      insights: [{ type: 'trend', meta: { baseline: 1000, day: 20, direction: 'under', spent: 1000 }, value: 0 }],
+    });
 
-    expect(fill.borderRadius).toBeUndefined();
+    expect(texts(root).join(' ')).toContain(L10N.BELOW_PACE);
   });
 
-  // A render error slipped past because nothing here ever passed a scheduled block.
-  test('the scheduled line names only the side that has something pending', () => {
-    const copy = (scheduled) =>
-      render({ scheduled })
-        .findAllByType(RNText)
-        .map((node) => `${node.props.children}`);
+  test('the swing is the overshoot in money, named by one category and nothing else', () => {
+    const root = render({ insights: [...INSIGHTS, { type: 'swing', value: 809.83, meta: { label: 'Travel' } }] });
 
-    expect(copy({ charges: 1, credits: 0, net: -50 })).toContain('1 charge');
-    expect(copy({ charges: 1, credits: 0, net: -50 }).join(' ')).not.toContain('0 credit');
-    expect(copy({ charges: 2, credits: 1, net: 120 })).toContain(`1 ${L10N.CREDIT} · 2 ${L10N.CHARGES}`);
+    expect(texts(root)).toEqual(expect.arrayContaining([L10N.SWING, 'Travel']));
+    expect(prices(root).find(({ value }) => value === 809.83).operator).toBe(true);
+  });
+
+  // The bar paints its overshoot in plain ink and only the within-pace fill in gold. Gold on an overspend
+  // would have the row congratulating the reader for the thing the bar is flagging.
+  test('going over is plain ink and cutting back is gold, the way the bar already reads', () => {
+    const over = render({ insights: [...INSIGHTS, { type: 'swing', value: 809.83, meta: { label: 'Travel' } }] });
+    const under = render({ insights: [...INSIGHTS, { type: 'swing', value: -412, meta: { label: 'Food' } }] });
+
+    expect(prices(over).find(({ value }) => value === 809.83).tone).toBeNull();
+    expect(prices(under).find(({ value }) => value === -412).tone).toBe('positive');
+  });
+
+  // The only place on the home screen where money coming in appears at all.
+  test('the month says what came in, not only what went out', () => {
+    const root = render({ insights: [...INSIGHTS, { type: 'incomes', value: 18690.74, meta: { label: 'Royalties', share: 49 } }] });
+
+    expect(texts(root)).toContain(L10N.INCOMES);
+    expect(prices(root)).toEqual(expect.arrayContaining([expect.objectContaining({ value: 18690.74 })]));
+  });
+
+  test('one source is named on its own, with no 100% saying it twice', () => {
+    const root = render({ insights: [...INSIGHTS, { type: 'incomes', value: 3200, meta: { label: 'Salary' } }] });
+
+    expect(texts(root)).toContain('Salary');
+    expect(texts(root).join(' ')).not.toContain('100');
+  });
+
+  // Every line of this section is title, value and caption: a row with an empty right side reads as broken.
+  test('no row is left without a caption', () => {
+    const root = render({
+      insights: [
+        ...INSIGHTS,
+        { type: 'incomes', value: 18690.74, meta: { label: 'Royalties', share: 49 } },
+        { type: 'swing', value: 809.83, meta: { label: 'Travel' } },
+        { type: 'scheduled', value: -50.12, meta: { pending: 1 } },
+      ],
+    });
+    const shown = texts(root).join(' ');
+
+    ['Royalties', 'Travel', `1 ${L10N.PENDING}`].forEach((caption) => expect(shown).toContain(caption));
+  });
+
+  // "2 Eingänge · 3 Abbuchungen" is 26 characters in a 115px slot: one count never outgrows the row.
+  test('the scheduled line counts what is left without naming both sides', () => {
+    const root = render({ insights: [...INSIGHTS, { type: 'scheduled', value: -50.12, meta: { pending: 3 } }] });
+
+    expect(texts(root).join(' ')).toContain(`3 ${L10N.PENDING}`);
+  });
+
+  test('a row with no insight behind it is absent, never a zero', () => {
+    const shown = texts(render());
+
+    expect(shown).not.toContain(L10N.SWING);
+    expect(shown).not.toContain(L10N.INCOMES);
+    expect(shown).not.toContain(L10N.SCHEDULED_AHEAD);
   });
 });

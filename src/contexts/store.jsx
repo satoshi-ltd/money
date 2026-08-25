@@ -104,7 +104,16 @@ const StoreProvider = ({ children }) => {
         await store.get('settings').save(migrated.settings);
       }
 
-      const rates = ratesOrSeed(await store.get('rates')?.value, migrated.settings?.baseCurrency);
+      const { rates, seeded } = ratesOrSeed(
+        await store.get('rates')?.value,
+        migrated.settings?.baseCurrency,
+        migrated.settings?.lastRatesUpdate,
+      );
+      // Bundled rates are not a download: saying otherwise dates a stale series in Settings.
+      if (seeded && migrated.settings?.lastRatesUpdate) {
+        migrated.settings = { ...migrated.settings, lastRatesUpdate: undefined };
+        await store.get('settings').save(migrated.settings);
+      }
 
       setState({
         store,

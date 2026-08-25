@@ -54,4 +54,9 @@ export const getStyles = (colors) =>
     context: {
       flex: 1,
     },
+    contextRow: {
+      flex: 1,
+      gap: theme.spacing.xxs,
+      justifyContent: 'flex-end',
+    },
   });

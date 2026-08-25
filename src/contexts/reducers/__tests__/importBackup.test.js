@@ -49,14 +49,26 @@ describe('contexts/reducers/importBackup', () => {
     expect(Object.keys(store.get('rates').value).length).toBeGreaterThan(12);
   });
 
-  test('keeps the cached rates when the base currency matches', async () => {
+  test('keeps the cached rates when the base currency matches and they were downloaded after the build', async () => {
     const { state, store } = await createState();
+    state.settings.lastRatesUpdate = '2099-01-01T00:00:00.000Z';
     const setState = jest.fn();
 
     await importBackup(backup('EUR'), [state, setState]);
 
     expect(store.get('rates').value).toEqual({ '2026-01': { USD: 2 } });
     expect(store.get('settings').value.ratesBaseCurrency).toBe('EUR');
+  });
+
+  // The backup carries the exporting device's timestamp but never its rates, so it cannot vouch for the seed.
+  test('substituting the seed clears the timestamp instead of letting the backup date it', async () => {
+    const { state, store } = await createState();
+    const setState = jest.fn();
+
+    await importBackup(backup('JPY', { lastRatesUpdate: '2026-08-23T06:01:04.123Z' }), [state, setState]);
+
+    expect(store.get('settings').value.lastRatesUpdate).toBeUndefined();
+    expect(Object.keys(store.get('rates').value).length).toBeGreaterThan(12);
   });
 
   test('replaces the ledger with the one in the file', async () => {

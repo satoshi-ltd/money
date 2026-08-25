@@ -11,7 +11,6 @@ import {
   L10N,
   netWorthEyebrow,
   percentText,
-  scheduledAhead,
   verboseDate,
 } from '../../modules';
 
@@ -35,11 +34,6 @@ const DashboardListHeader = ({ navigate }) => {
       }),
     [accounts, scheduledTxs, rates, settings, baseCurrency, today, txs],
   );
-  const scheduled = useMemo(
-    () => scheduledAhead({ accounts, baseCurrency, now: today, rates, scheduledTxs }),
-    [accounts, baseCurrency, rates, scheduledTxs, today],
-  );
-
   const progression = getProgressionPercentage(overall?.currentBalance, overall?.currentMonth?.progression);
   const visibleAccounts = sortedAccounts.slice(0, 3);
   return (
@@ -62,7 +56,7 @@ const DashboardListHeader = ({ navigate }) => {
         </Pressable>
       ) : null}
 
-      {insights.length > 0 ? (
+      {insights.some(({ type }) => type === 'trend') ? (
         <View style={style.section}>
           <Heading
             eyebrow={verboseDate(new Date(today || Date.now()), {
@@ -70,7 +64,7 @@ const DashboardListHeader = ({ navigate }) => {
             })}
             value={L10N.THIS_MONTH}
           />
-          <MonthSummary currency={baseCurrency} insights={insights} scheduled={scheduled} />
+          <MonthSummary currency={baseCurrency} insights={insights} />
         </View>
       ) : null}
 

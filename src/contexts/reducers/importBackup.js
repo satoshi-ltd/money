@@ -12,7 +12,13 @@ export const importBackup = async (
   migrated.settings.ratesBaseCurrency = keepRates ? cachedBaseCurrency : undefined;
   migrated.settings.pin = state.settings?.pin;
 
-  const nextRates = ratesOrSeed(keepRates ? state.rates : undefined, migrated.settings.baseCurrency);
+  const { rates: nextRates, seeded } = ratesOrSeed(
+    keepRates ? state.rates : undefined,
+    migrated.settings.baseCurrency,
+    keepRates ? state.settings?.lastRatesUpdate : undefined,
+  );
+  // The backup carries the exporting device's timestamp but never its rates: do not let it vouch for the seed.
+  if (seeded) migrated.settings.lastRatesUpdate = undefined;
 
   await store.replace({
     accounts: migrated.accounts,

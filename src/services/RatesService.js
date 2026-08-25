@@ -70,13 +70,19 @@ export const rebaseRates = (rates = {}, baseCurrency = CURRENCY) => {
 
 export const seedRates = (baseCurrency = CURRENCY) => rebaseRates(SEED.rates, baseCurrency);
 
-// The store defaults its rates to {}, which is truthy: a cache is judged by the months it holds, never
-// by whether it exists. Without this every foreign balance reads 0.00 until a fetch lands, and offline none does.
-export const ratesOrSeed = (rates, baseCurrency = CURRENCY) => {
-  if (Object.keys(rates || {}).length) return rates;
+const seededAt = SEED.date ? Date.parse(`${SEED.date}T00:00:00Z`) : 0;
+
+// Two traps here. The store defaults its rates to {}, which is truthy, so a cache is judged by the months it
+// holds and never by whether it exists. And a cache older than the build is worse than the build: without this
+// a device that once stored the seed keeps those prices for ever, and shipping fresher rates changes nothing.
+export const ratesOrSeed = (rates, baseCurrency = CURRENCY, lastRatesUpdate) => {
+  const cached = Object.keys(rates || {}).length ? rates : undefined;
+  const downloadedAt = lastRatesUpdate ? Date.parse(new Date(lastRatesUpdate).toISOString()) : 0;
+
+  if (cached && downloadedAt >= seededAt) return { rates: cached, seeded: false };
 
   const { currency, ...seeded } = seedRates(baseCurrency);
-  return seeded;
+  return { rates: seeded, seeded: true };
 };
 
 export const ServiceRates = {

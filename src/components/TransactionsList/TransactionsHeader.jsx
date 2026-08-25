@@ -10,10 +10,10 @@ import { PriceFriendly } from '../PriceFriendly';
 
 const TransactionsHeader = ({ data = [], title = new Date() }) => {
   const { colors, language } = useApp();
-  const { rates = {}, settings: { baseCurrency } = {} } = useStore();
+  const { accounts = [], rates = {}, settings: { baseCurrency } = {} } = useStore();
   const style = useMemo(() => getStyles(colors), [colors]);
 
-  const net = useMemo(() => dailyNet(data, { baseCurrency, rates }), [data, baseCurrency, rates]);
+  const net = useMemo(() => dailyNet(data, { accounts, baseCurrency, rates }), [accounts, data, baseCurrency, rates]);
 
   return (
     <View style={style.headerContainer}>

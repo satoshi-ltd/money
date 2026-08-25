@@ -13,17 +13,20 @@ const walk = (dir) =>
     return entry.name.endsWith('.jsx') ? [full] : [];
   });
 
+// Two ways a label reaches that fixed column: through FieldRow, or hand-rolled onto style.key. Both wrap.
+const PATTERNS = [/<FieldRow[^>]*label=\{L10N\.(\w+)\}/g, /style=\{style\.key\}[^>]*>\s*\{L10N\.(\w+)\}/g];
+
 const labelKeys = () => {
   const keys = new Set();
   walk(SRC).forEach((file) => {
     const source = fs.readFileSync(file, 'utf8');
-    [...source.matchAll(/<FieldRow[^>]*label=\{L10N\.(\w+)\}/g)].forEach(([, key]) => keys.add(key));
+    PATTERNS.forEach((pattern) => [...source.matchAll(pattern)].forEach(([, key]) => keys.add(key)));
   });
   return [...keys];
 };
 
 // The label column is a fixed width, so "Opening balance" wrapped onto two lines in every language.
-describe('components/FieldRow consistency', () => {
+describe('field labels', () => {
   test('every field label is short enough for the column that holds it', () => {
     const tooLong = labelKeys().flatMap((key) =>
       Object.entries(dictionaries)
