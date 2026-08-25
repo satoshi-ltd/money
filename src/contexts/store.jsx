@@ -37,7 +37,7 @@ import {
   resetAppData,
 } from './reducers';
 import { DEFAULTS, FILENAME } from './store.constants';
-import { PurchaseService, ServiceRates, StorageService } from '../services';
+import { PurchaseService, rebaseRates, seedRates, ServiceRates, StorageService } from '../services';
 
 const RATES_SYNC_INTERVAL = 6 * 60 * 60 * 1000;
 
@@ -121,13 +121,16 @@ const StoreProvider = ({ children }) => {
         await store.get('subscription').save(nextSubscription);
       }
 
+      // The build ships a rate series so a first run with no network can still convert.
+      const { currency: _seedBase, ...seededRates } = seedRates(migrated.settings?.baseCurrency);
+
       setState({
         store,
         accounts: migrated.accounts,
         scheduledTxs: migrated.scheduledTxs,
         settings: migrated.settings,
         subscription: nextSubscription,
-        rates: await store.get('rates')?.value,
+        rates: (await store.get('rates')?.value) || seededRates,
         txs: migrated.txs,
       });
 
@@ -181,7 +184,7 @@ const StoreProvider = ({ children }) => {
       }
     };
 
-    const syncRates = async ({ full = false } = {}) => {
+    const syncRates = async () => {
       const current = stateRef.current;
       if (!current?.store || ratesSyncInFlightRef.current) return;
 
@@ -189,7 +192,7 @@ const StoreProvider = ({ children }) => {
       try {
         const rates = await ServiceRates.get({
           baseCurrency: current?.settings?.baseCurrency,
-          latest: !full,
+          known: current?.rates,
         }).catch(() => undefined);
 
         if (disposed || !rates) return;
@@ -248,7 +251,10 @@ const StoreProvider = ({ children }) => {
     const { baseCurrency, ratesBaseCurrency } = state.settings || {};
     if (!state.store || !baseCurrency || ratesBaseCurrency === baseCurrency) return;
 
-    syncRatesRef.current?.({ full: true });
+    // Cross rates are exact: convert the cache in place so the new base works offline and downloads nothing.
+    updateRates(rebaseRates(state.rates, baseCurrency), [state, setState], { downloaded: false }).then(() =>
+      syncRatesRef.current?.(),
+    );
   }, [state.store, state.settings]);
 
   const consolidated = useMemo(() => consolidate({ ...state, now: today }), [state, today]);

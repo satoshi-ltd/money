@@ -1,6 +1,6 @@
 import { saveSettings } from './modules';
 
-export const updateRates = async ({ currency, ...rates } = {}, [state, setState]) => {
+export const updateRates = async ({ currency, ...rates } = {}, [state, setState], { downloaded = true } = {}) => {
   const { settings: { baseCurrency, ratesBaseCurrency } = {} } = state;
 
   if (!Object.keys(rates).length) return;
@@ -17,7 +17,8 @@ export const updateRates = async ({ currency, ...rates } = {}, [state, setState]
 
   const nextSettings = await saveSettings(state.store, {
     baseCurrency: nextBaseCurrency,
-    lastRatesUpdate: new Date(),
+    // Only a real download moves this: it is what Settings reads back as the last update.
+    ...(downloaded ? { lastRatesUpdate: new Date() } : {}),
     ratesBaseCurrency: nextBaseCurrency,
   });
 

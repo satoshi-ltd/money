@@ -20,7 +20,7 @@ import {
   verboseDate,
 } from '../../modules';
 import { setLanguage } from '../../i18n';
-import { BackupService, NotificationsService, PurchaseService, ServiceRates } from '../../services';
+import { BackupService, NotificationsService, PurchaseService } from '../../services';
 
 const { EVENT } = C;
 
@@ -40,7 +40,6 @@ const Settings = ({ navigation = {} }) => {
     scheduledTxs = [],
     resetAppData,
     updateSettings,
-    updateRates,
     updateSubscription,
     updateTheme,
     settings = {},
@@ -191,11 +190,8 @@ const Settings = ({ navigation = {} }) => {
     value: code,
   }));
 
-  const handleBaseCurrency = async (next) => {
-    const nextRates = await ServiceRates.get({ baseCurrency: next, latest: false })['catch'](() => undefined);
-    if (!nextRates) return eventEmitter.emit(EVENT.NOTIFICATION, { error: true, title: L10N.ERROR_SERVICE_RATES });
-    await updateRates({ ...nextRates, currency: next });
-  };
+  // The store converts the cached series to the new base and tops it up: a base change must not need the network.
+  const handleBaseCurrency = (next) => updateSettings({ baseCurrency: next });
 
   const RightValueChevron = ({ figure, value }) => (
     <View row align="center" gap="xxs">

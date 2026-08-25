@@ -51,6 +51,28 @@ describe('contexts/reducers/updateRates', () => {
     expect(setState).not.toHaveBeenCalled();
   });
 
+  test('a real download is what Settings reads back as the last update', async () => {
+    const seed = { accounts: [], rates: {} };
+    const store = await createTestStore(seed);
+    const state = { rates: {}, settings: { baseCurrency: 'EUR' }, store };
+
+    await updateRates({ currency: 'EUR', '2026-02': { USD: 4 } }, [state, jest.fn()]);
+
+    expect(store.get('settings').value.lastRatesUpdate).toBeDefined();
+  });
+
+  // Converting the cache to a new base is arithmetic, not a download: claiming otherwise dates a stale series.
+  test('a local rebase leaves the last update alone', async () => {
+    const seed = { accounts: [], rates: { '2026-01': { EUR: 1, USD: 2 } }, settings: { baseCurrency: 'EUR' } };
+    const store = await createTestStore(seed);
+    const state = { rates: seed.rates, settings: { baseCurrency: 'USD', ratesBaseCurrency: 'EUR' }, store };
+
+    await updateRates({ currency: 'USD', '2026-01': { EUR: 0.5, USD: 1 } }, [state, jest.fn()], { downloaded: false });
+
+    expect(store.get('rates').value).toEqual({ '2026-01': { EUR: 0.5, USD: 1 } });
+    expect(store.get('settings').value.lastRatesUpdate).toBeUndefined();
+  });
+
   test('treats an untagged cache as belonging to the current base currency', async () => {
     const seed = { accounts: [], rates: { '2026-01': { USD: 2 } } };
     const store = await createTestStore(seed);

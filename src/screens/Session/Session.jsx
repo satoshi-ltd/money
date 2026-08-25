@@ -16,7 +16,15 @@ const { EVENT, VERSION } = C;
 const PIN_LENGTH = 4;
 
 const Session = ({ navigation: { reset } = {} }) => {
-  const { accounts = [], scheduledTxs = [], settings = {}, txs = [], updateRates, updateSettings } = useStore();
+  const {
+    accounts = [],
+    rates: storedRates,
+    scheduledTxs = [],
+    settings = {},
+    txs = [],
+    updateRates,
+    updateSettings,
+  } = useStore();
   const { colors } = useApp();
   const style = React.useMemo(() => getStyles(colors), [colors]);
 
@@ -31,7 +39,7 @@ const Session = ({ navigation: { reset } = {} }) => {
   }, []);
 
   const fetchRates = async () => {
-    const rates = await ServiceRates.get(settings)['catch'](() =>
+    const rates = await ServiceRates.get({ ...settings, known: storedRates })['catch'](() =>
       eventEmitter.emit(EVENT.NOTIFICATION, { error: true, title: L10N.ERROR_SERVICE_RATES }),
     );
     if (rates) updateRates(rates);

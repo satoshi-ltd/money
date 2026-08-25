@@ -18,7 +18,8 @@ jest.mock('../../../contexts', () => ({
 }));
 
 jest.mock('../../../services', () => ({
-  ServiceRates: { get: jest.fn(() => Promise.resolve({ EUR: 1, USD: 1.0849 })) },
+  rebaseRates: jest.requireActual('../../../services/RatesService').rebaseRates,
+  ServiceRates: { get: jest.fn(() => Promise.resolve({ currency: 'THB', '2026-08': { EUR: 0.026, THB: 1 } })) },
 }));
 
 jest.mock('../../../components', () => {
@@ -99,7 +100,7 @@ beforeEach(() => {
   jest.clearAllMocks();
   mockStore = {
     createAccount: mockCreateAccount,
-    rates: { '2026-08': { EUR: 1, USD: 1.0849 } },
+    rates: { '2026-08': { EUR: 1, THB: 38.1, USD: 1.0849 } },
     settings: { baseCurrency: 'EUR' },
     updateRates: mockUpdateRates,
     updateSettings: mockUpdateSettings,
@@ -124,14 +125,19 @@ describe('screens/Onboarding', () => {
     expect(allText(root)).toContain('02 / 04');
   });
 
-  test('the currency step lists currencies and re-fetches rates on a change', async () => {
+  // Picking a currency during onboarding must land with the network off: the seeded series is converted in place.
+  test('the currency step converts the cached rates before it ever asks the network', async () => {
     const root = render();
     await advance(root, L10N.ONB_START);
 
-    expect(allText(root)).toContain('USD');
+    expect(allText(root)).toContain('THB');
 
-    await advance(root, 'USD');
-    expect(mockUpdateRates).toHaveBeenCalledWith(expect.objectContaining({ currency: 'USD' }));
+    await advance(root, 'THB');
+
+    expect(mockUpdateRates.mock.calls[0][0]).toEqual(
+      expect.objectContaining({ currency: 'THB', '2026-08': expect.objectContaining({ THB: 1 }) }),
+    );
+    expect(mockUpdateRates).toHaveBeenCalledTimes(2);
   });
 
   test('a named account is written on finish and the pin is stored', async () => {

@@ -10,7 +10,7 @@ import { getStyles } from './Onboarding.style';
 import { Button, Eyebrow, Masthead, Pressable, ScrollView, Text, View } from '../../components';
 import { useApp, useStore } from '../../contexts';
 import { C, eventEmitter, L10N } from '../../modules';
-import { ServiceRates } from '../../services';
+import { rebaseRates, ServiceRates } from '../../services';
 
 const { CURRENCY, EVENT } = C;
 const COVER = 0;
@@ -50,11 +50,13 @@ const Onboarding = ({ navigation: { reset } = {} }) => {
 
   const handleCurrency = async (next) => {
     setCurrency(next);
-    if (next === rates.currency) return;
+    if (next === settings.baseCurrency) return;
 
-    const nextRates = await ServiceRates.get({ baseCurrency: next, latest: false })['catch'](() => undefined);
-    if (nextRates) await updateRates({ ...nextRates, currency: next });
-    else eventEmitter.emit(EVENT.NOTIFICATION, { error: true, title: L10N.ERROR_SERVICE_RATES });
+    // The seeded series converts to any base without a request, so onboarding works with the network off.
+    await updateRates(rebaseRates(rates, next));
+
+    const nextRates = await ServiceRates.get({ baseCurrency: next, known: rates })['catch'](() => undefined);
+    if (nextRates) await updateRates(nextRates);
   };
 
   const isPasscode = step === STEP_PASSCODE;

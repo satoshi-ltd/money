@@ -5,14 +5,14 @@ import { getStyles } from './Account.style';
 import { Button, Heading, InputAmount, InputCurrency, InputField, Panel, Text, View } from '../../components';
 import { useApp, useStore } from '../../contexts';
 import { C, eventEmitter, L10N } from '../../modules';
-import { ServiceRates } from '../../services';
+import { rebaseRates, ServiceRates } from '../../services';
 
 const { CURRENCY, EVENT } = C;
 
 const INITIAL_STATE = { balance: 0, currency: undefined, title: undefined };
 
 const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate } = {} }) => {
-  const { settings: { baseCurrency } = {}, createAccount, updateAccount, deleteAccount, updateRates } = useStore();
+  const { rates = {}, settings: { baseCurrency } = {}, createAccount, updateAccount, deleteAccount, updateRates } = useStore();
   const { colors } = useApp();
   const style = useMemo(() => getStyles(colors), [colors]);
   const [busy, setBusy] = useState(false);
@@ -57,8 +57,11 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
 
     const account = await method(form);
     if (firstAccount && form.currency !== CURRENCY) {
-      const rates = await ServiceRates.get({ baseCurrency: form.currency, latest: false }).catch(() => {});
-      if (rates) await updateRates(rates, form.currency);
+      // The cached series converts to the new base offline; the network only tops up the current month.
+      await updateRates(rebaseRates(rates, form.currency));
+
+      const nextRates = await ServiceRates.get({ baseCurrency: form.currency, known: rates }).catch(() => {});
+      if (nextRates) await updateRates(nextRates);
     }
     if (account) {
       goBack();
