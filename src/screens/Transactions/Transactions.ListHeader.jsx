@@ -4,16 +4,10 @@ import React, { useMemo } from 'react';
 import { getStyles } from './Transactions.style';
 import { Delta, Eyebrow, PriceFriendly, Text, View } from '../../components';
 import { useApp, useStore } from '../../contexts';
-import { accountBalanceEyebrow, C, getProgressionPercentage, ICON, L10N, monthFlow, percentText } from '../../modules';
-
-const {
-  TX: {
-    TYPE: { INCOME, EXPENSE, TRANSFER },
-  },
-} = C;
+import { accountBalanceEyebrow, getProgressionPercentage, L10N, monthFlow } from '../../modules';
 
 const TransactionsListHeader = ({ dataSource }) => {
-  const { accounts = [], settings: { baseCurrency } = {}, today } = useStore();
+  const { settings: { baseCurrency } = {}, today } = useStore();
   const { colors } = useApp();
   const style = useMemo(() => getStyles(colors), [colors]);
   const { currency = baseCurrency, ...rest } = dataSource;

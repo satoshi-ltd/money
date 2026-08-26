@@ -5,8 +5,8 @@ import React, { useMemo, useState } from 'react';
 import { HorizontalChartItem } from './HorizontalChartItem';
 import { getStyles } from './ItemGroupCategories.style';
 import { Eyebrow, Heading, Pressable, View } from '../../../../components';
-import { useApp, useStore } from '../../../../contexts';
-import { C, ICON, L10N, rankInk } from '../../../../modules';
+import { useAmountSettings, useApp } from '../../../../contexts';
+import { C, L10N, rankInk } from '../../../../modules';
 import { orderByAmount } from '../../modules';
 
 const {
@@ -18,9 +18,7 @@ const {
 const TOP_CATEGORIES = 3;
 
 const ItemGroupCategories = ({ dataSource, month, monthLabel, type, year }) => {
-  const {
-    settings: { baseCurrency },
-  } = useStore();
+  const { baseCurrency } = useAmountSettings();
   const { colors } = useApp();
   const { navigate } = useNavigation();
   const [showRest, setShowRest] = useState(false);

@@ -10,8 +10,18 @@ import { Masthead, Screen, TransactionItem, TransactionsHeader } from '../../com
 import { useStore } from '../../contexts';
 import { C, ledgerDate } from '../../modules';
 
+const keyExtractor = (item, index) => `${item.hash || item.timestamp}-${index}`;
+
 const Dashboard = ({ navigation: { navigate } = {} }) => {
-  const { accounts = [], session: { locale } = {}, today, txs = [] } = useStore();
+  const {
+    accounts = [],
+    deleteTx,
+    rates = {},
+    session: { locale } = {},
+    settings: { baseCurrency } = {},
+    today,
+    txs = [],
+  } = useStore();
   const listRef = useRef(null);
   const initialOffsetSetRef = useRef(false);
   useScrollToTop(listRef);
@@ -48,6 +58,23 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
     initialOffsetSetRef.current = true;
     listRef.current?.getScrollResponder?.()?.scrollTo?.({ y: 0, animated: false });
   }, [sections.length]);
+  const handleEndReached = useCallback(() => setPage((prevPage) => prevPage + 1), []);
+  const listHeader = useMemo(
+    () => (search ? null : <DashboardListHeader navigate={navigate} />),
+    [navigate, search],
+  );
+  const renderItem = useCallback(
+    ({ item }) => (
+      <TransactionItem {...item} baseCurrency={baseCurrency} deleteTx={deleteTx} rates={rates} />
+    ),
+    [baseCurrency, deleteTx, rates],
+  );
+  const renderSectionHeader = useCallback(
+    ({ section }) => (
+      <TransactionsHeader {...section} accounts={accounts} baseCurrency={baseCurrency} rates={rates} />
+    ),
+    [accounts, baseCurrency, rates],
+  );
 
   return (
     <Screen disableScroll>
@@ -64,14 +91,14 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
         initialNumToRender={C.TRANSACTIONS_PER_PAGE}
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"
-        keyExtractor={(item, index) => `${item.hash || item.timestamp}-${index}`}
-        ListHeaderComponent={search ? null : <DashboardListHeader navigate={navigate} />}
+        keyExtractor={keyExtractor}
+        ListHeaderComponent={listHeader}
         onContentSizeChange={handleInitialContentSizeChange}
-        renderItem={({ item }) => <TransactionItem {...item} />}
-        renderSectionHeader={({ section }) => <TransactionsHeader {...section} />}
+        renderItem={renderItem}
+        renderSectionHeader={renderSectionHeader}
         sections={sections}
         stickySectionHeadersEnabled={false}
-        onEndReached={() => setPage((prevPage) => prevPage + 1)}
+        onEndReached={handleEndReached}
         style={style.screen}
       />
     </Screen>

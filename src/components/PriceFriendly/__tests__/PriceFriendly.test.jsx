@@ -8,7 +8,7 @@ let mockSettings = {};
 
 jest.mock('../../../contexts', () => ({
   useApp: () => ({ colors: { text: '#15140F', textMuted: '#8A8474', positive: '#A87B14' } }),
-  useStore: () => ({ settings: mockSettings }),
+  useAmountSettings: () => mockSettings,
 }));
 
 beforeEach(() => {

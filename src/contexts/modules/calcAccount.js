@@ -1,4 +1,4 @@
-import { C, exchange, getMonthDiff, isInternalTransfer } from '../../modules';
+import { C, exchange, getMonthDiff } from '../../modules';
 
 const { TX: { TYPE } = {} } = C;
 
@@ -7,31 +7,22 @@ export const calcAccount = ({
   baseCurrency,
   genesisDate,
   months = 0,
-  now: nowProp,
   rates = {},
   txs = [],
   txsByAccount,
 }) => {
-  const now = nowProp instanceof Date ? nowProp : new Date();
-
-  const currentDay = now.getDate();
   const { balance = 0, currency } = account;
   const exchangeProps = [currency, baseCurrency, rates];
   let currentBalance = Number.isFinite(balance) ? balance : 0;
   let currentMonthTxs = 0;
-  let expenses = 0;
-  let expensesBase = 0;
-  let incomes = 0;
-  let incomesBase = 0;
   let progression = 0;
   let progressionCurrency = 0;
-  let today = 0;
 
   const chartBalance = new Array(months + 1).fill(0);
   chartBalance[0] = currentBalance;
 
   const dataSource = txsByAccount?.[account.hash] || txs.filter((tx) => tx.account === account.hash);
-  dataSource.forEach(({ category, timestamp, type, value = 0 }) => {
+  dataSource.forEach(({ timestamp, type, value = 0 }) => {
     const isExpense = type === TYPE.EXPENSE;
     const date = new Date(timestamp);
     const monthIndex = getMonthDiff(genesisDate, date);
@@ -50,17 +41,6 @@ export const calcAccount = ({
       currentMonthTxs += 1;
       progression += signedValueBase;
       progressionCurrency += signedValue;
-      if (date.getDate() === currentDay) today += signedValueBase;
-
-      if (!isInternalTransfer({ category })) {
-        if (isExpense) {
-          expenses += valueBase;
-          expensesBase += value;
-        } else {
-          incomes += valueBase;
-          incomesBase += value;
-        }
-      }
     }
   });
 
@@ -82,17 +62,11 @@ export const calcAccount = ({
     ...account,
     balance: Number.isFinite(balance) ? balance : 0,
     chartBalance: chartBalanceExchanged,
-    chartBalanceBase: [...chartBalance],
     currentBalance,
     currentBalanceBase,
     currentMonth: {
-      expenses,
-      expensesBase,
-      incomes,
-      incomesBase,
       progression,
       progressionCurrency,
-      today,
       txs: currentMonthTxs,
     },
     txs: dataSource,

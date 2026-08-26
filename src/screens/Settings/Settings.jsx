@@ -121,7 +121,6 @@ const Settings = ({ navigation = {} }) => {
 
   const handleTheme = (next) => {
     updateTheme(next);
-    updateSettings({ theme: next });
   };
 
   const currencyOptions = Object.keys(C.SYMBOL).map((code) => ({

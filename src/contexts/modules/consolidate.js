@@ -1,8 +1,6 @@
 import { calcAccount } from './calcAccount';
 import { getMonthDiff } from '../../modules';
 
-const KEYS = ['expenses', 'incomes', 'progression', 'today'];
-
 export const consolidate = ({
   now: nowProp,
   rates = {},
@@ -38,7 +36,6 @@ export const consolidate = ({
         baseCurrency,
         genesisDate,
         months,
-        now,
         rates,
         txs,
         txsByAccount,
@@ -46,7 +43,7 @@ export const consolidate = ({
     );
   }
 
-  const currentMonth = { expenses: 0, incomes: 0, progression: 0, today: 0 };
+  const currentMonth = { progression: 0 };
   let currentBalance = 0;
   const chartBalance = [];
 
@@ -58,9 +55,7 @@ export const consolidate = ({
     }) => {
       if (Number.isFinite(accountCurrentBalanceBase)) currentBalance += accountCurrentBalanceBase;
 
-      KEYS.forEach((key) => {
-        currentMonth[key] += accountLast30Days[key];
-      });
+      currentMonth.progression += accountLast30Days.progression;
 
       accountChartBalance.forEach((value, index) => {
         chartBalance[index] = (chartBalance[index] || 0) + accountChartBalance[index];
@@ -68,11 +63,9 @@ export const consolidate = ({
     },
   );
 
-  const balance = currentBalance;
-
   return {
     accounts,
-    overall: { balance, chartBalance, currentBalance, currentMonth },
+    overall: { chartBalance, currentBalance, currentMonth },
     rates,
     scheduledTxs,
     settings,

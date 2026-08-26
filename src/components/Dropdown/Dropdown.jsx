@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, Modal, StyleSheet, TouchableOpacity, View as RNView, useWindowDimensions } from 'react-native';
+import { Animated, Modal, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { dropdownOrigin, dropdownPlacement } from './helpers';
@@ -127,7 +127,7 @@ const Dropdown = ({
 
   return (
     <>
-      <RNView onLayout={handleLayout} ref={boxRef} style={styles.probe} />
+      <View onLayout={handleLayout} ref={boxRef} style={styles.probe} />
       <Modal animationType="none" onRequestClose={onClose} statusBarTranslucent transparent visible>
         <TouchableOpacity activeOpacity={1} onPress={onClose} style={styles.backdrop} />
         <Animated.View style={getDropdownStyle()}>

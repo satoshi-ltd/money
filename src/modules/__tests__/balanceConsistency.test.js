@@ -50,7 +50,7 @@ describe('balance consistency', () => {
       ],
     });
 
-    expect(state.overall.currentMonth.expenses).toBe(40);
+    expect(state.overall.currentMonth.progression).toBe(-40);
   });
 
   test('keeps negative balances in chart and current balance', () => {

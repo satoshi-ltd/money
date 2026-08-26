@@ -4,7 +4,7 @@ import React, { useMemo, useRef } from 'react';
 import { Swipeable } from 'react-native-gesture-handler';
 
 import { getStyles } from './TransactionsList.style';
-import { useApp, useStore } from '../../contexts';
+import { useApp } from '../../contexts';
 import { C, eventEmitter, exchange, L10N, verboseTime } from '../../modules';
 import { Pressable, Text, View } from '../../primitives';
 import { PriceFriendly } from '../PriceFriendly';
@@ -17,9 +17,12 @@ const {
   INTERNAL_TRANSFER,
 } = C;
 
-const TransactionItem = ({
+const TransactionItem = React.memo(({
+  baseCurrency,
   category = INTERNAL_TRANSFER,
   currency,
+  deleteTx,
+  rates = {},
   timestamp,
   title,
   type = EXPENSE,
@@ -29,11 +32,6 @@ const TransactionItem = ({
   const { navigate } = useNavigation();
   const { colors } = useApp();
   const style = useMemo(() => getStyles(colors), [colors]);
-  const {
-    deleteTx,
-    settings: { baseCurrency },
-    rates,
-  } = useStore();
   const swipeableRef = useRef();
 
   const signed = type === EXPENSE ? -Math.abs(value) : Math.abs(value);
@@ -115,11 +113,16 @@ const TransactionItem = ({
       </Pressable>
     </Swipeable>
   );
-};
+});
+
+TransactionItem.displayName = 'TransactionItem';
 
 TransactionItem.propTypes = {
+  baseCurrency: PropTypes.string,
   category: PropTypes.number,
   currency: PropTypes.string.isRequired,
+  deleteTx: PropTypes.func,
+  rates: PropTypes.object,
   timestamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   title: PropTypes.string,
   type: PropTypes.number,

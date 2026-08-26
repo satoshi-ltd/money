@@ -13,7 +13,7 @@ const mockDeleteTx = jest.fn();
 jest.mock('@react-navigation/native', () => ({ useNavigation: () => ({ navigate: mockNavigate }) }));
 jest.mock('../../../contexts', () => ({
   useApp: () => ({ colors: {} }),
-  useStore: () => ({ deleteTx: mockDeleteTx, rates: { '2023-11': { USD: 1.0849 } }, settings: { baseCurrency: 'EUR' } }),
+  useAmountSettings: () => ({ baseCurrency: 'EUR', maskAmount: false }),
 }));
 jest.mock('react-native-gesture-handler', () => {
   const ReactNative = require('react-native');
@@ -31,7 +31,14 @@ const TX = { category: 1, currency: 'EUR', hash: 'tx-1', timestamp: 170000000000
 const render = () => {
   let renderer;
   act(() => {
-    renderer = TestRenderer.create(<TransactionItem {...TX} />);
+    renderer = TestRenderer.create(
+      <TransactionItem
+        {...TX}
+        baseCurrency="EUR"
+        deleteTx={mockDeleteTx}
+        rates={{ '2023-11': { USD: 1.0849 } }}
+      />,
+    );
   });
   return renderer.root;
 };
@@ -67,7 +74,15 @@ describe('components/TransactionItem', () => {
 
     let incomeRenderer;
     act(() => {
-      incomeRenderer = TestRenderer.create(<TransactionItem {...TX} type={1} />);
+      incomeRenderer = TestRenderer.create(
+        <TransactionItem
+          {...TX}
+          baseCurrency="EUR"
+          deleteTx={mockDeleteTx}
+          rates={{ '2023-11': { USD: 1.0849 } }}
+          type={1}
+        />,
+      );
     });
     expect(allText(incomeRenderer.root)).toContain('+');
   });
@@ -75,7 +90,15 @@ describe('components/TransactionItem', () => {
   test('a foreign-currency transaction shows both amounts, and only the foreign one is marked', () => {
     let renderer;
     act(() => {
-      renderer = TestRenderer.create(<TransactionItem {...TX} currency="USD" />);
+      renderer = TestRenderer.create(
+        <TransactionItem
+          {...TX}
+          baseCurrency="EUR"
+          currency="USD"
+          deleteTx={mockDeleteTx}
+          rates={{ '2023-11': { USD: 1.0849 } }}
+        />,
+      );
     });
     const text = allText(renderer.root);
 

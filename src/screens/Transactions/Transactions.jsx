@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { SectionList } from 'react-native';
 
 import { queryLastTxs } from './modules';
@@ -10,13 +10,14 @@ import { useApp, useStore } from '../../contexts';
 import { C, ICON, L10N } from '../../modules';
 
 const { TX: { TYPE: { EXPENSE } } = {} } = C;
+const keyExtractor = (item, index) => `${item.hash || item.timestamp}-${index}`;
 
 const Transactions = (props = {}) => {
   const { route = {}, navigation = {} } = props;
   const { goBack } = navigation;
   const { params: { account: routeAccount = {} } = {} } = route;
   const { hash } = routeAccount || {};
-  const { accounts = [], settings: { baseCurrency } = {} } = useStore();
+  const { accounts = [], deleteTx, rates = {}, settings: { baseCurrency } = {} } = useStore();
   const { colors } = useApp();
   const style = useMemo(() => getStyles(colors), [colors]);
 
@@ -35,6 +36,25 @@ const Transactions = (props = {}) => {
 
   const { currency = baseCurrency } = dataSource;
   const title = dataSource?.title || L10N.TRANSACTIONS;
+  const handleEndReached = useCallback(() => setPage((prevPage) => prevPage + 1), []);
+  const renderItem = useCallback(
+    ({ item }) => (
+      <TransactionItem
+        {...item}
+        baseCurrency={baseCurrency}
+        currency={currency}
+        deleteTx={deleteTx}
+        rates={rates}
+      />
+    ),
+    [baseCurrency, currency, deleteTx, rates],
+  );
+  const renderSectionHeader = useCallback(
+    ({ section }) => (
+      <TransactionsHeader {...section} accounts={accounts} baseCurrency={baseCurrency} rates={rates} />
+    ),
+    [accounts, baseCurrency, rates],
+  );
 
   return (
     <Panel
@@ -56,7 +76,7 @@ const Transactions = (props = {}) => {
         initialNumToRender={C.TRANSACTIONS_PER_PAGE}
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"
-        keyExtractor={(item, index) => `${item.hash || item.timestamp}-${index}`}
+        keyExtractor={keyExtractor}
         ListEmptyComponent={
           <EmptyState
             action={L10N.EMPTY_TRANSACTIONS_ACTION}
@@ -70,11 +90,11 @@ const Transactions = (props = {}) => {
         ListHeaderComponent={
           <TransactionsListHeader dataSource={dataSource} />
         }
-        renderItem={({ item }) => <TransactionItem {...item} currency={currency} />}
-        renderSectionHeader={({ section }) => <TransactionsHeader {...section} />}
+        renderItem={renderItem}
+        renderSectionHeader={renderSectionHeader}
         sections={sections}
         stickySectionHeadersEnabled={false}
-        onEndReached={() => setPage((prevPage) => prevPage + 1)}
+        onEndReached={handleEndReached}
         style={style.screen}
       />
     </Panel>

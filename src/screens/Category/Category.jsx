@@ -15,11 +15,15 @@ const Category = ({ navigation: { goBack, navigate } = {}, route: { params = {} 
   const store = useStore();
   const { colors } = useApp();
   const style = useMemo(() => getStyles(colors), [colors]);
-  const { settings: { baseCurrency } = {} } = store;
+  const { accounts = [], rates = {}, settings: { baseCurrency } = {}, txs = [] } = store;
+  const categorySource = useMemo(
+    () => ({ accounts, rates, settings: { baseCurrency }, txs }),
+    [accounts, rates, baseCurrency, txs],
+  );
 
   const { average, entries, merchants, total } = useMemo(
-    () => queryCategory(store, { category, month, type, year }),
-    [store, category, month, type, year],
+    () => queryCategory(categorySource, { category, month, type, year }),
+    [categorySource, category, month, type, year],
   );
 
   const title = L10N.CATEGORIES[type]?.[category] || L10N.OTHERS;

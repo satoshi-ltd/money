@@ -69,6 +69,7 @@ const Tabs = ({ navigation = {} }) => {
 
   const screenOptions = {
     ...commonScreenOptions(colors),
+    freezeOnBlur: true,
     headerShown: false,
     sceneStyle: { backgroundColor: colors.background, paddingTop: insets.top },
     headerLeft: () => <></>,

@@ -12,7 +12,7 @@ jest.mock('../../../../../contexts', () => ({
   useApp: () => ({
     colors: { accent: '#ACCE07', text: '#TEXT00', textMuted: '#MUTED0', textSecondary: '#SECON0' },
   }),
-  useStore: () => ({ settings: { baseCurrency: 'EUR' } }),
+  useAmountSettings: () => ({ baseCurrency: 'EUR' }),
 }));
 
 jest.mock('../../../../../components', () => {

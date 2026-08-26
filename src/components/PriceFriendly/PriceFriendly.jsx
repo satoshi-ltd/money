@@ -2,12 +2,26 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { styles } from './PriceFriendly.style';
-import { useStore } from '../../contexts';
+import { useAmountSettings } from '../../contexts';
 import { currencyDecimals, currencySymbol, withThinSpace } from '../../modules';
 import { Text, View } from '../../primitives';
 
 const MINUS = '−';
 const MASK = '••••';
+const FORMATTERS = new Map();
+
+const formatter = (decimals) => {
+  if (!FORMATTERS.has(decimals)) {
+    FORMATTERS.set(
+      decimals,
+      new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+      }),
+    );
+  }
+  return FORMATTERS.get(decimals);
+};
 
 const split = (formatted = '') => {
   const index = formatted.lastIndexOf('.');
@@ -15,7 +29,7 @@ const split = (formatted = '') => {
   return [formatted.slice(0, index), formatted.slice(index)];
 };
 
-const PriceFriendly = ({
+const PriceFriendly = React.memo(({
   bold = false,
   color,
   currency,
@@ -29,7 +43,7 @@ const PriceFriendly = ({
   value = 0,
   ...others
 }) => {
-  const { settings: { baseCurrency, maskAmount } = {} } = useStore();
+  const { baseCurrency, maskAmount } = useAmountSettings();
   const masked = propMaskAmount || maskAmount;
   // The base currency is the one the reader already thinks in, so its symbol is noise on every screen.
   // Decided here rather than at each call site: seven of them disagreed about it.
@@ -37,10 +51,7 @@ const PriceFriendly = ({
 
   const decimals = fixed !== undefined ? fixed : currencyDecimals(value, currency);
   const absolute = Math.abs(value);
-  const formatted = absolute.toLocaleString('en-US', {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  });
+  const formatted = formatter(decimals).format(absolute);
   const [whole, cents] = split(formatted);
 
   const isNegative = value < 0;
@@ -81,7 +92,9 @@ const PriceFriendly = ({
       </Text>
     </View>
   );
-};
+});
+
+PriceFriendly.displayName = 'PriceFriendly';
 
 PriceFriendly.propTypes = {
   bold: PropTypes.bool,

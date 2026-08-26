@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
 import { getStyles } from './MonthKpis.style';
-import { Eyebrow, Heading, PriceFriendly, Text, View } from '../../../../components';
+import { Eyebrow, Heading, PriceFriendly, View } from '../../../../components';
 import { useApp } from '../../../../contexts';
 import { L10N } from '../../../../modules';
 

@@ -23,6 +23,7 @@ const Stats = () => {
   const store = useStore();
   const {
     accounts = [],
+    rates = {},
     settings: { baseCurrency, statsRangeMonths = STATS_MONTHS_LIMIT } = {},
     overall = {},
     txs = [],
@@ -67,7 +68,11 @@ const Stats = () => {
         ? L10N.STATS_FLOW_6M_CAPTION
         : L10N.STATS_RANGE_1Y_CAPTION;
   const handleRangeChange = (value) => updateSettings({ statsRangeMonths: value });
-  const chart = useMemo(() => queryChart(store, monthsLimit), [store, monthsLimit]);
+  const statsSource = useMemo(
+    () => ({ accounts, overall, rates, settings: { baseCurrency }, txs }),
+    [accounts, overall, rates, baseCurrency, txs],
+  );
+  const chart = useMemo(() => queryChart(statsSource, monthsLimit), [statsSource, monthsLimit]);
   const rangeChange = useMemo(() => rangeDelta(chart.balance), [chart.balance]);
 
   const handlePointerIndex = (next) => {
@@ -78,8 +83,8 @@ const Stats = () => {
   };
 
   const monthData = useMemo(
-    () => queryMonth(store, safePointerIndex, monthsLimit) || {},
-    [store, safePointerIndex, monthsLimit],
+    () => queryMonth(statsSource, safePointerIndex, monthsLimit) || {},
+    [statsSource, safePointerIndex, monthsLimit],
   );
   const { expenses = {}, incomes = {} } = monthData;
   const monthTotals = useMemo(() => {

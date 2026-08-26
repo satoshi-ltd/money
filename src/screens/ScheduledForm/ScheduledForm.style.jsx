@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native';
 
 import { theme } from '../../theme';
-import { rowHeight } from '../../theme/layout';
 
 const CHIP_SIZE = 38;
 

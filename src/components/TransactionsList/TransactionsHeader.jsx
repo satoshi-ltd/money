@@ -2,15 +2,14 @@ import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
 import { getStyles } from './TransactionsList.style';
-import { useApp, useStore } from '../../contexts';
+import { useApp } from '../../contexts';
 import { dailyNet, verboseDate } from '../../modules';
 import { View } from '../../primitives';
 import { Eyebrow } from '../Eyebrow';
 import { PriceFriendly } from '../PriceFriendly';
 
-const TransactionsHeader = ({ data = [], title = new Date() }) => {
+const TransactionsHeader = React.memo(({ accounts = [], baseCurrency, data = [], rates = {}, title = new Date() }) => {
   const { colors, language } = useApp();
-  const { accounts = [], rates = {}, settings: { baseCurrency } = {} } = useStore();
   const style = useMemo(() => getStyles(colors), [colors]);
 
   const net = useMemo(() => dailyNet(data, { accounts, baseCurrency, rates }), [accounts, data, baseCurrency, rates]);
@@ -32,10 +31,15 @@ const TransactionsHeader = ({ data = [], title = new Date() }) => {
       ) : null}
     </View>
   );
-};
+});
+
+TransactionsHeader.displayName = 'TransactionsHeader';
 
 TransactionsHeader.propTypes = {
+  accounts: PropTypes.array,
+  baseCurrency: PropTypes.string,
   data: PropTypes.array,
+  rates: PropTypes.object,
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 

@@ -145,7 +145,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
           <Heading eyebrow={`${visible.length}`} value={L10N.ACCOUNTS} />
 
           {visible.map((account) => {
-            const { currency, currentBalance = 0, currentBalanceBase = 0, currentMonth, hash, title } = account;
+            const { currency, currentBalance = 0, currentBalanceBase = 0, hash, title } = account;
             const showBase = baseCurrency && currency !== baseCurrency;
 
             return (

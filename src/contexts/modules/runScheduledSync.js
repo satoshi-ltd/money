@@ -14,7 +14,7 @@ const { EVENT, MS_IN_DAY } = C;
 const MAX_SCHEDULED_AUTOCREATE = 100;
 const WINDOW_DAYS = 90;
 
-export const runScheduledSync = async ({ migrated, store }) => {
+export const runScheduledSync = async ({ migrated, store, syncNotifications = true }) => {
   const accounts = Array.isArray(migrated?.accounts) ? migrated.accounts : undefined;
   const accountHashes = accounts ? new Set(accounts.map(({ hash }) => hash)) : undefined;
   const scheduledTxs = (Array.isArray(migrated?.scheduledTxs) ? migrated.scheduledTxs : []).filter(
@@ -23,7 +23,7 @@ export const runScheduledSync = async ({ migrated, store }) => {
   const txs = Array.isArray(migrated?.txs) ? migrated.txs : [];
 
   if (scheduledTxs.length === 0) {
-    await NotificationsService.syncScheduled({ scheduledTxs, txs });
+    if (syncNotifications) await NotificationsService.syncScheduled({ scheduledTxs, txs });
     return migrated;
   }
 
@@ -111,7 +111,7 @@ export const runScheduledSync = async ({ migrated, store }) => {
     next = { ...migrated, txs: nextTxs, settings: nextSettings };
   }
 
-  await NotificationsService.syncScheduled({ scheduledTxs, txs: next.txs });
+  if (syncNotifications) await NotificationsService.syncScheduled({ scheduledTxs, txs: next.txs });
 
   if (hitLimit) {
     eventEmitter.emit(EVENT.NOTIFICATION, {

@@ -36,4 +36,17 @@ describe('modules/exchange', () => {
     expect(exchange(100, 'USD', 'EUR', { '2026-01': { USD: 0 } })).toBeUndefined();
     expect(exchange(100, 'USD', 'EUR', { '2026-01': { USD: null } })).toBeUndefined();
   });
+
+  test('reuses lookups without mixing values or months', () => {
+    expect(exchange(40, 'USD', 'EUR', RATES, new Date(2026, 0, 15).getTime())).toBe(20);
+    expect(exchange(80, 'USD', 'EUR', RATES, new Date(2026, 0, 15).getTime())).toBe(40);
+    expect(exchange(80, 'USD', 'EUR', RATES, new Date(2026, 1, 15).getTime())).toBe(20);
+  });
+
+  test('treats a replacement rates table as a fresh cache', () => {
+    expect(exchange(100, 'GBP', 'EUR', RATES)).toBeUndefined();
+
+    const nextRates = { ...RATES, '2026-02': { ...RATES['2026-02'], GBP: 2 } };
+    expect(exchange(100, 'GBP', 'EUR', nextRates)).toBe(50);
+  });
 });

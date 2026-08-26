@@ -4,7 +4,6 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { useApp } from '../../contexts';
 import { ICON } from '../../modules';
-import { View } from '../../primitives';
 import { theme } from '../../theme';
 import { viewOffset } from '../../theme/layout';
 import { IconButton } from '../IconButton';
@@ -33,7 +32,7 @@ const Panel = ({
         safeArea: { flex: 1, backgroundColor: baseColor, paddingTop: sheet ? theme.spacing.sm : 0 },
         screen: { paddingBottom },
       }),
-    [baseColor, colors.border, paddingBottom, sheet],
+    [baseColor, paddingBottom, sheet],
   );
 
   return (

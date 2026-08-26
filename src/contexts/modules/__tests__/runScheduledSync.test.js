@@ -94,6 +94,19 @@ describe('contexts/modules/runScheduledSync', () => {
     expect(NotificationsService.syncScheduled.mock.calls[0][0].scheduledTxs).toHaveLength(1);
   });
 
+  test('can leave notification reconciliation to the caller', async () => {
+    const migrated = { accounts: [], scheduledTxs: [], settings: {}, txs: [] };
+
+    const next = await runScheduledSync({
+      migrated,
+      store: createStore({ settings: {}, txs: [] }),
+      syncNotifications: false,
+    });
+
+    expect(next).toBe(migrated);
+    expect(NotificationsService.syncScheduled).not.toHaveBeenCalled();
+  });
+
   test('does not re-materialise the past when the recurrence was edited', async () => {
     const weekly = {
       ...scheduled('s1', 'a1'),

@@ -11,7 +11,6 @@ import {
   getLastMonths,
   L10N,
   linePath,
-  percentText,
   pointAt,
   trendPath,
 } from '../../modules';

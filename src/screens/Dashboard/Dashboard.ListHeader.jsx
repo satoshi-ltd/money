@@ -10,7 +10,6 @@ import {
   getProgressionPercentage,
   L10N,
   netWorthEyebrow,
-  percentText,
   verboseDate,
 } from '../../modules';
 
@@ -29,10 +28,10 @@ const DashboardListHeader = ({ navigate }) => {
         now: today,
         scheduledTxs,
         rates,
-        settings: { ...settings, baseCurrency },
+        settings: { baseCurrency },
         txs,
       }),
-    [accounts, scheduledTxs, rates, settings, baseCurrency, today, txs],
+    [accounts, scheduledTxs, rates, baseCurrency, today, txs],
   );
   const progression = getProgressionPercentage(overall?.currentBalance, overall?.currentMonth?.progression);
   const visibleAccounts = sortedAccounts.slice(0, 3);

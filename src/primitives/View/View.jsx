@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   offset: { paddingHorizontal: viewOffset },
 });
 
-const View = ({ row, gap, spaceBetween, align, flex, offset, style, ...props }) => {
+const View = React.forwardRef(({ row, gap, spaceBetween, align, flex, offset, style, ...props }, ref) => {
   const resolvedGap =
     gap === undefined || gap === null
       ? null
@@ -25,6 +25,7 @@ const View = ({ row, gap, spaceBetween, align, flex, offset, style, ...props }) 
 
   return (
     <RNView
+      ref={ref}
       {...props}
       style={[
         row ? styles.row : null,
@@ -37,6 +38,8 @@ const View = ({ row, gap, spaceBetween, align, flex, offset, style, ...props }) 
       ]}
     />
   );
-};
+});
+
+View.displayName = 'View';
 
 export default View;
