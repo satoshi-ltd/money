@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { SectionList } from 'react-native';
 import { useScrollToTop } from '@react-navigation/native';
 
@@ -13,12 +13,18 @@ import { C, ledgerDate } from '../../modules';
 const Dashboard = ({ navigation: { navigate } = {} }) => {
   const { accounts = [], session: { locale } = {}, today, txs = [] } = useStore();
   const listRef = useRef(null);
+  const initialOffsetSetRef = useRef(false);
   useScrollToTop(listRef);
 
-  const [lastTxs, setLastTxs] = useState([]);
   const [query, setQuery] = useState();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState(false);
+
+  const lastTxs = useMemo(() => queryLastTxs({ accounts, page, txs }), [accounts, page, txs]);
+  const sections = useMemo(
+    () => querySearchTxs({ accounts, page, query, txs }) || lastTxs,
+    [accounts, lastTxs, page, query, txs],
+  );
 
   const handleSearch = () => {
     setPage(1);
@@ -36,11 +42,12 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    const nextTxs = queryLastTxs({ accounts, page, txs });
-    if (JSON.stringify(nextTxs) !== JSON.stringify(lastTxs)) setLastTxs(nextTxs);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accounts, page, txs]);
+  const handleInitialContentSizeChange = useCallback(() => {
+    if (initialOffsetSetRef.current || !sections.length) return;
+
+    initialOffsetSetRef.current = true;
+    listRef.current?.getScrollResponder?.()?.scrollTo?.({ y: 0, animated: false });
+  }, [sections.length]);
 
   return (
     <Screen disableScroll>
@@ -59,9 +66,10 @@ const Dashboard = ({ navigation: { navigate } = {} }) => {
         keyboardShouldPersistTaps="handled"
         keyExtractor={(item, index) => `${item.hash || item.timestamp}-${index}`}
         ListHeaderComponent={search ? null : <DashboardListHeader navigate={navigate} />}
+        onContentSizeChange={handleInitialContentSizeChange}
         renderItem={({ item }) => <TransactionItem {...item} />}
         renderSectionHeader={({ section }) => <TransactionsHeader {...section} />}
-        sections={querySearchTxs({ accounts, page, query, txs }) || lastTxs}
+        sections={sections}
         stickySectionHeadersEnabled={false}
         onEndReached={() => setPage((prevPage) => prevPage + 1)}
         style={style.screen}
