@@ -74,7 +74,7 @@ const Onboarding = ({ navigation: { reset } = {} }) => {
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={style.screen}>
-      <Masthead eyebrow="môney">
+      <Masthead eyebrow="MÔNEY">
         <View row align="center" gap="xs">
           <Eyebrow>{L10N.ONB_SETUP}</Eyebrow>
           <Text figure="xs" tone="muted">

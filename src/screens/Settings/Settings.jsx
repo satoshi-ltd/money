@@ -3,6 +3,7 @@ import React, { useMemo, useRef, useState } from 'react';
 import { Linking } from 'react-native';
 import { useScrollToTop } from '@react-navigation/native';
 
+import { Colophon } from './components';
 import { getLatestRates } from './helpers';
 import { ABOUT, APPEARANCE_OPTIONS, DATA, LANGUAGE_OPTIONS } from './Settings.constants';
 import { getStyles } from './Settings.style';
@@ -372,11 +373,7 @@ const Settings = ({ navigation = {} }) => {
           <Setting divider title={L10N.RESET_DATA} titleTone="danger" type="action" onPress={handleResetData} />
         </View>
 
-        <View style={style.version}>
-          <Text align="center" size="xxs" tone="muted">
-            {`môney v${C.VERSION} · ${L10N.PRIVACY_PROMISE}`}
-          </Text>
-        </View>
+        <Colophon />
       </Screen>
     </>
   );

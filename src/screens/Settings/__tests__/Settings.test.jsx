@@ -120,19 +120,23 @@ describe('screens/Settings', () => {
 
   test('every row after the first of its group carries the hairline divider', () => {
     const root = render();
-    const labels = root.findAllByProps({ testID: 'eyebrow' }).filter((node) => typeof node.type === 'string');
+    // The colophon signs off with its own eyebrows, and it heads no group of rows.
+    const signature = [C.MAKER_NAME, `v${C.VERSION}`];
+    const labels = root
+      .findAllByProps({ testID: 'eyebrow' })
+      .filter((node) => typeof node.type === 'string' && !signature.includes(node.props.children));
     const rows = [...componentsBy(root, 'setting'), ...componentsBy(root, 'select')];
 
     expect(labels.length).toBeGreaterThan(0);
     expect(rows.filter((node) => !node.props.divider)).toHaveLength(labels.length);
   });
 
-  test('the version footer stays a centered micro line', () => {
-    const footer = componentsBy(render(), 'text').find((node) => `${node.props.children}`.includes(C.VERSION));
+  test('the version is stated once, in the colophon that signs the app', () => {
+    const stamped = render()
+      .findAllByProps({ testID: 'eyebrow' })
+      .filter((node) => typeof node.type === 'string' && `${node.props.children}`.includes(C.VERSION));
 
-    expect(footer.props.align).toBe('center');
-    expect(footer.props.size).toBe('xxs');
-    expect(footer.props.tone).toBe('muted');
+    expect(stamped).toHaveLength(1);
   });
 
   test('the banner reports the last copy, and warns while there is none', () => {

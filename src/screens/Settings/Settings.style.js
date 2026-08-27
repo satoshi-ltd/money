@@ -29,8 +29,4 @@ export const getStyles = (colors) =>
       marginBottom: theme.spacing.xxs,
     },
 
-    version: {
-      marginTop: theme.spacing.xl,
-      paddingHorizontal: viewOffset,
-    },
   });

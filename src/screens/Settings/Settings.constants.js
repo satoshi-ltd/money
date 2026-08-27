@@ -1,6 +1,6 @@
 import { C, L10N } from '../../modules';
 
-const { PRIVACY_URL, TERMS_URL } = C;
+const { PRIVACY_URL, SECURITY_URL, TERMS_URL } = C;
 
 const DATA = () => [
   {
@@ -42,6 +42,10 @@ const ABOUT = () => [
   {
     url: PRIVACY_URL,
     text: L10N.PRIVACY,
+  },
+  {
+    url: SECURITY_URL,
+    text: L10N.SECURITY,
   },
 ];
 

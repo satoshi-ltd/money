@@ -147,10 +147,10 @@ describe('screens/Onboarding', () => {
   // The wordmark owns the left of the masthead everywhere in the app; the step count reads on the right.
   test('every step counts itself in the masthead, and the mark keeps the left to itself', async () => {
     const root = render();
-    expect(allText(root)).toEqual(expect.arrayContaining(['môney', L10N.ONB_SETUP, '01 / 04']));
+    expect(allText(root)).toEqual(expect.arrayContaining(['MÔNEY', L10N.ONB_SETUP, '01 / 04']));
 
     await advance(root, L10N.ONB_START);
-    expect(allText(root)).toEqual(expect.arrayContaining(['môney', L10N.ONB_SETUP, '02 / 04']));
+    expect(allText(root)).toEqual(expect.arrayContaining(['MÔNEY', L10N.ONB_SETUP, '02 / 04']));
   });
 
   // Picking a currency during onboarding must land with the network off: the seeded series is converted in place.

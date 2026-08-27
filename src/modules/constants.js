@@ -44,7 +44,10 @@ export const C = {
   MS_IN_DAY,
   MS_IN_WEEK,
 
-  PRIVACY_URL: 'https://www.satoshi-ltd.com/privacy-policy/',
+  MAKER_EMAIL: 'hello@satoshi-ltd.com',
+  MAKER_NAME: 'SATOSHI · LTD',
+
+  PRIVACY_URL: 'https://www.satoshi-ltd.com/privacy',
 
   STATS_MONTHS_LIMIT: 12,
   // Single-glyph forms only. Anything that would collide resolves to its ISO code via currencySymbol().
@@ -92,7 +95,9 @@ export const C = {
     XAG: 'oz',
   },
 
-  TERMS_URL: 'https://www.satoshi-ltd.com/terms-of-use/',
+  SECURITY_URL: 'https://www.satoshi-ltd.com/security',
+
+  TERMS_URL: 'https://www.satoshi-ltd.com/terms',
 
   TIMEOUT: {
     BUSY: 40,
