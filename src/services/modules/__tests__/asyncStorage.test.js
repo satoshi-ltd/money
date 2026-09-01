@@ -118,6 +118,44 @@ describe('services/modules/asyncStorage', () => {
     await expect((await adapter()).read()).rejects.toThrow('expected 1200 entries');
   });
 
+  // The count is an echo of the rows: refusing to open on a stale echo loses the ledger over a number.
+  test('a ledger whose rows outran its count opens, and the count is repaired', async () => {
+    const instance = await adapter();
+    await instance.write({ ...DEFAULTS, txs: txs(1200) });
+    store['money:txs:2'] = JSON.stringify(txs(300, 'x'));
+
+    const data = await (await adapter()).read();
+
+    expect(data.txs).toHaveLength(1300);
+    expect(JSON.parse(store['money:txs'])).toEqual({ __chunks: 3, __length: 1300 });
+  });
+
+  // Unqueued, the slower write commits its index after the faster one and leaves a count the rows contradict.
+  test('two writes of one collection never leave a count the rows contradict', async () => {
+    const instance = await adapter();
+    let indexWrites = 0;
+    AsyncStorage.setItem.mockImplementation((key, value) => {
+      const delay = key === 'money:txs' && indexWrites++ === 0 ? 30 : 0;
+      return new Promise((resolve) =>
+        setTimeout(() => {
+          store[key] = value;
+          resolve();
+        }, delay),
+      );
+    });
+
+    const data = { ...DEFAULTS, txs: txs(1200) };
+    const first = instance.write(data, 'txs');
+    data.txs = txs(1300);
+    await Promise.all([first, instance.write(data, 'txs')]);
+
+    // Straight off the disk: reading it back would repair the very mismatch this is looking for.
+    const rows = [0, 1, 2].reduce((total, index) => total + JSON.parse(store[`money:txs:${index}`]).length, 0);
+
+    expect(rows).toBe(1300);
+    expect(JSON.parse(store['money:txs'])).toEqual({ __chunks: 3, __length: rows });
+  });
+
   test('keeps the index honest while the ledger shrinks', async () => {
     const instance = await adapter();
     await instance.write({ ...DEFAULTS, txs: txs(1200) });

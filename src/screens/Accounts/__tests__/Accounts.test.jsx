@@ -229,6 +229,30 @@ describe('screens/Accounts', () => {
     expect(balances[1].props.currency).toBe('USD');
   });
 
+  // Every row says what it is worth in the reader's own currency; the total that adds them up did not.
+  test('a total in a filtered currency still says what it is worth in the base one', () => {
+    const root = render();
+    const [toggle] = componentsBy(root, 'segmented');
+    act(() => toggle.props.onChange('USD'));
+    const converted = componentsBy(root, 'price').filter(
+      (node) => node.props.currency === 'EUR' && node.props.size === 'xs',
+    );
+
+    expect(converted).toHaveLength(2);
+    expect(converted[converted.length - 1].props.value).toBe(1800);
+  });
+
+  test('filtering by the base currency itself says it once, not twice', () => {
+    const root = render();
+    const [toggle] = componentsBy(root, 'segmented');
+    act(() => toggle.props.onChange('EUR'));
+    const converted = componentsBy(root, 'price').filter(
+      (node) => node.props.currency === 'EUR' && node.props.size === 'xs',
+    );
+
+    expect(converted).toHaveLength(0);
+  });
+
   test('an empty ledger shows the empty state instead of a zero net worth', () => {
     mockStore = { ...mockStore, accounts: [], overall: { currentBalance: 0 } };
     const root = render();

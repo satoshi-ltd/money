@@ -36,6 +36,7 @@ export const consolidate = ({
         baseCurrency,
         genesisDate,
         months,
+        now,
         rates,
         txs,
         txsByAccount,

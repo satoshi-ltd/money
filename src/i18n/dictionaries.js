@@ -68,9 +68,13 @@ export const EN = {
   USUAL_BY: 'Usual by',
   BELOW_PACE: 'below pace',
   ABOVE_PACE: 'above pace',
+  ABOVE_USUAL: 'more than usual',
+  BELOW_USUAL: 'less than usual',
+  AS_USUAL: 'as usual',
   SCHEDULED_AHEAD: 'Scheduled',
   SEE_ALL: 'See all',
   THIS_MONTH: 'This month',
+  LAST_MONTH: 'Last month',
   CASHFLOW: 'Cash flow',
   STATS_FLOW_6M_CAPTION: 'last 6 months',
   BACKUP_CTA: 'Back up',
@@ -193,7 +197,7 @@ export const EN = {
   FIRST_ACCOUNT_CAPTION: 'Choose your main currency. Add more accounts later, each supporting different currencies.',
 
 
-  HOME: 'Home',
+  OVERVIEW: 'Overview',
 
   IMPORT_DATA: 'Restore Data',
   INCOME: 'Income',
@@ -358,9 +362,13 @@ export const PT = {
   USUAL_BY: 'Habitual em',
   BELOW_PACE: 'abaixo do ritmo',
   ABOVE_PACE: 'acima do ritmo',
+  ABOVE_USUAL: 'acima do normal',
+  BELOW_USUAL: 'abaixo do normal',
+  AS_USUAL: 'o normal',
   SCHEDULED_AHEAD: 'Programado',
   SEE_ALL: 'Ver tudo',
   THIS_MONTH: 'Este mês',
+  LAST_MONTH: 'Mês passado',
   CASHFLOW: 'Fluxo',
   STATS_FLOW_6M_CAPTION: 'últimos 6 meses',
   BACKUP_CTA: 'Copiar',
@@ -483,7 +491,7 @@ export const PT = {
   FIRST_ACCOUNT_CAPTION: 'Escolha sua moeda principal. Adicione mais contas depois.',
 
 
-  HOME: 'Início',
+  OVERVIEW: 'Resumo',
 
   IMPORT_DATA: 'Restaurar dados',
   INCOME: 'Receita',
@@ -632,9 +640,13 @@ export const FR = {
   USUAL_BY: 'Habituel au',
   BELOW_PACE: 'sous votre rythme',
   ABOVE_PACE: 'au-dessus du rythme',
+  ABOVE_USUAL: "plus que d'habitude",
+  BELOW_USUAL: "moins que d'habitude",
+  AS_USUAL: "comme d'habitude",
   SCHEDULED_AHEAD: 'Programmé',
   SEE_ALL: 'Tout voir',
   THIS_MONTH: 'Ce mois',
+  LAST_MONTH: 'Mois dernier',
   CASHFLOW: 'Flux',
   STATS_FLOW_6M_CAPTION: '6 derniers mois',
   BACKUP_CTA: 'Sauvegarder',
@@ -757,7 +769,7 @@ export const FR = {
   FIRST_ACCOUNT_CAPTION: 'Choisissez votre devise principale. Ajoutez d’autres comptes ensuite.',
 
 
-  HOME: 'Accueil',
+  OVERVIEW: 'Aperçu',
 
   IMPORT_DATA: 'Restaurer les données',
   INCOME: 'Revenu',
@@ -908,9 +920,13 @@ export const DE = {
   USUAL_BY: 'Üblich am',
   BELOW_PACE: 'unter deinem Schnitt',
   ABOVE_PACE: 'über deinem Schnitt',
+  ABOVE_USUAL: 'mehr als üblich',
+  BELOW_USUAL: 'weniger als üblich',
+  AS_USUAL: 'wie üblich',
   SCHEDULED_AHEAD: 'Geplant',
   SEE_ALL: 'Alle ansehen',
   THIS_MONTH: 'Dieser Monat',
+  LAST_MONTH: 'Vormonat',
   CASHFLOW: 'Fluss',
   STATS_FLOW_6M_CAPTION: 'letzte 6 Monate',
   BACKUP_CTA: 'Sichern',
@@ -1033,7 +1049,7 @@ export const DE = {
   FIRST_ACCOUNT_CAPTION: 'Wählen Sie Ihre Hauptwährung. Fügen Sie später weitere Konten hinzu.',
 
 
-  HOME: 'Start',
+  OVERVIEW: 'Übersicht',
 
   IMPORT_DATA: 'Daten wiederherstellen',
   INCOME: 'Einnahme',
@@ -1183,9 +1199,13 @@ export const ES = {
   USUAL_BY: 'Habitual al',
   BELOW_PACE: 'bajo tu ritmo',
   ABOVE_PACE: 'sobre tu ritmo',
+  ABOVE_USUAL: 'más de lo normal',
+  BELOW_USUAL: 'menos de lo normal',
+  AS_USUAL: 'lo normal',
   SCHEDULED_AHEAD: 'Programado',
   SEE_ALL: 'Ver todo',
   THIS_MONTH: 'Este mes',
+  LAST_MONTH: 'Mes pasado',
   CASHFLOW: 'Flujo',
   STATS_FLOW_6M_CAPTION: 'últimos 6 meses',
   BACKUP_CTA: 'Copiar',
@@ -1308,7 +1328,7 @@ export const ES = {
   FIRST_ACCOUNT_CAPTION: 'Elige tu moneda principal. Añade más cuentas después.',
 
 
-  HOME: 'Inicio',
+  OVERVIEW: 'Resumen',
 
   IMPORT_DATA: 'Restaurar datos',
   INCOME: 'Ingreso',

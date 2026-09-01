@@ -3,6 +3,7 @@ import { StyleSheet, Text as RNText } from 'react-native';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import { MonthSummary } from '../MonthSummary';
+import { getStyles } from '../MonthSummary.style';
 import { L10N } from '../../../modules';
 
 const ACCENT = '#ACCE07';
@@ -79,6 +80,28 @@ describe('components/MonthSummary', () => {
     expect(styles.filter((flat) => flat.backgroundColor === TEXT && flat.height === '100%')).toHaveLength(0);
   });
 
+  // What Home leads with on the 1st, when the running month has nothing worth comparing yet.
+  test('the month that closed is named, priced, and read against its own usual', () => {
+    const root = render({
+      insights: [
+        { type: 'trend', meta: { day: 1, spent: 12 } },
+        { type: 'closed', value: 2786.4, meta: { at: new Date(2026, 7, 1, 12).getTime(), delta: 40 } },
+      ],
+    });
+
+    expect(prices(root)).toEqual(expect.arrayContaining([expect.objectContaining({ value: 2786.4 })]));
+    expect(texts(root)).toContain(L10N.LAST_MONTH);
+    expect(texts(root).some((text) => text.includes('August') && text.includes('40'))).toBe(true);
+  });
+
+  test('a closed month with no usual to read against is named without a percentage', () => {
+    const root = render({
+      insights: [{ type: 'closed', value: 900, meta: { at: new Date(2026, 7, 1, 12).getTime() } }],
+    });
+
+    expect(texts(root).some((text) => text.includes('%'))).toBe(false);
+  });
+
   // A young ledger used to render the heading over an empty card, because the whole lead was skipped.
   test('with no baseline it still says what was spent, and draws no bar to lie with', () => {
     const root = render({ insights: [{ type: 'trend', meta: { day: 12, spent: 240 } }] });
@@ -86,6 +109,20 @@ describe('components/MonthSummary', () => {
     expect(prices(root)).toEqual(expect.arrayContaining([expect.objectContaining({ value: 240 })]));
     expect(flats(root).filter((flat) => flat.backgroundColor === ACCENT)).toHaveLength(0);
     expect(texts(root)).not.toContain(L10N.ABOVE_PACE);
+  });
+
+  // The row kept an empty right side on the first days of a month, which is what the whole card avoids.
+  test('with no percentage to show, the verdict carries the right side in words', () => {
+    const root = render({ insights: [{ type: 'trend', meta: { day: 1, direction: 'over', spent: 169.67 } }] });
+
+    expect(texts(root).join(' ')).toContain(L10N.ABOVE_USUAL);
+    expect(texts(root).join(' ')).not.toContain('%');
+  });
+
+  test('a month inside its usual range says so, and says it without a figure', () => {
+    const root = render({ insights: [{ type: 'trend', meta: { day: 2, direction: 'flat', spent: 12 } }] });
+
+    expect(texts(root).join(' ')).toContain(L10N.AS_USUAL);
   });
 
   test('the direction comes from the module, so a flat month is never called above pace', () => {
@@ -126,6 +163,24 @@ describe('components/MonthSummary', () => {
 
     expect(texts(root)).toContain('Salary');
     expect(texts(root).join(' ')).not.toContain('100');
+  });
+
+  // The lead broke the grammar the rest of the card keeps: its label and its figure sat at the two far edges.
+  test('the lead reads as title, value and caption like every line under it', () => {
+    const root = render({ insights: [...INSIGHTS, { type: 'scheduled', value: -50.12, meta: { pending: 3 } }] });
+    const keyOf = (label) =>
+      StyleSheet.flatten(root.findAllByType(RNText).find(({ props }) => props.children === label).props.style);
+
+    expect(keyOf(L10N.SPENT_SO_FAR).width).toBeGreaterThan(0);
+    expect(keyOf(L10N.SPENT_SO_FAR).width).toBe(keyOf(L10N.SCHEDULED_AHEAD).width);
+    expect(texts(root).join(' ')).toContain(L10N.ABOVE_PACE);
+  });
+
+  // Only the lead lacked the gutter, so its figure began one gap to the left of every figure under it.
+  test('the lead keeps the same gutter as the rows, so the figures share a left edge', () => {
+    const style = getStyles({});
+
+    expect(style.leadHead.gap).toBe(style.row.gap);
   });
 
   // Every line of this section is title, value and caption: a row with an empty right side reads as broken.

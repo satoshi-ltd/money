@@ -1,5 +1,5 @@
 import { C } from '../../../modules';
-import { UUID } from '../../modules';
+import { UUID } from '../../modules/UUID';
 
 const { CURRENCY } = C;
 

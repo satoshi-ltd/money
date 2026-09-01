@@ -15,6 +15,8 @@ export const getStyles = (colors) =>
     },
     leadHead: {
       alignItems: 'baseline',
+      // The same gutter the rows keep, or the lead's figure starts one gap left of every figure under it.
+      gap: theme.spacing.xs,
     },
     track: {
       backgroundColor: colors.surface,

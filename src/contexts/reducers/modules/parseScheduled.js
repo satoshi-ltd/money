@@ -1,4 +1,4 @@
-import { UUID } from '../../modules';
+import { UUID } from '../../modules/UUID';
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 

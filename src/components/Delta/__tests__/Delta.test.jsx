@@ -35,6 +35,18 @@ describe('components/Delta', () => {
     expect(toneOf(render({ value: 2.5 }))).toBe('positive');
   });
 
+  // A month one coffee under a 673,911 net worth printed "\u22120.0 %": a signed zero, which is not a direction.
+  test('a move too small to survive its own rounding says nothing at all', () => {
+    expect(render({ value: -0.02 }).children).toHaveLength(0);
+    expect(render({ value: 0.04, decimals: 1 }).children).toHaveLength(0);
+    expect(render({ value: -0.4, decimals: 0 }).children).toHaveLength(0);
+  });
+
+  test('a move that does survive its rounding still shows, at that precision', () => {
+    expect(chipOf(render({ value: -0.06 }))).toBeDefined();
+    expect(chipOf(render({ value: -0.6, decimals: 0 }))).toBeDefined();
+  });
+
   test('a fall takes plain ink, on a plain surface chip: the house puts no red on a figure', () => {
     expect(chipOf(render({ value: -69.2 })).backgroundColor).toBe(COLORS.surface);
     expect(toneOf(render({ value: -69.2 }))).toBeUndefined();

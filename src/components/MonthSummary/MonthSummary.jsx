@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 
 import { getStyles } from './MonthSummary.style';
 import { useApp } from '../../contexts';
-import { L10N, percentText } from '../../modules';
+import { L10N, percentText, verboseDate } from '../../modules';
 import { Text, View } from '../../primitives';
 import { PriceFriendly } from '../PriceFriendly';
 
@@ -14,11 +14,17 @@ const MonthSummary = ({ currency, insights = [] }) => {
   const style = useMemo(() => getStyles(colors), [colors]);
 
   const trend = insights.find(({ type }) => type === 'trend');
+  const closed = insights.find(({ type }) => type === 'closed');
   const swing = insights.find(({ type }) => type === 'swing');
   const incomes = insights.find(({ type }) => type === 'incomes');
   const scheduled = insights.find(({ type }) => type === 'scheduled');
 
   const spent = trend?.meta?.spent;
+  // A percentage where enough of the month has run to earn one; a word where it would only overclaim.
+  const pace =
+    trend?.value !== undefined
+      ? `${percentText(trend.value)} ${trend.meta.direction === 'under' ? L10N.BELOW_PACE : L10N.ABOVE_PACE}`
+      : { over: L10N.ABOVE_USUAL, under: L10N.BELOW_USUAL, flat: L10N.AS_USUAL }[trend?.meta?.direction];
   const baseline = trend?.meta?.baseline;
   const scale = Math.max(spent || 0, baseline || 0, 1);
   const overspend = baseline > 0 ? Math.max(0, (spent || 0) - baseline) : 0;
@@ -27,11 +33,18 @@ const MonthSummary = ({ currency, insights = [] }) => {
     <View style={style.container}>
       {spent !== undefined ? (
         <View style={style.lead}>
-          <View row spaceBetween style={style.leadHead}>
-            <Text size="s" tone="secondary">
+          <View row style={style.leadHead}>
+            <Text size="s" style={style.key} tone="secondary">
               {L10N.SPENT_SO_FAR}
             </Text>
-            <PriceFriendly bold currency={currency} size="lg" value={spent} />
+            <View flex>
+              <PriceFriendly currency={currency} size="md" value={spent} />
+            </View>
+            {pace ? (
+              <Text align="right" numberOfLines={1} size="xs" style={style.context} tone="muted">
+                {pace}
+              </Text>
+            ) : null}
           </View>
 
           {/* A ledger too young to have a baseline gets the figure and the date, and no bar to lie with. */}
@@ -43,19 +56,30 @@ const MonthSummary = ({ currency, insights = [] }) => {
                 <View style={[style.tick, { left: `${clamp((baseline / scale) * 100)}%` }]} />
               </View>
 
-              <View row spaceBetween>
-                <View row style={style.usual}>
-                  <Text size="xxs" tone="muted">
-                    {`${L10N.USUAL_BY} ${trend.meta.day} \u00b7 `}
-                  </Text>
-                  <PriceFriendly currency={currency} size="xs" tone="muted" value={baseline} />
-                </View>
-                <Text medium size="xxs" tone={trend.meta.direction === 'under' ? 'positive' : undefined}>
-                  {`${percentText(trend.value)} ${trend.meta.direction === 'under' ? L10N.BELOW_PACE : L10N.ABOVE_PACE}`}
+              <View row style={style.usual}>
+                <Text size="xxs" tone="muted">
+                  {`${L10N.USUAL_BY} ${trend.meta.day} \u00b7 `}
                 </Text>
+                <PriceFriendly currency={currency} size="xs" tone="muted" value={baseline} />
               </View>
             </>
           ) : null}
+        </View>
+      ) : null}
+
+      {closed ? (
+        <View row style={style.row}>
+          <Text size="s" style={style.key} tone="muted">
+            {L10N.LAST_MONTH}
+          </Text>
+          <View flex>
+            <PriceFriendly currency={currency} size="md" value={closed.value} />
+          </View>
+          <Text align="right" numberOfLines={1} size="xs" style={style.context} tone="muted">
+            {`${verboseDate(new Date(closed.meta.at), { month: 'long' })}${
+              closed.meta.delta !== undefined ? ` \u00b7 ${percentText(closed.meta.delta)}` : ''
+            }`}
+          </Text>
         </View>
       ) : null}
 

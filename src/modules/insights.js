@@ -12,7 +12,7 @@ const TREND_FLAT_BAND = 5;
 const MIN_BASELINE_SHARE = 0.1;
 // A share of a full-month median, not of a day-capped one: the floor must not shrink to nothing on day 2.
 const MIN_SWING_SHARE = 0.05;
-const MIN_SWING_MONTHS = 2;
+const MIN_COMPARED_MONTHS = 2;
 
 const monthKey = (date) => `${date.getFullYear()}-${`${date.getMonth() + 1}`.padStart(2, '0')}`;
 
@@ -182,6 +182,18 @@ export const buildInsights = ({
   const comparable = baselineToDate > 0 && elapsedShare >= MIN_BASELINE_SHARE;
   const delta = comparable ? Math.round(percentDelta(currentExpenses, baselineToDate)) : undefined;
 
+  // Too little of the month has run for a percentage to survive the noise, but a figure outside every month it
+  // is measured against still has a direction, and a word can carry that where a number would overclaim.
+  const readings = baselineKeys.map(monthToDate);
+  const verdict =
+    comparable || readings.length < MIN_COMPARED_MONTHS || baselineToDate === 0
+      ? undefined
+      : readings.every((reading) => currentExpenses > reading)
+        ? 'over'
+        : readings.every((reading) => currentExpenses < reading)
+          ? 'under'
+          : 'flat';
+
   if (currentExpenses > 0 || comparable) {
     insights.push({
       id: 'spending_trend',
@@ -190,9 +202,32 @@ export const buildInsights = ({
       meta: {
         baseline: comparable ? baselineToDate : undefined,
         // One band, decided here: the view re-deriving it printed "3% above pace" for a month called flat.
-        direction: delta === undefined ? undefined : delta > TREND_FLAT_BAND ? 'over' : delta < -TREND_FLAT_BAND ? 'under' : 'flat',
+        direction: delta === undefined ? verdict : delta > TREND_FLAT_BAND ? 'over' : delta < -TREND_FLAT_BAND ? 'under' : 'flat',
         day: elapsedDay,
         spent: currentExpenses,
+      },
+    });
+  }
+
+  // The first days of a month have nothing to compare against; the one that just closed is complete and does.
+  const closedKey = shiftMonthKey(now, 1);
+  const closedSpent = monthTotal(closedKey);
+
+  if (!comparable && closedSpent > 0) {
+    const closedBaseline = median(
+      Array.from({ length: BASELINE_MONTHS }, (item, index) => shiftMonthKey(now, index + 2))
+        .filter(inHistory)
+        .filter((key) => monthTotal(key) > 0)
+        .map(monthTotal),
+    );
+
+    insights.push({
+      id: 'closed_month',
+      type: 'closed',
+      value: closedSpent,
+      meta: {
+        at: new Date(now.getFullYear(), now.getMonth() - 1, 1).getTime(),
+        delta: closedBaseline > 0 ? Math.round(percentDelta(closedSpent, closedBaseline)) : undefined,
       },
     });
   }
@@ -210,7 +245,7 @@ export const buildInsights = ({
     .filter(({ over }) => Math.abs(over) >= fullMonthMedian * MIN_SWING_SHARE)
     .sort((first, second) => Math.abs(second.over) - Math.abs(first.over))[0];
 
-  if (comparable && mover && baselineKeys.length >= MIN_SWING_MONTHS) {
+  if (comparable && mover && baselineKeys.length >= MIN_COMPARED_MONTHS) {
     insights.push({
       id: 'swing',
       type: 'swing',

@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 
 import { getStyles } from './Delta.style';
 import { useApp } from '../../contexts';
-import { percentText } from '../../modules';
+import { isFlat, percentText } from '../../modules';
 import { Text, View } from '../../primitives';
 
 // The chip belongs to a hero figure; in a list the same two tones apply without it.
@@ -12,7 +12,7 @@ const Delta = ({ caption, decimals = 1, inverted = false, plain = false, size = 
   const { colors } = useApp();
   const style = useMemo(() => getStyles(colors), [colors]);
 
-  if (!Number.isFinite(value) || value === 0) return null;
+  if (isFlat(value, decimals)) return null;
 
   const wanted = inverted ? value < 0 : value > 0;
 

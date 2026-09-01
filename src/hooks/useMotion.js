@@ -1,11 +1,7 @@
 import { useRef, useCallback } from 'react';
-import { Animated, LayoutAnimation, Easing, Platform, UIManager } from 'react-native';
+import { Animated, LayoutAnimation, Easing } from 'react-native';
 
 import { theme } from '../theme';
-
-if (Platform.OS === 'android') {
-  UIManager.setLayoutAnimationEnabledExperimental?.(true);
-}
 
 export const useMotion = () => {
   // We need stable Animated.Value instances without calling Hooks from callbacks.

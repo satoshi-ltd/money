@@ -32,6 +32,11 @@ const find = (insights, id) => insights.find((insight) => insight.id === id);
 // Three months of 1,000 spent on the 10th: a baseline any comparison can lean on.
 const baseline = (category = 1) => [1, 2, 3].map((back) => expense(2025, 5 - back, 10, 1000, category));
 
+const FIRST = new Date(2025, 5, 1, 12);
+
+// A month that spends most of itself after the 1st, so one day is too small a share of it to compare with.
+const spread = (month, first) => [expense(2025, month, 1, first), expense(2025, month, 15, 5000)];
+
 describe('modules/insights lead', () => {
   test('it reports what was spent and what is usual by today', () => {
     const now = new Date(2025, 5, 20, 12);
@@ -49,6 +54,56 @@ describe('modules/insights lead', () => {
     expect(meta).toMatchObject({ day: 20, spent: 240 });
     expect(meta.baseline).toBeUndefined();
     expect(value).toBeUndefined();
+  });
+
+  // On the 1st the month has nothing to compare against, so the card led with a figure and no reading at all.
+  test('the first days of a month lead with the month that closed instead', () => {
+    const now = new Date(2025, 5, 1, 12);
+    // The three months before the closed one, so it is the one being read and not part of its own baseline.
+    const before = [1, 2, 3].map((back) => expense(2025, 4 - back, 10, 1000));
+    const closed = find(build({ now, txs: [...before, expense(2025, 4, 10, 1500)] }), 'closed_month');
+
+    expect(closed.value).toBe(1500);
+    expect(new Date(closed.meta.at).getMonth()).toBe(4);
+    expect(closed.meta.delta).toBe(50);
+  });
+
+  test('once the month has enough of itself to compare, the closed one steps aside', () => {
+    const now = new Date(2025, 5, 20, 12);
+    const insights = build({ now, txs: [...baseline(), expense(2025, 5, 5, 1500)] });
+
+    expect(find(insights, 'closed_month')).toBeUndefined();
+    expect(find(insights, 'spending_trend').value).toBe(50);
+  });
+
+  test('a month that closed on nothing is not worth a row', () => {
+    const now = new Date(2025, 5, 1, 12);
+
+    expect(find(build({ now, txs: [expense(2025, 2, 10, 900)] }), 'closed_month')).toBeUndefined();
+  });
+
+  // A day of month cannot carry a percentage, but a figure above every month it is measured against has a
+  // direction, and the view says that in words rather than leaving the row with an empty right side.
+  test('too little of the month to earn a percentage still earns a verdict', () => {
+    const before = [spread(4, 100), spread(3, 100), spread(2, 100)].flat();
+    const { meta, value } = find(build({ now: FIRST, txs: [...before, expense(2025, 5, 1, 900)] }), 'spending_trend');
+
+    expect(value).toBeUndefined();
+    expect(meta.baseline).toBeUndefined();
+    expect(meta.direction).toBe('over');
+  });
+
+  test('a figure inside the range it is measured against is called usual, not a direction', () => {
+    const before = [spread(4, 100), spread(3, 900), spread(2, 400)].flat();
+    const { meta } = find(build({ now: FIRST, txs: [...before, expense(2025, 5, 1, 500)] }), 'spending_trend');
+
+    expect(meta.direction).toBe('flat');
+  });
+
+  test('one month of history is no range, so nothing is called anything', () => {
+    const { meta } = find(build({ now: FIRST, txs: [...spread(4, 100), expense(2025, 5, 1, 900)] }), 'spending_trend');
+
+    expect(meta.direction).toBeUndefined();
   });
 
   test('nothing spent and nothing to compare against emits nothing to render', () => {

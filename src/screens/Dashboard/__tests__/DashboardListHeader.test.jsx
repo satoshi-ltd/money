@@ -1,4 +1,5 @@
 import React from 'react';
+import { Text as RNText } from 'react-native';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import { DashboardListHeader } from '../Dashboard.ListHeader';
@@ -30,13 +31,14 @@ jest.mock('../../../components', () => {
   };
 });
 
-const account = (hash, title, currency, currentBalance) => ({
+const account = (hash, title, currency, currentBalance, recentTxs = 0, progressionCurrency = 0) => ({
   hash,
   title,
   currency,
   currentBalance,
   currentBalanceBase: currentBalance,
-  currentMonth: { progressionCurrency: 0 },
+  recentTxs,
+  currentMonth: { progressionCurrency },
   chartBalanceBase: [],
   txs: [],
 });
@@ -89,11 +91,44 @@ describe('screens/Dashboard/ListHeader', () => {
     expect(mockUpdateSettings).toHaveBeenCalledWith({ maskAmount: true });
   });
 
-  test('only the first three accounts are listed, largest balance first', () => {
+  test('only the first three accounts are listed, and with nothing moving that is by balance', () => {
     const balances = componentsBy(render(), 'price').filter((node) => node.props.size === 'lg');
 
     expect(balances).toHaveLength(3);
     expect(balances.map((node) => node.props.value)).toEqual([13922.4, 8412.9, 2140.55]);
+  });
+
+  // The quick list answers where money moves, not who holds most: the hero above it already answers that.
+  test('the busiest thirty days take the list over the biggest balances', () => {
+    mockStore = {
+      ...mockStore,
+      accounts: [
+        account('a1', 'N26', 'EUR', 8412.9),
+        account('a2', 'Savings', 'EUR', 13922.4),
+        account('a3', 'Revolut', 'USD', 2140.55, 12),
+        account('a4', 'Cash', 'EUR', 310, 40),
+      ],
+    };
+    const balances = componentsBy(render(), 'price').filter((node) => node.props.size === 'lg');
+
+    expect(balances.map((node) => node.props.value)).toEqual([310, 2140.55, 13922.4]);
+  });
+
+  // The chip hides a move that rounds to nothing, so the column it lives in has to fall back to the dash.
+  test('a move too small to print leaves the dash, never an empty column', () => {
+    mockStore = {
+      ...mockStore,
+      accounts: [
+        account('a1', 'N26', 'EUR', 8412.9, 0, 500),
+        account('a2', 'Savings', 'EUR', 13922.4, 0, 2),
+        account('a4', 'Cash', 'EUR', 310),
+      ],
+    };
+    const root = render();
+    const dashes = root.findAllByType(RNText).filter(({ props }) => props.children === '\u2014');
+
+    expect(componentsBy(root, 'delta').filter((node) => node.props.plain)).toHaveLength(1);
+    expect(dashes).toHaveLength(2);
   });
 
   test('a foreign-currency account shows its converted amount', () => {

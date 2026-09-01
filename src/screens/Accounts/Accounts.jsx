@@ -62,10 +62,14 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
     return segments;
   }, [colors, currencies]);
 
-  const total = visible.reduce(
-    (sum, { currentBalance = 0, currentBalanceBase = 0 }) => sum + (selected ? currentBalance : currentBalanceBase),
-    0,
+  const totals = visible.reduce(
+    (memo, { currentBalance = 0, currentBalanceBase = 0 }) => ({
+      amount: memo.amount + (selected ? currentBalance : currentBalanceBase),
+      base: memo.base + currentBalanceBase,
+    }),
+    { amount: 0, base: 0 },
   );
+  const showTotalBase = Boolean(selected) && selected !== baseCurrency;
 
   if (accounts.length === 0)
     return (
@@ -180,7 +184,14 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
 
           <View row spaceBetween style={style.totalRow}>
             <Eyebrow>{L10N.TOTAL}</Eyebrow>
-            <PriceFriendly bold currency={selected || baseCurrency} size="lg" value={total} />
+            <View style={style.accountRight}>
+              <PriceFriendly bold currency={selected || baseCurrency} showSymbol size="lg" value={totals.amount} />
+              <View row style={style.accountMeta}>
+                {showTotalBase ? (
+                  <PriceFriendly currency={baseCurrency} showSymbol size="xs" tone="muted" value={totals.base} />
+                ) : null}
+              </View>
+            </View>
           </View>
         </View>
       </Screen>

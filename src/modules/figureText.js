@@ -10,4 +10,7 @@ export const percentText = (value, { decimals = 0, signed = false } = {}) => {
   return `${sign}${amount.toFixed(decimals)}${THIN_SPACE}%`;
 };
 
+// A move that rounds to zero at the precision on show has no direction to report, so nothing should claim one.
+export const isFlat = (value, decimals = 1) => !Number.isFinite(value) || Number(value.toFixed(decimals)) === 0;
+
 export const withThinSpace = (value) => `${THIN_SPACE}${value}`;

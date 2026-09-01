@@ -8,6 +8,7 @@ import { useApp, useStore } from '../../contexts';
 import {
   buildInsights,
   getProgressionPercentage,
+  isFlat,
   L10N,
   netWorthEyebrow,
   verboseDate,
@@ -55,7 +56,7 @@ const DashboardListHeader = ({ navigate }) => {
         </Pressable>
       ) : null}
 
-      {insights.some(({ type }) => type === 'trend') ? (
+      {insights.some(({ type }) => type === 'trend' || type === 'closed') ? (
         <View style={style.section}>
           <Heading
             eyebrow={verboseDate(new Date(today || Date.now()), {
@@ -104,7 +105,7 @@ const DashboardListHeader = ({ navigate }) => {
                       tone="muted"
                       value={currentBalanceBase || 0}
                     />
-                  ) : Number.isFinite(delta) && delta !== 0 ? (
+                  ) : !isFlat(delta) ? (
                     <Delta plain value={delta} />
                   ) : (
                     <Text figure="xs" tone="muted">

@@ -96,7 +96,7 @@ const Tabs = ({ navigation = {} }) => {
         name="dashboard"
         component={Dashboard}
         options={{
-          tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.HOME }),
+          tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.OVERVIEW }),
           title: L10N.NET_WORTH,
         }}
       />

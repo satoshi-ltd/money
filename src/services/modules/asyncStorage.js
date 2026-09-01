@@ -21,6 +21,7 @@ export class AsyncStorageAdapter {
         this.defaults = defaults;
         this.written = {};
         this.chunkCount = {};
+        this.queue = Promise.resolve();
 
         await this.migrateFromSingleKey();
 
@@ -88,8 +89,17 @@ export class AsyncStorageAdapter {
           return memo.concat(JSON.parse(raw));
         }, []);
 
-        if (Number.isFinite(length) && data[collection].length !== length) {
+        const rows = data[collection].length;
+        if (Number.isFinite(length) && rows < length) {
           throw new Error(`${indexKey(key, collection)} expected ${length} entries`);
+        }
+
+        // The chunks are the ledger and the count an echo of it: repair the echo, never refuse to open the ledger.
+        if (Number.isFinite(length) && rows > length) {
+          await AsyncStorage.setItem(
+            indexKey(key, collection),
+            JSON.stringify({ __chunks: chunks, __length: rows }),
+          ).catch(() => undefined);
         }
       }
 
@@ -99,12 +109,21 @@ export class AsyncStorageAdapter {
     }
   }
 
+  // One queue: two writes of a collection interleave at their awaits and the older commits its index last.
   async write(data = {}, collection) {
     const { collections, key } = this;
     const touched = collection && collections.includes(collection) ? [collection] : collections;
 
-    try {
+    const run = this.queue.then(async () => {
       for (let index = 0; index < touched.length; index += 1) await this.writeCollection(data, touched[index]);
+    });
+    this.queue = run.then(
+      () => undefined,
+      () => undefined,
+    );
+
+    try {
+      await run;
     } catch (error) {
       throw new Error(`${key} could not be saved correctly.`);
     }
