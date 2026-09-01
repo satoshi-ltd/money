@@ -65,7 +65,11 @@ const Onboarding = ({ navigation: { reset } = {} }) => {
     // The seeded series converts to any base without a request, so onboarding works with the network off.
     await updateRates(rebaseRates(rates, next));
 
-    const nextRates = await ServiceRates.get({ baseCurrency: next, known: rates })['catch'](() => undefined);
+    const nextRates = await ServiceRates.get({
+      baseCurrency: next,
+      known: rates,
+      lastRatesUpdate: settings.lastRatesUpdate,
+    })['catch'](() => undefined);
     if (nextRates) await updateRates(nextRates);
   };
 

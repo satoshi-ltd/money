@@ -8,6 +8,31 @@ const answer = (day) => ({ ok: true, json: async () => ({ usd: day, eur: day }) 
 // Everything but the current month already cached: what is left is the one request every sync makes.
 const FULL = Object.fromEntries(Object.keys(SEED.rates).map((key) => [key, table]));
 
+const SEED_LAST = Object.keys(SEED.rates).sort().pop();
+
+// FULL only means "everything but the current month" while the clock sits in the month after the seed.
+const afterSeed = (day) => {
+  const at = new Date(`${SEED_LAST}-01T00:00:00Z`);
+  at.setUTCMonth(at.getUTCMonth() + 1);
+  return new Date(`${at.toISOString().slice(0, 7)}-${day}T09:00:00Z`);
+};
+
+const CURRENT = afterSeed('15').toISOString().slice(0, 7);
+
+// A download already made inside the current month: nothing older is still provisional.
+const SYNCED = afterSeed('15').toISOString();
+
+const dateOf = (url) => url.match(/currency-api@([^/]+)\//)[1];
+
+// The day a month ends on: it has to be a date that exists, and the next one has to belong to another month.
+const isClose = (date, key) => {
+  const at = new Date(`${date}T00:00:00Z`);
+  if (Number.isNaN(at.getTime()) || at.toISOString().slice(0, 10) !== date) return false;
+
+  at.setUTCDate(at.getUTCDate() + 1);
+  return date.startsWith(key) && at.toISOString().slice(0, 7) !== key;
+};
+
 describe('services/RatesService seed', () => {
   test('the bundled seed carries a real series, so a first run with no network still converts', () => {
     const keys = Object.keys(SEED.rates).sort();
@@ -93,14 +118,19 @@ describe('services/RatesService seed', () => {
 });
 
 describe('services/RatesService fetch', () => {
+  beforeEach(() => {
+    jest.useFakeTimers().setSystemTime(afterSeed('15'));
+  });
+
   afterEach(() => {
+    jest.useRealTimers();
     global.fetch = undefined;
   });
 
   test('it keys what it reads by month, and keeps only the currencies the app knows', async () => {
     global.fetch = jest.fn(async () => answer({ ...Object.fromEntries(Object.entries(table).map(([k, v]) => [k.toLowerCase(), v])), zzz: 9 }));
 
-    const rates = await ServiceRates.get({ baseCurrency: 'USD', known: FULL });
+    const rates = await ServiceRates.get({ baseCurrency: 'USD', known: FULL, lastRatesUpdate: SYNCED });
     const [key] = Object.keys(rates).filter((k) => k !== 'currency');
 
     expect(key).toMatch(/^\d{4}-\d{2}$/);
@@ -120,9 +150,65 @@ describe('services/RatesService fetch', () => {
   test('it asks only for the months it is missing', async () => {
     global.fetch = jest.fn(async () => answer({ usd: 1, thb: 32 }));
 
-    await ServiceRates.get({ baseCurrency: 'USD', known: FULL });
+    await ServiceRates.get({ baseCurrency: 'USD', known: FULL, lastRatesUpdate: SYNCED });
 
     expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(dateOf(global.fetch.mock.calls[0][0])).toBe('latest');
+  });
+
+  // The cursor stepped from the dataset's start day, so on the 1st the current month never entered the list:
+  // nothing was requested, and the empty result surfaced as "check your internet connection".
+  test('on the first of the month it still asks for the current month', async () => {
+    jest.setSystemTime(afterSeed('01'));
+    global.fetch = jest.fn(async () => answer({ usd: 1, thb: 32 }));
+
+    const rates = await ServiceRates.get({ baseCurrency: 'USD', known: FULL, lastRatesUpdate: afterSeed('01').toISOString() });
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(dateOf(global.fetch.mock.calls[0][0])).toBe('latest');
+    expect(rates[CURRENT].THB).toBe(32);
+  });
+
+  // A month read at its first day carries the rate from before anything in it happened.
+  test('a month that is over is read at the day it closed, and never at a date that does not exist', async () => {
+    global.fetch = jest.fn(async () => answer({ usd: 1, thb: 32 }));
+
+    await ServiceRates.get({ baseCurrency: 'USD' });
+    const dates = global.fetch.mock.calls.map(([url]) => dateOf(url));
+
+    expect(dates.pop()).toBe('latest');
+    expect(dates[0]).toBe('2024-03-31');
+    expect(dates).toContain('2026-02-28');
+    expect(dates).toContain('2026-04-30');
+    expect(dates.every((date) => isClose(date, date.slice(0, 7)))).toBe(true);
+  });
+
+  // The month in progress is stored from `latest`, so it closes holding whatever day the app was last opened on.
+  test('the month that closed since the last download is read again, at its close', async () => {
+    global.fetch = jest.fn(async () => answer({ usd: 1, thb: 33 }));
+
+    const rates = await ServiceRates.get({
+      baseCurrency: 'USD',
+      known: FULL,
+      lastRatesUpdate: `${SEED_LAST}-20T09:00:00.000Z`,
+    });
+    const dates = global.fetch.mock.calls.map(([url]) => dateOf(url));
+
+    expect(dates).toHaveLength(2);
+    expect(isClose(dates[0], SEED_LAST)).toBe(true);
+    expect(dates[1]).toBe('latest');
+    expect(rates[SEED_LAST].THB).toBe(33);
+  });
+
+  // The seed is built mid-month, so the month it ends on is as provisional as any other.
+  test("with no download of its own the seed's last month is read again at its close", async () => {
+    global.fetch = jest.fn(async () => answer({ usd: 1, thb: 33 }));
+
+    await ServiceRates.get({ baseCurrency: 'USD', known: FULL });
+    const dates = global.fetch.mock.calls.map(([url]) => dateOf(url));
+
+    expect(dates).toHaveLength(2);
+    expect(isClose(dates[0], SEED_LAST)).toBe(true);
   });
 
   test('it falls back to the second origin before giving up', async () => {
@@ -131,7 +217,7 @@ describe('services/RatesService fetch', () => {
       .mockImplementationOnce(async () => ({ ok: false }))
       .mockImplementationOnce(async () => answer({ usd: 1, thb: 32 }));
 
-    const rates = await ServiceRates.get({ baseCurrency: 'USD', known: FULL });
+    const rates = await ServiceRates.get({ baseCurrency: 'USD', known: FULL, lastRatesUpdate: SYNCED });
 
     expect(global.fetch).toHaveBeenCalledTimes(2);
     expect(Object.keys(rates).length).toBeGreaterThan(1);
@@ -140,6 +226,6 @@ describe('services/RatesService fetch', () => {
   test('when no origin answers it throws, so the caller keeps what it already had', async () => {
     global.fetch = jest.fn(async () => ({ ok: false }));
 
-    await expect(ServiceRates.get({ baseCurrency: 'USD', known: FULL })).rejects.toThrow();
+    await expect(ServiceRates.get({ baseCurrency: 'USD', known: FULL, lastRatesUpdate: SYNCED })).rejects.toThrow();
   });
 });

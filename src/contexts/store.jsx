@@ -155,6 +155,7 @@ const StoreProvider = ({ children }) => {
         const rates = await ServiceRates.get({
           baseCurrency: current?.settings?.baseCurrency,
           known: current?.rates,
+          lastRatesUpdate: current?.settings?.lastRatesUpdate,
         }).catch(() => undefined);
 
         if (disposed || !rates) return;

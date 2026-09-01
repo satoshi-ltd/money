@@ -12,7 +12,14 @@ const { CURRENCY, EVENT } = C;
 const INITIAL_STATE = { balance: 0, currency: undefined, title: undefined };
 
 const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate } = {} }) => {
-  const { rates = {}, settings: { baseCurrency } = {}, createAccount, updateAccount, deleteAccount, updateRates } = useStore();
+  const {
+    rates = {},
+    settings: { baseCurrency, lastRatesUpdate } = {},
+    createAccount,
+    updateAccount,
+    deleteAccount,
+    updateRates,
+  } = useStore();
   const { colors } = useApp();
   const style = useMemo(() => getStyles(colors), [colors]);
   const [busy, setBusy] = useState(false);
@@ -60,7 +67,9 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
       // The cached series converts to the new base offline; the network only tops up the current month.
       await updateRates(rebaseRates(rates, form.currency));
 
-      const nextRates = await ServiceRates.get({ baseCurrency: form.currency, known: rates }).catch(() => {});
+      const nextRates = await ServiceRates.get({ baseCurrency: form.currency, known: rates, lastRatesUpdate }).catch(
+        () => {},
+      );
       if (nextRates) await updateRates(nextRates);
     }
     if (account) {

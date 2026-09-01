@@ -6,11 +6,11 @@ const { EVENT } = C;
 export const getLatestRates = async ({
   store: {
     rates: known,
-    settings: { baseCurrency },
+    settings: { baseCurrency, lastRatesUpdate },
     updateRates,
   },
 }) => {
-  const rates = await ServiceRates.get({ baseCurrency, known }).catch(() =>
+  const rates = await ServiceRates.get({ baseCurrency, known, lastRatesUpdate }).catch(() =>
     eventEmitter.emit(EVENT.NOTIFICATION, { error: true, title: L10N.ERROR_SERVICE_RATES }),
   );
 

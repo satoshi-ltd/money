@@ -4,7 +4,7 @@ import SEED from '../modules/ratesSeed.json';
 const { CURRENCY, TIMEOUT } = C;
 
 const CODES = Object.keys(C.SYMBOL);
-const START = '2024-03-02';
+const START = '2024-03';
 const ORIGINS = [
   (date, base) => `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${date}/v1/currencies/${base}.json`,
   (date, base) => `https://${date}.currency-api.pages.dev/v1/currencies/${base}.json`,
@@ -12,18 +12,29 @@ const ORIGINS = [
 
 const monthKey = (date = new Date()) => date.toISOString().slice(0, 7);
 
-// The first month starts the day the dataset does; every other one reads its first.
+// Day 0 of the next month: a hardcoded -31 is a 404 on both origins for the short ones.
+const closingDay = (key) =>
+  new Date(Date.UTC(Number(key.slice(0, 4)), Number(key.slice(5)), 0)).toISOString().slice(0, 10);
+
 const monthsSince = (from = START) => {
   const out = [];
-  const at = new Date(`${from}T00:00:00Z`);
-  const now = new Date();
+  const at = new Date(`${from}-01T00:00:00Z`);
+  const current = monthKey();
 
-  while (at <= now) {
+  // Compare month keys, not instants: a cursor kept on a day-of-month lost the current month until that day came.
+  while (monthKey(at) <= current) {
     const key = monthKey(at);
-    out.push({ date: out.length === 0 ? from : `${key}-01`, key });
+    out.push({ date: key === current ? 'latest' : closingDay(key), key });
     at.setUTCMonth(at.getUTCMonth() + 1);
   }
   return out;
+};
+
+// A table written while its month was still running is provisional, and the last download is what dates it.
+const provisionalMonth = (lastRatesUpdate) => {
+  const at = new Date(lastRatesUpdate || SEED.date || 0);
+
+  return Number.isNaN(at.getTime()) ? undefined : monthKey(at);
 };
 
 const pick = (day = {}) =>
@@ -86,12 +97,11 @@ export const ratesOrSeed = (rates, baseCurrency = CURRENCY, lastRatesUpdate) => 
 };
 
 export const ServiceRates = {
-  // `known` reduces the whole series to the months nobody has yet; the current one is always re-read.
-  get: async ({ baseCurrency = CURRENCY, known = {} } = {}) => {
+  // `known` skips the months already held, except the two never final: the current one and the one that just closed.
+  get: async ({ baseCurrency = CURRENCY, known = {}, lastRatesUpdate } = {}) => {
     const current = monthKey();
-    const missing = monthsSince()
-      .filter(({ key }) => !known[key] || key === current)
-      .map((month) => (month.key === current ? { ...month, date: 'latest' } : month));
+    const provisional = provisionalMonth(lastRatesUpdate);
+    const missing = monthsSince().filter(({ key }) => !known[key] || key === current || key === provisional);
 
     const days = await Promise.all(missing.map(({ date }) => readDay(date, baseCurrency)));
     const rates = {};
