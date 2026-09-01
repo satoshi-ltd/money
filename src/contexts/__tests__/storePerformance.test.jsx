@@ -55,6 +55,10 @@ jest.mock('../../services', () => {
         },
       };
     }
+
+    async wipe(key) {
+      data[key] = Array.isArray(data[key]) ? [] : {};
+    }
   }
 
   return {

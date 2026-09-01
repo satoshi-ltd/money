@@ -3,7 +3,10 @@ import { C } from '../modules';
 
 const { CURRENCY } = C;
 
-const SCHEMA_VERSION = 3;
+const SCHEMA_VERSION = 4;
+
+// Metals came per gram from the backend this build replaced, so a cache written before 4 prices XAU and XAG 31x low.
+const RATES_SCHEMA = 4;
 
 const DEFAULTS = {
   settings: {
@@ -54,4 +57,4 @@ const DEFAULTS = {
 
 const FILENAME = 'com.satoshi-ltd.money';
 
-export { DEFAULTS, FILENAME, SCHEMA_VERSION };
+export { DEFAULTS, FILENAME, RATES_SCHEMA, SCHEMA_VERSION };

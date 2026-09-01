@@ -1,4 +1,5 @@
 import { migrateState } from '../migrateState';
+import { RATES_SCHEMA } from '../../store.constants';
 
 const storedAccount = {
   hash: 'a1',
@@ -38,6 +39,26 @@ describe('contexts/modules/migrateState', () => {
     const { accounts } = migrateState({ accounts: [storedAccount], settings: {}, txs: [] });
 
     expect(accounts).toEqual([storedAccount]);
+  });
+
+  // The old backend priced gold and silver per gram, so a cache it wrote reads XAU at a thirty-first of its worth.
+  test('a rates cache from before the metals moved to ounces is dropped', () => {
+    const rates = { '2026-08': { USD: 1, XAU: 0.00674 } };
+
+    expect(migrateState({ rates, settings: { schemaVersion: RATES_SCHEMA - 1 }, txs: [] }).rates).toBeUndefined();
+  });
+
+  // Settings merged over DEFAULTS carry the current version whatever the device stored, which would keep it for ever.
+  test('a cache from a device that never stored a schema version is dropped too', () => {
+    const rates = { '2026-08': { USD: 1, XAU: 0.00674 } };
+
+    expect(migrateState({ rates, settings: {}, txs: [] }).rates).toBeUndefined();
+  });
+
+  test('a cache this build wrote itself is left alone', () => {
+    const rates = { '2026-08': { USD: 1, XAU: 0.0002169 } };
+
+    expect(migrateState({ rates, settings: { schemaVersion: RATES_SCHEMA }, txs: [] }).rates).toBe(rates);
   });
 
   test('still normalises the rest of the state', () => {

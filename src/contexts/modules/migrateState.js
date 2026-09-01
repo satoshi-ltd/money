@@ -1,5 +1,5 @@
 import { parseAccount } from '../reducers/modules';
-import { DEFAULTS, SCHEMA_VERSION } from '../store.constants';
+import { DEFAULTS, RATES_SCHEMA, SCHEMA_VERSION } from '../store.constants';
 
 const ensureArray = (value) => (Array.isArray(value) ? value : []);
 const normalizeScheduled = (item = {}) => {
@@ -11,7 +11,7 @@ const normalizeScheduled = (item = {}) => {
   return rest;
 };
 
-export const migrateState = ({ accounts, scheduledTxs, schemaVersion, settings, txs } = {}) => {
+export const migrateState = ({ accounts, rates, scheduledTxs, schemaVersion, settings, txs } = {}) => {
   const resolvedSettings = {
     ...DEFAULTS.settings,
     ...(settings || {}),
@@ -28,6 +28,9 @@ export const migrateState = ({ accounts, scheduledTxs, schemaVersion, settings, 
       ...(settings?.autoAmount || {}),
     },
   };
+  // Read before DEFAULTS lends its own: merged settings always look current, and the gate needs what was stored.
+  const storedSchema = Number.isFinite(settings?.schemaVersion) ? settings.schemaVersion : schemaVersion;
+
   const resolvedSchemaVersion = Number.isFinite(resolvedSettings.schemaVersion)
     ? resolvedSettings.schemaVersion
     : schemaVersion;
@@ -41,6 +44,7 @@ export const migrateState = ({ accounts, scheduledTxs, schemaVersion, settings, 
 
   return {
     accounts: ensureArray(accounts).map(parseAccount),
+    rates: storedSchema >= RATES_SCHEMA ? rates : undefined,
     scheduledTxs: ensureArray(scheduledTxs)
       .filter((item) => item?.status !== 'paused' && item?.status !== 'ended')
       .map(normalizeScheduled),

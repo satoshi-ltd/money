@@ -15,7 +15,7 @@ const readCurrencies = () => {
 
 const CURRENCIES = readCurrencies();
 const BASE = 'usd';
-const START = '2024-03-02';
+const START = '2024-03';
 const OUT = path.join('src', 'modules', 'ratesSeed.json');
 
 const origins = (date) => [
@@ -42,16 +42,22 @@ const readDay = async (date) => {
   return undefined;
 };
 
+// Day 0 of the next month: a hardcoded -31 is a 404 on both origins for the short ones.
+const closingDay = (key) =>
+  new Date(Date.UTC(Number(key.slice(0, 4)), Number(key.slice(5)), 0)).toISOString().slice(0, 10);
+
 const months = () => {
   const out = [];
-  const start = new Date(`${START}T00:00:00Z`);
-  const now = new Date();
-  for (let at = new Date(start); at <= now; at.setUTCMonth(at.getUTCMonth() + 1)) {
+  const at = new Date(`${START}-01T00:00:00Z`);
+  const current = new Date().toISOString().slice(0, 7);
+
+  // Compare month keys, not instants: a cursor kept on a day-of-month lost the current month until that day came.
+  while (at.toISOString().slice(0, 7) <= current) {
     const key = at.toISOString().slice(0, 7);
-    // The month in progress is priced today, not on its first: the service asks for `latest` and the seed must
+    // The month in progress is priced today, not at its close: the service asks for `latest` and the seed must
     // agree, or a build shipped on the 25th values bitcoin at the price it had three weeks earlier.
-    const current = key === now.toISOString().slice(0, 7);
-    out.push({ date: current ? 'latest' : out.length === 0 ? START : `${key}-01`, key });
+    out.push({ date: key === current ? 'latest' : closingDay(key), key });
+    at.setUTCMonth(at.getUTCMonth() + 1);
   }
   return out;
 };

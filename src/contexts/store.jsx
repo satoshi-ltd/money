@@ -63,13 +63,14 @@ const StoreProvider = ({ children }) => {
     (async () => {
       const store = await new StorageService({ defaults: DEFAULTS, filename: FILENAME });
 
-      const [accounts, scheduledTxs, settings, txs] = await Promise.all([
+      const [accounts, scheduledTxs, settings, storedRates, txs] = await Promise.all([
         store.get('accounts')?.value,
         store.get('scheduledTxs')?.value,
         store.get('settings')?.value,
+        store.get('rates')?.value,
         store.get('txs')?.value,
       ]);
-      const rawState = { accounts, scheduledTxs, settings, txs };
+      const rawState = { accounts, rates: storedRates, scheduledTxs, settings, txs };
       let migrated = migrateState(rawState);
 
       const resolvedLanguage = migrated.settings.language || detectDeviceLanguage();
@@ -115,8 +116,11 @@ const StoreProvider = ({ children }) => {
         await store.get('settings').save(migrated.settings);
       }
 
+      // A cache the migration dropped cannot stay on disk: the next boot trusts the schema this one just stamped.
+      if (!migrated.rates && Object.keys(storedRates || {}).length) await store.wipe('rates');
+
       const { rates, seeded } = ratesOrSeed(
-        await store.get('rates')?.value,
+        migrated.rates,
         migrated.settings?.baseCurrency,
         migrated.settings?.lastRatesUpdate,
       );
