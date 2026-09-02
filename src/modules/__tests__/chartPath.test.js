@@ -1,4 +1,4 @@
-import { chartBounds, compactFigure, linePath, pointAt, trendPath } from '../chartPath';
+import { chartBounds, compactFigure, linePath, pointAt } from '../chartPath';
 
 const GEOMETRY = { height: 100, padding: 10, width: 300 };
 
@@ -22,13 +22,6 @@ describe('modules/chartPath', () => {
     expect(linePath([0, 0], GEOMETRY)).not.toContain('NaN');
   });
 
-  test('the trend is a moving average that tracks the line, not a straight fit', () => {
-    const path = trendPath([0, 100, 0, 100, 0], GEOMETRY);
-    const ys = points(path).map((point) => Number(point.slice(1).split(' ')[1]));
-
-    expect(points(path)).toHaveLength(5);
-    expect(new Set(ys).size).toBeGreaterThan(1);
-  });
 
   test('pointAt lands on the same coordinates the line draws', () => {
     const values = [0, 50, 100];

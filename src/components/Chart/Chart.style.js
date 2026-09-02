@@ -36,4 +36,12 @@ export const getStyles = (colors, height = 112) =>
       justifyContent: 'space-between',
       marginTop: theme.spacing.xxs,
     },
+    legend: {
+      gap: theme.spacing.md,
+      marginTop: theme.spacing.xs + 2,
+    },
+    legendItem: {
+      alignItems: 'center',
+      gap: theme.spacing.xxs + 2,
+    },
   });

@@ -68,6 +68,36 @@ describe('screens/Stats/queryChart', () => {
     expect(incomes[11]).toBe(90000);
   });
 
+  // One fixed window of three read over half of a 6M view and a tenth of All: the same dotted line saying
+  // three different things depending on the tab.
+  test('the trend window grows with the range, so the line means the same thing at every one', () => {
+    const chartBalance = [...Array(23).fill(100), 200];
+
+    const six = queryChart({ overall: { chartBalance } }, 6);
+    const all = queryChart({ overall: { chartBalance } }, 0);
+
+    // 6M reads a quarter of six months (floored to three); All reads a quarter of twenty-four.
+    expect(six.trend[six.trend.length - 1]).toBeCloseTo((100 + 100 + 200) / 3);
+    expect(all.trend[all.trend.length - 1]).toBeCloseTo((100 * 5 + 200) / 6);
+  });
+
+  // A centred window handed the newest point - the one being read - the fewest samples, and a window confined
+  // to the visible slice invented a cliff at its left edge.
+  test('the trend borrows the months before the visible window instead of clipping', () => {
+    const chartBalance = [...Array(6).fill(600), ...Array(6).fill(0)];
+
+    const { balance, trend } = queryChart({ overall: { chartBalance } }, 6);
+
+    expect(balance[0]).toBe(0);
+    expect(trend[0]).toBeCloseTo((600 + 600 + 0) / 3);
+  });
+
+  test('trend and balance line up month for month, whatever the padding', () => {
+    const { balance, trend } = queryChart({ overall: { chartBalance: [100, 200] } }, 6);
+
+    expect(trend).toHaveLength(balance.length);
+  });
+
   test('never counts an internal transfer as spending', () => {
     const { expenses, transfers } = queryChart(
       store([tx(2026, 4, 2, 50), tx(2026, 4, 4, 300, { category: C.INTERNAL_TRANSFER })]),

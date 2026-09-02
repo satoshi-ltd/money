@@ -49,13 +49,36 @@ const svgBy = (root, testID) => root.findAllByProps({ testID }).filter((node) =>
 const texts = (root) => root.findAllByType(RNText).map((node) => node.props.children);
 
 describe('components/Chart', () => {
-  test('draws the balance line over a dashed moving average', () => {
-    const [trend, line] = svgBy(render(), 'path');
+  // The dashed line used to be a moving average of the same series: a smoothing of the line it sat under, which
+  // said nothing the line did not, and covered half the chart at 6M and a tenth at All.
+  test('on its own the balance line is the only line', () => {
+    const paths = svgBy(render(), 'path');
 
-    expect(trend.props.stroke).toBe(MUTED);
-    expect(trend.props.strokeDasharray).toBe('2 3');
+    expect(paths).toHaveLength(1);
+    expect(paths[0].props.stroke).toBe(TEXT);
+    expect(paths[0].props.strokeDasharray).toBeUndefined();
+  });
+
+  test('given a trend that lines up month for month, it draws it dashed under the balance', () => {
+    const [dashed, line] = svgBy(render({ trend: [110, 320, 210, 520, 420, 720] }), 'path');
+
+    expect(dashed.props.stroke).toBe(MUTED);
+    expect(dashed.props.strokeDasharray).toBe('2 3');
     expect(line.props.stroke).toBe(TEXT);
     expect(line.props.strokeDasharray).toBeUndefined();
+  });
+
+  // Two series on two scales would put the dashed line anywhere: where it sits against the balance is the point.
+  test('both lines share one scale, so the trend sits where it belongs against the balance', () => {
+    const doubled = VALUES.map((value) => value * 2);
+    const [dashed] = svgBy(render({ trend: doubled }), 'path');
+    const [alone] = svgBy(render({ values: doubled }), 'path');
+
+    expect(dashed.props.d).not.toBe(alone.props.d);
+  });
+
+  test('a trend that does not line up month for month is not drawn at all', () => {
+    expect(svgBy(render({ trend: [1, 2, 3] }), 'path')).toHaveLength(1);
   });
 
   test('three hairline gridlines carry abbreviated value labels', () => {

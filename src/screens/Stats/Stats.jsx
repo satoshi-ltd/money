@@ -115,6 +115,7 @@ const Stats = () => {
           monthsLimit={monthsLimit}
           pointerIndex={safePointerIndex}
           style={style.chartGap}
+          trend={chart.trend}
           values={chart.balance}
           onPointerChange={handlePointerIndex}
         />

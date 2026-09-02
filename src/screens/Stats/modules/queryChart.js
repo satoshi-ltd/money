@@ -9,6 +9,27 @@ const {
   },
 } = C;
 
+// A quarter of the range, never under three: zoomed out the trend reads over more months, so the dotted line
+// means the same thing at every range instead of covering half of 6M and a tenth of All.
+const trendWindow = (months) => Math.max(3, Math.round(months / 4));
+
+// Trailing and over the full history: the newest point is the one being read, so it gets a full window, and a
+// 6M view borrows the months before it instead of clipping its own left edge.
+const trendOf = (values = [], window) =>
+  values.map((_value, index) => {
+    const slice = values.slice(Math.max(0, index - window + 1), index + 1);
+    return slice.reduce((total, entry) => total + entry, 0) / slice.length;
+  });
+
+// Both series are padded and sliced the same way, or the dotted line reads against the wrong months.
+const windowOf = (values = [], length) => {
+  if (values.length >= length) return values.slice(values.length - length);
+
+  const next = Array(length).fill(0);
+  values.forEach((value, index) => (next[index + (length - values.length)] = value));
+  return next;
+};
+
 export default (
   { accounts = [], overall: { chartBalance = [] } = {}, rates = {}, settings: { baseCurrency } = {}, txs = [] },
   monthsLimit = STATS_MONTHS_LIMIT,
@@ -18,15 +39,9 @@ export default (
     effectiveLimit = chartBalance.length || STATS_MONTHS_LIMIT;
   }
 
-  if (chartBalance.length < effectiveLimit) {
-    const { length } = chartBalance;
-    const next = Array(effectiveLimit).fill(0);
-    chartBalance.forEach((value, index) => (next[index + (effectiveLimit - length)] = value));
-    chartBalance = next;
-  }
-
   const chart = {
-    balance: chartBalance.slice(chartBalance.length - effectiveLimit),
+    balance: windowOf(chartBalance, effectiveLimit),
+    trend: windowOf(trendOf(chartBalance, trendWindow(effectiveLimit)), effectiveLimit),
     expenses: new Array(effectiveLimit).fill(0),
     incomes: new Array(effectiveLimit).fill(0),
     transfers: new Array(effectiveLimit).fill(0),

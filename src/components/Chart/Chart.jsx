@@ -12,7 +12,6 @@ import {
   L10N,
   linePath,
   pointAt,
-  trendPath,
 } from '../../modules';
 import { Pressable, Text, View } from '../../primitives';
 import { viewOffset } from '../../theme/layout';
@@ -33,6 +32,7 @@ const Chart = ({
   heroValue,
   monthsLimit,
   pointerIndex,
+  trend = [],
   values = [],
   onPointerChange,
   style: styleContainer,
@@ -42,8 +42,12 @@ const Chart = ({
   const style = useMemo(() => getStyles(colors, height), [colors, height]);
 
   const series = values.filter((value) => Number.isFinite(value));
+  const trendSeries = trend.filter((value) => Number.isFinite(value));
+  // Only when it lines up month for month: a shorter series would read against the wrong ones.
+  const hasTrend = trendSeries.length === series.length && series.length > 1;
   const width = windowWidth - viewOffset * 2;
-  const geometry = { height, padding: PADDING, width };
+  const bounds = chartBounds(hasTrend ? [...series, ...trendSeries] : series);
+  const geometry = { bounds, height, padding: PADDING, width };
 
   const months = useMemo(() => getLastMonths(monthsLimit || series.length), [monthsLimit, series.length]);
   const labels = useMemo(() => {
@@ -55,7 +59,7 @@ const Chart = ({
 
   if (series.length < 2) return null;
 
-  const { max, min } = chartBounds(series);
+  const { max, min } = bounds;
   const gridlines = [max, (max + min) / 2, min];
   const marker = Number.isFinite(pointerIndex) ? Math.max(0, Math.min(pointerIndex, series.length - 1)) : undefined;
   const selected = marker !== undefined && marker !== series.length - 1 ? pointAt(series, marker, geometry) : undefined;
@@ -78,13 +82,15 @@ const Chart = ({
             const y = PADDING + ((height - PADDING * 2) / (gridlines.length - 1)) * index;
             return <Line key={index} stroke={colors.border} strokeWidth={1} x1={0} x2={width} y1={y} y2={y} />;
           })}
-          <Path
-            d={trendPath(series, geometry)}
-            fill="none"
-            stroke={colors.textMuted}
-            strokeDasharray="2 3"
-            strokeWidth={1}
-          />
+          {hasTrend ? (
+            <Path
+              d={linePath(trendSeries, geometry)}
+              fill="none"
+              stroke={colors.textMuted}
+              strokeDasharray="2 3"
+              strokeWidth={1}
+            />
+          ) : null}
           <Path
             d={linePath(series, geometry)}
             fill="none"
@@ -142,6 +148,27 @@ const Chart = ({
           ))}
         </View>
       ) : null}
+
+      {hasTrend ? (
+        <View row style={style.legend}>
+          <View row style={style.legendItem}>
+            <Svg height={2} width={14}>
+              <Line stroke={colors.text} strokeWidth={1.6} x1={0} x2={14} y1={1} y2={1} />
+            </Svg>
+            <Text figure="xs" tone="muted">
+              {L10N.NET_WORTH}
+            </Text>
+          </View>
+          <View row style={style.legendItem}>
+            <Svg height={2} width={14}>
+              <Line stroke={colors.textMuted} strokeDasharray="2 3" strokeWidth={1} x1={0} x2={14} y1={1} y2={1} />
+            </Svg>
+            <Text figure="xs" tone="muted">
+              {L10N.TREND}
+            </Text>
+          </View>
+        </View>
+      ) : null}
     </View>
   );
 };
@@ -156,6 +183,7 @@ Chart.propTypes = {
   heroValue: PropTypes.number,
   monthsLimit: PropTypes.number,
   pointerIndex: PropTypes.number,
+  trend: PropTypes.array,
   values: PropTypes.array,
   onPointerChange: PropTypes.func,
   style: PropTypes.any,
