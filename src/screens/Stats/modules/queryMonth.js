@@ -1,6 +1,6 @@
 import { filterTxs } from './filterTxs';
 import { parseDate } from './parseDate';
-import { C, exchange, isInternalTransfer } from '../../../modules';
+import { C, exchange, isMovement } from '../../../modules';
 
 const {
   STATS_MONTHS_LIMIT,
@@ -31,7 +31,7 @@ export default (
   });
 
   filterTxs(txs, effectiveLimit)
-    .filter((tx) => !isInternalTransfer(tx) && !tx.meta?.moved)
+    .filter((tx) => !isMovement(tx))
     .forEach((tx) => {
       const { category, timestamp, type, value, title } = tx;
 

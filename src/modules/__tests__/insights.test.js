@@ -203,6 +203,21 @@ describe('modules/insights income', () => {
 
   // A net figure read -2,901 on the 20th and +15,688 on the 25th with identical behaviour: incomes are
   // counted to date, so the sign was decided by payday rather than by anything the reader did.
+  // Hidden from Analytics and still counted on Overview left the same month telling two stories.
+  test('a movement marked by hand never reaches the month, on this screen either', () => {
+    const now = new Date(2025, 5, 20, 12);
+    const txs = [income(2025, 5, 6, 4000), { ...income(2025, 5, 7, 900000), meta: { moved: true } }];
+
+    expect(find(build({ now, txs }), 'incomes').value).toBe(4000);
+  });
+
+  test('and a marked expense is not a month of spending', () => {
+    const now = new Date(2025, 5, 20, 12);
+    const txs = [...baseline(), expense(2025, 5, 5, 1500), { ...expense(2025, 5, 6, 900000), meta: { moved: true } }];
+
+    expect(find(build({ now, txs }), 'spending_trend').meta.spent).toBe(1500);
+  });
+
   test('a month before payday says nothing rather than a figure the calendar made negative', () => {
     const now = new Date(2025, 5, 20, 12);
 

@@ -1,6 +1,6 @@
 import { C } from './constants';
 import { exchange } from './exchange';
-import { isInternalTransfer } from './isInternalTransfer';
+import { isMovement } from './isMovement';
 import { L10N } from './l10n';
 import { getOccurrencesBetween } from './recurrence';
 import { getScheduledOccurrenceKey, getScheduledOccurrenceKeyFromTx } from './scheduledKey';
@@ -75,7 +75,7 @@ export const buildInsights = ({
   let pendingIncomes = 0;
 
   (Array.isArray(txs) ? txs : []).forEach((tx) => {
-    if (!tx || isInternalTransfer(tx)) return;
+    if (!tx || isMovement(tx)) return;
     if (tx.type !== TYPE.EXPENSE && tx.type !== TYPE.INCOME) return;
 
     const timestamp = Number(tx.timestamp);
@@ -128,7 +128,7 @@ export const buildInsights = ({
   const toAt = new Date(now.getFullYear(), now.getMonth() + 1, 0, 12, 0, 0, 0).getTime();
 
   (Array.isArray(scheduledTxs) ? scheduledTxs : []).forEach((scheduled) => {
-    if (!scheduled || isInternalTransfer(scheduled)) return;
+    if (!scheduled || isMovement(scheduled)) return;
     if (scheduled.type !== TYPE.EXPENSE && scheduled.type !== TYPE.INCOME) return;
 
     const value = Number(scheduled.value);

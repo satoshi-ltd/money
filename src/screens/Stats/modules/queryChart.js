@@ -1,6 +1,6 @@
 import { filterTxs } from './filterTxs';
 import { parseDate } from './parseDate';
-import { C, exchange, getMonthDiff, isInternalTransfer } from '../../../modules';
+import { C, exchange, getMonthDiff, isInternalTransfer, isMovement } from '../../../modules';
 
 const {
   STATS_MONTHS_LIMIT,
@@ -63,8 +63,7 @@ export default (
 
     if (isInternalTransfer(tx)) {
       if (type === EXPENSE) chart['transfers'][monthIndex] += valueExchange;
-      // Marked by hand as money that moved rather than money earned or spent: it belongs to the balance, not here.
-    } else if (!tx.meta?.moved) {
+    } else if (!isMovement(tx)) {
       chart[type === EXPENSE ? 'expenses' : 'incomes'][monthIndex] += valueExchange;
     }
   });
