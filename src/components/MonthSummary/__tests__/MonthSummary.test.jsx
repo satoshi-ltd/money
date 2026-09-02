@@ -3,7 +3,6 @@ import { StyleSheet, Text as RNText } from 'react-native';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import { MonthSummary } from '../MonthSummary';
-import { getStyles } from '../MonthSummary.style';
 import { L10N } from '../../../modules';
 
 const ACCENT = '#ACCE07';
@@ -176,11 +175,25 @@ describe('components/MonthSummary', () => {
     expect(texts(root).join(' ')).toContain(L10N.ABOVE_PACE);
   });
 
-  // Only the lead lacked the gutter, so its figure began one gap to the left of every figure under it.
-  test('the lead keeps the same gutter as the rows, so the figures share a left edge', () => {
-    const style = getStyles({});
+  // The five lines were five hand-written copies, and they drifted a property at a time: the gutter, the size
+  // of the figure, the tone of the caption, the tone of the label. Now there is one line and nothing to drift.
+  test('every line is the same line, down to the tone of its label', () => {
+    const root = render({
+      insights: [
+        ...INSIGHTS,
+        { type: 'closed', value: 2786.4, meta: { at: new Date(2026, 7, 1, 12).getTime() } },
+        { type: 'incomes', value: 18690.74, meta: { label: 'Royalties', share: 49 } },
+        { type: 'swing', value: 809.83, meta: { label: 'Travel' } },
+        { type: 'scheduled', value: -50.12, meta: { pending: 3 } },
+      ],
+    });
+    const captions = [L10N.SPENT_SO_FAR, L10N.LAST_MONTH, L10N.INCOMES, L10N.SWING, L10N.SCHEDULED_AHEAD].map((label) =>
+      root.findAllByType(RNText).find(({ props }) => props.children === label),
+    );
 
-    expect(style.leadHead.gap).toBe(style.row.gap);
+    expect(captions.filter(Boolean)).toHaveLength(5);
+    expect(captions.every(({ props }) => props.tone === 'muted')).toBe(true);
+    expect(new Set(captions.map(({ props }) => StyleSheet.flatten(props.style).width)).size).toBe(1);
   });
 
   // Every line of this section is title, value and caption: a row with an empty right side reads as broken.

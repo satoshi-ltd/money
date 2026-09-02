@@ -13,6 +13,9 @@ import { viewOffset } from '../../theme/layout';
 import { PriceFriendly } from '../PriceFriendly';
 
 const CHART_HEIGHT = 132;
+// A bar drawn short of its own figure says so with a break, or the chart quietly under-reports the month.
+const BREAK_HEIGHT = 3;
+const BREAK_OFFSET = 4;
 
 const FlowChart = ({ currency, expenses = [], incomes = [], monthsLimit, selectedIndex, onSelectMonth, ...others }) => {
   const { colors } = useApp();
@@ -56,6 +59,24 @@ const FlowChart = ({ currency, expenses = [], incomes = [], monthsLimit, selecte
                 ) : null}
                 {bar.expenseHeight > 0 ? (
                   <Rect x={bar.x} y={bar.expenseY} width={bar.width} height={bar.expenseHeight} fill={colors.text} />
+                ) : null}
+                {bar.incomeClipped ? (
+                  <Rect
+                    x={bar.x}
+                    y={bar.incomeY + BREAK_OFFSET}
+                    width={bar.width}
+                    height={BREAK_HEIGHT}
+                    fill={colors.background}
+                  />
+                ) : null}
+                {bar.expenseClipped ? (
+                  <Rect
+                    x={bar.x}
+                    y={bar.expenseY + bar.expenseHeight - BREAK_OFFSET - BREAK_HEIGHT}
+                    width={bar.width}
+                    height={BREAK_HEIGHT}
+                    fill={colors.background}
+                  />
                 ) : null}
               </React.Fragment>
             ))}
@@ -118,7 +139,7 @@ const FlowChart = ({ currency, expenses = [], incomes = [], monthsLimit, selecte
           <PriceFriendly
             currency={currency}
             fixed={0}
-            label={`${L10N.FLOW_IN} · ${L10N.AVERAGE} `}
+            label={`${L10N.FLOW_IN} · ${L10N.TYPICAL} `}
             size="xs"
             tone="muted"
             value={averages.income}
@@ -129,7 +150,7 @@ const FlowChart = ({ currency, expenses = [], incomes = [], monthsLimit, selecte
           <PriceFriendly
             currency={currency}
             fixed={0}
-            label={`${L10N.FLOW_OUT} · ${L10N.AVERAGE} `}
+            label={`${L10N.FLOW_OUT} · ${L10N.TYPICAL} `}
             size="xs"
             tone="muted"
             value={averages.expense}

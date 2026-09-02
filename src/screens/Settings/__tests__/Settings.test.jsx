@@ -148,12 +148,43 @@ describe('screens/Settings', () => {
     expect(componentsBy(root, 'icon').some((node) => node.props.name === ICON.ALERT)).toBe(true);
   });
 
-  test('once a copy exists the warning goes and the date takes its place', () => {
+  // The band rode the screen for ever, so it stopped reading as a warning and became furniture.
+  test('a copy inside the week takes the band away entirely', () => {
     mockStore.settings = { ...mockStore.settings, backupAt: Date.now() };
     const root = render();
 
-    expect(allTexts(root).some((text) => text.startsWith(L10N.BACKUP_LAST))).toBe(true);
+    expect(flats(root).find((flat) => flat.backgroundColor === ACCENT_SOFT)).toBeUndefined();
     expect(componentsBy(root, 'icon').some((node) => node.props.name === ICON.ALERT)).toBe(false);
+  });
+
+  // Update rates already reported when it last ran; a backup is the other row worth dating.
+  test('the export row dates its last copy, the way the rates row dates its last sync', () => {
+    const at = new Date();
+    at.setHours(9, 5, 0, 0);
+    mockStore.settings = { ...mockStore.settings, backupAt: at.getTime() };
+    const root = render();
+    const row = componentsBy(root, 'setting').find((node) => node.props.title === L10N.EXPORT_DATA);
+    const shown = row.props.right.props.value;
+
+    expect(shown).toBe(at.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
+    expect(row.props.right.props.figure).toBe(true);
+  });
+
+  test('with no copy to date, the row keeps the plain chevron', () => {
+    const root = render();
+    const row = componentsBy(root, 'setting').find((node) => node.props.title === L10N.EXPORT_DATA);
+
+    expect(row.props.right.props.value).toBeUndefined();
+  });
+
+  test('and the export is still one row away, so the band is a nudge and never the only door', () => {
+    mockStore.settings = { ...mockStore.settings, backupAt: Date.now() };
+    const root = render();
+    const row = componentsBy(root, 'setting').find((node) => node.props.title === L10N.EXPORT_DATA);
+
+    act(() => row.props.onPress());
+
+    expect(BackupService.export).toHaveBeenCalledTimes(1);
   });
 
   test('a copy older than the weekly reminder brings the warning back', () => {

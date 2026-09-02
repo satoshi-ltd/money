@@ -46,10 +46,11 @@ export default (
     const monthIndex = getMonthDiff(originDate, parseDate(timestamp)) - 1;
     if (monthIndex < 0 || monthIndex >= effectiveLimit) return;
 
-    if (!isInternalTransfer(tx)) {
+    if (isInternalTransfer(tx)) {
+      if (type === EXPENSE) chart['transfers'][monthIndex] += valueExchange;
+      // Marked by hand as money that moved rather than money earned or spent: it belongs to the balance, not here.
+    } else if (!tx.meta?.moved) {
       chart[type === EXPENSE ? 'expenses' : 'incomes'][monthIndex] += valueExchange;
-    } else if (type === EXPENSE) {
-      chart['transfers'][monthIndex] += valueExchange;
     }
   });
 

@@ -49,6 +49,25 @@ describe('screens/Stats/queryChart', () => {
     expect(incomes[11]).toBe(800);
   });
 
+  // The mark is on the transaction, not on its category: what it is and how it charts are different questions.
+  test('a movement marked by hand stays out of the bars, whatever its category', () => {
+    const { incomes } = queryChart(
+      store([
+        tx(2026, 4, 3, 800, { category: 1, type: INCOME }),
+        { ...tx(2026, 4, 5, 90000, { category: 2, type: INCOME }), meta: { moved: true } },
+      ]),
+      12,
+    );
+
+    expect(incomes[11]).toBe(800);
+  });
+
+  test('and an unmarked transaction of the same category is counted', () => {
+    const { incomes } = queryChart(store([tx(2026, 4, 5, 90000, { category: 2, type: INCOME })]), 12);
+
+    expect(incomes[11]).toBe(90000);
+  });
+
   test('never counts an internal transfer as spending', () => {
     const { expenses, transfers } = queryChart(
       store([tx(2026, 4, 2, 50), tx(2026, 4, 4, 300, { category: C.INTERNAL_TRANSFER })]),

@@ -9,6 +9,11 @@ const DATA = () => [
     text: L10N.SYNC_RATES_CTA,
   },
   {
+    callback: 'handleExport',
+    id: 2,
+    text: L10N.EXPORT_DATA,
+  },
+  {
     callback: 'handleImport',
     id: 3,
     text: L10N.IMPORT_DATA,

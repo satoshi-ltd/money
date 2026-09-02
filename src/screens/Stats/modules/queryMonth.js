@@ -31,7 +31,7 @@ export default (
   });
 
   filterTxs(txs, effectiveLimit)
-    .filter((tx) => !isInternalTransfer(tx))
+    .filter((tx) => !isInternalTransfer(tx) && !tx.meta?.moved)
     .forEach((tx) => {
       const { category, timestamp, type, value, title } = tx;
 

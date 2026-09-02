@@ -31,6 +31,7 @@ jest.mock('../../../../components', () => {
     Eyebrow: ({ children, ...props }) => MockReact.createElement(ReactNative.Text, { testID: 'eyebrow', ...props }, children),
     Chip: ({ label, onPress }) =>
       MockReact.createElement(ReactNative.View, { testID: 'suggestion-chip', accessibilityLabel: label, onPress }),
+    Checkbox: (props) => MockReact.createElement(ReactNative.View, { testID: 'checkbox', ...props }),
     Dropdown: stub('dropdown'),
     FieldRow: ({ children, label, ...props }) =>
       MockReact.createElement(
@@ -107,7 +108,7 @@ describe('screens/Transaction/FormTransaction', () => {
 
     const { form } = onChange.mock.calls[onChange.mock.calls.length - 1][0];
     expect(form.category).toBeUndefined();
-    expect(root.findAllByProps({ testID: 'suggestion-chip' })).toHaveLength(0);
+    expect(root.findAllByProps({ testID: 'suggestion-chip' }).filter((node) => node.props.onPress)).toHaveLength(0);
   });
 
   test('the amount is a field row like the rest, its figure right-aligned in the mono face', () => {

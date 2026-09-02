@@ -1,4 +1,4 @@
-import { median } from './median';
+import { median } from '../../../modules';
 
 export default (values = []) => {
   if (values.length <= 1) return { min: 0, med: 0, max: 0 };

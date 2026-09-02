@@ -13,9 +13,8 @@ export const getStyles = (colors) =>
       paddingBottom: theme.spacing.sm,
       paddingTop: theme.spacing.xs,
     },
-    leadHead: {
+    line: {
       alignItems: 'baseline',
-      // The same gutter the rows keep, or the lead's figure starts one gap left of every figure under it.
       gap: theme.spacing.xs,
     },
     track: {
@@ -44,10 +43,8 @@ export const getStyles = (colors) =>
       alignItems: 'baseline',
     },
     row: {
-      alignItems: 'baseline',
       borderBottomColor: colors.border,
       borderBottomWidth: theme.hairline,
-      gap: theme.spacing.xs,
       paddingVertical: theme.spacing.xs - 1,
     },
     key: {

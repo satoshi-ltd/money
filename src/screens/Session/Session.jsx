@@ -39,9 +39,9 @@ const Session = ({ navigation: { reset } = {} }) => {
   }, []);
 
   const fetchRates = async () => {
-    const rates = await ServiceRates.get({ ...settings, known: storedRates })['catch'](() =>
-      eventEmitter.emit(EVENT.NOTIFICATION, { error: true, title: L10N.ERROR_SERVICE_RATES }),
-    );
+    const rates = await ServiceRates.get({ ...settings, known: storedRates })['catch'](() => {
+      eventEmitter.emit(EVENT.NOTIFICATION, { error: true, title: L10N.ERROR_SERVICE_RATES });
+    });
     if (rates) updateRates(rates);
   };
 

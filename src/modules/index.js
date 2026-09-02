@@ -22,6 +22,7 @@ export * from './heroEyebrow';
 export * from './icon';
 export * from './insights';
 export * from './isInternalTransfer';
+export * from './median';
 export * from './l10n';
 export * from './ledgerDate';
 export * from './monthFlow';

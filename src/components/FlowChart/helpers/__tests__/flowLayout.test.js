@@ -27,6 +27,23 @@ describe('components/FlowChart/flowLayout', () => {
     expect(bars[0].incomeHeight + bars[0].expenseHeight).toBeCloseTo(LAYOUT.height - 16);
   });
 
+  // A single dividend used to set the scale for the whole year: every ordinary month became a sliver.
+  test('a figure far past the usual month is clipped instead of scaling everything else down', () => {
+    const steady = [[100, 40], [100, 40], [100, 40], [100, 40]];
+    const { bars } = flowLayout({ ...LAYOUT, columns: columns([...steady, [4000, 40]]) });
+
+    expect(bars[4].incomeClipped).toBe(true);
+    expect(bars[0].incomeClipped).toBe(false);
+    // Clipped to three usual months, so an ordinary bar keeps a third of the ceiling instead of a fortieth.
+    expect(bars[0].incomeHeight / bars[4].incomeHeight).toBeCloseTo(1 / 3, 2);
+  });
+
+  test('a month merely above the others is not clipped, only an outlier is', () => {
+    const { bars } = flowLayout({ ...LAYOUT, columns: columns([[100, 40], [100, 40], [250, 40]]) });
+
+    expect(bars.every(({ incomeClipped }) => incomeClipped === false)).toBe(true);
+  });
+
   test('both directions share one scale, so a bar above compares to a bar below', () => {
     const { bars } = flowLayout({ ...LAYOUT, columns: columns([[100, 50]]) });
 

@@ -53,10 +53,16 @@ describe('components/FlowChart/flowLayout', () => {
     expect(half.bars[0].width).toBe(layout.bars[0].width);
   });
 
-  test('averages cover the complete columns only', () => {
-    const window = columns.slice(0, -1);
-    const expected = window.reduce((total, { expense }) => total + expense, 0) / window.length;
+  // The mean let the one month being read move the very line it is read against.
+  test('the reference is the median of the complete columns, never their mean', () => {
+    const window = columns.slice(0, -1).map(({ expense }) => expense);
+    const sorted = [...window].sort((a, b) => a - b);
+    const half = sorted.length >> 1;
+    const expected = sorted.length % 2 ? sorted[half] : (sorted[half - 1] + sorted[half]) / 2;
+    const mean = window.reduce((total, value) => total + value, 0) / window.length;
+
     expect(layout.averages.expense).toBeCloseTo(expected);
+    expect(layout.averages.expense).not.toBeCloseTo(mean);
   });
 
   test('returns nothing without data or size', () => {

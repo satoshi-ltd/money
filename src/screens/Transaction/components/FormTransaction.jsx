@@ -4,7 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { Platform } from 'react-native';
 
 import { style } from './FormTransaction.style';
-import { Chip, Dropdown, FieldRow, Input, Modal, PriceFriendly, Text, View } from '../../../components';
+import { Checkbox, Chip, Dropdown, FieldRow, Input, Modal, Pressable, PriceFriendly, Text, View } from '../../../components';
 import { useApp, useStore } from '../../../contexts';
 import {
   C,
@@ -330,6 +330,17 @@ const FormTransaction = ({
             />
           </View>
         ) : null}
+
+        {/* Not a FieldRow: its label column is a fixed twelve characters and this copy has to say what it does. */}
+        <Pressable
+          onPress={() => handleField('moved', !safeForm.moved)}
+          style={[style.checkRow, { borderTopColor: colors.border }]}
+        >
+          <Text size="s" tone="muted">
+            {L10N.HIDE_FROM_ANALYTICS}
+          </Text>
+          <Checkbox checked={safeForm.moved === true} />
+        </Pressable>
 
         {showDate ? (
           <FieldRow chevron divider label={L10N.DATE} onPress={() => setOpenDate(true)}>

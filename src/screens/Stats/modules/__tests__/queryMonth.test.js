@@ -41,6 +41,23 @@ describe('screens/Stats/queryMonth', () => {
     expect(values.expenses[1]).toEqual({ coffee: 90 });
   });
 
+  // The mark takes a movement out of every figure this screen reads, and out of none of the balances.
+  test('a movement marked by hand is out of the month, whatever its category', () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date(2026, 4, 15, 10, 0, 0));
+
+    const { incomes } = queryMonth(
+      store([
+        tx(2026, 4, 3, 500, { category: 1, title: 'Salary', type: INCOME }),
+        { ...tx(2026, 4, 5, 90000, { category: 2, title: 'Sale', type: INCOME }), meta: { moved: true } },
+      ]),
+      11,
+      12,
+    );
+
+    expect(incomes).toEqual({ 1: { salary: 500 } });
+  });
+
   test('keeps expenses and incomes apart and leaves transfers out', () => {
     jest.useFakeTimers();
     jest.setSystemTime(new Date(2026, 4, 15, 10, 0, 0));

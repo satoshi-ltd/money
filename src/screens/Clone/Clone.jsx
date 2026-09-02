@@ -25,7 +25,7 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack } = {} }) => 
 
   useEffect(() => {
     const { category, title, timestamp, value, account: accountHash } = params;
-    const initialForm = { category, timestamp, title, value };
+    const initialForm = { category, moved: params.meta?.moved === true, timestamp, title, value };
 
     setDataSource(params);
     setState({ form: initialForm, valid: false });
@@ -43,7 +43,11 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack } = {} }) => 
     // eslint-disable-next-line no-unused-vars
     const { hash, timestamp, ...tx } = dataSource;
     const accountHash = account?.hash || dataSource.account;
-    const payload = { ...tx, ...state.form, account: accountHash };
+    const { moved, ...form } = state.form || {};
+    // Merged, not replaced: a generated occurrence carries its scheduled metadata in the same object.
+    const meta = { ...(tx.meta || {}), ...(moved ? { moved: true } : {}) };
+    if (!moved) delete meta.moved;
+    const payload = { ...tx, ...form, account: accountHash, meta: Object.keys(meta).length ? meta : undefined };
 
     if (clone && state.form?.timestamp === baseline.form?.timestamp) {
       payload.timestamp = new Date().getTime();

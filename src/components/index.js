@@ -10,6 +10,7 @@ export { default as Screen } from './Screen';
 export { default as Setting } from './Setting';
 export { default as Tabs } from './Tabs';
 export * from './Chart';
+export * from './Checkbox';
 export * from './Confirm';
 export * from './Delta';
 export * from './EmptyState';

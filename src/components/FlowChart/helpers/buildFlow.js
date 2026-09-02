@@ -1,4 +1,4 @@
-import { getLastMonths, L10N } from '../../../modules';
+import { getLastMonths, L10N, median } from '../../../modules';
 
 // How many columns fit the width; the rest are reached by scrolling, never by a second range control.
 export const FLOW_VISIBLE = 6;
@@ -19,37 +19,54 @@ export const buildFlowColumns = ({ incomes = [], expenses = [], monthsLimit = 0 
     }));
 };
 
+// How many times the usual month a figure may reach before it is drawn clipped rather than setting the scale
+// for every other month. One dividend priced the whole year into slivers.
+export const OUTLIER_CEILING = 3;
+
+const ceilingOf = (values = []) => {
+  const max = Math.max(0, ...values);
+  const usual = median(values) * OUTLIER_CEILING;
+
+  return usual > 0 && max > usual ? usual : max;
+};
+
 export const flowLayout = ({ columns = [], slotWidth = 0, height = 0 }) => {
   if (!columns.length || slotWidth <= 0 || height <= 0) return undefined;
 
   const PAD = 8;
   const usable = height - PAD * 2;
-  const maxIncome = Math.max(0, ...columns.map(({ income }) => income));
-  const maxExpense = Math.max(0, ...columns.map(({ expense }) => expense));
+  const incomeCeiling = ceilingOf(columns.map(({ income }) => income));
+  const expenseCeiling = ceilingOf(columns.map(({ expense }) => expense));
   // One scale for both directions, and a baseline placed so neither side wastes room.
-  const scale = usable / Math.max(1, maxIncome + maxExpense);
-  const baselineY = PAD + maxIncome * scale;
+  const scale = usable / Math.max(1, incomeCeiling + expenseCeiling);
+  const baselineY = PAD + incomeCeiling * scale;
 
   const width = slotWidth * columns.length;
   const barWidth = Math.min(28, Math.round(slotWidth * 0.46));
 
   const bars = columns.map(({ expense, income }, index) => {
-    const incomeHeight = income > 0 ? Math.max(2, income * scale) : 0;
-    const expenseHeight = expense > 0 ? Math.max(2, expense * scale) : 0;
+    const incomeHeight = income > 0 ? Math.max(2, Math.min(income, incomeCeiling) * scale) : 0;
+    const expenseHeight = expense > 0 ? Math.max(2, Math.min(expense, expenseCeiling) * scale) : 0;
 
     return {
       x: slotWidth * index + (slotWidth - barWidth) / 2,
       width: barWidth,
       incomeY: baselineY - incomeHeight,
       incomeHeight,
+      incomeClipped: income > incomeCeiling,
       expenseY: baselineY,
       expenseHeight,
+      expenseClipped: expense > expenseCeiling,
     };
   });
 
   const complete = columns.length > 1 ? columns.slice(0, -1) : columns;
-  const mean = (key) => complete.reduce((total, column) => total + column[key], 0) / complete.length;
-  const averages = { expense: mean('expense'), income: mean('income') };
+  // The median, not the mean: the reference a reader measures against cannot be moved by the one month that
+  // is being measured. The insights lead already reads its baseline this way.
+  const averages = {
+    expense: median(complete.map(({ expense }) => expense)),
+    income: median(complete.map(({ income }) => income)),
+  };
 
   return {
     averages,

@@ -5,6 +5,13 @@ import { rowHeight } from '../../../theme/layout';
 
 
 export const style = StyleSheet.create({
+  checkRow: {
+    alignItems: 'center',
+    borderTopWidth: theme.hairline,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    minHeight: rowHeight,
+  },
   suggestion: {
     alignSelf: 'center',
     marginBottom: theme.spacing.sm,

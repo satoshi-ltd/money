@@ -18,6 +18,7 @@ export const EN = {
   FLOW_IN: 'In',
   FLOW_OUT: 'Out',
   AVERAGE: 'avg',
+  TYPICAL: 'usual',
   NET: 'Net',
   OF_SPEND: 'of spend',
   WHERE_IT_WENT: 'Where it went',
@@ -89,6 +90,7 @@ export const EN = {
   ACCOUNT_ACTIONS: 'Account & data',
   ACCEPT: 'Accept',
   ACTIVITY: 'Analytics',
+  HIDE_FROM_ANALYTICS: 'Hide from Analytics',
   AMOUNT: 'Amount',
   DATA: 'Data',
 
@@ -139,6 +141,7 @@ export const EN = {
   CONFIRM_IMPORT_CAPTION: ({ accounts = [], txs = [] }) =>
     `Import the JSON file to update your ${accounts.length} accounts and ${txs.length} transactions. This action is irreversible.`,
   CONFIRM_IMPORT_SUCCESS: 'Imported successfully.',
+  CONFIRM_RATES_SUCCESS: 'Rates updated.',
   CURRENCY_GROUP: {
     GLOBAL: 'Global',
     AMERICAS: 'Americas',
@@ -312,6 +315,7 @@ export const PT = {
   FLOW_IN: 'Entra',
   FLOW_OUT: 'Sai',
   AVERAGE: 'média',
+  TYPICAL: 'normal',
   NET: 'Líquido',
   OF_SPEND: 'da despesa',
   WHERE_IT_WENT: 'Para onde foi',
@@ -383,6 +387,7 @@ export const PT = {
   ACCOUNT_ACTIONS: 'Conta e dados',
   ACCEPT: 'Aceitar',
   ACTIVITY: 'Análises',
+  HIDE_FROM_ANALYTICS: 'Ocultar das Análises',
   AMOUNT: 'Valor',
   DATA: 'Dados',
 
@@ -433,6 +438,7 @@ export const PT = {
   CONFIRM_IMPORT_CAPTION: ({ accounts = [], txs = [] }) =>
     `Importar o JSON para atualizar ${accounts.length} contas e ${txs.length} transações. Esta ação é irreversível.`,
   CONFIRM_IMPORT_SUCCESS: 'Importação concluída.',
+  CONFIRM_RATES_SUCCESS: 'Taxas atualizadas.',
   CURRENCY_GROUP: {
     GLOBAL: 'Globais',
     AMERICAS: 'Américas',
@@ -590,6 +596,7 @@ export const FR = {
   FLOW_IN: 'Entrées',
   FLOW_OUT: 'Sorties',
   AVERAGE: 'moy.',
+  TYPICAL: 'habituel',
   NET: 'Net',
   OF_SPEND: 'des dépenses',
   WHERE_IT_WENT: 'Où c’est parti',
@@ -661,6 +668,7 @@ export const FR = {
   ACCOUNT_ACTIONS: 'Compte et données',
   ACCEPT: 'Accepter',
   ACTIVITY: 'Analyses',
+  HIDE_FROM_ANALYTICS: 'Masquer des Analyses',
   AMOUNT: 'Montant',
   DATA: 'Données',
 
@@ -711,6 +719,7 @@ export const FR = {
   CONFIRM_IMPORT_CAPTION: ({ accounts = [], txs = [] }) =>
     `Importer le JSON pour mettre à jour ${accounts.length} comptes et ${txs.length} transactions. Cette action est irréversible.`,
   CONFIRM_IMPORT_SUCCESS: 'Import réussi.',
+  CONFIRM_RATES_SUCCESS: 'Taux à jour.',
   CURRENCY_GROUP: {
     GLOBAL: 'Globales',
     AMERICAS: 'Amériques',
@@ -870,6 +879,7 @@ export const DE = {
   FLOW_IN: 'Ein',
   FLOW_OUT: 'Aus',
   AVERAGE: 'Ø',
+  TYPICAL: 'üblich',
   NET: 'Netto',
   OF_SPEND: 'der Ausgaben',
   WHERE_IT_WENT: 'Wohin es ging',
@@ -941,6 +951,7 @@ export const DE = {
   ACCOUNT_ACTIONS: 'Konto & Daten',
   ACCEPT: 'Akzeptieren',
   ACTIVITY: 'Analysen',
+  HIDE_FROM_ANALYTICS: 'Nicht in Analysen',
   AMOUNT: 'Betrag',
   DATA: 'Daten',
 
@@ -991,6 +1002,7 @@ export const DE = {
   CONFIRM_IMPORT_CAPTION: ({ accounts = [], txs = [] }) =>
     `Importiere die JSON-Datei, um ${accounts.length} Konten und ${txs.length} Transaktionen zu aktualisieren. Diese Aktion ist irreversibel.`,
   CONFIRM_IMPORT_SUCCESS: 'Import erfolgreich.',
+  CONFIRM_RATES_SUCCESS: 'Kurse aktualisiert.',
   CURRENCY_GROUP: {
     GLOBAL: 'Global',
     AMERICAS: 'Amerika',
@@ -1149,6 +1161,7 @@ export const ES = {
   FLOW_IN: 'Entra',
   FLOW_OUT: 'Sale',
   AVERAGE: 'media',
+  TYPICAL: 'normal',
   NET: 'Neto',
   OF_SPEND: 'del gasto',
   WHERE_IT_WENT: 'En qué se fue',
@@ -1220,6 +1233,7 @@ export const ES = {
   ACCOUNT_ACTIONS: 'Cuenta y datos',
   ACCEPT: 'Aceptar',
   ACTIVITY: 'Analíticas',
+  HIDE_FROM_ANALYTICS: 'Ocultar en Analíticas',
   AMOUNT: 'Importe',
   DATA: 'Datos',
 
@@ -1270,6 +1284,7 @@ export const ES = {
   CONFIRM_IMPORT_CAPTION: ({ accounts = [], txs = [] }) =>
     `Importar el JSON para actualizar ${accounts.length} cuentas y ${txs.length} transacciones. Esta acción es irreversible.`,
   CONFIRM_IMPORT_SUCCESS: 'Importación correcta.',
+  CONFIRM_RATES_SUCCESS: 'Tasas actualizadas.',
   CURRENCY_GROUP: {
     GLOBAL: 'Globales',
     AMERICAS: 'América',

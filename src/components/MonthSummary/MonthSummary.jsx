@@ -9,6 +9,34 @@ import { PriceFriendly } from '../PriceFriendly';
 
 const clamp = (value) => Math.max(0, Math.min(100, value));
 
+// One line for all of them: title, value, caption. Written out five times over, they drifted a property at a time.
+const Line = ({ currency, hint, label, operator = false, style, styleContainer, tone, value }) => (
+  <View row style={[style.line, styleContainer]}>
+    <Text size="s" style={style.key} tone="muted">
+      {label}
+    </Text>
+    <View flex>
+      <PriceFriendly currency={currency} operator={operator} size="md" tone={tone} value={value} />
+    </View>
+    {hint ? (
+      <Text align="right" numberOfLines={1} size="xs" style={style.context} tone="muted">
+        {hint}
+      </Text>
+    ) : null}
+  </View>
+);
+
+Line.propTypes = {
+  currency: PropTypes.string,
+  hint: PropTypes.string,
+  label: PropTypes.string,
+  operator: PropTypes.bool,
+  style: PropTypes.any,
+  styleContainer: PropTypes.any,
+  tone: PropTypes.string,
+  value: PropTypes.number,
+};
+
 const MonthSummary = ({ currency, insights = [] }) => {
   const { colors } = useApp();
   const style = useMemo(() => getStyles(colors), [colors]);
@@ -33,19 +61,7 @@ const MonthSummary = ({ currency, insights = [] }) => {
     <View style={style.container}>
       {spent !== undefined ? (
         <View style={style.lead}>
-          <View row style={style.leadHead}>
-            <Text size="s" style={style.key} tone="secondary">
-              {L10N.SPENT_SO_FAR}
-            </Text>
-            <View flex>
-              <PriceFriendly currency={currency} size="md" value={spent} />
-            </View>
-            {pace ? (
-              <Text align="right" numberOfLines={1} size="xs" style={style.context} tone="muted">
-                {pace}
-              </Text>
-            ) : null}
-          </View>
+          <Line currency={currency} hint={pace} label={L10N.SPENT_SO_FAR} style={style} value={spent} />
 
           {/* A ledger too young to have a baseline gets the figure and the date, and no bar to lie with. */}
           {baseline > 0 ? (
@@ -68,67 +84,52 @@ const MonthSummary = ({ currency, insights = [] }) => {
       ) : null}
 
       {closed ? (
-        <View row style={style.row}>
-          <Text size="s" style={style.key} tone="muted">
-            {L10N.LAST_MONTH}
-          </Text>
-          <View flex>
-            <PriceFriendly currency={currency} size="md" value={closed.value} />
-          </View>
-          <Text align="right" numberOfLines={1} size="xs" style={style.context} tone="muted">
-            {`${verboseDate(new Date(closed.meta.at), { month: 'long' })}${
-              closed.meta.delta !== undefined ? ` \u00b7 ${percentText(closed.meta.delta)}` : ''
-            }`}
-          </Text>
-        </View>
+        <Line
+          currency={currency}
+          hint={`${verboseDate(new Date(closed.meta.at), { month: 'long' })}${
+            closed.meta.delta !== undefined ? ` \u00b7 ${percentText(closed.meta.delta)}` : ''
+          }`}
+          label={L10N.LAST_MONTH}
+          style={style}
+          styleContainer={style.row}
+          value={closed.value}
+        />
       ) : null}
 
       {incomes ? (
-        <View row style={style.row}>
-          <Text size="s" style={style.key} tone="muted">
-            {L10N.INCOMES}
-          </Text>
-          <View flex>
-            <PriceFriendly currency={currency} size="md" value={incomes.value} />
-          </View>
-          <Text align="right" numberOfLines={1} size="xs" style={style.context} tone="muted">
-            {incomes.meta.share ? `${incomes.meta.label} ${percentText(incomes.meta.share)}` : incomes.meta.label}
-          </Text>
-        </View>
+        <Line
+          currency={currency}
+          hint={incomes.meta.share ? `${incomes.meta.label} ${percentText(incomes.meta.share)}` : incomes.meta.label}
+          label={L10N.INCOMES}
+          style={style}
+          styleContainer={style.row}
+          value={incomes.value}
+        />
       ) : null}
 
       {swing ? (
-        <View row style={style.row}>
-          <Text size="s" style={style.key} tone="muted">
-            {L10N.SWING}
-          </Text>
-          <View flex>
-            <PriceFriendly
-              currency={currency}
-              operator
-              size="md"
-              tone={swing.value < 0 ? 'positive' : null}
-              value={swing.value}
-            />
-          </View>
-          <Text align="right" numberOfLines={1} size="xs" style={style.context} tone="muted">
-            {swing.meta.label}
-          </Text>
-        </View>
+        <Line
+          currency={currency}
+          hint={swing.meta.label}
+          label={L10N.SWING}
+          operator
+          style={style}
+          styleContainer={style.row}
+          tone={swing.value < 0 ? 'positive' : null}
+          value={swing.value}
+        />
       ) : null}
 
       {scheduled ? (
-        <View row style={style.row}>
-          <Text size="s" style={style.key} tone="muted">
-            {L10N.SCHEDULED_AHEAD}
-          </Text>
-          <View flex>
-            <PriceFriendly currency={currency} operator size="md" value={scheduled.value} />
-          </View>
-          <Text align="right" numberOfLines={1} size="xs" style={style.context} tone="muted">
-            {`${scheduled.meta.pending} ${L10N.PENDING}`}
-          </Text>
-        </View>
+        <Line
+          currency={currency}
+          hint={`${scheduled.meta.pending} ${L10N.PENDING}`}
+          label={L10N.SCHEDULED_AHEAD}
+          operator
+          style={style}
+          styleContainer={style.row}
+          value={scheduled.value}
+        />
       ) : null}
     </View>
   );

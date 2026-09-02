@@ -215,28 +215,26 @@ const Settings = ({ navigation = {} }) => {
           : language === 'de'
             ? 'de-DE'
             : 'en-US';
-  const lastRatesDate = lastRatesUpdate ? new Date(lastRatesUpdate) : null;
-  const lastRatesUpdatedValue = (() => {
-    if (!lastRatesDate || Number.isNaN(lastRatesDate.getTime())) return '';
-    const now = new Date();
-    const isToday = lastRatesDate.toDateString() === now.toDateString();
+  // One reading for every row that reports when it last ran, so rates and backups cannot drift apart.
+  const lastRunValue = (value) => {
+    const date = value ? new Date(value) : null;
+    if (!date || Number.isNaN(date.getTime())) return '';
 
-    if (isToday) {
-      // Time-only is easier to scan when the date is obvious.
-      return lastRatesDate.toLocaleTimeString(resolvedLocale, {
-        hour: '2-digit',
-        minute: '2-digit',
-      });
+    // Time-only is easier to scan when the date is obvious.
+    if (date.toDateString() === new Date().toDateString()) {
+      return date.toLocaleTimeString(resolvedLocale, { hour: '2-digit', minute: '2-digit' });
     }
 
-    return lastRatesDate.toLocaleString(resolvedLocale, {
+    return date.toLocaleString(resolvedLocale, {
       day: 'numeric',
       month: 'short',
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
     });
-  })();
+  };
+  const lastRatesUpdatedValue = lastRunValue(lastRatesUpdate);
+  const lastBackupValue = lastRunValue(backupAt);
   const backupReminderSubtitle = (() => {
     if (!backupReminderEnabled) return L10N.REMINDER_BACKUP_CAPTION;
 
@@ -267,26 +265,34 @@ const Settings = ({ navigation = {} }) => {
     <>
       <Masthead section={L10N.SETTINGS} />
       <Screen ref={scrollRef} style={style.screen}>
-        <Pressable onPress={handleExport}>
-          <View row style={style.backup}>
-            {backupStale ? <Icon name={ICON.ALERT} tone="onAccentSoft" /> : null}
-            <View flex>
-              <Text medium size="s" tone="onAccentSoft">
-                {L10N.EXPORT_DATA}
-              </Text>
-              <Text size="xxs" style={style.backupCaption} tone="onAccentSoft">
-                {backupCaption}
-              </Text>
+        {/* A nudge on the same weekly clock as the reminder, never a permanent band: Data always offers the export. */}
+        {backupStale ? (
+          <Pressable onPress={handleExport}>
+            <View row style={style.backup}>
+              <Icon name={ICON.ALERT} tone="onAccentSoft" />
+              <View flex>
+                <Text medium size="s" tone="onAccentSoft">
+                  {L10N.EXPORT_DATA}
+                </Text>
+                <Text size="xxs" style={style.backupCaption} tone="onAccentSoft">
+                  {backupCaption}
+                </Text>
+              </View>
+              <Chip label={L10N.BACKUP_CTA} size="s" variant="inverse" onPress={handleExport} />
             </View>
-            <Chip label={L10N.BACKUP_CTA} size="s" variant="inverse" onPress={handleExport} />
-          </View>
-        </Pressable>
+          </Pressable>
+        ) : null}
 
         <View style={style.group}>
           <Eyebrow style={style.groupLabel}>{L10N.DATA}</Eyebrow>
           {DATA().map(({ disabled, id, text, ...rest }, index) => {
             const isUpdateRates = rest.callback === 'handleUpdateRates';
             const showSpinner = isUpdateRates && activity?.handleUpdateRates;
+            const lastRun = isUpdateRates
+              ? lastRatesUpdatedValue
+              : rest.callback === 'handleExport'
+                ? lastBackupValue
+                : '';
 
             return (
               <Setting
@@ -297,8 +303,8 @@ const Settings = ({ navigation = {} }) => {
                 type="navigation"
                 activity={showSpinner}
                 right={
-                  showSpinner ? undefined : isUpdateRates && lastRatesUpdatedValue ? (
-                    <RightValueChevron figure value={lastRatesUpdatedValue} />
+                  showSpinner ? undefined : lastRun ? (
+                    <RightValueChevron figure value={lastRun} />
                   ) : (
                     <Icon name={ICON.RIGHT} size="s" tone="muted" />
                   )
