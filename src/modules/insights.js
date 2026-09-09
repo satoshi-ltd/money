@@ -7,7 +7,8 @@ import { getScheduledOccurrenceKey, getScheduledOccurrenceKeyFromTx } from './sc
 
 const { TX: { TYPE } = {} } = C;
 
-const BASELINE_MONTHS = 3;
+// Six, not three: a median of three is beaten by two months that each carried an early one-off.
+const BASELINE_MONTHS = 6;
 const TREND_FLAT_BAND = 5;
 const MIN_BASELINE_SHARE = 0.1;
 // A share of a full-month median, not of a day-capped one: the floor must not shrink to nothing on day 2.

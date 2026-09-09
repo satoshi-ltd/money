@@ -1,3 +1,10 @@
+// English ordinals for a day-of-month: 1st, 2nd, 3rd, 21st. Other languages use a cardinal or their own mark.
+const nth = (day) => {
+  const rem = day % 100;
+  const suffix = rem >= 11 && rem <= 13 ? 'th' : ['th', 'st', 'nd', 'rd'][day % 10] || 'th';
+  return `${day}${suffix}`;
+};
+
 export const EN = {
   SCHEDULED_ONE: 'Scheduled transaction',
   SHOW_LESS: 'Show less',
@@ -66,7 +73,7 @@ export const EN = {
   TOTAL: 'Total',
   SPENT_SO_FAR: 'Spent so far',
   SWING: 'Swing',
-  USUAL_BY: 'Usual by',
+  USUAL_BY: (day) => `Usual by the ${nth(day)}`,
   BELOW_PACE: 'below pace',
   ABOVE_PACE: 'above pace',
   ABOVE_USUAL: 'more than usual',
@@ -364,7 +371,7 @@ export const PT = {
   TOTAL: 'Total',
   SPENT_SO_FAR: 'Gasto',
   SWING: 'Desvio',
-  USUAL_BY: 'Habitual em',
+  USUAL_BY: (day) => `Habitual no dia ${day}`,
   BELOW_PACE: 'abaixo do ritmo',
   ABOVE_PACE: 'acima do ritmo',
   ABOVE_USUAL: 'acima do normal',
@@ -646,7 +653,7 @@ export const FR = {
   TOTAL: 'Total',
   SPENT_SO_FAR: 'Dépensé',
   SWING: 'Écart',
-  USUAL_BY: 'Habituel au',
+  USUAL_BY: (day) => `Habituel au ${day}`,
   BELOW_PACE: 'sous votre rythme',
   ABOVE_PACE: 'au-dessus du rythme',
   ABOVE_USUAL: "plus que d'habitude",
@@ -930,7 +937,7 @@ export const DE = {
   TOTAL: 'Gesamt',
   SPENT_SO_FAR: 'Ausgegeben',
   SWING: 'Abweichung',
-  USUAL_BY: 'Üblich am',
+  USUAL_BY: (day) => `Üblich am ${day}.`,
   BELOW_PACE: 'unter deinem Schnitt',
   ABOVE_PACE: 'über deinem Schnitt',
   ABOVE_USUAL: 'mehr als üblich',
@@ -1213,7 +1220,7 @@ export const ES = {
   TOTAL: 'Total',
   SPENT_SO_FAR: 'Gastado',
   SWING: 'Desvío',
-  USUAL_BY: 'Habitual al',
+  USUAL_BY: (day) => `Habitual al día ${day}`,
   BELOW_PACE: 'bajo tu ritmo',
   ABOVE_PACE: 'sobre tu ritmo',
   ABOVE_USUAL: 'más de lo normal',

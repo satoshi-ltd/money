@@ -74,7 +74,7 @@ const MonthSummary = ({ currency, insights = [] }) => {
 
               <View row style={style.usual}>
                 <Text size="xxs" tone="muted">
-                  {`${L10N.USUAL_BY} ${trend.meta.day} \u00b7 `}
+                  {`${L10N.USUAL_BY(trend.meta.day)} \u00b7 `}
                 </Text>
                 <PriceFriendly currency={currency} size="xs" tone="muted" value={baseline} />
               </View>

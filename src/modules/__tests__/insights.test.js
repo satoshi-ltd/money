@@ -106,6 +106,20 @@ describe('modules/insights lead', () => {
     expect(meta.direction).toBeUndefined();
   });
 
+  // A median of three is beaten by two: school terms one month and a phone the next became "usual".
+  test('two one-off months out of six do not become the usual', () => {
+    const now = new Date(2025, 5, 20, 12);
+    const txs = [
+      expense(2025, 4, 5, 5000),
+      expense(2025, 3, 5, 5000),
+      ...[2, 1, 0].map((month) => expense(2025, month, 5, 100)),
+      expense(2024, 11, 5, 100),
+      expense(2025, 5, 5, 90),
+    ];
+
+    expect(find(build({ now, txs }), 'spending_trend').meta.baseline).toBe(100);
+  });
+
   test('nothing spent and nothing to compare against emits nothing to render', () => {
     expect(build({ now: new Date(2025, 5, 10, 12), txs: [] })).toEqual([]);
   });
