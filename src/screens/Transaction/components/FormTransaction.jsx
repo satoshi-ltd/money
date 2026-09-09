@@ -59,7 +59,7 @@ const FormTransaction = ({
   const [showAccounts, setShowAccounts] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
   const [openDate, setOpenDate] = useState(false);
-  const [applied, setApplied] = useState();
+  const [accepted, setAccepted] = useState();
 
   const computeValid = (next) =>
     (showCategory ? next.category !== undefined : true) &&
@@ -73,7 +73,21 @@ const FormTransaction = ({
 
     if (autoSuggest && field === 'title') {
       const title = fieldValue;
-      const otherType = safeType === EXPENSE ? INCOME : EXPENSE;
+      // What the last keystroke filled in is not yours yet: take it back, then read the whole new title afresh.
+      const standing = suggestion;
+      const baseType = standing?.applied.type !== undefined ? standing.previousType : safeType;
+      const baseAccount = standing?.applied.account ? standing.previousAccount : account;
+      if (standing) {
+        next = {
+          ...next,
+          ...(standing.applied.category !== undefined ? { category: standing.previousCategory } : {}),
+          ...(standing.applied.value !== undefined ? { value: standing.previousValue } : {}),
+        };
+      }
+      const base = next;
+      const otherType = baseType === EXPENSE ? INCOME : EXPENSE;
+      // A category the screen defaulted is not a choice: the title may overrule it until you pick one yourself.
+      const categoryFree = next.category === undefined || !categoryTouched;
 
       const amountValue = Number(next.value);
       const amountEmpty = !Number.isFinite(amountValue) || amountValue <= 0;
@@ -85,53 +99,52 @@ const FormTransaction = ({
         !categoryTouched &&
         !accountTouched &&
         typeof onAutoSelectType === 'function' &&
-        next.category === undefined;
+        categoryFree;
 
-      let effectiveType = safeType;
       // The title's own memory first; word rules only for a title never seen, where a shared word is all there is.
-      const known = recallTitle(memory, { title, type: safeType });
+      const known = recallTitle(memory, { title, type: baseType });
       const suggestedCurrent =
-        showCategory && next.category === undefined
-          ? known?.category ?? suggestCategory(settings.autoCategory, { title, type: safeType })
+        showCategory && categoryFree
+          ? known?.category ?? suggestCategory(settings.autoCategory, { title, type: baseType })
           : undefined;
+      // Exact titles only: on a real ledger shared words flipped the type wrongly 20 times where the title did once.
       const suggestedOther =
-        showCategory && next.category === undefined
-          ? recallTitle(memory, { title, type: otherType })?.category ??
-            suggestCategory(settings.autoCategory, { title, type: otherType })
-          : undefined;
+        showCategory && categoryFree ? recallTitle(memory, { title, type: otherType })?.category : undefined;
 
-      // If we have a category match only in the other type, auto-switch type (rare case like "mirai").
-      if (canAutoSwitchType && suggestedCurrent === undefined && suggestedOther !== undefined) {
-        onAutoSelectType(otherType);
+      const switchTo =
+        canAutoSwitchType && suggestedCurrent === undefined && suggestedOther !== undefined ? otherType : undefined;
+      const effectiveType = switchTo ?? baseType;
+      if (switchTo !== undefined) {
         next = { ...next, category: suggestedOther };
-        effectiveType = otherType;
-        applied = { ...applied, category: suggestedOther, type: otherType };
-      } else if (showCategory && next.category === undefined && suggestedCurrent !== undefined) {
+        applied = { ...applied, category: suggestedOther, type: switchTo };
+      } else if (showCategory && categoryFree && suggestedCurrent !== undefined && suggestedCurrent !== next.category) {
         next = { ...next, category: suggestedCurrent };
         applied = { ...applied, category: suggestedCurrent };
       }
+      if (effectiveType !== safeType) onAutoSelectType?.(effectiveType);
 
-      let effectiveAccountHash = account?.hash;
+      let effectiveAccount = baseAccount;
 
       // Auto-select account only on screens that opt into it (Transaction create flow).
       if (!accountTouched && typeof onAutoSelectAccount === 'function' && accountsList.length) {
         const suggestedHash = known?.account ?? suggestAccount(settings.autoAccount, { title, type: effectiveType });
-        if (suggestedHash && suggestedHash !== account?.hash) {
-          const nextAccount = accountsList.find((a) => a?.hash === suggestedHash);
-          if (nextAccount) {
-            effectiveAccountHash = suggestedHash;
-            onAutoSelectAccount(nextAccount);
-            applied = { ...applied, account: nextAccount };
-          }
+        const nextAccount =
+          suggestedHash && suggestedHash !== baseAccount?.hash
+            ? accountsList.find((a) => a?.hash === suggestedHash)
+            : undefined;
+        if (nextAccount) {
+          effectiveAccount = nextAccount;
+          applied = { ...applied, account: nextAccount };
         }
       }
+      if (effectiveAccount?.hash !== account?.hash) onAutoSelectAccount?.(effectiveAccount);
 
       // Auto-fill amount only when stable and only if the user hasn't touched the amount field.
-      if (!amountTouched && amountEmpty && effectiveAccountHash) {
+      if (!amountTouched && amountEmpty && effectiveAccount?.hash) {
         const suggested = suggestAmount(settings.autoAmount, {
           title,
           type: effectiveType,
-          account: effectiveAccountHash,
+          account: effectiveAccount.hash,
         });
         if (suggested !== undefined) {
           next = { ...next, value: suggested };
@@ -142,11 +155,13 @@ const FormTransaction = ({
       if (applied) {
         setSuggestion({
           applied,
-          previousAccount: account,
-          previousCategory: safeForm.category,
-          previousType: safeType,
-          previousValue: safeForm.value,
+          previousAccount: baseAccount,
+          previousCategory: base.category,
+          previousType: baseType,
+          previousValue: base.value,
         });
+      } else if (standing) {
+        setSuggestion(undefined);
       }
     }
 
@@ -212,17 +227,17 @@ const FormTransaction = ({
   // Once you have accepted one, stop offering: after an explicit tap, more proposals read as second-guessing.
   const proposals = useMemo(
     () =>
-      autoSuggest && safeForm.title !== applied
+      autoSuggest && safeForm.title !== accepted
         ? recallTitles(memory, { prefix: safeForm.title || '', type: safeType })
         : [],
-    [applied, autoSuggest, memory, safeForm.title, safeType],
+    [accepted, autoSuggest, memory, safeForm.title, safeType],
   );
   const accountOf = (proposal) => accountsList.find(({ hash }) => hash === proposal.account);
 
   // One tap writes the whole entry: the concept, what it cost, where from and under what.
   const applyProposal = (proposal) => {
     const proposalAccount = accountOf(proposal);
-    setApplied(proposal.title);
+    setAccepted(proposal.title);
     if (proposalAccount && proposalAccount.hash !== account?.hash) onSelectAccount?.(proposalAccount);
     onManualCategorySelect?.();
     onManualAmountChange?.();

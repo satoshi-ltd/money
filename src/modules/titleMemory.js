@@ -1,7 +1,6 @@
 import { isInternalTransfer } from './isInternalTransfer';
 
 const MIN_PREFIX = 2;
-const MIN_SEEN = 2;
 // The last ten, not all time: a title refiled since last year should follow this year.
 const RECENT = 10;
 const PROPOSALS = 2;
@@ -98,7 +97,7 @@ export const recallTitles = (memory, { prefix = '', type, now = Date.now() } = {
 
 export const recallTitle = (memory, { title = '', type } = {}) => {
   const entries = memory?.get(keyOf(type, title));
-  if (!entries || entries.length < MIN_SEEN) return undefined;
+  if (!entries) return undefined;
 
   const recent = entries.slice(-RECENT);
   return { account: majority(recent, 'account'), category: majority(recent, 'category') };

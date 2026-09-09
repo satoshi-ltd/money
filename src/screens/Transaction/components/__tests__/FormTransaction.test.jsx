@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import FormTransaction from '../FormTransaction';
-import { L10N } from '../../../../modules';
+import { L10N, suggestCategory } from '../../../../modules';
 import { theme } from '../../../../theme';
 
 
@@ -258,14 +258,142 @@ describe('screens/Transaction/FormTransaction', () => {
       expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ form: expect.objectContaining({ category: 2 }) }));
     });
 
-    test('a title seen once is not yet a habit: the word rule still answers', () => {
+    test('a title seen even once is filled from its own history', () => {
       mockTxs = LEDGER;
       const onChange = jest.fn();
       const root = render({ onChange });
 
       typeConcept(root, 'Coffeeshop');
 
-      expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ form: expect.objectContaining({ category: 1 }) }));
+      expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ form: expect.objectContaining({ category: 2 }) }));
+    });
+  });
+  describe('what a keystroke fills in', () => {
+    const A1 = { currency: 'EUR', hash: 'a1', title: 'N26' };
+    const A2 = { currency: 'THB', hash: 'a2', title: 'Kasikorn' };
+    const LEDGER = [
+      { account: 'a2', category: 2, timestamp: 10, title: 'Coffee', type: 0, value: 40 },
+      { account: 'a2', category: 2, timestamp: 20, title: 'Coffee', type: 0, value: 40 },
+      { account: 'a1', category: 5, timestamp: 30, title: 'Coffee beans', type: 0, value: 320 },
+      { account: 'a1', category: 5, timestamp: 40, title: 'Coffee beans', type: 0, value: 300 },
+    ];
+
+    // The screen owns the form and the account; both have to move for the next keystroke to see them.
+    const Harness = ({ form: initial = {}, onChange, ...props }) => {
+      const [form, setForm] = React.useState(initial);
+      const [account, setAccount] = React.useState(A1);
+
+      return (
+        <FormTransaction
+          autoSuggest
+          account={account}
+          accountsList={[A1, A2]}
+          form={form}
+          onAutoSelectAccount={setAccount}
+          onChange={(payload) => {
+            setForm(payload.form);
+            onChange(payload);
+          }}
+          onSelectAccount={setAccount}
+          {...props}
+        />
+      );
+    };
+
+    const renderControlled = (props) => {
+      act(() => {
+        renderer = TestRenderer.create(<Harness {...props} />);
+      });
+      return renderer.root;
+    };
+    const lastForm = (onChange) => onChange.mock.calls[onChange.mock.calls.length - 1][0].form;
+    const currentAccount = (root) => root.findByType(FormTransaction).props.account;
+    const proposalRows = (root) =>
+      root
+        .findAllByProps({ testID: 'fieldrow' })
+        .filter((node) => typeof node.type === 'function' && node.findAllByProps({ testID: 'price' }).length);
+
+    beforeEach(() => {
+      mockTxs = LEDGER;
+    });
+
+    afterEach(() => {
+      mockTxs = [];
+      suggestCategory.mockImplementation(() => 1);
+    });
+
+    test('a longer title is read anew: what the shorter one filled in does not stick', () => {
+      const onChange = jest.fn();
+      const root = renderControlled({ onChange });
+
+      typeConcept(root, 'Coffee');
+      expect(lastForm(onChange).category).toBe(2);
+      expect(currentAccount(root).hash).toBe('a2');
+
+      typeConcept(root, 'Coffee beans');
+      expect(lastForm(onChange).category).toBe(5);
+      expect(currentAccount(root).hash).toBe('a1');
+
+      // Unknown again: the word rule (mocked to 1) answers, not the memory of a prefix.
+      typeConcept(root, 'Coffee bean');
+      expect(lastForm(onChange).category).toBe(1);
+    });
+
+    test('a category you chose yourself is never overwritten by typing on', () => {
+      const onChange = jest.fn();
+      const root = renderControlled({ categoryTouched: true, form: { category: 7 }, onChange });
+
+      typeConcept(root, 'Coffee');
+      typeConcept(root, 'Coffee beans');
+
+      expect(lastForm(onChange).category).toBe(7);
+    });
+
+    // The screen opens with the account's most frequent category already in place; that is a default, not a choice.
+    test('a category the screen defaulted gives way to what the title says', () => {
+      const onChange = jest.fn();
+      const root = renderControlled({ form: { category: 1 }, onChange });
+
+      typeConcept(root, 'Coffee');
+      expect(lastForm(onChange).category).toBe(2);
+
+      const chip = root.findAllByProps({ testID: 'suggestion-chip' }).find((node) => node.props.onPress);
+      act(() => chip.props.onPress());
+      expect(lastForm(onChange).category).toBe(1);
+    });
+
+    test('the type switches only for a title you have filed under the other type', () => {
+      mockTxs = [...LEDGER, { account: 'a1', category: 3, timestamp: 50, title: 'Salary', type: 1, value: 3000 }];
+      const onAutoSelectType = jest.fn();
+      const onChange = jest.fn();
+      const root = renderControlled({ onAutoSelectType, onChange });
+
+      // Unknown everywhere, but the word rule answers for the other type: that used to flip the form.
+      suggestCategory.mockImplementation((catalog, { type }) => (type === 1 ? 1 : undefined));
+      typeConcept(root, 'Zzz');
+      expect(onAutoSelectType).not.toHaveBeenCalled();
+      expect(lastForm(onChange).category).toBeUndefined();
+
+      typeConcept(root, 'Salary');
+      expect(onAutoSelectType).toHaveBeenLastCalledWith(1);
+      expect(lastForm(onChange).category).toBe(3);
+    });
+
+    test('one tap on a proposal writes the whole entry and withdraws the offers', () => {
+      const onChange = jest.fn();
+      const onManualAmountChange = jest.fn();
+      const onManualCategorySelect = jest.fn();
+      const root = renderControlled({ form: { title: 'cof' }, onChange, onManualAmountChange, onManualCategorySelect });
+
+      expect(proposalRows(root)).toHaveLength(2);
+      const coffee = proposalRows(root).find((row) => row.findAll((node) => node.props?.children === 'Coffee').length);
+      act(() => coffee.props.onPress());
+
+      expect(onChange).toHaveBeenLastCalledWith({ form: { category: 2, title: 'Coffee', value: 40 }, valid: true });
+      expect(currentAccount(root).hash).toBe('a2');
+      expect(onManualCategorySelect).toHaveBeenCalled();
+      expect(onManualAmountChange).toHaveBeenCalled();
+      expect(proposalRows(root)).toHaveLength(0);
     });
   });
 });

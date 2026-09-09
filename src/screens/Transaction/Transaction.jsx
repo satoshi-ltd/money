@@ -45,13 +45,14 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
     if (isTransfer) setState(INITIAL_STATE);
   }, [account, isTransfer]);
 
+  // A default for an empty category only: what the concept filled in, or you chose, is not overwritten.
   useEffect(() => {
     if (isTransfer || categoryTouched) return;
     const suggested = frequentCategory({ account: account?.hash, txs, type: txType });
     if (suggested === undefined) return;
 
     setState((current) =>
-      current.form.category === suggested ? current : { ...current, form: { ...current.form, category: suggested } },
+      current.form.category !== undefined ? current : { ...current, form: { ...current.form, category: suggested } },
     );
   }, [account?.hash, categoryTouched, isTransfer, txs, txType]);
 
@@ -62,6 +63,7 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
     setAmountTouched(false);
     setTypeTouched(false);
     setTypeAutoLocked(false);
+    setState((current) => ({ ...current, form: { ...current.form, category: undefined }, valid: false }));
   };
 
   const handleAutoSelectAccount = (next) => {
