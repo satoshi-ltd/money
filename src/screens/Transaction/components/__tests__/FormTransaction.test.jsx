@@ -203,34 +203,39 @@ describe('screens/Transaction/FormTransaction', () => {
     expect(form.value).toBeUndefined();
   });
 
-  describe('the repeat proposal', () => {
+  describe('the title memory', () => {
     const LEDGER = [
       { account: 'a1', category: 2, timestamp: 10, title: 'Coffee', type: 0, value: 40 },
-      { account: 'a1', category: 2, timestamp: 20, title: 'Coffee', type: 0, value: 40 },
+      { account: 'a1', category: 2, timestamp: 20, title: 'Coffee', type: 0, value: 45 },
+      { account: 'a1', category: 2, timestamp: 30, title: 'Coffee beans', type: 0, value: 320 },
+      { account: 'a1', category: 2, timestamp: 5, title: 'Coffeeshop', type: 0, value: 90 },
     ];
+
+    // Only a proposal row carries a price: its first text is the title it offers.
+    const offered = (root) =>
+      root
+        .findAllByProps({ testID: 'fieldrow' })
+        .filter((node) => typeof node.type === 'function' && node.findAllByProps({ testID: 'price' }).length)
+        .map((row) => row.findAll((node) => typeof node.props?.children === 'string' && node.props.children)[0])
+        .map((node) => node.props.children);
 
     afterEach(() => {
       mockTxs = [];
     });
 
-    test('typing a prefix offers back what you already did', () => {
+    test('typing a prefix offers the two titles you repeat most under it, no more', () => {
       mockTxs = LEDGER;
-      const rows = () =>
-        render({ autoSuggest: true, form: { title: 'cof' }, onChange: () => {} })
-          .findAllByProps({ testID: 'fieldrow' })
-          .filter((node) => typeof node.type === 'function');
+      const root = render({ autoSuggest: true, form: { title: 'cof' }, onChange: () => {} });
 
-      expect(rows().some((row) => row.findAll((node) => node.props?.children === 'Coffee').length)).toBe(true);
+      expect(offered(root)).toEqual(['Coffee', 'Coffee beans']);
     });
 
     // The offer is the amount, account and category, so a finished title still deserves one.
     test('a finished title still gets the offer, since the rest of the form is still empty', () => {
       mockTxs = LEDGER;
-      const rows = render({ autoSuggest: true, form: { title: 'Coffee' }, onChange: () => {} })
-        .findAllByProps({ testID: 'fieldrow' })
-        .filter((node) => typeof node.type === 'function');
+      const root = render({ autoSuggest: true, form: { title: 'Coffee' }, onChange: () => {} });
 
-      expect(rows.some((row) => row.findAll((node) => node.props?.children === 'Coffee').length)).toBe(true);
+      expect(offered(root)).toContain('Coffee');
     });
 
     test('with nothing to repeat there is no extra row', () => {
@@ -240,6 +245,27 @@ describe('screens/Transaction/FormTransaction', () => {
       }).length;
 
       expect(after).toBe(before);
+    });
+
+    // The word rule mock answers 1; the title's own history says 2.
+    test('a title already seen is filled from its own history, not from the words it shares', () => {
+      mockTxs = LEDGER;
+      const onChange = jest.fn();
+      const root = render({ onChange });
+
+      typeConcept(root, 'Coffee');
+
+      expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ form: expect.objectContaining({ category: 2 }) }));
+    });
+
+    test('a title seen once is not yet a habit: the word rule still answers', () => {
+      mockTxs = LEDGER;
+      const onChange = jest.fn();
+      const root = render({ onChange });
+
+      typeConcept(root, 'Coffeeshop');
+
+      expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ form: expect.objectContaining({ category: 1 }) }));
     });
   });
 });

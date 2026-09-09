@@ -62,7 +62,10 @@ const STOP_WORDS = new Set([
 
 export const tokenizeTitle = (title = '') => {
   if (!title || typeof title !== 'string') return [];
+  // Decompose accents and drop the marks, so "farmácia" reads farmacia and not "farm" and "cia".
   return title
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
     .replace(/[^a-z0-9\s]/g, ' ')
     .split(/\s+/)

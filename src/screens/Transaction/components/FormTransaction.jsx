@@ -7,11 +7,13 @@ import { style } from './FormTransaction.style';
 import { Checkbox, Chip, Dropdown, FieldRow, Input, Modal, Pressable, PriceFriendly, Text, View } from '../../../components';
 import { useApp, useStore } from '../../../contexts';
 import {
+  buildTitleMemory,
   C,
   foreignSymbol,
   ICON,
   L10N,
-  repeatSuggestion,
+  recallTitle,
+  recallTitles,
   suggestAccount,
   suggestAmount,
   suggestCategory,
@@ -51,6 +53,7 @@ const FormTransaction = ({
   const { theme: themeMode } = settings;
   const safeForm = form || {};
   const safeType = type ?? EXPENSE;
+  const memory = useMemo(() => buildTitleMemory(txs), [txs]);
 
   const [suggestion, setSuggestion] = useState();
   const [showAccounts, setShowAccounts] = useState(false);
@@ -85,13 +88,16 @@ const FormTransaction = ({
         next.category === undefined;
 
       let effectiveType = safeType;
+      // The title's own memory first; word rules only for a title never seen, where a shared word is all there is.
+      const known = recallTitle(memory, { title, type: safeType });
       const suggestedCurrent =
         showCategory && next.category === undefined
-          ? suggestCategory(settings.autoCategory, { title, type: safeType })
+          ? known?.category ?? suggestCategory(settings.autoCategory, { title, type: safeType })
           : undefined;
       const suggestedOther =
         showCategory && next.category === undefined
-          ? suggestCategory(settings.autoCategory, { title, type: otherType })
+          ? recallTitle(memory, { title, type: otherType })?.category ??
+            suggestCategory(settings.autoCategory, { title, type: otherType })
           : undefined;
 
       // If we have a category match only in the other type, auto-switch type (rare case like "mirai").
@@ -109,7 +115,7 @@ const FormTransaction = ({
 
       // Auto-select account only on screens that opt into it (Transaction create flow).
       if (!accountTouched && typeof onAutoSelectAccount === 'function' && accountsList.length) {
-        const suggestedHash = suggestAccount(settings.autoAccount, { title, type: effectiveType });
+        const suggestedHash = known?.account ?? suggestAccount(settings.autoAccount, { title, type: effectiveType });
         if (suggestedHash && suggestedHash !== account?.hash) {
           const nextAccount = accountsList.find((a) => a?.hash === suggestedHash);
           if (nextAccount) {
@@ -203,18 +209,19 @@ const FormTransaction = ({
     [accountsList],
   );
 
-  // Once you have accepted one, stop offering the next: after an explicit tap, more proposals read as second-guessing.
-  const proposal = useMemo(
+  // Once you have accepted one, stop offering: after an explicit tap, more proposals read as second-guessing.
+  const proposals = useMemo(
     () =>
       autoSuggest && safeForm.title !== applied
-        ? repeatSuggestion(txs, { prefix: safeForm.title || '', type: safeType })
-        : undefined,
-    [applied, autoSuggest, safeForm.title, safeType, txs],
+        ? recallTitles(memory, { prefix: safeForm.title || '', type: safeType })
+        : [],
+    [applied, autoSuggest, memory, safeForm.title, safeType],
   );
-  const proposalAccount = proposal ? accountsList.find(({ hash }) => hash === proposal.account) : undefined;
+  const accountOf = (proposal) => accountsList.find(({ hash }) => hash === proposal.account);
 
   // One tap writes the whole entry: the concept, what it cost, where from and under what.
-  const applyProposal = () => {
+  const applyProposal = (proposal) => {
+    const proposalAccount = accountOf(proposal);
     setApplied(proposal.title);
     if (proposalAccount && proposalAccount.hash !== account?.hash) onSelectAccount?.(proposalAccount);
     onManualCategorySelect?.();
@@ -256,24 +263,28 @@ const FormTransaction = ({
           />
         </FieldRow>
 
-        {proposal ? (
-          <FieldRow divider label="" onPress={applyProposal}>
-            <Text medium numberOfLines={1} size="s">
-              {proposal.title}
-            </Text>
-            {proposalAccount ? (
-              <Text numberOfLines={1} size="xs" tone="muted">
-                {proposalAccount.title}
+        {proposals.map((proposal) => {
+          const proposalAccount = accountOf(proposal);
+
+          return (
+            <FieldRow divider key={proposal.title} label="" onPress={() => applyProposal(proposal)}>
+              <Text medium numberOfLines={1} size="s">
+                {proposal.title}
               </Text>
-            ) : null}
-            <PriceFriendly
-              currency={proposalAccount?.currency || account.currency}
-              size="md"
-              tone="accent"
-              value={proposal.value}
-            />
-          </FieldRow>
-        ) : null}
+              {proposalAccount ? (
+                <Text numberOfLines={1} size="xs" tone="muted">
+                  {proposalAccount.title}
+                </Text>
+              ) : null}
+              <PriceFriendly
+                currency={proposalAccount?.currency || account.currency}
+                size="md"
+                tone="accent"
+                value={proposal.value}
+              />
+            </FieldRow>
+          );
+        })}
 
         <FieldRow divider label={L10N.AMOUNT}>
           <Input

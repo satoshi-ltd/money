@@ -30,7 +30,7 @@ export * from './monthFlow';
 export * from './monthlyImpact';
 export * from './rankInk';
 export * from './recurrence';
-export * from './repeatSuggestion';
+export * from './titleMemory';
 export * from './sheetDetent';
 export * from './verboseDate';
 export * from './verboseTime';
