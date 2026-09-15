@@ -97,6 +97,28 @@
 - `yarn lint`: ESLint
 - `yarn lint:fix`: ESLint autofix
 - `yarn test`: Jest
+- `yarn check:release`: `package.json` and `app.json` agree on version and build number
+- `yarn build:local:prod`: signed Android APK compiled on this machine, written to `release-assets/`
+- `yarn build:local:dev`: development client compiled on this machine and installed on the emulator
+- `yarn build:dev|preview|prod`: EAS cloud builds; optional, they consume build quota
+
+## Local Android builds
+- Both local commands run `eas build --local`: compilation happens on this Mac, the signing keystore comes from
+  EAS, no cloud worker or quota is used. Expo login and network are required; Metro is not.
+- `yarn build:local:prod` writes `release-assets/money-<version>-android.apk` (gitignored); rerunning replaces it.
+- `yarn build:local:dev` boots `Pixel_9_Pro_Fold` (override with `MONEY_ANDROID_AVD`), installs with
+  `adb install -r`, reverses port 8081 and launches the app. Start Metro yourself with `yarn start`.
+  `yarn build:local:dev --install-only` reinstalls the APK already in `release-assets/` without rebuilding: the dev
+  client is a native shell and JavaScript comes from Metro, so rebuild only for native changes (Android dependencies,
+  `app.json` plugins, SDK) and reinstall when the emulator lost the app.
+- Installation preserves app data and stops on a signature mismatch. Never uninstall or clear data to get past it,
+  and never replace the EAS keystore when updating an installed app.
+- The toolchain comes from the machine: `ANDROID_HOME` (default `~/Library/Android/sdk`) and `JAVA_HOME`
+  (default Android Studio's JBR). The Node/yarn pins in `eas.json` only apply to cloud builds.
+- `postinstall` moves `@react-native/gradle-plugin` from Foojay 0.5 to 1.0 so RN 0.83 compiles under Gradle 9.
+  The local EAS worker reinstalls dependencies in a copy of the repo, so the patch applies there too.
+- Both commands run `yarn check:release` first: bump `version`, `ios.buildNumber` and `android.versionCode`
+  together.
 
 ## Product direction (2026)
 - Local-first always (privacy + offline usability).
