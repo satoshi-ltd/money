@@ -83,7 +83,7 @@ const TransactionItem = React.memo(({
     <Swipeable ref={swipeableRef} friction={2} overshootRight={false} renderRightActions={renderRightActions}>
       <Pressable onPress={handlePress}>
         <View row style={style.row}>
-          <Text figure="xs" style={style.time} tone="muted">
+          <Text figure="xs" numberOfLines={1} style={style.time} tone="muted">
             {verboseTime(new Date(timestamp))}
           </Text>
 

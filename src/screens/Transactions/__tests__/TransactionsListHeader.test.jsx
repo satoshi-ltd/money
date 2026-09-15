@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { PixelRatio, StyleSheet } from 'react-native';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import { TransactionsListHeader } from '../Transactions.ListHeader';
@@ -150,5 +150,22 @@ describe('screens/Transactions/ListHeader', () => {
       .map((node) => node.props.children);
 
     expect(texts).toContain(accountBalanceEyebrow('EUR'));
+  });
+test('the flow labels keep one line, and their column widens with the font scale', () => {
+    const labelsAt = (fontScale) => {
+      const scale = jest.spyOn(PixelRatio, 'getFontScale').mockReturnValue(fontScale);
+      const labels = render()
+        .findAll((node) => typeof node.type === 'string' && [L10N.INCOMES, L10N.EXPENSES].includes(node.props.children))
+        .map((node) => ({ numberOfLines: node.props.numberOfLines, ...StyleSheet.flatten(node.props.style) }));
+      scale.mockRestore();
+      return labels;
+    };
+
+    const regular = labelsAt(1);
+    const large = labelsAt(1.5);
+
+    expect(regular).toHaveLength(2);
+    expect(regular.every((label) => label.numberOfLines === 1)).toBe(true);
+    expect(large.every((label) => label.width === Math.round(regular[0].width * 1.5))).toBe(true);
   });
 });

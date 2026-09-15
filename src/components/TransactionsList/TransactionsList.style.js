@@ -27,7 +27,8 @@ export const getStyles = (colors) =>
       paddingVertical: theme.spacing.xs + 2,
     },
     time: {
-      width: theme.spacing.xl + 2,
+      flexShrink: 0,
+      minWidth: theme.spacing.xl + 2,
     },
     text: {
       gap: 1,

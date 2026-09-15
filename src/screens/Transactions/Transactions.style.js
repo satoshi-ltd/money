@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { PixelRatio, StyleSheet } from 'react-native';
 
 import { theme } from '../../theme';
 import { fieldHeight, viewOffset } from '../../theme/layout';
@@ -38,7 +38,7 @@ export const getStyles = (colors) =>
       gap: theme.spacing.sm,
     },
     flowLabel: {
-      width: theme.spacing.xxl + theme.spacing.md,
+      width: Math.round((theme.spacing.xxl + theme.spacing.md) * PixelRatio.getFontScale()),
     },
     flowBar: {
       backgroundColor: colors.surface,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text as RNText } from 'react-native';
+import { StyleSheet, Text as RNText } from 'react-native';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import { TransactionItem } from '../TransactionItem';
@@ -120,5 +120,17 @@ describe('components/TransactionItem', () => {
 
     confirms[0].onAction();
     expect(mockDeleteTx).toHaveBeenCalledWith({ hash: 'tx-1' });
+  });
+
+  test('the time column keeps one line and grows with the font scale instead of wrapping', () => {
+    const time = render()
+      .findAllByType(RNText)
+      .find((node) => /^\d\d:\d\d$/.test(collect(node.props.children)));
+    const style = StyleSheet.flatten(time.props.style);
+
+    expect(time.props.numberOfLines).toBe(1);
+    expect(style.width).toBeUndefined();
+    expect(style.flexShrink).toBe(0);
+    expect(style.minWidth).toBeGreaterThan(0);
   });
 });

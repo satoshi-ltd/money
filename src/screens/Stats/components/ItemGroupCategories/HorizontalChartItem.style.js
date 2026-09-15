@@ -25,7 +25,8 @@ export const getStyles = (colors) =>
       height: '100%',
     },
     percent: {
-      width: theme.spacing.xl,
+      flexShrink: 0,
+      minWidth: theme.spacing.xl,
     },
     amount: {
       alignItems: 'flex-end',

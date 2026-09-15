@@ -26,7 +26,7 @@ const HorizontalChartItem = ({ color, currency, title, value, width: propWidth =
       <View style={[style.track, { backgroundColor: colors.surface }]}>
         <View style={[style.fill, { backgroundColor: color, width: `${Math.max(2, propWidth)}%` }]} />
       </View>
-      <Text align="right" figure="xs" style={style.percent} tone="muted">
+      <Text align="right" figure="xs" numberOfLines={1} style={style.percent} tone="muted">
         {percentText(Math.round(propWidth))}
       </Text>
       <View style={style.amount}>

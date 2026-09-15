@@ -38,7 +38,7 @@ const TransactionsListHeader = ({ dataSource }) => {
               <Eyebrow style={style.monthLabel}>{monthLabel}</Eyebrow>
               <View style={style.flowRows}>
                 <View row style={style.flowRow}>
-                  <Text size="s" style={style.flowLabel} tone="muted">
+                  <Text numberOfLines={1} size="s" style={style.flowLabel} tone="muted">
                     {L10N.INCOMES}
                   </Text>
                   <View style={style.flowBar}>
@@ -49,7 +49,7 @@ const TransactionsListHeader = ({ dataSource }) => {
                   </View>
                 </View>
                 <View row style={style.flowRow}>
-                  <Text size="s" style={style.flowLabel} tone="muted">
+                  <Text numberOfLines={1} size="s" style={style.flowLabel} tone="muted">
                     {L10N.EXPENSES}
                   </Text>
                   <View style={style.flowBar}>
