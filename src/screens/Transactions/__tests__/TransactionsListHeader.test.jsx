@@ -151,7 +151,8 @@ describe('screens/Transactions/ListHeader', () => {
 
     expect(texts).toContain(accountBalanceEyebrow('EUR'));
   });
-test('the flow labels keep one line, and their column widens with the font scale', () => {
+
+  test('the flow labels keep one line, and their column widens with the font scale', () => {
     const labelsAt = (fontScale) => {
       const scale = jest.spyOn(PixelRatio, 'getFontScale').mockReturnValue(fontScale);
       const labels = render()

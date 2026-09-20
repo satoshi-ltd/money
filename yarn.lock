@@ -3739,6 +3739,13 @@ expo-linear-gradient@~55.0.16:
   resolved "https://registry.yarnpkg.com/expo-linear-gradient/-/expo-linear-gradient-55.0.16.tgz#fb45e08bb7fd6ab31878c429e577416b0f51041e"
   integrity sha512-zzNB2Hdv+i3zIO8GPN1oU6BeqRJXQSwKgmdJXNf735Fsplxk1bjmqdYNXHamge7uHTb6M+X6aY9Mtjbrf/4S2g==
 
+expo-local-authentication@~55.0.18:
+  version "55.0.18"
+  resolved "https://registry.yarnpkg.com/expo-local-authentication/-/expo-local-authentication-55.0.18.tgz#ef71d3f338cae3902615972ae713f38c3f172c82"
+  integrity sha512-3ybbTDvEOHR/H8HF65iavsnlgVvI0FYo9JREiLQzaq8/s4nfJ0KZN5e9e+KUfSwqOhdqf8urf3jlAHRZQYUXSg==
+  dependencies:
+    invariant "^2.2.4"
+
 expo-manifests@~55.0.19:
   version "55.0.19"
   resolved "https://registry.yarnpkg.com/expo-manifests/-/expo-manifests-55.0.19.tgz#322a17632200be72bcba8bccb65193c873e4d27c"
@@ -3773,6 +3780,11 @@ expo-notifications@~55.0.25:
     badgin "^1.1.5"
     expo-application "~55.0.17"
     expo-constants "~55.0.17"
+
+expo-secure-store@~55.0.18:
+  version "55.0.18"
+  resolved "https://registry.yarnpkg.com/expo-secure-store/-/expo-secure-store-55.0.18.tgz#85a6b696f125d4e8b108531aa1ef7575f4b58e5f"
+  integrity sha512-shKZYQf7/KA45Z3oEIXUkXdrfRNFxsc+fJC182bbpuKqS4nLPZslsJUqruQ937Zkkbev126N/QJv+zmd6FpZjA==
 
 expo-server@^55.0.11:
   version "55.0.11"

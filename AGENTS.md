@@ -118,7 +118,7 @@
 - `postinstall` moves `@react-native/gradle-plugin` from Foojay 0.5 to 1.0 so RN 0.83 compiles under Gradle 9.
   The local EAS worker reinstalls dependencies in a copy of the repo, so the patch applies there too.
 - Both commands run `yarn check:release` first: bump `version`, `ios.buildNumber` and `android.versionCode`
-  together.
+  together, and write the release into `changelog.md` under `## <version> — <date>`, or the build stops.
 
 ## Product direction (2026)
 - Local-first always (privacy + offline usability).

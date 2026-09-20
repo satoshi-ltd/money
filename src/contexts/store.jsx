@@ -287,8 +287,12 @@ const StoreProvider = ({ children }) => {
     [consolidatedLedger, state.scheduledTxs, state.settings, today],
   );
   const appPreferences = useMemo(
-    () => ({ language: state.settings?.language, theme: state.settings?.theme }),
-    [state.settings?.language, state.settings?.theme],
+    () => ({
+      language: state.settings?.language,
+      textSize: state.settings?.textSize,
+      theme: state.settings?.theme,
+    }),
+    [state.settings?.language, state.settings?.textSize, state.settings?.theme],
   );
   const amountSettings = useMemo(
     () => ({ baseCurrency, maskAmount: state.settings?.maskAmount }),

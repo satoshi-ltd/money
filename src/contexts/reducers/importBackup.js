@@ -11,6 +11,8 @@ export const importBackup = async (
   const keepRates = cachedBaseCurrency === migrated.settings.baseCurrency;
   migrated.settings.ratesBaseCurrency = keepRates ? cachedBaseCurrency : undefined;
   migrated.settings.pin = state.settings?.pin;
+  // The PIN never leaves this phone, so neither does the fingerprint that stands in for it.
+  migrated.settings.biometricUnlockEnabled = state.settings?.biometricUnlockEnabled;
 
   const { rates: nextRates, seeded } = ratesOrSeed(
     keepRates ? state.rates : undefined,

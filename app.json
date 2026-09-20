@@ -19,7 +19,8 @@
       "usesIcloudStorage": true,
       "infoPlist": {
         "LSMinimumSystemVersion": "15.1",
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSFaceIDUsageDescription": "Môney uses Face ID to unlock your ledger on this device."
       }
     },
     "android": {
@@ -56,7 +57,14 @@
       ],
       "expo-font",
       "@react-native-community/datetimepicker",
-      "expo-sharing"
+      "expo-sharing",
+      "expo-secure-store",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Môney uses Face ID to unlock your ledger on this device."
+        }
+      ]
     ],
     "extra": {
       "eas": {

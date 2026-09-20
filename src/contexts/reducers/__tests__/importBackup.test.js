@@ -95,4 +95,20 @@ describe('contexts/reducers/importBackup', () => {
 
     expect(store.get('settings').value.pin).toBeUndefined();
   });
+  test('an imported backup cannot arm or disarm the fingerprint on this phone', async () => {
+    const { state, store } = await createState({ biometricUnlockEnabled: true, pin: '1234' });
+
+    await importBackup(backup('EUR', { biometricUnlockEnabled: false }), [state, jest.fn()]);
+
+    expect(store.get('settings').value.biometricUnlockEnabled).toBe(true);
+    expect(store.get('settings').value.pin).toBe('1234');
+  });
+
+  test('a phone with no fingerprint armed does not get one from a backup that had it', async () => {
+    const { state, store } = await createState({ pin: '1234' });
+
+    await importBackup(backup('EUR', { biometricUnlockEnabled: true }), [state, jest.fn()]);
+
+    expect(store.get('settings').value.biometricUnlockEnabled).toBeFalsy();
+  });
 });

@@ -1,4 +1,4 @@
-import { C, L10N } from '../../modules';
+import { C, L10N, TEXT_SCALES } from '../../modules';
 
 const { PRIVACY_URL, SECURITY_URL, TERMS_URL } = C;
 
@@ -31,6 +31,19 @@ const APPEARANCE_OPTIONS = [
   { label: L10N.APPEARANCE_DARK, symbol: '●', symbolSize: 'lg', value: 'dark' },
 ];
 
+// A function, not a constant: L10N reads the language at call time, and a constant freezes the labels at boot.
+const TEXT_SIZE_OPTIONS = () => {
+  const labels = [L10N.TEXT_SIZE_SMALL, L10N.TEXT_SIZE_DEFAULT, L10N.TEXT_SIZE_LARGE, L10N.TEXT_SIZE_LARGEST];
+  const symbolSizes = ['xs', 'sm', 'md', 'lg'];
+
+  return TEXT_SCALES.map((value, index) => ({
+    label: labels[index],
+    symbol: 'A',
+    symbolSize: symbolSizes[index],
+    value,
+  }));
+};
+
 const LANGUAGE_OPTIONS = [
   { label: 'English', symbol: 'EN', value: 'en' },
   { label: 'Español', symbol: 'ES', value: 'es' },
@@ -54,4 +67,4 @@ const ABOUT = () => [
   },
 ];
 
-export { ABOUT, APPEARANCE_OPTIONS, DATA, LANGUAGE_OPTIONS };
+export { ABOUT, APPEARANCE_OPTIONS, DATA, LANGUAGE_OPTIONS, TEXT_SIZE_OPTIONS };

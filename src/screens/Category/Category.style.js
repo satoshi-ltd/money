@@ -40,7 +40,8 @@ export const getStyles = (colors) =>
     row: {
       alignItems: 'center',
       gap: theme.spacing.xs,
-      height: rowHeight,
+      minHeight: rowHeight,
+      paddingVertical: theme.spacing.xxs,
     },
     divider: {
       borderTopColor: colors.border,
@@ -48,6 +49,7 @@ export const getStyles = (colors) =>
     },
     track: {
       backgroundColor: colors.surface,
+      flexShrink: 1,
       height: 5,
       width: TRACK_WIDTH,
     },
@@ -56,15 +58,17 @@ export const getStyles = (colors) =>
       height: '100%',
     },
     count: {
-      width: 30,
+      flexShrink: 0,
+      minWidth: 30,
     },
     amount: {
       alignItems: 'flex-end',
-      width: 72,
+      flexShrink: 0,
+      minWidth: 72,
     },
-
     date: {
-      width: 40,
+      flexShrink: 0,
+      minWidth: 40,
     },
     entryText: {
       gap: 1,

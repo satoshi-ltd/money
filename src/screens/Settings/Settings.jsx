@@ -1,16 +1,17 @@
 import PropTypes from 'prop-types';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Linking } from 'react-native';
 import { useScrollToTop } from '@react-navigation/native';
 
 import { Colophon } from './components';
 import { getLatestRates } from './helpers';
-import { ABOUT, APPEARANCE_OPTIONS, DATA, LANGUAGE_OPTIONS } from './Settings.constants';
+import { ABOUT, APPEARANCE_OPTIONS, DATA, LANGUAGE_OPTIONS, TEXT_SIZE_OPTIONS } from './Settings.constants';
 import { getStyles } from './Settings.style';
 import { Chip, Eyebrow, Icon, Masthead, Pressable, Screen, Setting, SettingSelect, Text, View } from '../../components';
 import { useApp, useStore } from '../../contexts';
 import {
   backupAge,
+  biometricName,
   C,
   currencySymbol,
   eventEmitter,
@@ -19,7 +20,7 @@ import {
   verboseDate,
 } from '../../modules';
 import { setLanguage } from '../../i18n';
-import { BackupService, NotificationsService } from '../../services';
+import { BackupService, BiometricAuthService, NotificationsService } from '../../services';
 
 const { EVENT } = C;
 
@@ -28,10 +29,11 @@ const Settings = ({ navigation = {} }) => {
   useScrollToTop(scrollRef);
 
   const store = useStore();
-  const { colors, themePreference } = useApp();
+  const { colors, textScale, themePreference } = useApp();
   const style = useMemo(() => getStyles(colors), [colors]);
 
   const [activity, setActivity] = useState({});
+  const [biometric, setBiometric] = useState({});
 
   const {
     accounts = [],
@@ -44,7 +46,63 @@ const Settings = ({ navigation = {} }) => {
     txs = [],
   } = store;
 
-  const { backupAt, baseCurrency, language = 'en', lastRatesUpdate = '', reminders } = settings;
+  const {
+    backupAt,
+    baseCurrency,
+    biometricUnlockEnabled = false,
+    language = 'en',
+    lastRatesUpdate = '',
+    pin,
+    reminders,
+  } = settings;
+
+  useEffect(() => {
+    let active = true;
+
+    const readAvailability = async () => {
+      const availability = await BiometricAuthService.isAvailable()['catch'](() => undefined);
+      if (active) setBiometric({ available: !!availability?.available, kind: availability?.kind });
+    };
+
+    readAvailability();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const handleBiometricUnlock = async (next) => {
+    setActivity((prev) => ({ ...(prev || {}), biometricUnlock: true }));
+    try {
+      if (!next) {
+        await BiometricAuthService.clearPin();
+        await updateSettings({ biometricUnlockEnabled: false });
+        return;
+      }
+
+      // The PIN is what the reader hands back, so there is nothing to store until one exists.
+      if (!pin) {
+        eventEmitter.emit(EVENT.NOTIFICATION, { error: true, title: L10N.BIOMETRIC_UNLOCK_REQUIRES_PIN });
+        return;
+      }
+
+      await BiometricAuthService.savePin(pin);
+      await updateSettings({ biometricUnlockEnabled: true });
+    } catch (error) {
+      const code = error?.code;
+      if (code === 'ERR_BIOMETRIC_CANCELED') return;
+
+      eventEmitter.emit(EVENT.NOTIFICATION, {
+        error: true,
+        title:
+          code === 'ERR_BIOMETRIC_NOT_AVAILABLE' || code === 'ERR_BIOMETRIC_NOT_ENROLLED' || code === 'ERR_BIOMETRIC_WEAK'
+            ? L10N.BIOMETRIC_UNLOCK_NOT_AVAILABLE
+            : L10N.ERROR_TRY_AGAIN,
+      });
+    } finally {
+      setActivity((prev) => ({ ...(prev || {}), biometricUnlock: false }));
+    }
+  };
 
   const handleUpdateRates = async () => {
     setActivity((prev) => ({ ...(prev || {}), handleUpdateRates: true }));
@@ -123,6 +181,8 @@ const Settings = ({ navigation = {} }) => {
   const handleTheme = (next) => {
     updateTheme(next);
   };
+
+  const handleTextSize = (next) => updateSettings({ textSize: next });
 
   const currencyOptions = Object.keys(C.SYMBOL).map((code) => ({
     label: L10N.CURRENCY_NAME[code] || code,
@@ -316,15 +376,25 @@ const Settings = ({ navigation = {} }) => {
         </View>
 
         <View style={style.group}>
-          <Eyebrow style={style.groupLabel}>{L10N.PREFERENCES}</Eyebrow>
+          <Eyebrow style={style.groupLabel}>{L10N.APPEARANCE}</Eyebrow>
           <SettingSelect
             options={APPEARANCE_OPTIONS}
-            title={L10N.APPEARANCE}
+            title={L10N.THEME}
             value={themePreference}
             onChange={handleTheme}
           />
           <SettingSelect
             divider
+            options={TEXT_SIZE_OPTIONS()}
+            title={L10N.TEXT_SIZE}
+            value={textScale}
+            onChange={handleTextSize}
+          />
+        </View>
+
+        <View style={style.group}>
+          <Eyebrow style={style.groupLabel}>{L10N.PREFERENCES}</Eyebrow>
+          <SettingSelect
             options={LANGUAGE_OPTIONS}
             title={L10N.LANGUAGE}
             value={language}
@@ -348,15 +418,24 @@ const Settings = ({ navigation = {} }) => {
           />
           <Setting
             divider
-            right={
-              <Text medium={backupReminderEnabled} size="s" tone={backupReminderEnabled ? undefined : 'muted'}>
-                {backupReminderEnabled ? L10N.ON : L10N.OFF}
-              </Text>
-            }
             subtitle={backupReminderSubtitle}
             title={L10N.REMINDER_BACKUP}
-            type="action"
-            onPress={() => handleChangeReminder(!backupReminderEnabled)}
+            type="toggle"
+            value={backupReminderEnabled}
+            onValueChange={handleChangeReminder}
+          />
+        </View>
+
+        <View style={style.group}>
+          <Eyebrow style={style.groupLabel}>{L10N.UNLOCK}</Eyebrow>
+          <Setting
+            activity={activity?.biometricUnlock}
+            disabled={!biometricUnlockEnabled && biometric.available !== true}
+            subtitle={biometric.available === false ? L10N.BIOMETRIC_UNLOCK_NOT_AVAILABLE : undefined}
+            title={biometricName(biometric.kind)}
+            type="toggle"
+            value={biometricUnlockEnabled}
+            onValueChange={handleBiometricUnlock}
           />
         </View>
 

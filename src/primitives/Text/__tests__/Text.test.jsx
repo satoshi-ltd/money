@@ -4,9 +4,18 @@ import TestRenderer, { act } from 'react-test-renderer';
 
 import Text from '../Text';
 
+let mockTextScale;
+
 jest.mock('../../../contexts', () => ({
-  useApp: () => ({ colors: { text: '#15140F', textMuted: '#8A8474', positive: '#A87B14' } }),
+  useApp: () => ({
+    colors: { text: '#15140F', textMuted: '#8A8474', positive: '#A87B14' },
+    textScale: mockTextScale,
+  }),
 }));
+
+beforeEach(() => {
+  mockTextScale = undefined;
+});
 
 const render = (props, children = 'hola') => {
   let renderer;
@@ -58,5 +67,33 @@ describe('primitives/Text', () => {
 
   test('muted tone is available for times, cents and labels', () => {
     expect(render({ tone: 'muted' }).color).toBe('#8A8474');
+  });
+
+  test('the reader size multiplies every ramp, copy and figures alike', () => {
+    mockTextScale = 1.3;
+
+    expect(render({ size: 'm' }).fontSize).toBe(18);
+    expect(render({ figure: 'hero' }).fontSize).toBe(47);
+  });
+
+  test('the line height grows with the size, so scaled copy does not collide', () => {
+    const regular = render({ size: 'm' });
+    mockTextScale = 1.3;
+    const large = render({ size: 'm' });
+
+    expect(large.lineHeight).toBe(Math.round(regular.lineHeight * 1.3));
+  });
+
+  // Chip, Masthead and the amount fields set their own fontSize, and they have to scale like the rest.
+  test('a size handed in by the caller scales too', () => {
+    mockTextScale = 1.15;
+
+    expect(render({ style: { fontSize: 20 } }).fontSize).toBe(23);
+  });
+
+  test('the default size leaves the ramp exactly where the theme put it', () => {
+    mockTextScale = 1;
+
+    expect(render({ size: 'm' }).fontSize).toBe(14);
   });
 });

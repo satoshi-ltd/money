@@ -1,5 +1,5 @@
 import { getFingerprint } from './modules/getFingerprint';
-import { C } from '../modules';
+import { C, DEFAULT_TEXT_SCALE } from '../modules';
 
 const { CURRENCY } = C;
 
@@ -11,6 +11,7 @@ const RATES_SCHEMA = 4;
 const DEFAULTS = {
   settings: {
     baseCurrency: CURRENCY,
+    biometricUnlockEnabled: false,
     fingerprint: getFingerprint(),
     language: undefined,
     maskAmount: false,
@@ -47,6 +48,7 @@ const DEFAULTS = {
     },
     schemaVersion: SCHEMA_VERSION,
     statsRangeMonths: 12,
+    textSize: DEFAULT_TEXT_SCALE,
     theme: 'light',
   },
   rates: {},

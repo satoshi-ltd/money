@@ -3,6 +3,7 @@ import { TextInput } from 'react-native';
 
 import { getStyles } from './Input.styles';
 import { useApp } from '../../contexts';
+import { scaledType } from '../../modules';
 
 const Input = React.forwardRef(
   (
@@ -23,7 +24,7 @@ const Input = React.forwardRef(
     },
     ref,
   ) => {
-    const { colors } = useApp();
+    const { colors, textScale } = useApp();
     const styles = useMemo(() => getStyles(colors), [colors]);
     const [focused, setFocused] = React.useState(false);
 
@@ -43,6 +44,7 @@ const Input = React.forwardRef(
     };
 
     const resolvedPlaceholder = placeholder !== undefined ? placeholder : focused ? undefined : placeholderWhenBlur;
+    const composed = [styles.base, grow ? styles.grow : null, multiline ? styles.multiline : null, style];
 
     return (
       <TextInput
@@ -60,7 +62,7 @@ const Input = React.forwardRef(
         onChangeText={handleChangeText}
         onFocus={handleFocus}
         {...props}
-        style={[styles.base, grow ? styles.grow : null, multiline ? styles.multiline : null, style]}
+        style={[composed, scaledType(composed, textScale)]}
       />
     );
   },

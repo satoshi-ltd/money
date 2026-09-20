@@ -68,4 +68,14 @@ describe('contexts/modules/migrateState', () => {
     expect(state.scheduledTxs).toEqual([]);
     expect(state.txs).toEqual([]);
   });
+
+  test('a text size outside the steps is pulled back onto the nearest one', () => {
+    expect(migrateState({ settings: { textSize: 99 } }).settings.textSize).toBe(1.3);
+    expect(migrateState({ settings: { textSize: 'huge' } }).settings.textSize).toBe(1);
+    expect(migrateState({ settings: {} }).settings.textSize).toBe(1);
+  });
+
+  test('a stored step survives the migration untouched', () => {
+    expect(migrateState({ settings: { textSize: 1.15 } }).settings.textSize).toBe(1.15);
+  });
 });

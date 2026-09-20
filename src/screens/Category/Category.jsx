@@ -71,7 +71,7 @@ const Category = ({ navigation: { goBack, navigate } = {}, route: { params = {} 
             <View style={style.track}>
               <View style={[style.fill, { width: `${Math.max(2, Math.round((value * 100) / peak))}%` }]} />
             </View>
-            <Text align="right" figure="xs" style={style.count} tone="muted">
+            <Text align="right" figure="xs" numberOfLines={1} style={style.count} tone="muted">
               {`${count} ×`}
             </Text>
             <View style={style.amount}>
@@ -90,7 +90,7 @@ const Category = ({ navigation: { goBack, navigate } = {}, route: { params = {} 
 
         {latest.map(({ account, hash, timestamp, title: label, value }, index) => (
           <View key={hash || index} row style={[style.row, index > 0 && style.divider]}>
-            <Text figure="xs" style={style.date} tone="muted">
+            <Text figure="xs" numberOfLines={1} style={style.date} tone="muted">
               {verboseDate(new Date(timestamp), { day: 'numeric', month: 'short' })}
             </Text>
             <View flex style={style.entryText}>

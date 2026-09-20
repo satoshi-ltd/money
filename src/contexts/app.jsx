@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useColorScheme } from 'react-native';
 
 import { detectDeviceLanguage, formatDateTime, translate } from '../i18n';
+import { clampTextScale } from '../modules';
 import { theme } from '../theme';
 import { useAppPreferences } from './store';
 
@@ -19,6 +20,7 @@ export const useApp = () => {
 
   return {
     colors,
+    textScale: clampTextScale(settings.textSize),
     theme: mode,
     themePreference: preference,
     language,

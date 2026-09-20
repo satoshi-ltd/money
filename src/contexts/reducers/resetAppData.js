@@ -1,9 +1,12 @@
-import { NotificationsService } from '../../services';
+import { BiometricAuthService, NotificationsService } from '../../services';
 import { DEFAULTS } from '../store.constants';
 
 export const resetAppData = async ([state, setState]) => {
   // Best-effort: cancel Money-scoped notifications without prompting for permission.
   NotificationsService.clearAll?.().catch(() => {});
+
+  // The PIN it unlocks is about to be gone, so the copy behind the fingerprint has to go with it.
+  await BiometricAuthService.clearPin().catch(() => {});
 
   // Reset persisted storage back to defaults.
   await state.store.wipe();

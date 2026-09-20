@@ -1,4 +1,5 @@
 import { parseAccount } from '../reducers/modules';
+import { clampTextScale } from '../../modules';
 import { DEFAULTS, RATES_SCHEMA, SCHEMA_VERSION } from '../store.constants';
 
 const ensureArray = (value) => (Array.isArray(value) ? value : []);
@@ -27,6 +28,8 @@ export const migrateState = ({ accounts, rates, scheduledTxs, schemaVersion, set
       ...DEFAULTS.settings.autoAmount,
       ...(settings?.autoAmount || {}),
     },
+    // A backup can carry any number here, and an unbounded one renders the app unusable.
+    textSize: clampTextScale(settings?.textSize),
   };
   // Read before DEFAULTS lends its own: merged settings always look current, and the gate needs what was stored.
   const storedSchema = Number.isFinite(settings?.schemaVersion) ? settings.schemaVersion : schemaVersion;

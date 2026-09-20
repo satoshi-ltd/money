@@ -22,4 +22,10 @@ if (build !== expo.ios.buildNumber) {
   fail(`android.versionCode ${build} and ios.buildNumber ${expo.ios.buildNumber} disagree`);
 }
 
+const changelog = path.join(root, 'changelog.md');
+if (!fs.existsSync(changelog)) fail('changelog.md is missing');
+if (!fs.readFileSync(changelog, 'utf8').includes(`## ${version} —`)) {
+  fail(`changelog.md has no entry for ${version}`);
+}
+
 console.log(`Release manifests agree: v${version}, build ${build}`);

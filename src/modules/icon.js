@@ -4,6 +4,8 @@ export const ICON = {
   ALERT: 'triangle-alert',
   BACK: 'chevron-left',
   BACKSPACE: 'delete',
+  BIOMETRIC: 'fingerprint',
+  BIOMETRIC_FACE: 'scan-face',
   CHECK: 'check',
   CLOSE: 'x',
   DOWN: 'chevron-down',

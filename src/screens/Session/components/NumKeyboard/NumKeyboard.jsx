@@ -5,8 +5,9 @@ import { style } from './NumKeyboard.style';
 import { Eyebrow, Icon, Pressable, Text, View } from '../../../../components';
 import { ICON } from '../../../../modules';
 
+const KEY_BIOMETRIC = 'biometric';
 const KEY_DELETE = 'delete';
-const KEYS = [1, 2, 3, 4, 5, 6, 7, 8, 9, undefined, 0, KEY_DELETE];
+const KEYS = [1, 2, 3, 4, 5, 6, 7, 8, 9, KEY_BIOMETRIC, 0, KEY_DELETE];
 const LETTERS = {
   2: 'ABC',
   3: 'DEF',
@@ -18,9 +19,10 @@ const LETTERS = {
   9: 'WXYZ',
 };
 
-const NumKeyboard = ({ onDelete, onPress }) => {
+const NumKeyboard = ({ biometricIcon = ICON.BIOMETRIC, onBiometric, onDelete, onPress }) => {
   const handlerFor = (key) => {
     if (typeof key === 'number') return () => onPress(key);
+    if (key === KEY_BIOMETRIC && onBiometric) return onBiometric;
     if (key === KEY_DELETE && onDelete) return onDelete;
     return undefined;
   };
@@ -35,6 +37,8 @@ const NumKeyboard = ({ onDelete, onPress }) => {
                 <Text figure="xl">{key}</Text>
                 <Eyebrow>{LETTERS[key] || ' '}</Eyebrow>
               </>
+            ) : key === KEY_BIOMETRIC && onBiometric ? (
+              <Icon name={biometricIcon} size="l" testID="numkeyboard-biometric" />
             ) : key === KEY_DELETE && onDelete ? (
               <Icon name={ICON.BACKSPACE} size="l" tone="muted" testID="numkeyboard-delete" />
             ) : undefined}
@@ -46,6 +50,8 @@ const NumKeyboard = ({ onDelete, onPress }) => {
 };
 
 NumKeyboard.propTypes = {
+  biometricIcon: PropTypes.string,
+  onBiometric: PropTypes.func,
   onDelete: PropTypes.func,
   onPress: PropTypes.func.isRequired,
 };

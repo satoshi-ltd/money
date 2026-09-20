@@ -58,6 +58,7 @@ describe('services/BackupService', () => {
       settings: {
         baseCurrency: 'EUR',
         pin: '4821',
+        biometricUnlockEnabled: true,
         theme: 'dark',
         autoCategory: { rules: { coffee: 1 }, stats: {} },
         autoAccount: { rules: {}, stats: {} },
@@ -70,6 +71,8 @@ describe('services/BackupService', () => {
 
     expect(data).not.toContain('4821');
     expect(settings.pin).toBeUndefined();
+    // Whether this phone has a reader armed says nothing about the ledger, and everything about the phone.
+    expect(settings.biometricUnlockEnabled).toBeUndefined();
     expect(settings.autoCategory).toBeUndefined();
     expect(settings.autoAccount).toBeUndefined();
     expect(settings.autoAmount).toBeUndefined();

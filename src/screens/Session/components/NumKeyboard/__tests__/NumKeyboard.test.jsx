@@ -12,7 +12,7 @@ jest.mock('../../../../../components', () => {
     View: ({ flex, ...props }) => MockReact.createElement(ReactNative.View, props),
     Text: ({ bold, medium, size, tone, uppercase, ...props }) => MockReact.createElement(ReactNative.Text, props),
     Pressable: (props) => MockReact.createElement(ReactNative.View, { ...props, testID: props.testID || 'nk-slot' }),
-    Icon: ({ name, testID }) => MockReact.createElement(ReactNative.View, { testID, accessibilityLabel: name }),
+    Icon: ({ name, testID, tone }) => MockReact.createElement(ReactNative.View, { testID, tone, accessibilityLabel: name }),
   };
 });
 
@@ -51,8 +51,18 @@ describe('screens/Session/NumKeyboard', () => {
     expect(onDelete).toHaveBeenCalled();
   });
 
-  test('the pin is the only way in: no biometric key', () => {
-    const root = render({ onBiometric: () => {} });
+  test('the empty slot becomes a fingerprint key when one is offered', () => {
+    const onBiometric = jest.fn();
+    const root = render({ onBiometric });
+
+    const key = root.findByProps({ testID: 'numkeyboard-biometric' });
+    act(() => pressableOver(key).props.onPress());
+
+    expect(onBiometric).toHaveBeenCalled();
+  });
+
+  test('without a handler the slot stays empty, and the pin is the only way in', () => {
+    const root = render({});
 
     expect(root.findAllByProps({ testID: 'numkeyboard-biometric' })).toHaveLength(0);
     expect(root.findAllByProps({ accessibilityLabel: 'fingerprint' })).toHaveLength(0);
@@ -72,5 +82,11 @@ describe('screens/Session/NumKeyboard', () => {
 
     const slots = root.findAllByProps({ testID: 'nk-slot' }).filter((node) => typeof node.type === 'string');
     expect(slots).toHaveLength(12);
+  });
+
+  test('the fingerprint key is set in the same ink as the digits, not the accent', () => {
+    const root = render({ onBiometric: () => {} });
+
+    expect(root.findByProps({ testID: 'numkeyboard-biometric' }).props.tone).toBeUndefined();
   });
 });
