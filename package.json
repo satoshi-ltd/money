@@ -4,7 +4,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "start": "expo start",
+    "start": "expo start --dev-client --scheme money",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "lint": "eslint --cache --format stylish --ext .jsx,.js src",
