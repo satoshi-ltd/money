@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { FormTransaction, FormTransfer } from './components';
-import { createTransaction, createTransfer } from './helpers';
+import { createTransaction, createTransfer, isTransactionComplete } from './helpers';
 import { style } from './Transaction.style';
 import { Button, Panel, SegmentedToggle, View } from '../../components';
 import { useStore } from '../../contexts';
@@ -63,7 +63,7 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
     setAmountTouched(false);
     setTypeTouched(false);
     setTypeAutoLocked(false);
-    setState((current) => ({ ...current, form: { ...current.form, category: undefined }, valid: false }));
+    setState((current) => ({ ...current, form: { ...current.form, category: undefined } }));
   };
 
   const handleAutoSelectAccount = (next) => {
@@ -82,11 +82,7 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
     setTypeTouched(true);
     setTypeAutoLocked(true);
     setCategoryTouched(false);
-    setState((current) => ({
-      ...current,
-      form: { ...current.form, category: undefined },
-      valid: false,
-    }));
+    setState((current) => ({ ...current, form: { ...current.form, category: undefined } }));
   };
 
   const handleManualCategorySelect = () => setCategoryTouched(true);
@@ -127,7 +123,8 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
     }, TIMEOUT.BUSY);
   };
 
-  const { valid } = state;
+  // Derived, not stored: the screen moves the form too (default category, type, account) and a flag went stale.
+  const valid = isTransfer ? state.valid : isTransactionComplete(state.form);
   const Form = isTransfer ? FormTransfer : FormTransaction;
   const title = isTransfer ? L10N.SWAP : txType === INCOME ? L10N.INCOME : L10N.EXPENSE;
 
@@ -169,7 +166,7 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
             : {})}
           {...state}
           debounce={200}
-          onChange={(value) => setState({ ...state, ...value })}
+          onChange={(value) => setState((current) => ({ ...current, ...value }))}
         />
       ) : null}
 

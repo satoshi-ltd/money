@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.0.61 — 2026-09-21
+
+- Read the current month's rates from the file dated today, falling back to yesterday and the day before, and treat a download that misses it as no download at all. Two things went wrong at once: a sync could come back with an older month and without the current one, stamp itself as fresh and report success; and the CDN in front of the feed held the `latest` alias seven days behind and served it with a clean 200. Either way every balance was valued at a stale close: 7.04 BTC read 545,901 dollars at the 14th's 77,542 while the day stood at 81,240. Dated files are immutable, so no cache can age them, and the current month now has to answer before anything else is kept; otherwise the app keeps what it had, leaves the last-update date alone, and says so.
+- Keep Save available whenever the fields are complete. Whether a transaction could be saved was a flag the form set as you typed, and the screen moved the form without touching it: choosing another account or switching between expense and income put the default category back but left the flag false, and a cloned transaction whose only change was the account could never be saved. The screens now read completeness from the fields themselves.
+- Start Metro the way the sibling apps do, `expo start --dev-client --scheme money`, so pressing `a` opens the development client by its own scheme instead of the derived `exp+` one.
+
 ## 3.0.60 — 2026-09-20
 
 - Set the fingerprint key on the lock screen in the same ink as the digits beside it. It was drawn in the accent, which read as a warning rather than as one more key on the keypad.

@@ -19,7 +19,11 @@ jest.mock('../components', () => ({
   FormTransfer: () => null,
 }));
 
-jest.mock('../helpers', () => ({ createTransaction: jest.fn(), createTransfer: jest.fn() }));
+jest.mock('../helpers', () => ({
+  createTransaction: jest.fn(),
+  createTransfer: jest.fn(),
+  isTransactionComplete: jest.requireActual('../helpers/isTransactionComplete').isTransactionComplete,
+}));
 
 jest.mock('../../../components', () => {
   const ReactNative = require('react-native');
@@ -49,9 +53,19 @@ describe('screens/Transaction default category', () => {
   beforeEach(() => {
     mockStore = {
       accounts: [A1, A2],
-      txs: [tx('a1', 1, 1), tx('a1', 1, 2), tx('a1', 8, 3), tx('a2', 7, 4), tx('a2', 7, 5)],
+      txs: [
+        tx('a1', 1, 1),
+        tx('a1', 1, 2),
+        tx('a1', 8, 3),
+        tx('a2', 7, 4),
+        tx('a2', 7, 5),
+        { ...tx('a1', 3, 6), type: 1 },
+      ],
     };
   });
+
+  const saveButton = () =>
+    renderer.root.findAllByProps({ testID: 'button' }).find((node) => typeof node.type === 'function');
 
   afterEach(() => {
     act(() => renderer?.unmount());
@@ -73,6 +87,40 @@ describe('screens/Transaction default category', () => {
 
     expect(mockForm.account.hash).toBe('a2');
     expect(mockForm.form.category).toBe(10);
+  });
+
+  describe('the save button', () => {
+    const filled = { form: { category: 10, title: 'Coffee', value: '40' }, valid: true };
+
+    test('is disabled while a field is missing, and only then', () => {
+      render();
+      expect(saveButton().props.disabled).toBe(true);
+
+      act(() => mockForm.onChange({ form: { category: 10, title: '', value: '40' }, valid: false }));
+      expect(saveButton().props.disabled).toBe(true);
+
+      act(() => mockForm.onChange(filled));
+      expect(saveButton().props.disabled).toBe(false);
+    });
+
+    // The default category came back after the switch, but the stored flag stayed false until the next keystroke.
+    test('stays available after you change the account, once the default category is back', () => {
+      render();
+      act(() => mockForm.onChange(filled));
+      act(() => mockForm.onSelectAccount(A2));
+
+      expect(mockForm.form.category).toBe(7);
+      expect(saveButton().props.disabled).toBe(false);
+    });
+
+    test('stays available after you switch the type, once that type has a default category', () => {
+      render();
+      act(() => mockForm.onChange(filled));
+      act(() => mockForm.onTypeChange(1));
+
+      expect(mockForm.form.category).toBe(3);
+      expect(saveButton().props.disabled).toBe(false);
+    });
   });
 
   test('choosing another account yourself starts the category over from its own habit', () => {

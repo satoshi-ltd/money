@@ -19,7 +19,7 @@ import {
   suggestCategory,
   verboseDate,
 } from '../../../modules';
-import { queryCategories } from '../helpers';
+import { isTransactionComplete, queryCategories } from '../helpers';
 
 const EXPENSE = C?.TX?.TYPE?.EXPENSE ?? 0;
 const INCOME = C?.TX?.TYPE?.INCOME ?? 1;
@@ -61,11 +61,7 @@ const FormTransaction = ({
   const [openDate, setOpenDate] = useState(false);
   const [accepted, setAccepted] = useState();
 
-  const computeValid = (next) =>
-    (showCategory ? next.category !== undefined : true) &&
-    typeof next.title === 'string' &&
-    next.title.trim() !== '' &&
-    next.value > 0;
+  const computeValid = (next) => isTransactionComplete(next, { showCategory });
 
   const handleField = (field, fieldValue) => {
     let next = { ...safeForm, [field]: fieldValue };

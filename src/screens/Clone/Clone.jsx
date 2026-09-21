@@ -6,6 +6,7 @@ import { Button, Panel, View } from '../../components';
 import { useStore } from '../../contexts';
 import { C, eventEmitter, L10N } from '../../modules';
 import { FormTransaction } from '../Transaction/components'; // ! TODO: Should be a /component
+import { isTransactionComplete } from '../Transaction/helpers';
 
 const {
   TX: {
@@ -106,7 +107,7 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack } = {} }) => 
         <Button disabled={disableClone} variant="outlined" onPress={() => handleSubmit({ clone: true })} grow>
           {L10N.DUPLICATE}
         </Button>
-        <Button disabled={!state.valid} onPress={() => handleSubmit({ edit: true })} grow>
+        <Button disabled={!isTransactionComplete(state.form)} onPress={() => handleSubmit({ edit: true })} grow>
           {L10N.SAVE}
         </Button>
       </View>

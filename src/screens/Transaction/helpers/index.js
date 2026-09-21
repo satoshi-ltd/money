@@ -3,5 +3,6 @@ export * from './computeTransferExchange';
 export * from './createTransfer';
 export * from './getAccount';
 export * from './getCurrency';
+export * from './isTransactionComplete';
 export * from './queryAvailableAccounts';
 export * from './queryCategories';
