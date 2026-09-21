@@ -22,7 +22,17 @@ const CURRENT = afterSeed('15').toISOString().slice(0, 7);
 // A download already made inside the current month: nothing older is still provisional.
 const SYNCED = afterSeed('15').toISOString();
 
-const dateOf = (url) => url.match(/currency-api@([^/]+)\//)[1];
+// jsdelivr carries the date after the @, the pages.dev mirror as its subdomain.
+const dateOf = (url) => url.match(/currency-api@([^/]+)\//)?.[1] ?? url.match(/^https:\/\/([^.]+)\.currency-api/)?.[1];
+
+// Under the fake clock: the dated file the current month is read from.
+const TODAY = () => new Date().toISOString().slice(0, 10);
+const daysBack = (n) => {
+  const at = new Date();
+  at.setUTCDate(at.getUTCDate() - n);
+  return at.toISOString().slice(0, 10);
+};
+const isToday = (url) => [TODAY(), daysBack(1), daysBack(2), 'latest'].includes(dateOf(url));
 
 // The day a month ends on: it has to be a date that exists, and the next one has to belong to another month.
 const isClose = (date, key) => {
@@ -153,7 +163,7 @@ describe('services/RatesService fetch', () => {
     await ServiceRates.get({ baseCurrency: 'USD', known: FULL, lastRatesUpdate: SYNCED });
 
     expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(dateOf(global.fetch.mock.calls[0][0])).toBe('latest');
+    expect(dateOf(global.fetch.mock.calls[0][0])).toBe(TODAY());
   });
 
   // The cursor stepped from the dataset's start day, so on the 1st the current month never entered the list:
@@ -165,7 +175,7 @@ describe('services/RatesService fetch', () => {
     const rates = await ServiceRates.get({ baseCurrency: 'USD', known: FULL, lastRatesUpdate: afterSeed('01').toISOString() });
 
     expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(dateOf(global.fetch.mock.calls[0][0])).toBe('latest');
+    expect(dateOf(global.fetch.mock.calls[0][0])).toBe(TODAY());
     expect(rates[CURRENT].THB).toBe(32);
   });
 
@@ -174,13 +184,13 @@ describe('services/RatesService fetch', () => {
     global.fetch = jest.fn(async () => answer({ usd: 1, thb: 32 }));
 
     await ServiceRates.get({ baseCurrency: 'USD' });
-    const dates = global.fetch.mock.calls.map(([url]) => dateOf(url));
+    const [today, ...closes] = global.fetch.mock.calls.map(([url]) => dateOf(url));
 
-    expect(dates.pop()).toBe('latest');
-    expect(dates[0]).toBe('2024-03-31');
-    expect(dates).toContain('2026-02-28');
-    expect(dates).toContain('2026-04-30');
-    expect(dates.every((date) => isClose(date, date.slice(0, 7)))).toBe(true);
+    expect(today).toBe(TODAY());
+    expect(closes[0]).toBe('2024-03-31');
+    expect(closes).toContain('2026-02-28');
+    expect(closes).toContain('2026-04-30');
+    expect(closes.every((date) => isClose(date, date.slice(0, 7)))).toBe(true);
   });
 
   // The month in progress is stored from `latest`, so it closes holding whatever day the app was last opened on.
@@ -195,8 +205,8 @@ describe('services/RatesService fetch', () => {
     const dates = global.fetch.mock.calls.map(([url]) => dateOf(url));
 
     expect(dates).toHaveLength(2);
-    expect(isClose(dates[0], SEED_LAST)).toBe(true);
-    expect(dates[1]).toBe('latest');
+    expect(dates[0]).toBe(TODAY());
+    expect(isClose(dates[1], SEED_LAST)).toBe(true);
     expect(rates[SEED_LAST].THB).toBe(33);
   });
 
@@ -208,7 +218,7 @@ describe('services/RatesService fetch', () => {
     const dates = global.fetch.mock.calls.map(([url]) => dateOf(url));
 
     expect(dates).toHaveLength(2);
-    expect(isClose(dates[0], SEED_LAST)).toBe(true);
+    expect(isClose(dates[1], SEED_LAST)).toBe(true);
   });
 
   test('it falls back to the second origin before giving up', async () => {
@@ -221,6 +231,39 @@ describe('services/RatesService fetch', () => {
 
     expect(global.fetch).toHaveBeenCalledTimes(2);
     expect(Object.keys(rates).length).toBeGreaterThan(1);
+  });
+
+  // The phone's 545,901: jsdelivr answered `@latest` with the table of seven days before, status 200.
+  test('the current month is read from a dated file, never from an alias the CDN may hold for a week', async () => {
+    global.fetch = jest.fn(async () => answer({ usd: 1, thb: 32 }));
+
+    await ServiceRates.get({ baseCurrency: 'USD', known: FULL, lastRatesUpdate: SYNCED });
+    const dates = global.fetch.mock.calls.map(([url]) => dateOf(url));
+
+    expect(dates).toEqual([TODAY()]);
+    expect(dates).not.toContain('latest');
+  });
+
+  test("when today's file is not published yet it steps back a day, then another, before trusting latest", async () => {
+    global.fetch = jest.fn(async (url) => (dateOf(url) === daysBack(1) ? answer({ usd: 1, thb: 34 }) : { ok: false }));
+
+    const rates = await ServiceRates.get({ baseCurrency: 'USD', known: FULL, lastRatesUpdate: SYNCED });
+    const dates = global.fetch.mock.calls.map(([url]) => dateOf(url));
+
+    expect(dates.slice(0, 2)).toEqual([TODAY(), TODAY()]);
+    expect(dates[2]).toBe(daysBack(1));
+    expect(dates).not.toContain('latest');
+    expect(rates[CURRENT].THB).toBe(34);
+  });
+
+  // The ledger's 545,516: a sync brought the closed month, missed today, and still dated itself as fresh.
+  test('a download that misses today is no download: it throws, whatever older month answered', async () => {
+    global.fetch = jest.fn(async (url) => (isToday(url) ? { ok: false } : answer({ usd: 1, thb: 33 })));
+
+    await expect(
+      ServiceRates.get({ baseCurrency: 'USD', known: FULL, lastRatesUpdate: `${SEED_LAST}-20T09:00:00.000Z` }),
+    ).rejects.toThrow();
+    expect(global.fetch.mock.calls.every(([url]) => isToday(url))).toBe(true);
   });
 
   test('when no origin answers it throws, so the caller keeps what it already had', async () => {

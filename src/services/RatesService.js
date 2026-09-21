@@ -24,11 +24,19 @@ const monthsSince = (from = START) => {
   // Compare month keys, not instants: a cursor kept on a day-of-month lost the current month until that day came.
   while (monthKey(at) <= current) {
     const key = monthKey(at);
-    out.push({ date: key === current ? 'latest' : closingDay(key), key });
+    out.push({ date: closingDay(key), key });
     at.setUTCMonth(at.getUTCMonth() + 1);
   }
   return out;
 };
+
+// Today, yesterday, the day before: a day's file appears during that day, and the one before is never missing.
+const recentDays = (now = new Date()) =>
+  [0, 1, 2].map((back) => {
+    const at = new Date(now);
+    at.setUTCDate(at.getUTCDate() - back);
+    return at.toISOString().slice(0, 10);
+  });
 
 // A table written while its month was still running is provisional, and the last download is what dates it.
 const provisionalMonth = (lastRatesUpdate) => {
@@ -58,6 +66,15 @@ const readDay = async (date, base) => {
     }
   }
   return undefined;
+};
+
+// Dated files are immutable, so no cache can age them; the CDN held `@latest` seven days behind once, with a 200.
+const readToday = async (base) => {
+  for (const date of recentDays()) {
+    const day = await readDay(date, base);
+    if (day && Object.keys(day).length) return day;
+  }
+  return readDay('latest', base);
 };
 
 // Cross rates from one base are exact, so a table in any currency answers for all of them.
@@ -101,15 +118,17 @@ export const ServiceRates = {
   get: async ({ baseCurrency = CURRENCY, known = {}, lastRatesUpdate } = {}) => {
     const current = monthKey();
     const provisional = provisionalMonth(lastRatesUpdate);
-    const missing = monthsSince().filter(({ key }) => !known[key] || key === current || key === provisional);
+    const missing = monthsSince().filter(({ key }) => key !== current && (!known[key] || key === provisional));
+
+    // Today first and alone: every balance is read at it, and a download without it did not happen at all.
+    const today = await readToday(baseCurrency);
+    if (!today || !Object.keys(today).length) throw new Error('[rates] today did not answer');
 
     const days = await Promise.all(missing.map(({ date }) => readDay(date, baseCurrency)));
-    const rates = {};
+    const rates = { [current]: today };
     missing.forEach(({ key }, index) => {
       if (days[index] && Object.keys(days[index]).length) rates[key] = days[index];
     });
-
-    if (!Object.keys(rates).length) throw new Error('[rates] no origin answered');
 
     return { currency: baseCurrency, ...rates };
   },
