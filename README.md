@@ -30,24 +30,28 @@ Môney is designed to work offline and keep data local. Some optional features u
 
 These network paths should remain opt-in and transparent.
 
-## Local Android builds
-Compilation runs on your Mac through `eas build --local`: the signing keystore comes from EAS and no cloud build
-quota is used. You need an Expo login, Android Studio (SDK and its JBR) and network. Metro is not needed to build.
+## Android builds
+Every build compiles the same EAS profiles with the signing keystore kept in EAS and runs `yarn check:release` first,
+so `version`, `ios.buildNumber` and `android.versionCode` must move together. Local builds use `eas build --local`:
+compilation happens on your Mac and no cloud build quota is used; you need an Expo login, Android Studio (SDK and its
+JBR) and network. Cloud builds run on EAS, consume quota and download the finished APK. Metro is not needed to build.
 
 ```
+yarn build:local:dev                 # dev client compiled here, then installed on the device
 yarn build:local:prod                # signed APK in release-assets/money-<version>-android.apk
-yarn build:local:dev                 # dev client APK, then boots the emulator and installs it
+yarn build:dev                       # same dev client built on EAS cloud, downloaded and installed
+yarn build:prod                      # same signed APK built on EAS cloud and downloaded
 yarn build:local:dev --install-only  # reinstall the dev APK already in release-assets/, no compile
 ```
 
 The dev client is a native shell; the JavaScript comes from Metro (`yarn start`). Rebuild it only when something
 native changes: a dependency with Android code, a plugin in `app.json`, the Expo SDK. For everything else keep the
-installed client and let Metro reload. `--install-only` covers the emulator losing the app (wiped data, a new AVD,
+installed client and let Metro reload. `--install-only` covers the device losing the app (wiped data, a new AVD,
 an uninstall) without paying the five-minute compile; it stops with the expected path if there is no APK to install.
 
-The emulator is `Pixel_9_Pro_Fold`; set `MONEY_ANDROID_AVD` to use another. Installation is `adb install -r`: it
-keeps app data and stops on a signature mismatch, never uninstall to get past it. Both commands run
-`yarn check:release` first, so `version`, `ios.buildNumber` and `android.versionCode` must move together.
+Dev builds install on the first USB device, otherwise on a running emulator, otherwise they boot `Pixel_9_Pro_Fold`;
+set `ANDROID_AVD` to boot another emulator or `ANDROID_SERIAL` to pin a device. Installation is `adb install -r`: it
+keeps app data and stops on a signature mismatch, never uninstall to get past it.
 
 ## Roadmap
 - Current backlog: [`backlog.md`](./backlog.md)

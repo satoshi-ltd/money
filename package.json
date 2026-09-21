@@ -15,11 +15,10 @@
     "check:release": "node scripts/check-release.mjs",
     "eas:login": "npx eas-cli login",
     "eas:whoami": "npx eas-cli whoami",
-    "build:dev": "npx eas-cli build --platform android --profile development",
-    "build:preview": "npx eas-cli build --platform android --profile preview",
-    "build:prod": "npx eas-cli build --platform android --profile production",
-    "build:local:dev": "node scripts/android-build.mjs dev",
-    "build:local:prod": "node scripts/android-build.mjs prod"
+    "build:dev": "node scripts/android-build.mjs dev",
+    "build:prod": "node scripts/android-build.mjs prod",
+    "build:local:dev": "node scripts/android-build.mjs dev --local",
+    "build:local:prod": "node scripts/android-build.mjs prod --local"
   },
   "dependencies": {
     "@expo/metro-runtime": "~55.0.12",
