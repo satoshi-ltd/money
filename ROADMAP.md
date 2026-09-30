@@ -59,11 +59,6 @@ Approved 2026-09-30: the sixteen findings of the UX/UI review of every screen ag
   `feature · agent · normal`
   accept: no layout `maxWidth` exists today; forms, lists and the keypad (`width: '33.333%'`) cap their content
   at a token width and centre it on windows wider than the phone; the device check is a creator `verify`.
-- **UX-COPY-CASE-DE** — Translated nouns are lowercased in code
-  `bug · agent · low`
-  accept: `L10N.THIS_MONTH.toLowerCase()` and `L10N.ACCOUNTS.toLowerCase()` (Dashboard, Transactions,
-  heroEyebrow) go; each caption is its own dictionary key in the language's own case ("Dieser Monat", "Konten");
-  a test on the German hero.
 - **UX-SETTINGS-CASE** — Settings labels in Title Case
   `chore · agent · low`
   accept: `Update Rates`, `Backup Data`, `Restore Data`, `Base Currency`, `Backup Reminder`, `Privacy Policy` and
@@ -234,6 +229,11 @@ _None._
 
 ### Engineering
 
+- **UX-MONTH-TICKS** — Month ticks from the dictionaries
+  `bug · agent · low`
+  accept: Chart and FlowChart build their ticks with `L10N.MONTHS[i].slice(0, 3).toLowerCase()`, so German ships
+  "mär" and French draws "jui" twice (juin, juillet). A `MONTHS_SHORT` key per language ("juin", "juil.") feeds both
+  charts; whether ticks stay lower case is stated in SPEC 9; a French test with distinct ticks.
 - **A11Y-ANNOUNCE** — Notifications announce themselves to a screen reader
   `feature · agent · low`
   accept: a notification band arriving is announced (`accessibilityLiveRegion="polite"` on Android,

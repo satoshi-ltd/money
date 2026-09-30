@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.64 — 2026-09-30
+
+- Keep translated nouns in their own case. The month captions under the net worth and an account's balance, and the account count in the hero, were lowercased in code; German capitalises its nouns, so "Dieser Monat" and "Konten" shipped as "dieser monat" and "konten". Each caption is now its own phrase in every language, a single account reads "1 account" instead of "1 accounts", and the form's Save button is one phrase in each language's own order ("Ausgabe speichern", not "Speichern ausgabe").
+
 ## 3.0.63 — 2026-09-30
 
 - Name every control for VoiceOver and TalkBack. Nothing in the app carried an accessibility label or role, so the masthead's search, the add seal, the PIN keys, the suggestion chip, the tabs and the Settings rows were all read as a bare "button", and the two switches in Settings could not be flipped with VoiceOver at all. Each control now says what it is and does, in the app's language, with its state where it has one; a toggle row is the switch, so tapping anywhere on it flips it; a slot with nothing behind it is skipped.

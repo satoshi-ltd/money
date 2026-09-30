@@ -89,6 +89,7 @@ describe('screens/Transactions/ListHeader', () => {
     const delta = nodesBy(root, 'delta');
     expect(delta).toHaveLength(1);
     expect(delta[0].props.value).toBeCloseTo(10);
+    expect(delta[0].props.caption).toBe(L10N.THIS_MONTH_CAPTION);
   });
 
   test('a flat month reports nothing rather than a zero', () => {

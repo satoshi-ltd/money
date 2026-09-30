@@ -2,6 +2,7 @@ import React from 'react';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import { Transaction } from '../Transaction';
+import { setLanguage } from '../../../i18n';
 
 let mockStore = {};
 let mockForm;
@@ -70,6 +71,15 @@ describe('screens/Transaction default category', () => {
   afterEach(() => {
     act(() => renderer?.unmount());
     renderer = undefined;
+    setLanguage('en');
+  });
+
+  // German puts the verb last.
+  test('the save button is one phrase in the language\'s own shape', async () => {
+    await setLanguage('de');
+    render();
+
+    expect(saveButton().props.children).toBe('Ausgabe speichern');
   });
 
   test('the form opens on the account\'s most frequent category', () => {

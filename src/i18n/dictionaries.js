@@ -6,6 +6,11 @@ const nth = (day) => {
 };
 
 export const EN = {
+  SAVE_EXPENSE: 'Save expense',
+  SAVE_INCOME: 'Save income',
+  SAVE_SWAP: 'Save swap',
+  ACCOUNTS_CAPTION: (count) => (count === 1 ? 'account' : 'accounts'),
+  THIS_MONTH_CAPTION: 'this month',
   A11Y_ADD_ACCOUNT: 'Add account',
   A11Y_ADD_SCHEDULED: 'Add scheduled transaction',
   A11Y_BACK: 'Back',
@@ -325,6 +330,11 @@ export const EN = {
 };
 
 export const PT = {
+  SAVE_EXPENSE: 'Salvar despesa',
+  SAVE_INCOME: 'Salvar receita',
+  SAVE_SWAP: 'Salvar câmbio',
+  ACCOUNTS_CAPTION: (count) => (count === 1 ? 'conta' : 'contas'),
+  THIS_MONTH_CAPTION: 'este mês',
   A11Y_ADD_ACCOUNT: 'Adicionar conta',
   A11Y_ADD_SCHEDULED: 'Adicionar transação agendada',
   A11Y_BACK: 'Voltar',
@@ -628,6 +638,11 @@ export const PT = {
   YESTERDAY: 'Ontem',
 };
 export const FR = {
+  SAVE_EXPENSE: 'Enregistrer la dépense',
+  SAVE_INCOME: 'Enregistrer le revenu',
+  SAVE_SWAP: 'Enregistrer le change',
+  ACCOUNTS_CAPTION: (count) => (count === 1 ? 'compte' : 'comptes'),
+  THIS_MONTH_CAPTION: 'ce mois-ci',
   A11Y_ADD_ACCOUNT: 'Ajouter un compte',
   A11Y_ADD_SCHEDULED: 'Ajouter une transaction planifiée',
   A11Y_BACK: 'Retour',
@@ -933,6 +948,11 @@ export const FR = {
   YESTERDAY: 'Hier',
 };
 export const DE = {
+  SAVE_EXPENSE: 'Ausgabe speichern',
+  SAVE_INCOME: 'Einnahme speichern',
+  SAVE_SWAP: 'Wechsel speichern',
+  ACCOUNTS_CAPTION: (count) => (count === 1 ? 'Konto' : 'Konten'),
+  THIS_MONTH_CAPTION: 'diesen Monat',
   A11Y_ADD_ACCOUNT: 'Konto hinzufügen',
   A11Y_ADD_SCHEDULED: 'Geplante Buchung hinzufügen',
   A11Y_BACK: 'Zurück',
@@ -1237,6 +1257,11 @@ export const DE = {
   YESTERDAY: 'Gestern',
 };
 export const ES = {
+  SAVE_EXPENSE: 'Guardar gasto',
+  SAVE_INCOME: 'Guardar ingreso',
+  SAVE_SWAP: 'Guardar cambio',
+  ACCOUNTS_CAPTION: (count) => (count === 1 ? 'cuenta' : 'cuentas'),
+  THIS_MONTH_CAPTION: 'este mes',
   A11Y_ADD_ACCOUNT: 'Añadir cuenta',
   A11Y_ADD_SCHEDULED: 'Añadir transacción programada',
   A11Y_BACK: 'Atrás',

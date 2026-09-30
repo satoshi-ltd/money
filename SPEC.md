@@ -402,7 +402,11 @@ it is not accessible at all.
 ### Copy rules
 
 Product words: Overview, Accounts, Analytics, Settings, Scheduled, Swap. Sentence case everywhere but eyebrows.
-Figures never wrap: columns size from their text. A verdict is a word when a percentage would overclaim.
+A caption that runs on from a figure ("this month", "4 accounts") is its own dictionary key in each language's own
+case, and a count is a function of its number ("1 account", "4 accounts"); a label that puts words in a language's
+own order ("Save expense", "Ausgabe speichern") is its own key too. Code never lowercases or templates translated
+copy, because German capitalises its nouns and puts the verb last. Figures never wrap: columns size
+from their text. A verdict is a word when a percentage would overclaim.
 
 ### Boundaries
 

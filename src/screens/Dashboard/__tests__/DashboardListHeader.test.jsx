@@ -3,6 +3,7 @@ import { Text as RNText } from 'react-native';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import { DashboardListHeader } from '../Dashboard.ListHeader';
+import { setLanguage } from '../../../i18n';
 
 const mockUpdateSettings = jest.fn();
 let mockStore = {};
@@ -55,6 +56,8 @@ const componentsBy = (root, testID) =>
   root.findAllByProps({ testID }).filter((node) => typeof node.type === 'function');
 
 describe('screens/Dashboard/ListHeader', () => {
+  afterEach(() => setLanguage('en'));
+
   beforeEach(() => {
     mockUpdateSettings.mockClear();
     mockStore = {
@@ -79,6 +82,13 @@ describe('screens/Dashboard/ListHeader', () => {
 
     expect(hero.props.value).toBe(24618.42);
     expect(hero.props.bold).toBe(true);
+  });
+
+  test('the month caption is its own phrase, in the language\'s own case', async () => {
+    await setLanguage('de');
+    const [delta] = componentsBy(render(), 'delta');
+
+    expect(delta.props.caption).toBe('diesen Monat');
   });
 
   test('tapping the hero toggles the amount mask', () => {

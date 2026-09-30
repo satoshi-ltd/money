@@ -29,7 +29,7 @@ const TransactionsListHeader = ({ dataSource }) => {
             <Eyebrow>{accountBalanceEyebrow(currency)}</Eyebrow>
             <PriceFriendly bold currency={currency} showSymbol size="hero" value={rest?.currentBalance || 0} />
             <View row style={style.balanceRow}>
-              <Delta caption={L10N.THIS_MONTH.toLowerCase()} value={progression} />
+              <Delta caption={L10N.THIS_MONTH_CAPTION} value={progression} />
             </View>
           </View>
 

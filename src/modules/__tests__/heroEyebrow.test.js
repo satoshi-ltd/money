@@ -2,11 +2,26 @@ import fs from 'fs';
 import path from 'path';
 
 import { accountBalanceEyebrow, netWorthEyebrow } from '../heroEyebrow';
+import { setLanguage } from '../../i18n';
 import { L10N } from '../l10n';
 
 describe('modules/heroEyebrow', () => {
+  afterEach(() => setLanguage('en'));
+
   test('the whole ledger reads as net worth, over how many accounts and in which currency', () => {
     expect(netWorthEyebrow({ accounts: 20, currency: 'USD' })).toBe(`${L10N.NET_WORTH} · 20 accounts · USD`);
+  });
+
+  // German capitalises nouns.
+  test('the count keeps the language\'s own case', async () => {
+    await setLanguage('de');
+
+    expect(netWorthEyebrow({ accounts: 4, currency: 'USD' })).toBe('Gesamtvermögen · 4 Konten · USD');
+    expect(netWorthEyebrow({ accounts: 1, currency: 'USD' })).toBe('Gesamtvermögen · 1 Konto · USD');
+  });
+
+  test('one account is singular', () => {
+    expect(netWorthEyebrow({ accounts: 1, currency: 'EUR' })).toBe(`${L10N.NET_WORTH} · 1 account · EUR`);
   });
 
   test('a single account names its own scope too, in its own currency', () => {

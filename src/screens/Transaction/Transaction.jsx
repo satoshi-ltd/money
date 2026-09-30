@@ -126,7 +126,7 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
   // Derived, not stored: the screen moves the form too (default category, type, account) and a flag went stale.
   const valid = isTransfer ? state.valid : isTransactionComplete(state.form);
   const Form = isTransfer ? FormTransfer : FormTransaction;
-  const title = isTransfer ? L10N.SWAP : txType === INCOME ? L10N.INCOME : L10N.EXPENSE;
+  const saveLabel = isTransfer ? L10N.SAVE_SWAP : txType === INCOME ? L10N.SAVE_INCOME : L10N.SAVE_EXPENSE;
 
   return (
     <Panel offset sheet title={L10N.TRANSACTION} onBack={goBack}>
@@ -172,7 +172,7 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
 
       <View row style={style.footer}>
         <Button disabled={busy || !valid} onPress={handleSubmit} grow>
-          {`${L10N.SAVE} ${title.toLowerCase()}`}
+          {saveLabel}
         </Button>
       </View>
     </Panel>

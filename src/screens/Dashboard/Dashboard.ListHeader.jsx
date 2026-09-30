@@ -50,7 +50,7 @@ const DashboardListHeader = ({ navigate }) => {
               value={overall?.currentBalance || 0}
             />
             <View row style={style.heroMeta}>
-              <Delta caption={L10N.THIS_MONTH.toLowerCase()} value={progression} />
+              <Delta caption={L10N.THIS_MONTH_CAPTION} value={progression} />
             </View>
           </View>
         </Pressable>
