@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.74 — 2026-09-30
+
+- The suggestion chip is easier to hit. It was 24 points tall and dismisses on a tap; it is now 32 points with a touch area that reaches 44, and every pressable chip gets the same reach.
+
 ## 3.0.73 — 2026-09-30
 
 - Masking amounts has a switch. Until now the only way was a tap on the net-worth figure, with nothing to say so and nothing to show the state; Preferences now has "Mask amounts", and the tap on the figure still works.

@@ -442,12 +442,6 @@ const miniMasthead = (section, actions = '') => `<div class="m-masthead" style="
 
 const REVIEW = [
   {
-    id: 'UX-CHIP-TARGET', area: 'Transaction', title: 'A 24-point tap target',
-    why: 'The suggestion chip is size xs (minHeight 24) and dismisses on press; the platform guideline is 44.',
-    now: frame(`<div style="display:flex;align-items:center;gap:12px">${chip(`${L.SUGGESTED}: Home`, { variant: 'soft', iconRight: ICON.CLOSE })}${fig('24 pt', { size: 'xs', tone: 'danger' })}</div>`),
-    proposed: frame(`<div style="display:flex;align-items:center;gap:12px">${chip(`${L.SUGGESTED}: Home`, { variant: 'soft', iconRight: ICON.CLOSE, size: 's' })}${fig('32 pt + hit slop to 44', { size: 'xs', tone: 'positive' })}</div>`),
-  },
-  {
     id: 'UX-ACCOUNTS-TOTAL', area: 'Accounts', title: 'The total repeats the hero',
     why: 'Under "All" the Total row sums the base figures, which is the net worth two hundred points above it, to the cent.',
     now: frame(`${eyebrow(netEyebrow())}<div style="margin:4px 0 12px">${price(NET, { size: 'hero', bold: true })}</div>${accountRow(ACCOUNTS[0])}<div style="display:flex;justify-content:space-between;padding-top:12px">${eyebrow(L.TOTAL)}${price(NET, { size: 'lg', bold: true })}</div>`),

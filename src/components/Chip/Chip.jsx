@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
-import { getStyles } from './Chip.styles';
+import { chipHeight, getStyles } from './Chip.styles';
 import { useApp } from '../../contexts';
 import { ICON, L10N } from '../../modules';
 import { Icon, Pressable, Text, View } from '../../primitives';
+import { rowHeight } from '../../theme/layout';
 
 const Chip = ({ icon, iconRight, label, onPress, shape = 'pill', size = 'xs', style, variant = 'muted' }) => {
   const { colors } = useApp();
@@ -25,6 +26,7 @@ const Chip = ({ icon, iconRight, label, onPress, shape = 'pill', size = 'xs', st
       : styles.variantMuted;
 
   const sizeStyle = size === 's' ? styles.sizeS : styles.sizeXS;
+  const slop = (rowHeight - chipHeight[size === 's' ? 's' : 'xs']) / 2;
   const shapeStyle = shape === 'circle' ? styles.shapeCircle : styles.shapePill;
 
   const contentTone =
@@ -42,6 +44,7 @@ const Chip = ({ icon, iconRight, label, onPress, shape = 'pill', size = 'xs', st
       accessibilityLabel={isPressable ? `${label}` : undefined}
       accessibilityRole={isPressable ? 'button' : undefined}
       disabled={!isPressable ? undefined : false}
+      hitSlop={isPressable ? { bottom: slop, left: slop, right: slop, top: slop } : undefined}
       onPress={onPress}
       style={[styles.base, variantStyle, sizeStyle, shapeStyle, style]}
     >

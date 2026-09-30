@@ -2,6 +2,8 @@ import { StyleSheet } from 'react-native';
 
 import { theme } from '../../theme';
 
+export const chipHeight = { s: theme.spacing.xl, xs: theme.spacing.lg + theme.spacing.xxs };
+
 export const getStyles = (colors) =>
   StyleSheet.create({
     base: {
@@ -23,12 +25,12 @@ export const getStyles = (colors) =>
     },
 
     sizeXS: {
-      minHeight: theme.spacing.lg + theme.spacing.xxs,
+      minHeight: chipHeight.xs,
       paddingHorizontal: theme.spacing.xs + 2,
       paddingVertical: theme.spacing.xxs + 3,
     },
     sizeS: {
-      minHeight: theme.spacing.xl,
+      minHeight: chipHeight.s,
       paddingHorizontal: theme.spacing.sm,
       paddingVertical: theme.spacing.xs,
     },

@@ -258,6 +258,7 @@ const FormTransaction = ({
         <Chip
           iconRight={ICON.CLOSE}
           label={`${L10N.SUGGESTED}: ${suggestionLabel}`}
+          size="s"
           variant="soft"
           style={style.suggestion}
           onPress={dismissSuggestion}

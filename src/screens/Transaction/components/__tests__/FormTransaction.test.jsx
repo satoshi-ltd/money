@@ -29,8 +29,8 @@ jest.mock('../../../../components', () => {
   const stub = (testID) => (props) => MockReact.createElement(ReactNative.View, { testID, ...props });
   return {
     Eyebrow: ({ children, ...props }) => MockReact.createElement(ReactNative.Text, { testID: 'eyebrow', ...props }, children),
-    Chip: ({ label, onPress }) =>
-      MockReact.createElement(ReactNative.View, { testID: 'suggestion-chip', accessibilityLabel: label, onPress }),
+    Chip: ({ label, onPress, size }) =>
+      MockReact.createElement(ReactNative.View, { testID: 'suggestion-chip', accessibilityLabel: label, onPress, size }),
     Checkbox: (props) => MockReact.createElement(ReactNative.View, { testID: 'checkbox', ...props }),
     Dropdown: stub('dropdown'),
     FieldRow: ({ children, label, ...props }) =>
@@ -96,6 +96,7 @@ describe('screens/Transaction/FormTransaction', () => {
     expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ form: expect.objectContaining({ category: 1 }) }));
     const chip = root.findAllByProps({ testID: 'suggestion-chip' }).find((node) => node.props.onPress);
     expect(chip.props.accessibilityLabel).toContain(L10N.SUGGESTED);
+    expect(chip.props.size).toBe('s');
   });
 
   test('dismissing the chip reverts what the suggestion changed', () => {
