@@ -35,7 +35,74 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 ## Queue
 
-_None._
+### Design review · 2026-09-30
+
+Approved 2026-09-30: the sixteen findings of the UX/UI review of every screen against SPEC 9, in this order, each with its board in `design/proposals.html`.
+
+- **UX-CATEGORY-SEEALL** — "See all" in a category opens every transaction
+  `bug · agent · normal`
+  accept: the eyebrow "See all N" in the Category sheet (`Category.jsx:86`, `navigate('transactions')` with no
+  params) opens Transactions filtered to that category and month, and N matches the rows shown; a test.
+- **UX-A11Y-LABELS** — Icon-only controls say nothing to a screen reader
+  `chore · agent · high`
+  accept: no `accessibilityLabel` or `accessibilityRole` exists in `src/` today. Every icon-only control (IconButton,
+  the seal and FloatingAdd, keypad glyph keys, the chip's close, Checkbox and switch rows) carries a label and a role
+  from the dictionaries; a test renders each and asserts the props. The VoiceOver and TalkBack pass is a creator
+  `verify` that depends on this.
+- **UX-SCHEDULED-LINK** — The month block names four pending schedules and leads nowhere
+  `feature · agent · normal`
+  accept: the Scheduled line of MonthSummary is pressable and opens Scheduled (today reachable only from Settings);
+  a test asserts the navigation.
+- **UX-SWING-COPY** — The swing figure carries no direction
+  `feature · agent · normal`
+  accept: "Swing −208.11 · Personal" reads "Swing −208.11 · Personal, less than usual" (`insights.js` swing value
+  is current minus baseline); the hint carries the direction word in the five dictionaries; a test.
+- **UX-ANALYTICS-EMPTY** — Analytics is blank under two months of entries
+  `feature · agent · normal`
+  accept: with fewer than two months, Analytics shows an EmptyState (Chart and FlowChart return null and
+  `Stats.jsx` has none) with copy in the five dictionaries and the add action; a test.
+- **UX-PROPOSAL-ROW** — Proposals sit in a field row with an empty label
+  `feature · agent · normal`
+  accept: the two proposal rows (`FormTransaction.jsx`, `FieldRow label=""`) become one full-width row shape:
+  title left, account muted, amount right in the accent, no dead label column; a test on the rendered tree.
+- **UX-FOLD-WIDTH** — One column stretches across the open Fold
+  `feature · agent · normal`
+  accept: no layout `maxWidth` exists today; forms, lists and the keypad (`width: '33.333%'`) cap their content
+  at a token width and centre it on windows wider than the phone; the device check is a creator `verify`.
+- **UX-COPY-CASE-DE** — Translated nouns are lowercased in code
+  `bug · agent · low`
+  accept: `L10N.THIS_MONTH.toLowerCase()` and `L10N.ACCOUNTS.toLowerCase()` (Dashboard, Transactions,
+  heroEyebrow) go; each caption is its own dictionary key in the language's own case ("Dieser Monat", "Konten");
+  a test on the German hero.
+- **UX-SETTINGS-CASE** — Settings labels in Title Case
+  `chore · agent · low`
+  accept: `Update Rates`, `Backup Data`, `Restore Data`, `Base Currency`, `Backup Reminder`, `Privacy Policy` and
+  `About Money` follow the sentence case of every other screen, in the five dictionaries; a dictionary test.
+- **UX-LOCK-COPY** — "Log out" locks the app
+  `chore · agent · low`
+  accept: the row (`handleLogout` resets to the lock screen) and its dialog say lock, not log out, in the five
+  dictionaries; a test on the dialog copy.
+- **UX-ADD-CONTROLS** — Three shapes for "add"
+  `chore · agent · low`
+  accept: the Accounts masthead (IconButton), the Scheduled masthead (outlined Button with icon) and the seal
+  (Footer, FloatingAdd) become two: an IconButton in every masthead that adds, the seal only for a transaction;
+  a test per masthead.
+- **UX-MASK-AFFORDANCE** — Masking amounts is a hidden tap on the hero
+  `feature · agent · low`
+  accept: a "Mask amounts" switch under Preferences stores `maskAmount`; the hero tap stays; a test.
+- **UX-CHIP-TARGET** — The suggestion chip is 24 pt tall and tappable
+  `chore · agent · low`
+  accept: a pressable Chip renders at size `s` (32) with a hit slop that reaches 44; a test.
+- **UX-ACCOUNTS-TOTAL** — Under "All" the total repeats the hero
+  `chore · agent · low`
+  accept: the Total row shows only with a currency filter (under All it equals net worth to the cent); a test.
+- **UX-MODAL-TOKENS** — The date sheet ignores the overlay and radius tokens
+  `chore · agent · low`
+  accept: `Modal.styles.js` uses `colors.overlay` (today `rgba(0, 0, 0, 0.35)`) and `borderRadius.full` for the
+  handle (today `2`); a test greps `src/` for literal colours and radii outside `src/theme`.
+- **UX-SEPARATORS** — A hyphen where every other caption uses a middle dot
+  `chore · agent · low`
+  accept: "Weekly - Sun 08:00" (`Settings.jsx:311`) reads "Weekly · Sun 08:00"; a test.
 
 ## In progress
 

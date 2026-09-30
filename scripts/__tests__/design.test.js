@@ -56,6 +56,13 @@ describe('design kit', () => {
     for (const id of ids) expect(html).toContain(`data-task="${id}"`);
   });
 
+  test('every review board is filed as a roadmap task', () => {
+    const html = pages['proposals.html'];
+    const boards = [...html.matchAll(/data-review="([A-Z0-9-]+)"/g)].map((m) => m[1]);
+    expect(boards.length).toBeGreaterThan(5);
+    for (const id of boards) expect(html).toContain(`data-task="${id}"`);
+  });
+
   test('every page links the others and offers the dark theme', () => {
     for (const name of ['index.html', 'mobile.html', 'proposals.html']) {
       const html = pages[name];

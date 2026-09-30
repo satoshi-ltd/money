@@ -23,7 +23,7 @@ const evaluate = (file, scope = {}) => {
 const PKG = JSON.parse(read('package.json'));
 const { theme } = evaluate('src/theme/theme.js');
 const layout = evaluate('src/theme/layout.js', { theme });
-const { EN: L } = evaluate('src/i18n/dictionaries.js');
+const { EN: L, DE } = evaluate('src/i18n/dictionaries.js');
 const { ICON } = evaluate('src/modules/icon.js');
 const { GLYPHS } = evaluate('src/primitives/Icon/glyphs.js');
 const { C } = evaluate('src/modules/constants.js', { Platform: { OS: 'ios', Version: 0 }, PKG, __DEV__: false });
@@ -437,6 +437,111 @@ const parseRoadmap = () => {
   return lanes;
 };
 
+const frame = (body, { sheet, width = 350 } = {}) => `<div class="m" style="width:${width}px;padding:12px 0;background:var(--color-${sheet ? 'surface' : 'background'})">${body}</div>`;
+const miniMasthead = (section, actions = '') => `<div class="m-masthead" style="padding:0">${logo()}<span class="right">${eyebrow(section)}${actions}</span></div><div class="m-rule"></div>`;
+
+const REVIEW = [
+  {
+    id: 'UX-CATEGORY-SEEALL', area: 'Category', title: '"See all 12" opens every transaction',
+    why: 'The eyebrow counts the category\'s entries and then navigates to Transactions with no filter, so the reader lands on the whole ledger.',
+    now: frame(`${heading(L.LATEST, { actions: eyebrow(`${L.SEE_ALL} 12`) })}<div style="height:12px"></div>${masthead({ section: L.TRANSACTIONS, back: true })}${dayHead('Today', -36.36)}${txRow({ time: '11:16', title: 'Gasoline', category: 'Transit', value: 1000, currency: 'THB', base: 30.43 })}${txRow({ time: '08:25', title: 'Breakfast', category: 'Leisure', value: 160, currency: 'THB', base: 4.87 })}`, { sheet: true }),
+    proposed: frame(`${heading(L.LATEST, { actions: eyebrow(`${L.SEE_ALL} 12`) })}<div style="height:12px"></div>${masthead({ section: 'Personal · September', back: true })}${dayHead('Sep 8', -1.98)}${txRow({ time: '08:12', title: 'Coffee', category: 'Personal', value: 65, currency: 'THB', base: 1.98 })}${dayHead('Sep 6', -1.98)}${txRow({ time: '08:40', title: 'Coffee', category: 'Personal', value: 65, currency: 'THB', base: 1.98 })}`, { sheet: true }),
+  },
+  {
+    id: 'UX-A11Y-LABELS', area: 'Every screen', title: 'Icon-only controls read as nothing',
+    why: 'There is no accessibilityLabel or accessibilityRole anywhere in src/. VoiceOver and TalkBack announce the masthead search, the seal, the keypad keys and the chip\'s close as unlabeled buttons.',
+    now: frame(`<div style="display:flex;gap:16px;align-items:center">${iconButton(ICON.SEARCH)}${seal()}${iconButton(ICON.CLOSE)}${chip(`${L.SUGGESTED}: Home`, { variant: 'soft', iconRight: ICON.CLOSE })}</div><div style="margin-top:12px">${fig('reads as: "button" · "button" · "button" · "button"', { size: 'xs', tone: 'danger' })}</div>`),
+    proposed: frame(`<div style="display:flex;gap:16px;align-items:center">${iconButton(ICON.SEARCH)}${seal()}${iconButton(ICON.CLOSE)}${chip(`${L.SUGGESTED}: Home`, { variant: 'soft', iconRight: ICON.CLOSE })}</div><div style="margin-top:12px">${fig('reads as: "Search" · "Add transaction" · "Close" · "Dismiss suggestion"', { size: 'xs', tone: 'positive' })}</div>`),
+  },
+  {
+    id: 'UX-SCHEDULED-LINK', area: 'Overview', title: 'Four pending schedules with nowhere to go',
+    why: 'MonthSummary has no onPress; Scheduled is reached only through Settings, two levels away from the line that names it.',
+    now: frame(`<div style="display:flex;align-items:baseline;gap:8px;padding:7px 0;border-bottom:var(--hairline) solid var(--color-border)"><span style="width:96px">${text(L.SCHEDULED_AHEAD, { size: 's', tone: 'muted' })}</span><span style="flex:1">${price(1325.29, { operator: true })}</span>${text('4 pending', { size: 'xs', tone: 'muted' })}</div>`),
+    proposed: frame(`<div style="display:flex;align-items:baseline;gap:8px;padding:7px 0;border-bottom:var(--hairline) solid var(--color-border)"><span style="width:96px">${text(L.SCHEDULED_AHEAD, { size: 's', tone: 'muted' })}</span><span style="flex:1">${price(1325.29, { operator: true })}</span>${eyebrow(`${L.SEE_ALL} 4`, { tone: 'ink' })}${icon(ICON.RIGHT, { size: 's', tone: 'textMuted' })}</div>`),
+  },
+  {
+    id: 'UX-SWING-COPY', area: 'Overview', title: 'A swing without a direction',
+    why: 'The value is the category\'s spend minus its usual to date, but the hint is only the category name; the creator himself asked what the line meant.',
+    now: frame(`<div style="display:flex;align-items:baseline;gap:8px;padding:7px 0;border-bottom:var(--hairline) solid var(--color-border)"><span style="width:96px">${text(L.SWING, { size: 's', tone: 'muted' })}</span><span style="flex:1">${price(-208.11)}</span>${text('Personal', { size: 'xs', tone: 'muted' })}</div>`),
+    proposed: frame(`<div style="display:flex;align-items:baseline;gap:8px;padding:7px 0;border-bottom:var(--hairline) solid var(--color-border)"><span style="width:96px">${text(L.SWING, { size: 's', tone: 'muted' })}</span><span style="flex:1">${price(-208.11)}</span>${text(`Personal, ${L.BELOW_USUAL}`, { size: 'xs', tone: 'muted' })}</div>`),
+  },
+  {
+    id: 'UX-ANALYTICS-EMPTY', area: 'Analytics', title: 'A blank screen under two months',
+    why: 'Chart and FlowChart return null with fewer than two points and Stats has no empty state, so a new ledger sees a masthead and paper.',
+    now: frame(`${miniMasthead(L.ACTIVITY, seg(['6M', '1Y', L.RANGE_ALL], '1Y', { compact: true }))}<div style="height:140px"></div>`),
+    proposed: frame(`${miniMasthead(L.ACTIVITY, seg(['6M', '1Y', L.RANGE_ALL], '1Y', { compact: true }))}<div class="m-empty" style="padding:24px 20px"><span class="m-well">${icon(ICON.RECEIPT, { size: 'xl', tone: 'textMuted' })}</span><div style="height:12px"></div>${text('Nothing to chart yet', { size: 'l', bold: true })}<div style="height:6px"></div>${text('Two months of entries draw the first line.', { size: 's', tone: 'muted', center: true })}<div style="height:16px"></div>${btn(L.EMPTY_TRANSACTIONS_ACTION, { variant: 'outlined' })}</div>`),
+  },
+  {
+    id: 'UX-PROPOSAL-ROW', area: 'Transaction', title: 'Proposals in a row built for a label',
+    why: 'Each proposal is a FieldRow with label="", so 96 points sit empty on the left and the offer reads as a value with no key.',
+    now: frame(`${fieldRow(L.CONCEPT, input('coff', { right: true }))}${fieldRow('', `${text('Coffee', { size: 's', medium: true })}${text('Wallet', { size: 'xs', tone: 'muted' })}${price(65, { currency: 'THB', tone: 'accent' })}`, { divider: true })}${fieldRow('', `${text('Coffee beans', { size: 's', medium: true })}${text('Wallet', { size: 'xs', tone: 'muted' })}${price(1355, { currency: 'THB', tone: 'accent' })}`, { divider: true })}`, { sheet: true }),
+    proposed: frame(`${fieldRow(L.CONCEPT, input('coff', { right: true }))}${[['Coffee', 65], ['Coffee beans', 1355]].map(([title, value]) => `<div style="display:flex;align-items:center;gap:8px;min-height:44px;border-top:var(--hairline) solid var(--color-border)"><span style="flex:1">${text(title, { size: 's', medium: true })}<br>${text('Wallet · Personal', { size: 'xxs', tone: 'muted' })}</span>${price(value, { currency: 'THB', tone: 'accent', symbol: true })}</div>`).join('')}`, { sheet: true }),
+  },
+  {
+    id: 'UX-FOLD-WIDTH', area: 'The Fold', title: 'One column across 720 points',
+    why: 'No layout maxWidth exists; rows, forms and the keypad (keys at 33.333%) stretch with the window.',
+    now: `<div class="m" style="width:520px;padding:12px 0;background:var(--color-background)">${miniMasthead('Wed 9 Sep 2026')}${accountRow(ACCOUNTS[0])}${accountRow(ACCOUNTS[1])}<div class="m-keypad" style="padding:12px 0 0">${[1, 2, 3].map((k) => `<span class="m-key" style="height:48px">${fig(String(k), { size: 'xl' })}</span>`).join('')}</div></div>`,
+    proposed: `<div class="m" style="width:520px;padding:12px 0;background:var(--color-background)">${miniMasthead('Wed 9 Sep 2026')}<div style="max-width:390px;margin:0 auto">${accountRow(ACCOUNTS[0])}${accountRow(ACCOUNTS[1])}<div class="m-keypad" style="padding:12px 0 0">${[1, 2, 3].map((k) => `<span class="m-key" style="height:48px">${fig(String(k), { size: 'xl' })}</span>`).join('')}</div></div></div>`,
+  },
+  {
+    id: 'UX-COPY-CASE-DE', area: 'Overview · German', title: 'A noun lowercased in code',
+    why: 'The month caption is L10N.THIS_MONTH.toLowerCase(); German capitalises nouns, so "Dieser Monat" ships as "dieser monat". The same happens to "Konten" in the hero eyebrow.',
+    now: frame(`${eyebrow(`${DE.NET_WORTH} · 4 ${DE.ACCOUNTS.toLowerCase()} · USD`)}<div style="margin-top:4px">${price(NET, { size: 'hero', bold: true })}</div><div style="margin-top:6px">${delta(3.2, { caption: DE.THIS_MONTH.toLowerCase() })}</div>`),
+    proposed: frame(`${eyebrow(`${DE.NET_WORTH} · 4 ${DE.ACCOUNTS} · USD`)}<div style="margin-top:4px">${price(NET, { size: 'hero', bold: true })}</div><div style="margin-top:6px">${delta(3.2, { caption: DE.THIS_MONTH })}</div>`),
+  },
+  {
+    id: 'UX-SETTINGS-CASE', area: 'Settings', title: 'Title Case on one screen',
+    why: 'Every other screen is sentence case; Settings rows arrived capitalised word by word.',
+    now: frame(`${setting('Update Rates', { right: rightValue('2 h ago', { figure: true }) })}${setting('Backup Data', { divider: true, right: chevronRight() })}${setting('Restore Data', { divider: true, right: chevronRight() })}${setting('Base Currency', { divider: true, right: rightValue('US Dollar') })}${setting('Backup Reminder', { divider: true, right: switchEl(true) })}${setting('Privacy Policy', { divider: true })}`),
+    proposed: frame(`${setting('Update rates', { right: rightValue('2 h ago', { figure: true }) })}${setting('Back up data', { divider: true, right: chevronRight() })}${setting('Restore data', { divider: true, right: chevronRight() })}${setting('Base currency', { divider: true, right: rightValue('US Dollar') })}${setting('Backup reminder', { divider: true, right: switchEl(true) })}${setting('Privacy policy', { divider: true })}`),
+  },
+  {
+    id: 'UX-LOCK-COPY', area: 'Settings', title: '"Log out" of an app with no account',
+    why: 'The action resets to the lock screen; the copy, and its translations (Déconnexion, Abmelden), promise an account that does not exist.',
+    now: frame(`${setting(L.LOG_OUT)}<div style="height:12px"></div><div class="m-dialog" style="border:var(--hairline) solid var(--color-rule);padding:16px">${text(L.CONFIRM_LOG_OUT, { size: 'l', bold: true })}${text(L.CONFIRM_LOG_OUT_CAPTION, { size: 's', tone: 'secondary', center: true })}</div>`),
+    proposed: frame(`${setting('Lock')}<div style="height:12px"></div><div class="m-dialog" style="border:var(--hairline) solid var(--color-rule);padding:16px">${text('Lock Môney?', { size: 'l', bold: true })}${text('You will be asked for your PIN. Your data stays on this phone.', { size: 's', tone: 'secondary', center: true })}</div>`),
+  },
+  {
+    id: 'UX-ADD-CONTROLS', area: 'Accounts · Scheduled', title: 'Three shapes for the same verb',
+    why: 'Accounts adds with an IconButton, Scheduled with an outlined Button carrying the icon, and transactions with the seal.',
+    now: frame(`<div style="display:flex;gap:16px;align-items:center">${iconButton(ICON.ADD)}${btn('', { variant: 'outlined', iconName: ICON.ADD })}${seal()}</div><div style="margin-top:10px">${text('Accounts masthead · Scheduled masthead · transactions', { size: 'xxs', tone: 'muted' })}</div>`),
+    proposed: frame(`<div style="display:flex;gap:16px;align-items:center">${iconButton(ICON.ADD)}${iconButton(ICON.ADD)}${seal()}</div><div style="margin-top:10px">${text('every masthead that adds · the seal only for a transaction', { size: 'xxs', tone: 'muted' })}</div>`),
+  },
+  {
+    id: 'UX-MASK-AFFORDANCE', area: 'Overview · Settings', title: 'A hidden tap masks every amount',
+    why: 'Tapping the net-worth hero toggles maskAmount; nothing on the screen says so, and nothing in Settings shows the state.',
+    now: frame(`${eyebrow(netEyebrow())}<div style="margin-top:4px">${price(NET, { size: 'hero', bold: true, masked: true })}</div>${text('(tap the figure)', { size: 'xxs', tone: 'muted' })}`),
+    proposed: frame(`${eyebrow(L.PREFERENCES, { style: 'display:block;margin-bottom:4px' })}${setting('Mask amounts', { subtitle: 'Also toggled by tapping the net worth', right: switchEl(true) })}`),
+  },
+  {
+    id: 'UX-CHIP-TARGET', area: 'Transaction', title: 'A 24-point tap target',
+    why: 'The suggestion chip is size xs (minHeight 24) and dismisses on press; the platform guideline is 44.',
+    now: frame(`<div style="display:flex;align-items:center;gap:12px">${chip(`${L.SUGGESTED}: Home`, { variant: 'soft', iconRight: ICON.CLOSE })}${fig('24 pt', { size: 'xs', tone: 'danger' })}</div>`),
+    proposed: frame(`<div style="display:flex;align-items:center;gap:12px">${chip(`${L.SUGGESTED}: Home`, { variant: 'soft', iconRight: ICON.CLOSE, size: 's' })}${fig('32 pt + hit slop to 44', { size: 'xs', tone: 'positive' })}</div>`),
+  },
+  {
+    id: 'UX-ACCOUNTS-TOTAL', area: 'Accounts', title: 'The total repeats the hero',
+    why: 'Under "All" the Total row sums the base figures, which is the net worth two hundred points above it, to the cent.',
+    now: frame(`${eyebrow(netEyebrow())}<div style="margin:4px 0 12px">${price(NET, { size: 'hero', bold: true })}</div>${accountRow(ACCOUNTS[0])}<div style="display:flex;justify-content:space-between;padding-top:12px">${eyebrow(L.TOTAL)}${price(NET, { size: 'lg', bold: true })}</div>`),
+    proposed: frame(`${eyebrow(netEyebrow())}<div style="margin:4px 0 12px">${price(NET, { size: 'hero', bold: true })}</div>${accountRow(ACCOUNTS[0])}${accountRow(ACCOUNTS[1])}<div style="margin-top:8px">${text('the Total row only with a currency filter', { size: 'xxs', tone: 'muted' })}</div>`),
+  },
+  {
+    id: 'UX-MODAL-TOKENS', area: 'Date sheet', title: 'A backdrop and a handle off the tokens',
+    why: 'Modal.styles.js paints rgba(0, 0, 0, 0.35) where Confirm uses colors.overlay, and gives the handle a radius of 2 where dots are full.',
+    now: `<div class="m" style="width:350px;padding:24px 0 0;background:rgba(0,0,0,0.35)"><div style="background:var(--color-background);border-radius:4px 4px 0 0;padding:12px 20px 16px;text-align:center"><span style="display:inline-block;width:32px;height:4px;border-radius:2px;background:var(--color-border)"></span><div style="margin-top:10px">${text('September 2026', { medium: true })}</div></div></div>`,
+    proposed: `<div class="m" style="width:350px;padding:24px 0 0;background:var(--color-overlay)"><div style="background:var(--color-background);border-radius:4px 4px 0 0;padding:12px 20px 16px;text-align:center"><span style="display:inline-block;width:32px;height:4px;border-radius:9999px;background:var(--color-border)"></span><div style="margin-top:10px">${text('September 2026', { medium: true })}</div></div></div>`,
+  },
+  {
+    id: 'UX-SEPARATORS', area: 'Settings', title: 'A hyphen among middle dots',
+    why: 'The backup reminder subtitle is built with " - " while every other caption joins its parts with " · ".',
+    now: frame(setting(L.REMINDER_BACKUP, { subtitle: `${L.SCHEDULED_PATTERN_WEEKLY} - Sun 08:00`, right: switchEl(true) })),
+    proposed: frame(setting(L.REMINDER_BACKUP, { subtitle: `${L.SCHEDULED_PATTERN_WEEKLY} · Sun 08:00`, right: switchEl(true) })),
+  },
+];
+
+const reviewBoards = () =>
+  REVIEW.map(({ id, area, title, why, now, proposed }) => `<div class="kit-cell" data-review="${id}" style="grid-column: 1 / -1"><div class="kit-caption">${id} · ${esc(area)}</div><div class="kit-specimen" style="display:grid;grid-template-columns:1fr 1fr;gap:16px 24px"><div style="grid-column:1 / -1"><b style="font:600 15px/1.3 var(--font-sans)">${esc(title)}</b><p class="kit-note" style="margin:4px 0 0">${esc(why)}</p></div><div><div class="kit-caption" style="margin-bottom:8px">Now</div><div style="overflow:auto">${now}</div></div><div><div class="kit-caption" style="margin-bottom:8px">Proposed</div><div style="overflow:auto">${proposed}</div></div></div></div>`).join('');
+
 const proposals = () => {
   counter = 0;
   const lanes = parseRoadmap();
@@ -453,6 +558,7 @@ const proposals = () => {
     title: 'Open work',
     intro: 'What is still pending, read from <code>ROADMAP.md</code>: the approved queue and what waits on the creator first, then the proposals nobody has approved yet. A row leaves when it ships; the changelog keeps the history.',
     body: [
+      section('Design review', `<div class="kit-grid">${reviewBoards()}</div>`, `${REVIEW.length} findings from reading every screen against the design system, each drawn as it is and as proposed, each filed in ROADMAP under Proposed with what proves it done.`),
       section('Queue and needs creator', list(open), `${lanes.Queue?.entries.length || 0} in the queue · ${lanes['In progress']?.entries.length || 0} in progress · ${lanes['Needs creator']?.entries.length || 0} waiting on the creator.`),
       section('Proposed', list(lanes.Proposed?.entries || []), 'Ideas from the creator or the agent. Never worked on until approved into the queue.'),
       section('Discarded', `<table class="kit-table"><tr><th>decision</th><th>reason</th></tr>${discarded.map(([decision, reason]) => `<tr><td>${esc(decision)}</td><td>${esc(reason)}</td></tr>`).join('')}</table>`, "Don't relitigate."),
