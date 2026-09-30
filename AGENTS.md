@@ -1,130 +1,115 @@
-# Money - guide for AI agents
+# Môney — agent instructions
 
-## Quick context
-- Local-first personal finance ledger app built with Expo + React Native.
-- Data is stored on device (AsyncStorage). Backups are JSON files via export/import.
-- Navigation: React Navigation v6 (stack + tabs).
-- Mobile only (iOS/Android), no web target.
-- Current stack (Aug 2026): Expo SDK 55, React Native 0.83.10, React 19.2.0.
-- Platform baselines: iOS 15.1+ and Android. SDK 55 always builds with the new architecture and
-  edge-to-edge, so `newArchEnabled` and `edgeToEdgeEnabled` no longer exist in `app.json`.
+Môney is a local-first ledger for one person's phone: accounts in any currency, a month that explains itself, nothing
+measured, everything exportable. An Expo app for iOS and Android with no web target. These are the rules for working
+on it. Personal rules of the creator (@soyjavi) live in `~/.claude/CLAUDE.md` and apply on top.
 
-## Context cheatsheet
-- App entry: `App.js` -> `src/App.jsx`
-- Navigation: `src/App.Navigator.jsx`
-- Global state: `src/contexts/store.jsx` (+ reducers in `src/contexts/reducers/`)
-- Storage defaults/version: `src/contexts/store.constants.js`
-- Migrations/normalization: `src/contexts/modules/migrateState.js`
-- Persistence: `src/services/StorageService.js`
-- Backups: `src/services/BackupService.js`
-- Notifications: `src/services/NotificationsService.js`
-- Recurrence logic: `src/modules/recurrence.js`
-- Insights engine: `src/modules/insights.js`
-- Shared hooks: `src/hooks/*` (`useToday` drives day/month rollover)
-- Theme tokens/layout: `src/theme/theme.js`, `src/theme/layout.js`
-- UI primitives: `src/primitives/*`
-- Premium/subscription: `src/services/PurchaseService.js`, `src/screens/Subscription/*`
+## Documents
 
-## Data model (local)
-- `settings`: includes `schemaVersion`, `theme`, `baseCurrency`, `ratesBaseCurrency`, `pin`, `reminders`, `language`,
-  `onboarded`, `maskAmount`, `statsRangeMonths`, `autoCategory`, `autoAccount`, `autoAmount`, `userProfile`,
-  `marketingLead`
-- `accounts`: account list (`hash`, `balance`, `currency`, `timestamp`, `title`)
-- `txs`: transactions (`hash`, `account`, `category`, `type`, `value`, `timestamp`, `title`)
-- `scheduledTxs`: templates (`id`, `account`, `category`, `type`, `value`, `title`, `startAt`, `pattern`)
-  - Generated occurrences are normal `txs` with `tx.meta.kind = "scheduled"` and `{ scheduledId, occurrenceAt }`
-- `subscription`: local purchase state
-- `rates`: cached FX rates
+Five documents, each answering one question. Put information in the one that owns it and nowhere else.
 
-## Key flows and guardrails
-- App boot hydrates storage, migrates state, resolves language, rebuilds auto catalogs, then runs scheduled sync.
-- Scheduled auto-create (`runScheduledSync` in store):
-  - Window: from `now - 90 days` to `now`
-  - Dedup key: `${scheduledId}:${occurrenceAt}` against existing tx `meta`
-  - Safety cap: max `100` auto-created txs per sync run
-- Scheduled notifications (`NotificationsService.syncScheduled`):
-  - Horizon: next `90 days`
-  - Caps: max `8` notifications per scheduled template, max `48` total
-  - Trigger: day before occurrence at `08:00` local time
-  - Dedup/cancel by scoped metadata (`kind`, `scheduledId`, `occurrenceAt`)
-- Backup reminder notifications: weekly, Sunday at 08:00 local (current behavior).
-- FX rates: `exchange()` returns `undefined` when it cannot convert; never treat that as 0.
-  `settings.ratesBaseCurrency` tags the cache, and a mismatch drops it instead of merging.
+| File | Question | Never contains |
+| --- | --- | --- |
+| `README.md` | What is Môney, and how do I run, develop and build it? (for humans) | Status beyond its version banner, contracts, history |
+| `AGENTS.md` | Which rules apply when working here? | Status, tasks, history |
+| `ROADMAP.md` | What is left to do? (its header defines fields and lanes) | Shipped work |
+| `SPEC.md` | How does Môney work today? Product decisions, data and storage, ledger rules, rates, insights, screens, operations, design system | Dates, statuses beyond its current-state summary, test counts, investigation logs |
+| `CHANGELOG.md` | What did each version ship? | Implementation detail, test counts, review narrative |
 
-## Schema, backup, and migration safety rules
-- Any `settings` shape change requires:
-  - Update defaults in `src/contexts/store.constants.js`
-  - Update migration path in `src/contexts/modules/migrateState.js`
-  - Preserve backward compatibility for existing local data and backups
-- Any backup contract change requires:
-  - Keep top-level keys compatible: `schemaVersion`, `accounts`, `scheduledTxs`, `settings`, `txs`
-  - Defensive parsing/validation before importing into state
-- Never remove/rename persisted fields without a migration step.
-- Keep import failures non-destructive (invalid payload must not overwrite current state).
+- Start from README, SPEC's current state and ROADMAP; then read the SPEC section the task touches.
+- **SPEC** is present tense and edited in place: when behaviour changes, rewrite the section that owns it. History
+  lives in git and the changelog.
+- **CHANGELOG** entries: `## x.y.z — YYYY-MM-DD`, at most five bullets of what changed for someone using the app, then
+  why when it is not obvious; a `Needs: native build` line only when a native change needs a new binary.
+  `yarn check:release` refuses a version without its entry.
+- Update the owning document in the same change as the code. Decisions go to the list below or to SPEC, remaining work
+  to ROADMAP, never to chat history or extra status files. `design/` is the design kit, not a document: after any
+  visible change run `yarn design` (`scripts/__tests__/design.test.js` fails until you do).
 
-## Premium and privacy constraints
-- Local-first is the default. Do not add network dependency for core ledger flows.
-- Existing network-backed flows are limited to:
-  - FX rates sync (`src/services/RatesService.js`)
-  - Purchases/RevenueCat (`src/services/PurchaseService.js`)
-  - Optional onboarding lead capture (`src/services/LeadService.js`)
-- Premium unlock has a local path (`unlockedBy: "btc"`); do not break this when syncing with RevenueCat.
+## Workflow
 
-## Coding standards
-- Use `src/primitives` instead of raw `react-native` components when possible.
-- Avoid hardcoded colors; prefer theme tokens via `useApp().colors`.
-- Prefer StyleSheet-based styles; avoid inline styles unless unavoidable.
-- Keep components and modules small; avoid overengineering.
-- No TypeScript in this project.
+The creator runs the project as an autonomous loop with the user-level `next-task` skill (usually `/loop /next-task`)
+and the `adversarial-reviewer` agent in `~/.claude/`. Each iteration takes one approved task, implements and tests it,
+bumps the version and changelog, has the reviewer try to break it, applies the findings, validates, commits and pushes.
 
-## Notifications rules
-- Do not use `cancelAllScheduledNotificationsAsync` for new features.
-- Cancel only notifications owned by the relevant feature using stable metadata.
+Project wiring for those tools:
 
-## Quality gates (mandatory)
-- If a change touches business logic/state/insights/migrations/services:
-  - Run `yarn test`
-- If a change touches UI/components/hooks/imports/styles:
-  - Run `yarn lint`
-- If a change touches both areas:
-  - Run both `yarn test` and `yarn lint`
-- Use `yarn lint:fix` only intentionally (expect diff noise).
+- **Task pool:** `ROADMAP.md`. Only `owner: agent` tasks in Queue are worked on; only the creator approves a task into
+  Queue.
+- **Version:** every commit that changes what ships (`src/`, `assets/`, `app.json`, a native dependency) runs
+  `yarn bump` (patch by default; `yarn bump minor|major`), which moves `version`, `ios.buildNumber` and
+  `android.versionCode` together and opens the CHANGELOG entry to write. Docs-only, design-only and tooling-only
+  commits do not bump. `yarn check:release` proves the manifests and the changelog agree.
+- **Validation:** `yarn validate` (`check:release`, `lint`, `test`) before claiming done. Report it apart from device
+  evidence.
+- **CI:** none. There is no pipeline; builds are the creator's (README). A failing `yarn validate` on `v3` is the
+  next task.
+- **Review checklist**, on top of the generic one: core flows stay offline (the only network calls are the rates feed);
+  a `settings` shape change updates `store.constants.js`, `migrateState.js` and keeps old backups importable;
+  notifications are cancelled only by their own metadata; `exchange()` answering `undefined` is never read as 0;
+  category ids are read within their type; swaps (99) and `meta.moved` stay out of every month figure and inside every
+  balance; every copy key exists in the five dictionaries; large text sizes and both platforms hold without a device;
+  the design kit is regenerated and matches what ships.
 
-## Scripts
-- `yarn start`: Expo dev server
-- `yarn android`: start on Android
-- `yarn ios`: start on iOS
-- `yarn lint`: ESLint
-- `yarn lint:fix`: ESLint autofix
-- `yarn test`: Jest
-- `yarn check:release`: `package.json` and `app.json` agree on version and build number
-- `yarn build:local:prod`: signed Android APK compiled on this machine, written to `release-assets/`
-- `yarn build:local:dev`: development client compiled on this machine and installed on the device
-- `yarn build:prod`: the same signed APK built on EAS cloud and downloaded; consumes build quota
-- `yarn build:dev`: the same development client built on EAS cloud, downloaded and installed
+Rules of the loop:
 
-## Android builds
-- The `build:local:*` commands run `eas build --local`: compilation happens on this Mac, the signing keystore comes
-  from EAS, no cloud worker or quota is used. `build:dev` and `build:prod` run the same profiles on EAS cloud and
-  download the APK. Expo login and network are required; Metro is not.
-- `yarn build:local:prod` and `yarn build:prod` write `release-assets/money-<version>-android.apk` (gitignored);
-  rerunning replaces it.
-- `yarn build:local:dev` and `yarn build:dev` install on the first USB device, otherwise on a running emulator,
-  otherwise they boot `Pixel_9_Pro_Fold` (override with `ANDROID_AVD`; pin a device with `ANDROID_SERIAL`), then run
-  `adb install -r`, reverse port 8081 and launch the app. Start Metro yourself with `yarn start`.
-  `yarn build:local:dev --install-only` reinstalls the APK already in `release-assets/` without rebuilding: the dev
-  client is a native shell and JavaScript comes from Metro, so rebuild only for native changes (Android dependencies,
-  `app.json` plugins, SDK) and reinstall when the device lost the app.
-- Installation preserves app data and stops on a signature mismatch. Never uninstall or clear data to get past it,
-  and never replace the EAS keystore when updating an installed app.
-- The toolchain comes from the machine: `ANDROID_HOME` (default `~/Library/Android/sdk`) and `JAVA_HOME`
-  (default Android Studio's JBR). The Node/yarn pins in `eas.json` only apply to cloud builds.
-- `postinstall` moves `@react-native/gradle-plugin` from Foojay 0.5 to 1.0 so RN 0.83 compiles under Gradle 9.
-  The local EAS worker reinstalls dependencies in a copy of the repo, so the patch applies there too.
-- Every build runs `yarn check:release` first: bump `version`, `ios.buildNumber` and `android.versionCode`
-  together, and write the release into `changelog.md` under `## <version> — <date>`, or the build stops.
+- Invoking `/next-task` or `/loop /next-task` is the creator's explicit request to commit and push each finished task
+  once review and validation pass. Outside the loop, commit only when asked in the current turn. When the creator says
+  not to commit, prepare and validate but leave the change uncommitted until told otherwise.
+- Adversarial review before every commit; a second pass on the deltas when the fixes were substantive.
+- Interruptions: triage before continuing, and say where each item went. A bug the creator reports goes to the top of
+  Queue; a requested feature goes to Queue; ideas, including your own, go to Proposed; questions get answered.
+- Anything needing an EAS build, an install, a physical device, credentials or a product choice becomes a
+  `Needs creator` task. When a feature needs device evidence, split it: the implementation is an agent task; the
+  device check is a creator `verify` task that depends on it.
+- Stop and report when Queue is empty or everything is blocked on the creator.
 
-## Product direction (2026)
-- Local-first always (privacy + offline usability).
-- Notifications must remain scoped per feature.
-- Keep schema and backups resilient across app updates.
+## Engineering rules
+
+- Implement only the approved scope. Propose product or UX changes, never implement them without the creator's
+  explicit validation. Within approved work, use the shared tokens and components and update SPEC's design section.
+- Every functional change ships with a test that fails without it. Tests live beside the code in `__tests__`
+  directories and run with Jest (`jest-expo`); components are tested with `react-test-renderer` and mocked
+  `../contexts`, `../components` and services.
+- `src/primitives` over raw `react-native` components; colours from `useApp().colors`, never hardcoded; styles in
+  `*.style.js` with `StyleSheet` and values from `src/theme`; no TypeScript; no inline styles unless unavoidable; no
+  overengineering.
+- Persisted state: any change to the `settings` shape updates `DEFAULTS` in `src/contexts/store.constants.js` and the
+  path in `src/contexts/modules/migrateState.js`; never rename or drop a persisted field without a migration; keep the
+  backup keys (`schemaVersion`, `accounts`, `scheduledTxs`, `settings`, `txs`) compatible and imports non-destructive.
+- Notifications: cancel only what the feature owns, by its metadata (`kind`, `scheduledId`, `occurrenceAt`); never
+  `cancelAllScheduledNotificationsAsync`.
+- `exchange()` returns `undefined` when it cannot convert; callers skip the figure, never substitute 0.
+- Copy in code is English. A new key goes into all five dictionaries (EN, ES, PT, FR, DE) in the same change; a label
+  that needs the language's own shape (ordinals, marks) is a function of its argument, not a template.
+- Parallel shell calls use absolute paths; a `cd` in one call leaks into its siblings.
+- Remote: `git@github.com:satoshi-ltd/money.git`, branch `v3`; Mikel also pushes there. Never rewrite pushed history.
+
+## Product decisions (non-negotiable)
+
+- Local-first. The ledger lives on the phone in AsyncStorage; the only request the app makes is for public exchange
+  rates, and it carries nothing about the user. No account, no cloud, no analytics, no crash reports, no identifiers,
+  no lead capture and no subscription: those were removed and stay out.
+- Mobile only: iOS 15.1+ and Android, phones and the Fold in one layout. No web target until the creator decides one.
+- One base currency the reader thinks in; everything converts to it at the day's public rate, and a closed month at its
+  closing day. Metals are priced per troy ounce.
+- Backups are plain JSON the user owns, plus CSV export; the PIN, the biometric preference and the learned catalogs
+  never travel in one, and an invalid payload never overwrites the ledger.
+- A four-digit PIN asked on every open, optionally behind the phone's biometric reader; neither can be recovered.
+- A transaction hidden from Analytics (`meta.moved`) and a swap between own accounts leave every month figure and stay
+  in every balance: money moved is not money earned or spent.
+- Insights read the month against the reader's own usual (a median over six months), never against a budget.
+- Quiet, exact interface: hairlines instead of elevation, three radii, figures in mono, the accent for what moves.
+  SPEC's design section is the contract; `design/` shows it.
+- Five languages (EN, ES, PT, FR, DE); the product says **Overview**, **Accounts**, **Analytics**, **Settings**.
+
+## Live environment boundaries
+
+- Metro, the emulator and the phones are the creator's. Never start Expo or Metro, never drive the emulator or a device
+  (installs, taps, typing, screenshots) and never build unless asked in the turn; hand device checks to the creator.
+- Read-only `adb` diagnostics only when asked, and with the SDK's binary (`~/Library/Android/sdk/platform-tools/adb`):
+  a second adb of another version against the same server knocks the emulator offline.
+- The emulator and the phones carry the creator's real ledger: never wipe it, import over it or reset data.
+- Tests never touch a device's storage: services are mocked and storage tests use in-memory stores.
+- A green suite is not a device check, and a pushed commit is not an installed build; keep implemented, built and
+  verified apart in ROADMAP and in reports.

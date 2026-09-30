@@ -18,7 +18,7 @@ const manifests = ({
     path.join(root, 'app.json'),
     JSON.stringify({ expo: { version: appVersion, android: { versionCode }, ios: { buildNumber } } }),
   );
-  if (changelog !== null) fs.writeFileSync(path.join(root, 'changelog.md'), changelog);
+  if (changelog !== null) fs.writeFileSync(path.join(root, 'CHANGELOG.md'), changelog);
   return root;
 };
 
@@ -72,6 +72,6 @@ describe('check-release', () => {
     const result = check(manifests({ changelog: null }));
 
     expect(result.status).toBe(1);
-    expect(result.stderr).toContain('changelog.md');
+    expect(result.stderr).toContain('CHANGELOG.md');
   });
 });

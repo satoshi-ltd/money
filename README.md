@@ -1,40 +1,43 @@
 # Môney
 
-Private, local-first finance ledger for people who want their data to stay on device.
+**3.0.61** · A private, local-first ledger for people who want their money to stay on their phone.
 
-## Why Môney
-- Your data stays on your phone by default.
-- Fast, simple tracking across multiple currencies.
-- Portable JSON backups you control.
+Accounts in any currency, a month that explains itself against your own usual, nothing measured, everything
+exportable. iOS 15.1+ and Android.
 
-## Core features
-- Multi-currency accounts and transactions
-- Scheduled transactions (weekly/monthly patterns)
-- Spending and income analytics
-- Local insights (trends, unusual spend alerts, monthly pace)
-- JSON backup import/export
-- CSV export (Pro)
-- Optional weekly backup reminders
-- Automatic category/account/amount suggestions while typing
-- Multi-language UI (EN/ES/PT/FR/DE)
+## What you get
 
-## Platforms
-- iOS and Android only (no web support)
-- iOS baseline: 15.1+
+- Accounts in 30 currencies, converted to the one you think in at the day's public rate
+- Expenses, incomes and swaps between accounts; scheduled transactions with reminders
+- An Overview that reads the month against your six-month usual, not a budget
+- Analytics: balance with its trend, cash flow, categories and merchants
+- JSON backups you own, CSV export, a four-digit PIN with optional fingerprint or face unlock
+- Five languages (EN, ES, PT, FR, DE), light and dark, four text sizes
 
-## Privacy first
-Môney is designed to work offline and keep data local. Some optional features use the network:
-- Exchange rates sync
-- Purchases/subscription validation
-- Optional onboarding lead email
+## Privacy
 
-These network paths should remain opt-in and transparent.
+Everything lives on the phone. The only request Môney makes is for public exchange rates, and it carries nothing about
+you: no account, no cloud, no analytics, no crash reports, no identifier.
+
+## Development
+
+```
+yarn install
+yarn start          # Metro for the development client; press a for Android
+yarn validate       # release check, lint, tests — before claiming anything done
+yarn design         # regenerate the design kit in design/
+```
+
+The app runs in a development client, not Expo Go: build it once with `yarn build:local:dev` (below) and let Metro
+serve the JavaScript from then on. Tests sit beside the code in `__tests__` directories.
 
 ## Android builds
+
 Every build compiles the same EAS profiles with the signing keystore kept in EAS and runs `yarn check:release` first,
-so `version`, `ios.buildNumber` and `android.versionCode` must move together. Local builds use `eas build --local`:
-compilation happens on your Mac and no cloud build quota is used; you need an Expo login, Android Studio (SDK and its
-JBR) and network. Cloud builds run on EAS, consume quota and download the finished APK. Metro is not needed to build.
+so `version`, `ios.buildNumber` and `android.versionCode` must move together (`yarn bump` does that). Local builds use
+`eas build --local`: compilation happens on your Mac and no cloud build quota is used; you need an Expo login, Android
+Studio (SDK and its JBR) and network. Cloud builds run on EAS, consume quota and download the finished APK. Metro is not
+needed to build.
 
 ```
 yarn build:local:dev                 # dev client compiled here, then installed on the device
@@ -53,6 +56,13 @@ Dev builds install on the first USB device, otherwise on a running emulator, oth
 set `ANDROID_AVD` to boot another emulator or `ANDROID_SERIAL` to pin a device. Installation is `adb install -r`: it
 keeps app data and stops on a signature mismatch, never uninstall to get past it.
 
-## Roadmap
-- Current backlog: [`backlog.md`](./backlog.md)
-- Next cycle plan: [`next-features.md`](./next-features.md)
+## Documentation and change policy
+
+Five documents, one question each: this README (what it is, how to run it), [AGENTS.md](AGENTS.md) (the rules for
+working here), [SPEC.md](SPEC.md) (how it works today: data, ledger rules, rates, insights, screens, operations, design
+system), [ROADMAP.md](ROADMAP.md) (what is left, as a task pool) and [CHANGELOG.md](CHANGELOG.md) (what each version
+shipped). `design/` is the design kit, generated from the tokens and the copy: open `design/index.html` for the
+system, `design/mobile.html` for every screen and `design/proposals.html` for open work.
+
+Behaviour changes rewrite the SPEC section that owns them; remaining work goes to ROADMAP; every version that ships
+gets its CHANGELOG entry.
