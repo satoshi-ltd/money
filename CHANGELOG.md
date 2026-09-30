@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.67 — 2026-09-30
+
+- The swing says which way it went. "Swing −208.11 · Personal" is the category's spend minus its usual, which the figure alone never said; the line now reads "Personal, less than usual". The caption takes the room the figure leaves, and a long category name shortens before the direction does.
+
 ## 3.0.66 — 2026-09-30
 
 - The month block's Scheduled line opens Scheduled. It named the pending schedules and led nowhere; Scheduled was two levels away, through Settings. The line now reads "See all N" with a chevron and is a button.

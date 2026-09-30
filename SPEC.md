@@ -215,7 +215,8 @@ early one-off outvoted the ordinary one. It emits:
   baseline is at least 10% of a full-month median, a word when it would only overclaim. Below two comparable months
   there is no verdict.
 - **closed** — last month's total, once the month has closed, with the same reading against its own baseline.
-- **swing** — the category that moved most against its median to date, when the move is at least 5% of the baseline.
+- **swing** — the category that moved most against its median to date, when the move is at least 5% of the baseline;
+  its line says which way, "Personal, less than usual".
 - **incomes** — the month's incomes and their reading.
 - **scheduled** — what is still scheduled this month and its net effect.
 

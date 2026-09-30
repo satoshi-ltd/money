@@ -39,10 +39,6 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 Approved 2026-09-30: the sixteen findings of the UX/UI review of every screen against SPEC 9, in this order, each with its board in `design/proposals.html`.
 
-- **UX-SWING-COPY** — The swing figure carries no direction
-  `feature · agent · normal`
-  accept: "Swing −208.11 · Personal" reads "Swing −208.11 · Personal, less than usual" (`insights.js` swing value
-  is current minus baseline); the hint carries the direction word in the five dictionaries; a test.
 - **UX-PROPOSAL-ROW** — Proposals sit in a field row with an empty label
   `feature · agent · normal`
   accept: the two proposal rows (`FormTransaction.jsx`, `FieldRow label=""`) become one full-width row shape:

@@ -134,11 +134,30 @@ describe('components/MonthSummary', () => {
     expect(texts(root).join(' ')).toContain(L10N.BELOW_PACE);
   });
 
-  test('the swing is the overshoot in money, named by one category and nothing else', () => {
-    const root = render({ insights: [...INSIGHTS, { type: 'swing', value: 809.83, meta: { label: 'Travel' } }] });
+  // The value is the category's spend minus its usual: the sign is the direction, and the caption has to say it.
+  test('the swing is the overshoot in money, named by one category and which way it went', () => {
+    const over = render({ insights: [...INSIGHTS, { type: 'swing', value: 809.83, meta: { label: 'Travel' } }] });
+    const under = render({ insights: [...INSIGHTS, { type: 'swing', value: -208.11, meta: { label: 'Personal' } }] });
 
-    expect(texts(root)).toEqual(expect.arrayContaining([L10N.SWING, 'Travel']));
-    expect(prices(root).find(({ value }) => value === 809.83).operator).toBe(true);
+    expect(texts(over)).toEqual(expect.arrayContaining([L10N.SWING, 'Travel', `, ${L10N.ABOVE_USUAL}`]));
+    expect(texts(under).join('')).toContain(`Personal, ${L10N.BELOW_USUAL}`);
+    expect(prices(over).find(({ value }) => value === 809.83).operator).toBe(true);
+  });
+
+  // "Alimentation & boissons, plus que d'habitude" outgrows the row: only the name shortens, the direction stays whole.
+  test('the caption takes the room the figure leaves, and the category shortens before the direction', () => {
+    const root = render({ insights: [...INSIGHTS, { type: 'swing', value: -208.11, meta: { label: 'Personal' } }] });
+    const name = root.findAllByType(RNText).find(({ props }) => props.children === 'Personal');
+    const direction = root.findAllByType(RNText).find(({ props }) => props.children === `, ${L10N.BELOW_USUAL}`);
+    const figure = root.findAllByType('View').find(({ props }) => StyleSheet.flatten(props.style)?.flexShrink === 0);
+
+    const caption = root.findAllByType('View').find(({ props }) => props.accessibilityLabel);
+
+    expect(StyleSheet.flatten(name.props.style).minWidth).toBeGreaterThan(0);
+    expect(StyleSheet.flatten(name.props.style).flexShrink).toBeGreaterThan(StyleSheet.flatten(direction.props.style).flexShrink);
+    expect(name.props.numberOfLines).toBe(1);
+    expect(StyleSheet.flatten(figure.props.style)).toMatchObject({ flexGrow: 1, flexShrink: 0 });
+    expect(caption.props).toMatchObject({ accessible: true, accessibilityLabel: `Personal, ${L10N.BELOW_USUAL}` });
   });
 
   // The bar paints its overshoot in plain ink and only the within-pace fill in gold. Gold on an overspend

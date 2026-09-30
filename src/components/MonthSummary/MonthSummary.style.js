@@ -50,8 +50,21 @@ export const getStyles = (colors) =>
     key: {
       width: theme.spacing.xxl * 2 + theme.spacing.xs,
     },
+    value: {
+      flexGrow: 1,
+      flexShrink: 0,
+    },
     context: {
-      flex: 1,
+      alignItems: 'baseline',
+      flexShrink: 1,
+    },
+    // The name gives way eight times faster than the direction and never below a stub: the sign already says which way.
+    hint: {
+      flexShrink: 8,
+      minWidth: theme.spacing.xl,
+    },
+    detail: {
+      flexShrink: 1,
     },
     action: {
       alignItems: 'center',

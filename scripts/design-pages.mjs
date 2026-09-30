@@ -216,7 +216,7 @@ const monthSummary = ({ spent, baseline, pace, day, swing, swingCategory, schedu
   const scale = Math.max(spent, baseline);
   const fill = Math.min(spent, baseline) / scale;
   const line = (label, value, hint, { action, operator, tone } = {}) => `<div style="display:flex;align-items:baseline;gap:8px;padding:7px 0;border-bottom:var(--hairline) solid var(--color-border)"><span style="width:96px">${text(label, { size: 's', tone: 'muted' })}</span><span style="flex:1">${price(value, { size: 'md', operator, tone })}</span>${action ? `<span style="display:flex;align-items:center;gap:4px">${eyebrow(action, { tone: 'ink' })}${icon(ICON.RIGHT, { size: 's', tone: 'textMuted' })}</span>` : text(hint, { size: 'xs', tone: 'muted' })}</div>`;
-  return `<div style="margin-top:4px"><div style="padding:8px 0 12px;border-bottom:var(--hairline) solid var(--color-border)"><div style="display:flex;align-items:baseline;gap:8px"><span style="width:96px">${text(L.SPENT_SO_FAR, { size: 's', tone: 'muted' })}</span><span style="flex:1">${price(spent, { size: 'md' })}</span>${text(pace, { size: 'xs', tone: 'muted' })}</div><div class="m-bar" style="margin:9px 0 6px"><div class="fill" style="width:${(fill * 100).toFixed(1)}%"></div><span class="tick" style="left:${((baseline / scale) * 100).toFixed(1)}%"></span></div><div style="display:flex;align-items:baseline;gap:4px">${text(`${L.USUAL_BY(day)} · `, { size: 'xxs', tone: 'muted' })}${price(baseline, { size: 'xs', tone: 'muted' })}</div></div>${closed !== undefined ? line(L.LAST_MONTH, closed, closedHint) : ''}${line(L.SWING, swing, swingCategory)}${line(L.SCHEDULED_AHEAD, scheduled, undefined, { action: L.SEE_ALL_COUNT(pending), operator: true })}</div>`;
+  return `<div style="margin-top:4px"><div style="padding:8px 0 12px;border-bottom:var(--hairline) solid var(--color-border)"><div style="display:flex;align-items:baseline;gap:8px"><span style="width:96px">${text(L.SPENT_SO_FAR, { size: 's', tone: 'muted' })}</span><span style="flex:1">${price(spent, { size: 'md' })}</span>${text(pace, { size: 'xs', tone: 'muted' })}</div><div class="m-bar" style="margin:9px 0 6px"><div class="fill" style="width:${(fill * 100).toFixed(1)}%"></div><span class="tick" style="left:${((baseline / scale) * 100).toFixed(1)}%"></span></div><div style="display:flex;align-items:baseline;gap:4px">${text(`${L.USUAL_BY(day)} · `, { size: 'xxs', tone: 'muted' })}${price(baseline, { size: 'xs', tone: 'muted' })}</div></div>${closed !== undefined ? line(L.LAST_MONTH, closed, closedHint) : ''}${line(L.SWING, swing, `${swingCategory}, ${swing < 0 ? L.BELOW_USUAL : L.ABOVE_USUAL}`)}${line(L.SCHEDULED_AHEAD, scheduled, undefined, { action: L.SEE_ALL_COUNT(pending), operator: true })}</div>`;
 };
 
 const NAV = [
@@ -440,12 +440,6 @@ const frame = (body, { sheet, width = 350 } = {}) => `<div class="m" style="widt
 const miniMasthead = (section, actions = '') => `<div class="m-masthead" style="padding:0">${logo()}<span class="right">${eyebrow(section)}${actions}</span></div><div class="m-rule"></div>`;
 
 const REVIEW = [
-  {
-    id: 'UX-SWING-COPY', area: 'Overview', title: 'A swing without a direction',
-    why: 'The value is the category\'s spend minus its usual to date, but the hint is only the category name; the creator himself asked what the line meant.',
-    now: frame(`<div style="display:flex;align-items:baseline;gap:8px;padding:7px 0;border-bottom:var(--hairline) solid var(--color-border)"><span style="width:96px">${text(L.SWING, { size: 's', tone: 'muted' })}</span><span style="flex:1">${price(-208.11)}</span>${text('Personal', { size: 'xs', tone: 'muted' })}</div>`),
-    proposed: frame(`<div style="display:flex;align-items:baseline;gap:8px;padding:7px 0;border-bottom:var(--hairline) solid var(--color-border)"><span style="width:96px">${text(L.SWING, { size: 's', tone: 'muted' })}</span><span style="flex:1">${price(-208.11)}</span>${text(`Personal, ${L.BELOW_USUAL}`, { size: 'xs', tone: 'muted' })}</div>`),
-  },
   {
     id: 'UX-PROPOSAL-ROW', area: 'Transaction', title: 'Proposals in a row built for a label',
     why: 'Each proposal is a FieldRow with label="", so 96 points sit empty on the left and the offer reads as a value with no key.',

@@ -11,13 +11,13 @@ import { PriceFriendly } from '../PriceFriendly';
 const clamp = (value) => Math.max(0, Math.min(100, value));
 
 // One line for all of them: title, value, caption. Written out five times over, they drifted a property at a time.
-const Line = ({ action, currency, hint, label, onPress, operator = false, style, styleContainer, tone, value }) => {
+const Line = ({ action, currency, detail, hint, label, onPress, operator = false, style, styleContainer, tone, value }) => {
   const row = (
     <View row style={[style.line, styleContainer]}>
       <Text size="s" style={style.key} tone="muted">
         {label}
       </Text>
-      <View flex>
+      <View style={style.value}>
         <PriceFriendly currency={currency} operator={operator} size="md" tone={tone} value={value} />
       </View>
       {action ? (
@@ -26,9 +26,21 @@ const Line = ({ action, currency, hint, label, onPress, operator = false, style,
           <Icon name={ICON.RIGHT} size="s" tone="muted" />
         </View>
       ) : hint ? (
-        <Text align="right" numberOfLines={1} size="xs" style={style.context} tone="muted">
-          {hint}
-        </Text>
+        <View
+          accessibilityLabel={detail ? `${hint}, ${detail}` : undefined}
+          accessible={!!detail}
+          row
+          style={style.context}
+        >
+          <Text align="right" numberOfLines={1} size="xs" style={style.hint} tone="muted">
+            {hint}
+          </Text>
+          {detail ? (
+            <Text numberOfLines={1} size="xs" style={style.detail} tone="muted">
+              {`, ${detail}`}
+            </Text>
+          ) : null}
+        </View>
       ) : null}
     </View>
   );
@@ -45,6 +57,7 @@ const Line = ({ action, currency, hint, label, onPress, operator = false, style,
 Line.propTypes = {
   action: PropTypes.string,
   currency: PropTypes.string,
+  detail: PropTypes.string,
   hint: PropTypes.string,
   label: PropTypes.string,
   onPress: PropTypes.func,
@@ -128,6 +141,7 @@ const MonthSummary = ({ currency, insights = [], onScheduledPress }) => {
       {swing ? (
         <Line
           currency={currency}
+          detail={swing.value < 0 ? L10N.BELOW_USUAL : L10N.ABOVE_USUAL}
           hint={swing.meta.label}
           label={L10N.SWING}
           operator
