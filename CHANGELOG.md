@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.73 — 2026-09-30
+
+- Masking amounts has a switch. Until now the only way was a tap on the net-worth figure, with nothing to say so and nothing to show the state; Preferences now has "Mask amounts", and the tap on the figure still works.
+
 ## 3.0.72 — 2026-09-30
 
 - Scheduled adds with the same icon button as Accounts. Its bar carried an outlined button with a plus; now every bar that adds looks alike, and the round seal stays for adding a transaction.

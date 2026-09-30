@@ -418,6 +418,14 @@ const Settings = ({ navigation = {} }) => {
           />
           <Setting
             divider
+            subtitle={L10N.MASK_AMOUNTS_CAPTION}
+            title={L10N.MASK_AMOUNTS}
+            type="toggle"
+            value={!!settings.maskAmount}
+            onValueChange={(next) => updateSettings({ maskAmount: !!next })}
+          />
+          <Setting
+            divider
             subtitle={backupReminderSubtitle}
             title={L10N.REMINDER_BACKUP}
             type="toggle"

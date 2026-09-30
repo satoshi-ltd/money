@@ -345,6 +345,20 @@ describe('screens/Settings', () => {
     expect(biometricName('face')).not.toBe(biometricName('fingerprint'));
   });
 
+  // The hero tap stays, but nothing on the Overview says it is there and nothing showed the state.
+  test('masking amounts is a named switch in Preferences that stores the same setting the hero tap does', async () => {
+    const row = (root) => componentsBy(root, 'setting').find((node) => node.props.title === L10N.MASK_AMOUNTS);
+
+    const root = await render();
+
+    expect(row(root).props).toMatchObject({ subtitle: L10N.MASK_AMOUNTS_CAPTION, type: 'toggle', value: false });
+    await act(async () => row(root).props.onValueChange(true));
+    expect(mockStore.updateSettings).toHaveBeenCalledWith({ maskAmount: true });
+
+    mockStore.settings = { ...mockStore.settings, maskAmount: true };
+    expect(row(await render()).props.value).toBe(true);
+  });
+
   test('the two things you switch on and off are switched the same way', async () => {
     const root = await render();
     const toggles = componentsBy(root, 'setting').filter((node) => node.props.type === 'toggle');

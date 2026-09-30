@@ -6,6 +6,8 @@ const nth = (day) => {
 };
 
 export const EN = {
+  MASK_AMOUNTS: 'Mask amounts',
+  MASK_AMOUNTS_CAPTION: 'Also toggled by tapping the net worth',
   SEE_ALL_COUNT: (count) => `See all ${count}`,
   EMPTY_ANALYTICS: 'Nothing to chart yet',
   EMPTY_ANALYTICS_CAPTION: 'Two months of entries draw the first line.',
@@ -333,6 +335,8 @@ export const EN = {
 };
 
 export const PT = {
+  MASK_AMOUNTS: 'Ocultar valores',
+  MASK_AMOUNTS_CAPTION: 'Também com um toque no patrimônio total',
   SEE_ALL_COUNT: (count) => `Ver tudo \u00b7 ${count}`,
   EMPTY_ANALYTICS: 'Ainda não há nada para traçar',
   EMPTY_ANALYTICS_CAPTION: 'Dois meses de movimentos traçam a primeira linha.',
@@ -644,6 +648,8 @@ export const PT = {
   YESTERDAY: 'Ontem',
 };
 export const FR = {
+  MASK_AMOUNTS: 'Masquer les montants',
+  MASK_AMOUNTS_CAPTION: 'Aussi en touchant le patrimoine total',
   SEE_ALL_COUNT: (count) => `Voir les ${count}`,
   EMPTY_ANALYTICS: 'Rien à tracer pour l’instant',
   EMPTY_ANALYTICS_CAPTION: 'Deux mois d’opérations tracent la première ligne.',
@@ -957,6 +963,8 @@ export const FR = {
   YESTERDAY: 'Hier',
 };
 export const DE = {
+  MASK_AMOUNTS: 'Beträge ausblenden',
+  MASK_AMOUNTS_CAPTION: 'Auch per Tipp auf das Gesamtvermögen',
   SEE_ALL_COUNT: (count) => `Alle ${count} ansehen`,
   EMPTY_ANALYTICS: 'Noch nichts zu zeichnen',
   EMPTY_ANALYTICS_CAPTION: 'Zwei Monate Buchungen zeichnen die erste Linie.',
@@ -1269,6 +1277,8 @@ export const DE = {
   YESTERDAY: 'Gestern',
 };
 export const ES = {
+  MASK_AMOUNTS: 'Ocultar importes',
+  MASK_AMOUNTS_CAPTION: 'También con un toque en el patrimonio total',
   SEE_ALL_COUNT: (count) => `Ver todo \u00b7 ${count}`,
   EMPTY_ANALYTICS: 'Aún no hay nada que dibujar',
   EMPTY_ANALYTICS_CAPTION: 'Dos meses de movimientos dibujan la primera línea.',

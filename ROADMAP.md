@@ -39,9 +39,6 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 Approved 2026-09-30: the sixteen findings of the UX/UI review of every screen against SPEC 9, in this order, each with its board in `design/proposals.html`.
 
-- **UX-MASK-AFFORDANCE** — Masking amounts is a hidden tap on the hero
-  `feature · agent · low`
-  accept: a "Mask amounts" switch under Preferences stores `maskAmount`; the hero tap stays; a test.
 - **UX-CHIP-TARGET** — The suggestion chip is 24 pt tall and tappable
   `chore · agent · low`
   accept: a pressable Chip renders at size `s` (32) with a hit slop that reaches 44; a test.

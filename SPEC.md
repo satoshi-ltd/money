@@ -252,8 +252,8 @@ button, "See all N" with a chevron, that opens Scheduled.
   typed twice. Finishing marks `onboarded`, saves the PIN and creates the account.
 - **Session** — the lock screen: wordmark, four dots, a numeric keypad with letters, a biometric key when the reader is
   on (auto-prompted on arrival), the version at the foot. A wrong PIN shakes.
-- **Overview** (Dashboard) — masthead with the date and search; the net-worth hero (tap masks amounts) with the month's
-  delta; the month block ([6](#6-insights-and-the-recommender)); the three accounts with most activity in the last 30
+- **Overview** (Dashboard) — masthead with the date and search; the net-worth hero (tap masks amounts, as the Settings switch does) with the
+  month's delta; the month block ([6](#6-insights-and-the-recommender)); the three accounts with most activity in the last 30
   days with their balance and month delta; the latest transactions grouped by day, loading 32 at a time; search filters
   the list. Empty ledger: an empty state that leads to the first account.
 - **Accounts** — net worth, the distribution bar by currency with its legend, a currency filter, every account with its
@@ -282,8 +282,8 @@ button, "See all N" with a chevron, that opens Scheduled.
 - **Account** (sheet) — currency, opening balance with its base equivalent, name; Delete, Cancel, Save. The first account
   hides Cancel and Delete.
 - **Settings** — a backup nudge when the last export is over a week old; Data (Update rates with its last run, Export,
-  Import, Export CSV); Appearance (theme, text size); Preferences (language, currency, Scheduled with its count, backup
-  reminder switch); Unlock (the biometric switch named after the reader); About (terms, privacy, security); Account &
+  Import, Export CSV); Appearance (theme, text size); Preferences (language, currency, Scheduled with its count, mask
+  amounts switch, backup reminder switch); Unlock (the biometric switch named after the reader); About (terms, privacy, security); Account &
   data (lock, reset); the colophon.
 
 ## 8. Operations
