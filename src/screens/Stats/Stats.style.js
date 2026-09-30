@@ -7,6 +7,10 @@ export const style = StyleSheet.create({
     paddingBottom: theme.spacing.xxl * 2,
     paddingTop: 0,
   },
+  empty: {
+    flexGrow: 1,
+    paddingBottom: 0,
+  },
   chartGap: {
     marginTop: theme.spacing.md,
   },

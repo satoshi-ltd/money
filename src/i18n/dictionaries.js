@@ -6,6 +6,8 @@ const nth = (day) => {
 };
 
 export const EN = {
+  EMPTY_ANALYTICS: 'Nothing to chart yet',
+  EMPTY_ANALYTICS_CAPTION: 'Two months of entries draw the first line.',
   SAVE_EXPENSE: 'Save expense',
   SAVE_INCOME: 'Save income',
   SAVE_SWAP: 'Save swap',
@@ -330,6 +332,8 @@ export const EN = {
 };
 
 export const PT = {
+  EMPTY_ANALYTICS: 'Ainda não há nada para traçar',
+  EMPTY_ANALYTICS_CAPTION: 'Dois meses de movimentos traçam a primeira linha.',
   SAVE_EXPENSE: 'Salvar despesa',
   SAVE_INCOME: 'Salvar receita',
   SAVE_SWAP: 'Salvar câmbio',
@@ -638,6 +642,8 @@ export const PT = {
   YESTERDAY: 'Ontem',
 };
 export const FR = {
+  EMPTY_ANALYTICS: 'Rien à tracer pour l’instant',
+  EMPTY_ANALYTICS_CAPTION: 'Deux mois d’opérations tracent la première ligne.',
   SAVE_EXPENSE: 'Enregistrer la dépense',
   SAVE_INCOME: 'Enregistrer le revenu',
   SAVE_SWAP: 'Enregistrer le change',
@@ -948,6 +954,8 @@ export const FR = {
   YESTERDAY: 'Hier',
 };
 export const DE = {
+  EMPTY_ANALYTICS: 'Noch nichts zu zeichnen',
+  EMPTY_ANALYTICS_CAPTION: 'Zwei Monate Buchungen zeichnen die erste Linie.',
   SAVE_EXPENSE: 'Ausgabe speichern',
   SAVE_INCOME: 'Einnahme speichern',
   SAVE_SWAP: 'Wechsel speichern',
@@ -1257,6 +1265,8 @@ export const DE = {
   YESTERDAY: 'Gestern',
 };
 export const ES = {
+  EMPTY_ANALYTICS: 'Aún no hay nada que dibujar',
+  EMPTY_ANALYTICS_CAPTION: 'Dos meses de movimientos dibujan la primera línea.',
   SAVE_EXPENSE: 'Guardar gasto',
   SAVE_INCOME: 'Guardar ingreso',
   SAVE_SWAP: 'Guardar cambio',

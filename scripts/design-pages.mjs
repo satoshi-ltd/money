@@ -454,12 +454,6 @@ const REVIEW = [
     proposed: frame(`<div style="display:flex;align-items:baseline;gap:8px;padding:7px 0;border-bottom:var(--hairline) solid var(--color-border)"><span style="width:96px">${text(L.SWING, { size: 's', tone: 'muted' })}</span><span style="flex:1">${price(-208.11)}</span>${text(`Personal, ${L.BELOW_USUAL}`, { size: 'xs', tone: 'muted' })}</div>`),
   },
   {
-    id: 'UX-ANALYTICS-EMPTY', area: 'Analytics', title: 'A blank screen under two months',
-    why: 'Chart and FlowChart return null with fewer than two points and Stats has no empty state, so a new ledger sees a masthead and paper.',
-    now: frame(`${miniMasthead(L.ACTIVITY, seg(['6M', '1Y', L.RANGE_ALL], '1Y', { compact: true }))}<div style="height:140px"></div>`),
-    proposed: frame(`${miniMasthead(L.ACTIVITY, seg(['6M', '1Y', L.RANGE_ALL], '1Y', { compact: true }))}<div class="m-empty" style="padding:24px 20px"><span class="m-well">${icon(ICON.RECEIPT, { size: 'xl', tone: 'textMuted' })}</span><div style="height:12px"></div>${text('Nothing to chart yet', { size: 'l', bold: true })}<div style="height:6px"></div>${text('Two months of entries draw the first line.', { size: 's', tone: 'muted', center: true })}<div style="height:16px"></div>${btn(L.EMPTY_TRANSACTIONS_ACTION, { variant: 'outlined' })}</div>`),
-  },
-  {
     id: 'UX-PROPOSAL-ROW', area: 'Transaction', title: 'Proposals in a row built for a label',
     why: 'Each proposal is a FieldRow with label="", so 96 points sit empty on the left and the offer reads as a value with no key.',
     now: frame(`${fieldRow(L.CONCEPT, input('coff', { right: true }))}${fieldRow('', `${text('Coffee', { size: 's', medium: true })}${text('Wallet', { size: 'xs', tone: 'muted' })}${price(65, { currency: 'THB', tone: 'accent' })}`, { divider: true })}${fieldRow('', `${text('Coffee beans', { size: 's', medium: true })}${text('Wallet', { size: 'xs', tone: 'muted' })}${price(1355, { currency: 'THB', tone: 'accent' })}`, { divider: true })}`, { sheet: true }),

@@ -47,10 +47,6 @@ Approved 2026-09-30: the sixteen findings of the UX/UI review of every screen ag
   `feature · agent · normal`
   accept: "Swing −208.11 · Personal" reads "Swing −208.11 · Personal, less than usual" (`insights.js` swing value
   is current minus baseline); the hint carries the direction word in the five dictionaries; a test.
-- **UX-ANALYTICS-EMPTY** — Analytics is blank under two months of entries
-  `feature · agent · normal`
-  accept: with fewer than two months, Analytics shows an EmptyState (Chart and FlowChart return null and
-  `Stats.jsx` has none) with copy in the five dictionaries and the add action; a test.
 - **UX-PROPOSAL-ROW** — Proposals sit in a field row with an empty label
   `feature · agent · normal`
   accept: the two proposal rows (`FormTransaction.jsx`, `FieldRow label=""`) become one full-width row shape:

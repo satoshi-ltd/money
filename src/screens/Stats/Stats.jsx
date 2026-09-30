@@ -1,12 +1,13 @@
+import PropTypes from 'prop-types';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useScrollToTop } from '@react-navigation/native';
 
 import { ItemGroupCategories, MonthKpis } from './components';
 import { queryMonth, queryChart, rangeDelta, RANGE_ALL, RANGE_VALUES, selectedRange as resolveRange } from './modules';
 import { style } from './Stats.style';
-import { Chart, FlowChart, Masthead, Screen, SegmentedToggle, View } from '../../components';
+import { Chart, EmptyState, FlowChart, Masthead, Screen, SegmentedToggle, View } from '../../components';
 import { useStore } from '../../contexts';
-import { C, getLastMonths, getMonthDiff, L10N, netWorthEyebrow } from '../../modules';
+import { C, getLastMonths, getMonthDiff, ICON, L10N, netWorthEyebrow } from '../../modules';
 
 const {
   STATS_MONTHS_LIMIT,
@@ -16,7 +17,7 @@ const MAX_STATS_MONTHS = 120;
 
 let debounceTimeout;
 
-const Stats = () => {
+const Stats = ({ navigation }) => {
   const scrollRef = useRef(null);
   useScrollToTop(scrollRef);
 
@@ -73,6 +74,8 @@ const Stats = () => {
     [accounts, overall, rates, baseCurrency, txs],
   );
   const chart = useMemo(() => queryChart(statsSource, monthsLimit), [statsSource, monthsLimit]);
+  // Read the history, not the chart: queryChart pads its window to the range, so it always has points to draw.
+  const empty = (overall.chartBalance || []).filter(Number.isFinite).length < 2;
   const rangeChange = useMemo(() => rangeDelta(chart.balance), [chart.balance]);
 
   const handlePointerIndex = (next) => {
@@ -104,68 +107,86 @@ const Stats = () => {
       <Masthead section={L10N.ACTIVITY}>
         <SegmentedToggle compact options={rangeOptions} value={selectedRange} onChange={handleRangeChange} />
       </Masthead>
-      <Screen ref={scrollRef} style={style.screen}>
-
-        <Chart
-          currency={baseCurrency}
-          caption={rangeCaption}
-          delta={rangeChange}
-          eyebrow={netWorthEyebrow({ accounts: accounts.length, currency: baseCurrency })}
-          heroValue={overall?.currentBalance || 0}
-          monthsLimit={monthsLimit}
-          pointerIndex={safePointerIndex}
-          style={style.chartGap}
-          trend={chart.trend}
-          values={chart.balance}
-          onPointerChange={handlePointerIndex}
-        />
-
-        <FlowChart
-          currency={baseCurrency}
-          expenses={chart.expenses}
-          incomes={chart.incomes}
-          monthsLimit={monthsLimit}
-          selectedIndex={safePointerIndex}
-          style={style.chartGap}
-          onSelectMonth={handlePointerIndex}
-        />
-
-        <MonthKpis
-          currency={baseCurrency}
-          expenses={monthTotals.expenses}
-          incomes={monthTotals.incomes}
-          title={monthLabel || ''}
-        />
-
-        {Object.keys(expenses).length > 0 ? (
-          <View style={style.sectionGap}>
-            <ItemGroupCategories
-              dataSource={expenses}
-              month={selectedMonth?.month}
-              monthLabel={monthLabel}
-              type={EXPENSE}
-              year={selectedMonth?.year}
-            />
-          </View>
+      <Screen ref={scrollRef} style={[style.screen, empty && style.empty]}>
+        {empty ? (
+          <EmptyState
+            action={L10N.EMPTY_TRANSACTIONS_ACTION}
+            caption={L10N.EMPTY_ANALYTICS_CAPTION}
+            icon={ICON.RECEIPT}
+            title={L10N.EMPTY_ANALYTICS}
+            variant="outlined"
+            onAction={() => navigation?.navigate('transaction', { type: EXPENSE })}
+          />
         ) : null}
 
-        {Object.keys(incomes).length > 0 ? (
-          <View style={style.sectionGap}>
-            <ItemGroupCategories
-              dataSource={incomes}
-              month={selectedMonth?.month}
-              monthLabel={monthLabel}
-              type={INCOME}
-              year={selectedMonth?.year}
+        {empty ? null : (
+          <>
+            <Chart
+              currency={baseCurrency}
+              caption={rangeCaption}
+              delta={rangeChange}
+              eyebrow={netWorthEyebrow({ accounts: accounts.length, currency: baseCurrency })}
+              heroValue={overall?.currentBalance || 0}
+              monthsLimit={monthsLimit}
+              pointerIndex={safePointerIndex}
+              style={style.chartGap}
+              trend={chart.trend}
+              values={chart.balance}
+              onPointerChange={handlePointerIndex}
             />
-          </View>
-        ) : null}
 
+            <FlowChart
+              currency={baseCurrency}
+              expenses={chart.expenses}
+              incomes={chart.incomes}
+              monthsLimit={monthsLimit}
+              selectedIndex={safePointerIndex}
+              style={style.chartGap}
+              onSelectMonth={handlePointerIndex}
+            />
+
+            <MonthKpis
+              currency={baseCurrency}
+              expenses={monthTotals.expenses}
+              incomes={monthTotals.incomes}
+              title={monthLabel || ''}
+            />
+
+            {Object.keys(expenses).length > 0 ? (
+              <View style={style.sectionGap}>
+                <ItemGroupCategories
+                  dataSource={expenses}
+                  month={selectedMonth?.month}
+                  monthLabel={monthLabel}
+                  type={EXPENSE}
+                  year={selectedMonth?.year}
+                />
+              </View>
+            ) : null}
+
+            {Object.keys(incomes).length > 0 ? (
+              <View style={style.sectionGap}>
+                <ItemGroupCategories
+                  dataSource={incomes}
+                  month={selectedMonth?.month}
+                  monthLabel={monthLabel}
+                  type={INCOME}
+                  year={selectedMonth?.year}
+                />
+              </View>
+            ) : null}
+
+          </>
+        )}
       </Screen>
     </>
   );
 };
 
 Stats.displayName = 'Stats';
+
+Stats.propTypes = {
+  navigation: PropTypes.any,
+};
 
 export { Stats };
