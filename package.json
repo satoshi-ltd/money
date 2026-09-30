@@ -13,6 +13,8 @@
     "rates:seed": "node scripts/rates-seed.mjs",
     "postinstall": "node scripts/prepare-native.cjs",
     "check:release": "node scripts/check-release.mjs",
+    "bump": "node scripts/bump.mjs",
+    "validate": "yarn check:release && yarn lint && yarn test",
     "eas:login": "npx eas-cli login",
     "eas:whoami": "npx eas-cli whoami",
     "build:dev": "node scripts/android-build.mjs dev",
