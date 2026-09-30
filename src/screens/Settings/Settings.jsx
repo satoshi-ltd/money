@@ -228,10 +228,10 @@ const Settings = ({ navigation = {} }) => {
     updateSettings({ reminders: [value] });
   };
 
-  const handleLogout = () => {
+  const handleLock = () => {
     eventEmitter.emit(EVENT.CONFIRM, {
-      title: L10N.CONFIRM_LOG_OUT,
-      caption: L10N.CONFIRM_LOG_OUT_CAPTION,
+      title: L10N.CONFIRM_LOCK,
+      caption: L10N.CONFIRM_LOCK_CAPTION,
       actionLabel: L10N.ACCEPT,
       onAction: () => {
         // Settings lives inside Tabs -> Stack, so the root stack owns the lock screen.
@@ -454,7 +454,7 @@ const Settings = ({ navigation = {} }) => {
 
         <View style={style.group}>
           <Eyebrow style={style.groupLabel}>{L10N.ACCOUNT_ACTIONS}</Eyebrow>
-          <Setting title={L10N.LOG_OUT} type="action" onPress={handleLogout} />
+          <Setting title={L10N.LOCK} type="action" onPress={handleLock} />
           <Setting divider title={L10N.RESET_DATA} titleTone="danger" type="action" onPress={handleResetData} />
         </View>
 

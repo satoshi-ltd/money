@@ -5,7 +5,7 @@ import TestRenderer, { act } from 'react-test-renderer';
 import { Settings } from '../Settings';
 import { theme } from '../../../theme';
 import { viewOffset } from '../../../theme/layout';
-import { biometricName, C, ICON, L10N, TEXT_SCALES } from '../../../modules';
+import { biometricName, C, eventEmitter, ICON, L10N, TEXT_SCALES } from '../../../modules';
 import { BackupService, BiometricAuthService } from '../../../services';
 
 const ACCENT_SOFT = '#S0FT00';
@@ -125,6 +125,28 @@ describe('screens/Settings', () => {
     expect(band.elevation).toBeUndefined();
   });
 
+
+  test('the lock row asks to lock, names what happens next, and lands on the lock screen', async () => {
+    const reset = jest.fn();
+    const confirm = jest.fn();
+    eventEmitter.on(C.EVENT.CONFIRM, confirm);
+    let renderer;
+    await act(async () => {
+      renderer = TestRenderer.create(
+        <Settings navigation={{ getParent: () => ({ getParent: () => ({ reset }) }), navigate: jest.fn() }} />,
+      );
+    });
+
+    const row = componentsBy(renderer.root, 'setting').find((node) => node.props.title === L10N.LOCK);
+    act(() => row.props.onPress());
+    eventEmitter.off(C.EVENT.CONFIRM, confirm);
+
+    expect(confirm).toHaveBeenCalledWith(
+      expect.objectContaining({ title: L10N.CONFIRM_LOCK, caption: L10N.CONFIRM_LOCK_CAPTION }),
+    );
+    confirm.mock.calls[0][0].onAction();
+    expect(reset).toHaveBeenCalledWith({ index: 0, routes: [{ name: 'session' }] });
+  });
 
   test('the backup CTA exports the ledger', async () => {
     const cta = componentsBy(await render(), 'chip').find((node) => node.props.label === L10N.BACKUP_CTA);

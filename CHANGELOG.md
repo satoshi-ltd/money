@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.71 — 2026-09-30
+
+- "Log out" becomes "Lock". The row takes you back to the PIN screen and nothing more, since there is no account to leave; the dialog says so: "Lock Môney?" and "You will be asked for your PIN." The same in the other four languages.
+
 ## 3.0.70 — 2026-09-30
 
 - Settings reads in sentence case like the rest of the app: "Update rates", "Back up data", "Restore data", "Base currency", "Backup reminder", "Privacy policy", and the backup reminder notification. The other four languages already did.

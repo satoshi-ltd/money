@@ -32,6 +32,15 @@ describe('i18n/dictionaries', () => {
     });
   });
 
+  test('locking the app is never called logging out: there is no account to leave', () => {
+    const verbs = { EN: /lock/i, ES: /bloque/i, PT: /bloque/i, FR: /verrouill/i, DE: /sperr/i };
+
+    [['EN', EN], ...LANGUAGES].forEach(([name, dictionary]) => {
+      ['LOCK', 'CONFIRM_LOCK'].forEach((key) => expect({ [name]: verbs[name].test(dictionary[key]) }).toEqual({ [name]: true }));
+      expect(dictionary.LOG_OUT).toBeUndefined();
+    });
+  });
+
   test('no screen renders a raw key: the analytics copy resolves', () => {
     [EN, ...LANGUAGES.map(([, dictionary]) => dictionary)].forEach((dictionary) => {
       ['NET_WORTH', 'ACCOUNT_BALANCE', 'MONTH_TO_DATE', 'FLOW_IN', 'FLOW_OUT', 'AVERAGE', 'NET'].forEach((key) => {
