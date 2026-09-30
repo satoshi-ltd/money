@@ -86,7 +86,7 @@ const Category = ({ navigation: { goBack, navigate } = {}, route: { params = {} 
       <View style={style.section}>
         <Heading value={L10N.LATEST}>
           <Pressable onPress={() => navigate('transactions', { category, month, type, year })}>
-            <Eyebrow>{`${L10N.SEE_ALL} ${count}`}</Eyebrow>
+            <Eyebrow>{L10N.SEE_ALL_COUNT(count)}</Eyebrow>
           </Pressable>
         </Heading>
 

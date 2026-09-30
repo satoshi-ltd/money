@@ -135,9 +135,9 @@ describe('screens/Category', () => {
       txs: [...mockStore.txs, tx('t7', 'Kiosco', 500, 7, 5, { account: 'a2' }), tx('t8', 'Free', 0, 7, 6)],
     };
     const root = render();
-    const eyebrow = componentsBy(root, 'eyebrow').find((node) => `${node.props.children}`.startsWith(L10N.SEE_ALL));
+    const eyebrow = componentsBy(root, 'eyebrow').find((node) => node.props.children === L10N.SEE_ALL_COUNT(5));
 
-    expect(eyebrow.props.children).toBe(`${L10N.SEE_ALL} 5`);
+    expect(eyebrow).toBeDefined();
   });
 
   test('a ledger with no history omits the delta rather than inventing one', () => {

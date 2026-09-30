@@ -3,33 +3,51 @@ import React, { useMemo } from 'react';
 
 import { getStyles } from './MonthSummary.style';
 import { useApp } from '../../contexts';
-import { L10N, percentText, verboseDate } from '../../modules';
-import { Text, View } from '../../primitives';
+import { ICON, L10N, percentText, verboseDate } from '../../modules';
+import { Icon, Pressable, Text, View } from '../../primitives';
+import { Eyebrow } from '../Eyebrow';
 import { PriceFriendly } from '../PriceFriendly';
 
 const clamp = (value) => Math.max(0, Math.min(100, value));
 
 // One line for all of them: title, value, caption. Written out five times over, they drifted a property at a time.
-const Line = ({ currency, hint, label, operator = false, style, styleContainer, tone, value }) => (
-  <View row style={[style.line, styleContainer]}>
-    <Text size="s" style={style.key} tone="muted">
-      {label}
-    </Text>
-    <View flex>
-      <PriceFriendly currency={currency} operator={operator} size="md" tone={tone} value={value} />
-    </View>
-    {hint ? (
-      <Text align="right" numberOfLines={1} size="xs" style={style.context} tone="muted">
-        {hint}
+const Line = ({ action, currency, hint, label, onPress, operator = false, style, styleContainer, tone, value }) => {
+  const row = (
+    <View row style={[style.line, styleContainer]}>
+      <Text size="s" style={style.key} tone="muted">
+        {label}
       </Text>
-    ) : null}
-  </View>
-);
+      <View flex>
+        <PriceFriendly currency={currency} operator={operator} size="md" tone={tone} value={value} />
+      </View>
+      {action ? (
+        <View row style={style.action}>
+          <Eyebrow tone="primary">{action}</Eyebrow>
+          <Icon name={ICON.RIGHT} size="s" tone="muted" />
+        </View>
+      ) : hint ? (
+        <Text align="right" numberOfLines={1} size="xs" style={style.context} tone="muted">
+          {hint}
+        </Text>
+      ) : null}
+    </View>
+  );
+
+  return onPress ? (
+    <Pressable accessibilityRole="button" onPress={onPress}>
+      {row}
+    </Pressable>
+  ) : (
+    row
+  );
+};
 
 Line.propTypes = {
+  action: PropTypes.string,
   currency: PropTypes.string,
   hint: PropTypes.string,
   label: PropTypes.string,
+  onPress: PropTypes.func,
   operator: PropTypes.bool,
   style: PropTypes.any,
   styleContainer: PropTypes.any,
@@ -37,7 +55,7 @@ Line.propTypes = {
   value: PropTypes.number,
 };
 
-const MonthSummary = ({ currency, insights = [] }) => {
+const MonthSummary = ({ currency, insights = [], onScheduledPress }) => {
   const { colors } = useApp();
   const style = useMemo(() => getStyles(colors), [colors]);
 
@@ -122,6 +140,7 @@ const MonthSummary = ({ currency, insights = [] }) => {
 
       {scheduled ? (
         <Line
+          action={onScheduledPress ? L10N.SEE_ALL_COUNT(scheduled.meta.pending) : undefined}
           currency={currency}
           hint={`${scheduled.meta.pending} ${L10N.PENDING}`}
           label={L10N.SCHEDULED_AHEAD}
@@ -129,6 +148,7 @@ const MonthSummary = ({ currency, insights = [] }) => {
           style={style}
           styleContainer={style.row}
           value={scheduled.value}
+          onPress={onScheduledPress}
         />
       ) : null}
     </View>
@@ -138,6 +158,7 @@ const MonthSummary = ({ currency, insights = [] }) => {
 MonthSummary.propTypes = {
   currency: PropTypes.string,
   insights: PropTypes.array,
+  onScheduledPress: PropTypes.func,
 };
 
 export { MonthSummary };

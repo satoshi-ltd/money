@@ -39,10 +39,6 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 Approved 2026-09-30: the sixteen findings of the UX/UI review of every screen against SPEC 9, in this order, each with its board in `design/proposals.html`.
 
-- **UX-SCHEDULED-LINK** — The month block names four pending schedules and leads nowhere
-  `feature · agent · normal`
-  accept: the Scheduled line of MonthSummary is pressable and opens Scheduled (today reachable only from Settings);
-  a test asserts the navigation.
 - **UX-SWING-COPY** — The swing figure carries no direction
   `feature · agent · normal`
   accept: "Swing −208.11 · Personal" reads "Swing −208.11 · Personal, less than usual" (`insights.js` swing value

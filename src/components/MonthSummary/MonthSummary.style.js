@@ -53,6 +53,10 @@ export const getStyles = (colors) =>
     context: {
       flex: 1,
     },
+    action: {
+      alignItems: 'center',
+      gap: theme.spacing.xxs,
+    },
     contextRow: {
       flex: 1,
       gap: theme.spacing.xxs,

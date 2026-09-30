@@ -220,7 +220,8 @@ early one-off outvoted the ordinary one. It emits:
 - **scheduled** — what is still scheduled this month and its net effect.
 
 The Overview month block draws the lead line (spent so far, its pace), a bar of spent against usual with a tick at the
-usual, "Usual by the 9th · figure" in the language's own ordinal, then one line per insight.
+usual, "Usual by the 9th · figure" in the language's own ordinal, then one line per insight. The scheduled line is a
+button, "See all N" with a chevron, that opens Scheduled.
 
 ### The transaction form
 
@@ -264,7 +265,7 @@ usual, "Usual by the 9th · figure" in the language's own ordinal, then one line
   shows from, send, destination, receive.
 - **Clone** (sheet) — the same form seeded from an entry, with Delete, Duplicate (only when unchanged) and Save.
 - **Scheduled** — a panel with the monthly impact, then the templates in three groups (next 7 days, this month, later)
-  with the next date, the rule in words and the amount. Reached from Settings.
+  with the next date, the rule in words and the amount. Reached from Settings and from the Overview month block.
 - **Scheduled form** (sheet) — type, concept, amount, account, category, weekly (weekday chips) or monthly (date) rule,
   a preview of the next occurrence, Delete and Save.
 - **Analytics** (Stats) — range toggle (6M, 1Y, All) in the masthead; the balance chart with its trailing average over a

@@ -6,6 +6,7 @@ const nth = (day) => {
 };
 
 export const EN = {
+  SEE_ALL_COUNT: (count) => `See all ${count}`,
   EMPTY_ANALYTICS: 'Nothing to chart yet',
   EMPTY_ANALYTICS_CAPTION: 'Two months of entries draw the first line.',
   SAVE_EXPENSE: 'Save expense',
@@ -332,6 +333,7 @@ export const EN = {
 };
 
 export const PT = {
+  SEE_ALL_COUNT: (count) => `Ver tudo \u00b7 ${count}`,
   EMPTY_ANALYTICS: 'Ainda não há nada para traçar',
   EMPTY_ANALYTICS_CAPTION: 'Dois meses de movimentos traçam a primeira linha.',
   SAVE_EXPENSE: 'Salvar despesa',
@@ -642,6 +644,7 @@ export const PT = {
   YESTERDAY: 'Ontem',
 };
 export const FR = {
+  SEE_ALL_COUNT: (count) => `Voir les ${count}`,
   EMPTY_ANALYTICS: 'Rien à tracer pour l’instant',
   EMPTY_ANALYTICS_CAPTION: 'Deux mois d’opérations tracent la première ligne.',
   SAVE_EXPENSE: 'Enregistrer la dépense',
@@ -954,6 +957,7 @@ export const FR = {
   YESTERDAY: 'Hier',
 };
 export const DE = {
+  SEE_ALL_COUNT: (count) => `Alle ${count} ansehen`,
   EMPTY_ANALYTICS: 'Noch nichts zu zeichnen',
   EMPTY_ANALYTICS_CAPTION: 'Zwei Monate Buchungen zeichnen die erste Linie.',
   SAVE_EXPENSE: 'Ausgabe speichern',
@@ -1265,6 +1269,7 @@ export const DE = {
   YESTERDAY: 'Gestern',
 };
 export const ES = {
+  SEE_ALL_COUNT: (count) => `Ver todo \u00b7 ${count}`,
   EMPTY_ANALYTICS: 'Aún no hay nada que dibujar',
   EMPTY_ANALYTICS_CAPTION: 'Dos meses de movimientos dibujan la primera línea.',
   SAVE_EXPENSE: 'Guardar gasto',

@@ -8,6 +8,7 @@ import { scaledType } from '../../modules';
 const SIZES = { xxl: 'title', xl: 'heading', l: 'subtitle', m: 'body', s: 'caption', xs: 'tiny', xxs: 'micro' };
 const FIGURES = { hero: 'figureHero', xl: 'figureXl', lg: 'figureLg', md: 'figureMd', sm: 'figureSm', xs: 'figureXs' };
 const TONES = {
+  primary: 'tonePrimary',
   secondary: 'toneSecondary',
   muted: 'toneMuted',
   positive: 'tonePositive',

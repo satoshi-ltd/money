@@ -18,7 +18,9 @@ jest.mock('../../../primitives', () => {
   const ReactNative = require('react-native');
   const MockReact = require('react');
   return {
-    Text: ({ figure, size, uppercase, ...props }) => MockReact.createElement(ReactNative.Text, props),
+    Icon: (props) => MockReact.createElement(ReactNative.View, { testID: 'icon', ...props }),
+    Pressable: (props) => MockReact.createElement(ReactNative.View, { testID: 'pressable', ...props }),
+    Text: ({ bold, figure, size, uppercase, ...props }) => MockReact.createElement(ReactNative.Text, props),
     View: ({ flex, row, spaceBetween, ...props }) => MockReact.createElement(ReactNative.View, props),
   };
 });
@@ -216,6 +218,30 @@ describe('components/MonthSummary', () => {
     const root = render({ insights: [...INSIGHTS, { type: 'scheduled', value: -50.12, meta: { pending: 3 } }] });
 
     expect(texts(root).join(' ')).toContain(`3 ${L10N.PENDING}`);
+  });
+
+  test('given somewhere to go, the scheduled line is a button that says how many and opens them', () => {
+    const onScheduledPress = jest.fn();
+    const root = render({
+      insights: [...INSIGHTS, { type: 'scheduled', value: -50.12, meta: { pending: 4 } }],
+      onScheduledPress,
+    });
+    const [button] = root.findAllByProps({ testID: 'pressable' }).filter((node) => typeof node.type === 'function');
+
+    expect(button.props.accessibilityRole).toBe('button');
+    expect(texts(root)).toContain(L10N.SEE_ALL_COUNT(4));
+    expect(texts(root).join(' ')).not.toContain(L10N.PENDING);
+    expect(root.findAllByProps({ testID: 'icon' }).filter((node) => typeof node.type === 'function')).toHaveLength(1);
+
+    act(() => button.props.onPress());
+    expect(onScheduledPress).toHaveBeenCalledTimes(1);
+  });
+
+  test('with nowhere to go there is no button, and the count stays a caption', () => {
+    const root = render({ insights: [...INSIGHTS, { type: 'scheduled', value: -50.12, meta: { pending: 4 } }] });
+
+    expect(root.findAllByProps({ testID: 'pressable' })).toHaveLength(0);
+    expect(texts(root).join(' ')).toContain(`4 ${L10N.PENDING}`);
   });
 
   test('a row with no insight behind it is absent, never a zero', () => {

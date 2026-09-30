@@ -44,10 +44,10 @@ const account = (hash, title, currency, currentBalance, recentTxs = 0, progressi
   txs: [],
 });
 
-const render = () => {
+const render = (navigate = () => {}) => {
   let renderer;
   act(() => {
-    renderer = TestRenderer.create(<DashboardListHeader navigate={() => {}} onSearch={() => {}} setPage={() => {}} />);
+    renderer = TestRenderer.create(<DashboardListHeader navigate={navigate} onSearch={() => {}} setPage={() => {}} />);
   });
   return renderer.root;
 };
@@ -147,6 +147,18 @@ describe('screens/Dashboard/ListHeader', () => {
     );
 
     expect(converted).toHaveLength(1);
+  });
+
+  test('the month block leads its scheduled line to the Scheduled panel', () => {
+    mockStore = {
+      ...mockStore,
+      txs: [{ account: 'a1', category: 1, hash: 't1', timestamp: new Date(2026, 7, 3).getTime(), type: 0, value: 40 }],
+    };
+    const navigate = jest.fn();
+    const [summary] = componentsBy(render(navigate), 'month-summary');
+
+    act(() => summary.props.onScheduledPress());
+    expect(navigate).toHaveBeenCalledWith('scheduled');
   });
 
   test('hides the hero when there are no accounts', () => {

@@ -64,14 +64,14 @@ const DashboardListHeader = ({ navigate }) => {
             })}
             value={L10N.THIS_MONTH}
           />
-          <MonthSummary currency={baseCurrency} insights={insights} />
+          <MonthSummary currency={baseCurrency} insights={insights} onScheduledPress={() => navigate('scheduled')} />
         </View>
       ) : null}
 
       <View style={style.section}>
         <Heading value={L10N.ACCOUNTS}>
           <Pressable onPress={() => navigate('accounts')}>
-            <Eyebrow>{`${L10N.SEE_ALL} ${accounts.length}`}</Eyebrow>
+            <Eyebrow>{L10N.SEE_ALL_COUNT(accounts.length)}</Eyebrow>
           </Pressable>
         </Heading>
 

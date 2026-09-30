@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.66 — 2026-09-30
+
+- The month block's Scheduled line opens Scheduled. It named the pending schedules and led nowhere; Scheduled was two levels away, through Settings. The line now reads "See all N" with a chevron and is a button.
+- "See all 4" in each language's own order: "Voir les 4", "Alle 4 ansehen". The accounts heading and the category sheet say it the same way.
+
 ## 3.0.65 — 2026-09-30
 
 - Say what Analytics is waiting for. Under two months of history the charts drew a window padded with empty months, a line rising out of nothing that said nothing about why; the screen now says "Nothing to chart yet", that two months of entries draw the first line, and offers the first entry.
