@@ -1,15 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useMemo, useRef } from 'react';
-import { useWindowDimensions } from 'react-native';
 import { Line, Rect, Svg } from 'react-native-svg';
 
 import { style } from './FlowChart.style';
 import { buildFlowColumns, FLOW_VISIBLE, flowLayout, flowScrollOffset } from './helpers';
 import { useApp } from '../../contexts';
+import { useContentWidth } from '../../hooks';
 import { L10N } from '../../modules';
 import { Pressable, ScrollView, Text, View } from '../../primitives';
 import { Heading } from '../Heading';
-import { viewOffset } from '../../theme/layout';
 import { PriceFriendly } from '../PriceFriendly';
 
 const CHART_HEIGHT = 132;
@@ -19,9 +18,8 @@ const BREAK_OFFSET = 4;
 
 const FlowChart = ({ currency, expenses = [], incomes = [], monthsLimit, selectedIndex, onSelectMonth, ...others }) => {
   const { colors } = useApp();
-  const { width: windowWidth } = useWindowDimensions();
+  const viewportWidth = useContentWidth();
   const scrollRef = useRef(null);
-  const viewportWidth = windowWidth - viewOffset * 2;
   const slotWidth = viewportWidth / FLOW_VISIBLE;
 
   const columns = useMemo(() => buildFlowColumns({ expenses, incomes, monthsLimit }), [expenses, incomes, monthsLimit]);

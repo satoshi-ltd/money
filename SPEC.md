@@ -349,7 +349,10 @@ tests under `scripts/__tests__`, run against temporary copies.
   text sizes multiply both ramps; `scaledType` applies the scale to every composed style.
 - **Icons.** Lucide glyphs drawn inline (`src/primitives/Icon`), stroke 1.5, sized from the icon ramp (11 to 24) and
   inked from the tone.
-- **Space.** `xxs 4 · xs 8 · sm 12 · md 16 · lg 20 · xl 32 · xxl 48`. The screen gutter is `lg`.
+- **Space.** `xxs 4 · xs 8 · sm 12 · md 16 · lg 20 · xl 32 · xxl 48`. The screen gutter is `lg`. Content stops at a 480-point
+  column and sits centred, so the open Fold keeps a phone's column and every phone is narrower than the cap. The
+  top bar and its rule, the lists, the forms, the charts and the keypad share it; the tab bar and the banners are
+  system chrome and span the window.
 - **Radius.** Three: 0 for flat blocks, 4 for anything touchable, full for dots. Every named radius is 4.
 - **Rules.** Separation is a 1 px hairline in `border`; a heading closes with a hairline in `rule`. Nothing is elevated
   except the dropdown, which floats over live content with no scrim.
@@ -358,7 +361,7 @@ tests under `scripts/__tests__`, run against temporary copies.
 
 ### Shared geometry
 
-`viewOffset 20`, `rowHeight 44`, `fieldHeight 42`, `buttonHeight 46`, `iconButtonSize 34`, `sealSize 40`,
+`viewOffset 20`, `columnWidth 480`, `rowHeight 44`, `fieldHeight 42`, `buttonHeight 46`, `iconButtonSize 34`, `sealSize 40`,
 `wellSize 32`, `categorySize 80`, `dropdownWidth 260`, cards `216 × 152`, options `83`.
 
 ### Primitives

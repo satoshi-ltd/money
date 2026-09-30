@@ -1,9 +1,10 @@
 import React from 'react';
-import { Text as RNText } from 'react-native';
+import { StyleSheet, Text as RNText } from 'react-native';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import { NumKeyboard } from '../NumKeyboard';
 import { L10N } from '../../../../../modules';
+import { columnWidth } from '../../../../../theme/layout';
 
 jest.mock('../../../../../components', () => {
   const ReactNative = require('react-native');
@@ -41,6 +42,15 @@ describe('screens/Session/NumKeyboard', () => {
 
     const bare = render({}).findAll((node) => host(node) && node.props?.accessible === false);
     expect(bare).toHaveLength(2);
+  });
+
+  test('the keys are a third of a column, not of the window, so they stay keys on the open Fold', () => {
+    const pad = render({}).findAll(
+      (node) => typeof node.type === 'string' && StyleSheet.flatten(node.props.style)?.maxWidth === columnWidth,
+    );
+
+    expect(pad.length).toBeGreaterThan(0);
+    expect(StyleSheet.flatten(pad[0].props.style)).toMatchObject({ alignSelf: 'center', width: '100%' });
   });
 
   test('digits call onPress with their number', () => {

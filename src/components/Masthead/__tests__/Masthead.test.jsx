@@ -5,7 +5,7 @@ import TestRenderer, { act } from 'react-test-renderer';
 import { Masthead } from '../Masthead';
 import { ICON, L10N } from '../../../modules';
 import { theme } from '../../../theme';
-import { iconButtonSize } from '../../../theme/layout';
+import { columnWidth, iconButtonSize } from '../../../theme/layout';
 
 const BORDER = '#B0RDE0';
 
@@ -35,6 +35,16 @@ describe('components/Masthead', () => {
     expect(named({ onSearch: () => {} })).toEqual([L10N.A11Y_SEARCH]);
     expect(named({ onBack: () => {} })).toEqual([L10N.A11Y_BACK]);
     expect(named({ onSearch: () => {}, searching: true })).toEqual([L10N.A11Y_CLOSE]);
+  });
+
+  test('the bar lines up with the column under it on a window wider than a phone', () => {
+    const bar = render({}).findAll(
+      (node) => typeof node.type === 'string' && StyleSheet.flatten(node.props.style)?.maxWidth === columnWidth,
+    );
+
+    expect(bar.length).toBeGreaterThan(0);
+    expect(StyleSheet.flatten(bar[0].props.style)).toMatchObject({ alignSelf: 'center', width: '100%' });
+    expect(bar[0].findAll((node) => StyleSheet.flatten(node.props.style)?.backgroundColor === '#RULE00').length).toBeGreaterThan(0);
   });
 
   test('the wordmark is always there, on every screen that uses it', () => {

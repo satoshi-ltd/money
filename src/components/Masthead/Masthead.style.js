@@ -1,12 +1,12 @@
 import { StyleSheet } from 'react-native';
 
 import { theme } from '../../theme';
-import { fieldHeight, iconButtonSize, viewOffset } from '../../theme/layout';
+import { columnStyle, fieldHeight, iconButtonSize, viewOffset } from '../../theme/layout';
 
 export const getStyles = (colors) =>
   StyleSheet.create({
     // No fill: the masthead sits on whatever surface hosts it — paper on a tab, sheet on a sheet.
-    wrapper: {},
+    wrapper: columnStyle,
     container: {
       alignItems: 'center',
       gap: theme.spacing.xs,

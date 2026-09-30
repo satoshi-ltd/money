@@ -3,6 +3,8 @@ import { theme } from './theme';
 // Derived layout constants used across rows/inputs/sheets.
 // Keep these as plain numbers so they can be safely used in RN props/styles.
 export const viewOffset = theme.spacing.lg;
+export const columnWidth = theme.spacing.xxl * 10;
+export const columnStyle = { alignSelf: 'center', maxWidth: columnWidth, width: '100%' };
 export const cardGap = theme.spacing.sm;
 
 export const wellSize = theme.spacing.xl;

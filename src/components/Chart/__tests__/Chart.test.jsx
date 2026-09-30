@@ -4,6 +4,7 @@ import TestRenderer, { act } from 'react-test-renderer';
 
 import { Chart } from '../Chart';
 import { percentText } from '../../../modules';
+import { columnWidth, viewOffset } from '../../../theme/layout';
 
 const ACCENT = '#ACCE07';
 const MUTED = '#MUTED0';
@@ -15,9 +16,11 @@ jest.mock('../../../contexts', () => ({
   }),
 }));
 
+let mockWindow = { height: 844, width: 390 };
+
 jest.mock('react-native/Libraries/Utilities/useWindowDimensions', () => ({
   __esModule: true,
-  default: () => ({ height: 844, width: 390 }),
+  default: () => mockWindow,
 }));
 
 jest.mock('react-native-svg', () => {
@@ -49,6 +52,18 @@ const svgBy = (root, testID) => root.findAllByProps({ testID }).filter((node) =>
 const texts = (root) => root.findAllByType(RNText).map((node) => node.props.children);
 
 describe('components/Chart', () => {
+  afterEach(() => {
+    mockWindow = { height: 844, width: 390 };
+  });
+
+  test('the line is drawn across the window on a phone and across the column on the open Fold', () => {
+    const drawn = () => svgBy(render(), 'svg')[0].props.width;
+
+    expect(drawn()).toBe(390 - viewOffset * 2);
+    mockWindow = { height: 844, width: 720 };
+    expect(drawn()).toBe(columnWidth - viewOffset * 2);
+  });
+
   // The dashed line used to be a moving average of the same series: a smoothing of the line it sat under, which
   // said nothing the line did not, and covered half the chart at 6M and a tenth at All.
   test('on its own the balance line is the only line', () => {

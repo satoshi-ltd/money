@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
-import { useWindowDimensions } from 'react-native';
 import Svg, { Circle, Line, Path } from 'react-native-svg';
 
 import { getStyles } from './Chart.style';
 import { useApp } from '../../contexts';
+import { useContentWidth } from '../../hooks';
 import {
   chartBounds,
   compactFigure,
@@ -14,7 +14,6 @@ import {
   pointAt,
 } from '../../modules';
 import { Pressable, Text, View } from '../../primitives';
-import { viewOffset } from '../../theme/layout';
 import { Eyebrow } from '../Eyebrow';
 import { Delta } from '../Delta';
 import { PriceFriendly } from '../PriceFriendly';
@@ -38,14 +37,13 @@ const Chart = ({
   style: styleContainer,
 }) => {
   const { colors } = useApp();
-  const { width: windowWidth } = useWindowDimensions();
+  const width = useContentWidth();
   const style = useMemo(() => getStyles(colors, height), [colors, height]);
 
   const series = values.filter((value) => Number.isFinite(value));
   const trendSeries = trend.filter((value) => Number.isFinite(value));
   // Only when it lines up month for month: a shorter series would read against the wrong ones.
   const hasTrend = trendSeries.length === series.length && series.length > 1;
-  const width = windowWidth - viewOffset * 2;
   const bounds = chartBounds(hasTrend ? [...series, ...trendSeries] : series);
   const geometry = { bounds, height, padding: PADDING, width };
 

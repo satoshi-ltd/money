@@ -1,8 +1,9 @@
 import React from 'react';
-import { ScrollView as RNScrollView, View as RNView } from 'react-native';
+import { ScrollView as RNScrollView, StyleSheet, View as RNView } from 'react-native';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import Screen from '../Screen';
+import { columnWidth } from '../../../theme/layout';
 
 jest.mock('../../../contexts', () => ({ useApp: () => ({ colors: {} }) }));
 jest.mock('../../../hooks', () => ({ useKeyboardInset: () => mockKeyboard }));
@@ -54,6 +55,15 @@ describe('components/Screen', () => {
 
     expect(root.findAllByType(RNScrollView)).toHaveLength(0);
     expect(root.findAllByType(RNView).length).toBeGreaterThan(0);
+  });
+
+  test('the content is one centred column, scrolling or not, never wider than the cap', () => {
+    const column = { alignSelf: 'center', maxWidth: columnWidth, width: '100%' };
+    const scrolling = StyleSheet.flatten(render({}).findByType(RNScrollView).props.contentContainerStyle);
+    const fixed = StyleSheet.flatten(render({ disableScroll: true }).findAllByType(RNView)[0].props.style);
+
+    expect(scrolling).toMatchObject(column);
+    expect(fixed).toMatchObject(column);
   });
 
   test('keeps caller props over the defaults', () => {

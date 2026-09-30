@@ -442,12 +442,6 @@ const miniMasthead = (section, actions = '') => `<div class="m-masthead" style="
 
 const REVIEW = [
   {
-    id: 'UX-FOLD-WIDTH', area: 'The Fold', title: 'One column across 720 points',
-    why: 'No layout maxWidth exists; rows, forms and the keypad (keys at 33.333%) stretch with the window.',
-    now: `<div class="m" style="width:520px;padding:12px 0;background:var(--color-background)">${miniMasthead('Wed 9 Sep 2026')}${accountRow(ACCOUNTS[0])}${accountRow(ACCOUNTS[1])}<div class="m-keypad" style="padding:12px 0 0">${[1, 2, 3].map((k) => `<span class="m-key" style="height:48px">${fig(String(k), { size: 'xl' })}</span>`).join('')}</div></div>`,
-    proposed: `<div class="m" style="width:520px;padding:12px 0;background:var(--color-background)">${miniMasthead('Wed 9 Sep 2026')}<div style="max-width:390px;margin:0 auto">${accountRow(ACCOUNTS[0])}${accountRow(ACCOUNTS[1])}<div class="m-keypad" style="padding:12px 0 0">${[1, 2, 3].map((k) => `<span class="m-key" style="height:48px">${fig(String(k), { size: 'xl' })}</span>`).join('')}</div></div></div>`,
-  },
-  {
     id: 'UX-SETTINGS-CASE', area: 'Settings', title: 'Title Case on one screen',
     why: 'Every other screen is sentence case; Settings rows arrived capitalised word by word.',
     now: frame(`${setting('Update Rates', { right: rightValue('2 h ago', { figure: true }) })}${setting('Backup Data', { divider: true, right: chevronRight() })}${setting('Restore Data', { divider: true, right: chevronRight() })}${setting('Base Currency', { divider: true, right: rightValue('US Dollar') })}${setting('Backup Reminder', { divider: true, right: switchEl(true) })}${setting('Privacy Policy', { divider: true })}`),

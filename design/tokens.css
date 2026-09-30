@@ -35,6 +35,8 @@
   --motion-quick: 250ms;
   --motion-standard: 350ms;
   --view-offset: 20px;
+  --column-width: 480px;
+  --column-style: [object Object]px;
   --card-gap: 12px;
   --well-size: 32px;
   --icon-button-size: 34px;

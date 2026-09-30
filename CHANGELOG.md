@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.69 — 2026-09-30
+
+- The open Fold keeps a column. Lists, forms, the top bar, the charts and the PIN keypad stop at 480 points and sit centred, instead of stretching across the whole window. Phones are narrower than that and look the same.
+
 ## 3.0.68 — 2026-09-30
 
 - A proposal is one full-width row. Each offer under the concept field sat in a field row with an empty label, so it read as a value with no key; it is now the title with its account and category under it and the amount in the accent at the right.

@@ -39,10 +39,6 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 Approved 2026-09-30: the sixteen findings of the UX/UI review of every screen against SPEC 9, in this order, each with its board in `design/proposals.html`.
 
-- **UX-FOLD-WIDTH** — One column stretches across the open Fold
-  `feature · agent · normal`
-  accept: no layout `maxWidth` exists today; forms, lists and the keypad (`width: '33.333%'`) cap their content
-  at a token width and centre it on windows wider than the phone; the device check is a creator `verify`.
 - **UX-SETTINGS-CASE** — Settings labels in Title Case
   `chore · agent · low`
   accept: `Update Rates`, `Backup Data`, `Restore Data`, `Base Currency`, `Backup Reminder`, `Privacy Policy` and
@@ -99,6 +95,10 @@ _None._
   accept: with the screen reader on, every masthead button, the seal, the PIN keys, the suggestion chip, the tabs,
   the segments, the Settings rows and the "Hide from Analytics" checkbox are announced by name (and state where they
   have one); nothing is read as a bare "button".
+- **VERIFY-FOLD** — One column on the open Fold
+  `verify · creator · normal · depends: BUILD-PHONE`
+  accept: on the open Pixel Fold, Overview, Analytics, the panels, the sheets and the PIN keypad sit in one centred
+  column of at most 480 points with the charts drawn to its width; on a phone nothing moved.
 - **SCHED-DEVICE** — Scheduled transactions end to end on a device
   `verify · creator · normal`
   accept: create, edit and delete of weekly and monthly schedules; the monthly day clamp; no duplicate occurrence after
