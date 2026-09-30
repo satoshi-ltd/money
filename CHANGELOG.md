@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.62 — 2026-09-30
+
+- Open a category's "See all" on that category. The eyebrow counted the category's entries of the month and then opened an empty Transactions panel; it now opens Transactions filtered to that category and month, across accounts, titled after both, and the count is exactly what the panel lists.
+
 ## 3.0.61 — 2026-09-21
 
 - Read the current month's rates from the file dated today, falling back to yesterday and the day before, and treat a download that misses it as no download at all. Two things went wrong at once: a sync could come back with an older month and without the current one, stamp itself as fresh and report success; and the CDN in front of the feed held the `latest` alias seven days behind and served it with a clean 200. Either way every balance was valued at a stale close: 7.04 BTC read 545,901 dollars at the 14th's 77,542 while the day stood at 81,240. Dated files are immutable, so no cache can age them, and the current month now has to answer before anything else is kept; otherwise the app keeps what it had, leaves the last-update date alone, and says so.

@@ -21,7 +21,7 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
   const { accounts = [], txs = [] } = store;
   const initialType = type ?? EXPENSE;
   const [isTransfer, setIsTransfer] = useState(initialType === TRANSFER);
-  const [account, setAccount] = useState(params.account);
+  const [account, setAccount] = useState(params.account?.hash ? params.account : undefined);
   const [accountTouched, setAccountTouched] = useState(false);
   const [categoryTouched, setCategoryTouched] = useState(false);
   const [amountTouched, setAmountTouched] = useState(false);
@@ -36,7 +36,7 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
   const sortedAccounts = useMemo(() => sortAccounts(accounts), [accounts]);
 
   useEffect(() => {
-    if (!account && sortedAccounts.length) setAccount(params.account || sortedAccounts[0]);
+    if (!account && sortedAccounts.length) setAccount(params.account?.hash ? params.account : sortedAccounts[0]);
   }, [account, params.account, sortedAccounts]);
 
   useEffect(() => {

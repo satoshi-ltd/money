@@ -5,7 +5,7 @@ import { getStyles } from './Category.style';
 import { AVERAGE_MONTHS, queryCategory } from './modules';
 import { Delta, Eyebrow, Heading, Panel, Pressable, PriceFriendly, Text, View } from '../../components';
 import { useApp, useStore } from '../../contexts';
-import { C, L10N, percentText, verboseDate } from '../../modules';
+import { C, categoryMonthTxs, L10N, percentText, verboseDate } from '../../modules';
 
 const { TX: { TYPE: { EXPENSE } } = {} } = C;
 const LATEST_LIMIT = 3;
@@ -25,6 +25,8 @@ const Category = ({ navigation: { goBack, navigate } = {}, route: { params = {} 
     () => queryCategory(categorySource, { category, month, type, year }),
     [categorySource, category, month, type, year],
   );
+
+  const count = useMemo(() => categoryMonthTxs(txs, { category, month, type, year }).length, [txs, category, month, type, year]);
 
   const title = L10N.CATEGORIES[type]?.[category] || L10N.OTHERS;
   const share = monthTotal > 0 ? Math.round((total * 100) / monthTotal) : undefined;
@@ -83,8 +85,8 @@ const Category = ({ navigation: { goBack, navigate } = {}, route: { params = {} 
 
       <View style={style.section}>
         <Heading value={L10N.LATEST}>
-          <Pressable onPress={() => navigate('transactions')}>
-            <Eyebrow>{`${L10N.SEE_ALL} ${entries.length}`}</Eyebrow>
+          <Pressable onPress={() => navigate('transactions', { category, month, type, year })}>
+            <Eyebrow>{`${L10N.SEE_ALL} ${count}`}</Eyebrow>
           </Pressable>
         </Heading>
 

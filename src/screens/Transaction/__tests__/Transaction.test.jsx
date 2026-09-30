@@ -43,9 +43,9 @@ const tx = (account, category, timestamp) => ({ account, category, timestamp, ti
 
 let renderer;
 
-const render = () => {
+const render = (params = { account: A1 }) => {
   act(() => {
-    renderer = TestRenderer.create(<Transaction route={{ params: { account: A1 } }} navigation={{ goBack: () => {} }} />);
+    renderer = TestRenderer.create(<Transaction route={{ params }} navigation={{ goBack: () => {} }} />);
   });
 };
 
@@ -77,6 +77,12 @@ describe('screens/Transaction default category', () => {
 
     expect(mockForm.form.category).toBe(1);
     expect(mockForm.categoryTouched).toBe(false);
+  });
+
+  test('an account without a hash is no account: the first one is picked instead', () => {
+    render({ account: {}, type: 0 });
+
+    expect(mockForm.account.hash).toBe('a1');
   });
 
   test('what the concept filled in survives the account it moved to', () => {

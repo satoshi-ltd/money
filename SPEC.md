@@ -256,7 +256,9 @@ usual, "Usual by the 9th · figure" in the language's own ordinal, then one line
 - **Accounts** — net worth, the distribution bar by currency with its legend, a currency filter, every account with its
   balance and base figure, and the total of the filter. A row opens Transactions for that account.
 - **Transactions** — a panel for one account: balance hero with the month delta, the month's incomes and expenses as
-  bars, the list by day, a floating add button, Edit in the masthead. Swipe a row to delete; tap to open Clone.
+  bars, the list by day, a floating add button, Edit in the masthead. Swipe a row to delete; tap to open Clone. Opened
+  from a category it lists that category's entries of the month across accounts, titled after both, without the
+  account hero or Edit.
 - **Transaction** (sheet) — expense, income or swap toggle; the form of [6](#6-insights-and-the-recommender) with
   concept, proposals, amount with the account's symbol, account, category, "Hide from Analytics", date; Save. A swap
   shows from, send, destination, receive.
@@ -270,7 +272,8 @@ usual, "Usual by the 9th · figure" in the language's own ordinal, then one line
   reference lines, bars clipped at three times the median with a break, and a pointer that selects a month; month KPIs
   (in, out, net); expenses and incomes by category with an "Others" fold. A category opens its sheet.
 - **Category** (sheet) — the category's month total and share of spend, the delta against its average, "Where it went"
-  by merchant with bars and counts, and the latest entries.
+  by merchant with bars and counts, and the latest entries; "See all N" opens Transactions filtered to that category
+  and month.
 - **Account** (sheet) — currency, opening balance with its base equivalent, name; Delete, Cancel, Save. The first account
   hides Cancel and Delete.
 - **Settings** — a backup nudge when the last export is over a week old; Data (Update rates with its last run, Export,

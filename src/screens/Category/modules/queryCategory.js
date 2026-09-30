@@ -1,8 +1,6 @@
-import { exchange, isInternalTransfer } from '../../../modules';
+import { exchange, isCategoryEntry, monthIndex } from '../../../modules';
 
 export const AVERAGE_MONTHS = 3;
-
-const indexOf = (date) => date.getFullYear() * 12 + date.getMonth();
 
 const capitalize = (value = '') => `${value.charAt(0).toUpperCase()}${value.slice(1)}`;
 
@@ -15,7 +13,7 @@ export const queryCategory = (
   const target = year * 12 + month;
 
   const matches = txs
-    .filter((tx) => tx.category === category && tx.type === type && (tx.value || 0) > 0 && !isInternalTransfer(tx))
+    .filter((tx) => isCategoryEntry(tx, { category, type }) && (tx.value || 0) > 0)
     .map((tx) => {
       const value = exchange(tx.value, currencyByHash.get(tx.account), baseCurrency, rates, tx.timestamp);
       return Number.isFinite(value) ? { ...tx, value } : undefined;
@@ -23,7 +21,7 @@ export const queryCategory = (
     .filter(Boolean);
 
   const entries = matches
-    .filter(({ timestamp }) => indexOf(new Date(timestamp)) === target)
+    .filter(({ timestamp }) => monthIndex(timestamp) === target)
     .sort((a, b) => b.timestamp - a.timestamp)
     .map((tx) => ({ ...tx, account: titleByHash.get(tx.account) }));
 
@@ -38,11 +36,11 @@ export const queryCategory = (
   const merchants = [...byTitle.values()].sort((a, b) => b.value - a.value);
 
   const oldest = txs.reduce((min, { timestamp }) => Math.min(min, timestamp || Infinity), Infinity);
-  const covered = Number.isFinite(oldest) && indexOf(new Date(oldest)) <= target - AVERAGE_MONTHS;
+  const covered = Number.isFinite(oldest) && monthIndex(oldest) <= target - AVERAGE_MONTHS;
   const average = covered
     ? matches
         .filter(({ timestamp }) => {
-          const index = indexOf(new Date(timestamp));
+          const index = monthIndex(timestamp);
           return index < target && index >= target - AVERAGE_MONTHS;
         })
         .reduce((sum, { value }) => sum + value, 0) / AVERAGE_MONTHS

@@ -39,10 +39,6 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 Approved 2026-09-30: the sixteen findings of the UX/UI review of every screen against SPEC 9, in this order, each with its board in `design/proposals.html`.
 
-- **UX-CATEGORY-SEEALL** — "See all" in a category opens every transaction
-  `bug · agent · normal`
-  accept: the eyebrow "See all N" in the Category sheet (`Category.jsx:86`, `navigate('transactions')` with no
-  params) opens Transactions filtered to that category and month, and N matches the rows shown; a test.
 - **UX-A11Y-LABELS** — Icon-only controls say nothing to a screen reader
   `chore · agent · high`
   accept: no `accessibilityLabel` or `accessibilityRole` exists in `src/` today. Every icon-only control (IconButton,
@@ -149,6 +145,13 @@ _None._
   `decision · creator · low`
   accept: the checkbox also keeps a transaction out of the Overview month block; decide between a wider label and
   documenting the current one.
+- **DEC-CATEGORY-HIDDEN** — Do hidden entries belong to a category's sheet?
+  `decision · creator · normal`
+  accept: an entry marked "Hide from Analytics" leaves the Analytics category bar (`queryMonth` skips `isMovement`)
+  but still counts in the Category sheet's total, share and average and in its "See all" (`isCategoryEntry` skips
+  swaps only), so the sheet can disagree with the bar it opened from and a share can pass 100%. Decide whether the
+  sheet, its count and the filtered panel follow the bar (`!isMovement`) or keep listing hidden entries, marked; the
+  agent task follows the decision.
 - **DEC-INCOME-FORECAST** — Should scheduled incomes shape any forecast signal?
   `decision · creator · low`
   accept: a yes with the signal named, or a no; no new card either way.

@@ -442,12 +442,6 @@ const miniMasthead = (section, actions = '') => `<div class="m-masthead" style="
 
 const REVIEW = [
   {
-    id: 'UX-CATEGORY-SEEALL', area: 'Category', title: '"See all 12" opens every transaction',
-    why: 'The eyebrow counts the category\'s entries and then navigates to Transactions with no filter, so the reader lands on the whole ledger.',
-    now: frame(`${heading(L.LATEST, { actions: eyebrow(`${L.SEE_ALL} 12`) })}<div style="height:12px"></div>${masthead({ section: L.TRANSACTIONS, back: true })}${dayHead('Today', -36.36)}${txRow({ time: '11:16', title: 'Gasoline', category: 'Transit', value: 1000, currency: 'THB', base: 30.43 })}${txRow({ time: '08:25', title: 'Breakfast', category: 'Leisure', value: 160, currency: 'THB', base: 4.87 })}`, { sheet: true }),
-    proposed: frame(`${heading(L.LATEST, { actions: eyebrow(`${L.SEE_ALL} 12`) })}<div style="height:12px"></div>${masthead({ section: 'Personal · September', back: true })}${dayHead('Sep 8', -1.98)}${txRow({ time: '08:12', title: 'Coffee', category: 'Personal', value: 65, currency: 'THB', base: 1.98 })}${dayHead('Sep 6', -1.98)}${txRow({ time: '08:40', title: 'Coffee', category: 'Personal', value: 65, currency: 'THB', base: 1.98 })}`, { sheet: true }),
-  },
-  {
     id: 'UX-A11Y-LABELS', area: 'Every screen', title: 'Icon-only controls read as nothing',
     why: 'There is no accessibilityLabel or accessibilityRole anywhere in src/. VoiceOver and TalkBack announce the masthead search, the seal, the keypad keys and the chip\'s close as unlabeled buttons.',
     now: frame(`<div style="display:flex;gap:16px;align-items:center">${iconButton(ICON.SEARCH)}${seal()}${iconButton(ICON.CLOSE)}${chip(`${L.SUGGESTED}: Home`, { variant: 'soft', iconRight: ICON.CLOSE })}</div><div style="margin-top:12px">${fig('reads as: "button" · "button" · "button" · "button"', { size: 'xs', tone: 'danger' })}</div>`),

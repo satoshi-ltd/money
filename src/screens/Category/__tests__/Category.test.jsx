@@ -121,11 +121,23 @@ describe('screens/Category', () => {
     expect(amounts.some((node) => node.props.value === -238.4)).toBe(true);
   });
 
-  test('see all opens the transactions screen', () => {
+  test('see all opens the transactions screen filtered to this category and month', () => {
     const root = render();
     act(() => componentsBy(root, 'pressable')[0].props.onPress());
 
-    expect(navigate).toHaveBeenCalledWith('transactions');
+    expect(navigate).toHaveBeenCalledWith('transactions', { category: 4, month: 7, type: 0, year: 2026 });
+  });
+
+  test('see all counts what the transactions screen will list, even entries the sheet cannot price', () => {
+    mockStore = {
+      ...mockStore,
+      accounts: [...mockStore.accounts, { currency: 'ARS', hash: 'a2', title: 'Galicia' }],
+      txs: [...mockStore.txs, tx('t7', 'Kiosco', 500, 7, 5, { account: 'a2' }), tx('t8', 'Free', 0, 7, 6)],
+    };
+    const root = render();
+    const eyebrow = componentsBy(root, 'eyebrow').find((node) => `${node.props.children}`.startsWith(L10N.SEE_ALL));
+
+    expect(eyebrow.props.children).toBe(`${L10N.SEE_ALL} 5`);
   });
 
   test('a ledger with no history omits the delta rather than inventing one', () => {

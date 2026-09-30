@@ -7,17 +7,19 @@ import { TransactionsListHeader } from './Transactions.ListHeader';
 import { getStyles } from './Transactions.style';
 import { Button, EmptyState, FloatingAdd, Panel, TransactionItem, TransactionsHeader } from '../../components';
 import { useApp, useStore } from '../../contexts';
-import { C, ICON, L10N } from '../../modules';
+import { C, categoryMonthTxs, ICON, L10N } from '../../modules';
 
 const { TX: { TYPE: { EXPENSE } } = {} } = C;
+const EMPTY = {};
 const keyExtractor = (item, index) => `${item.hash || item.timestamp}-${index}`;
 
 const Transactions = (props = {}) => {
   const { route = {}, navigation = {} } = props;
   const { goBack } = navigation;
-  const { params: { account: routeAccount = {} } = {} } = route;
+  const { params: { account: routeAccount = EMPTY, category, month, type, year } = {} } = route;
   const { hash } = routeAccount || {};
-  const { accounts = [], deleteTx, rates = {}, settings: { baseCurrency } = {} } = useStore();
+  const byCategory = category !== undefined;
+  const { accounts = [], deleteTx, rates = {}, settings: { baseCurrency } = {}, txs = [] } = useStore();
   const { colors } = useApp();
   const style = useMemo(() => getStyles(colors), [colors]);
 
@@ -25,29 +27,33 @@ const Transactions = (props = {}) => {
 
   const dataSource = useMemo(() => {
     const account = accounts.find((item) => item.hash === hash);
-    return account || routeAccount || {};
+    return account || routeAccount || EMPTY;
   }, [accounts, hash, routeAccount]);
 
   const sections = useMemo(() => {
+    if (byCategory) return queryLastTxs(categoryMonthTxs(txs, { category, month, type, year }), page);
     if (!dataSource?.hash) return [];
 
     return queryLastTxs(dataSource.txs, page);
-  }, [dataSource, page]);
+  }, [byCategory, category, dataSource, month, page, txs, type, year]);
 
+  const currencyByHash = useMemo(() => new Map(accounts.map((item) => [item.hash, item.currency])), [accounts]);
   const { currency = baseCurrency } = dataSource;
-  const title = dataSource?.title || L10N.TRANSACTIONS;
+  const title = byCategory
+    ? `${L10N.CATEGORIES[type]?.[category] || L10N.OTHERS} · ${L10N.MONTHS[month]}`
+    : dataSource?.title || L10N.TRANSACTIONS;
   const handleEndReached = useCallback(() => setPage((prevPage) => prevPage + 1), []);
   const renderItem = useCallback(
     ({ item }) => (
       <TransactionItem
         {...item}
         baseCurrency={baseCurrency}
-        currency={currency}
+        currency={byCategory ? currencyByHash.get(item.account) || baseCurrency : currency}
         deleteTx={deleteTx}
         rates={rates}
       />
     ),
-    [baseCurrency, currency, deleteTx, rates],
+    [baseCurrency, byCategory, currency, currencyByHash, deleteTx, rates],
   );
   const renderSectionHeader = useCallback(
     ({ section }) => (
@@ -69,7 +75,11 @@ const Transactions = (props = {}) => {
       }
       disableScroll
       floatingElement={
-        <FloatingAdd onPress={() => navigation.navigate('transaction', { account: dataSource, type: EXPENSE })} />
+        <FloatingAdd
+          onPress={() =>
+            navigation.navigate('transaction', byCategory ? { type } : { account: dataSource, type: EXPENSE })
+          }
+        />
       }
     >
       <SectionList
@@ -84,7 +94,9 @@ const Transactions = (props = {}) => {
             icon={ICON.RECEIPT}
             title={L10N.EMPTY_TRANSACTIONS}
             variant="outlined"
-            onAction={() => navigation.navigate('transaction', { account: dataSource, type: EXPENSE })}
+            onAction={() =>
+              navigation.navigate('transaction', byCategory ? { type } : { account: dataSource, type: EXPENSE })
+            }
           />
         }
         ListHeaderComponent={
