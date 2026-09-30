@@ -11,7 +11,7 @@ export const getStyles = (colors) =>
     },
     backdrop: {
       ...StyleSheet.absoluteFillObject,
-      backgroundColor: 'rgba(0, 0, 0, 0.35)',
+      backgroundColor: colors.overlay,
     },
     backdropPressable: {
       flex: 1,
@@ -30,7 +30,7 @@ export const getStyles = (colors) =>
       alignSelf: 'center',
       width: theme.spacing.xl,
       height: 4,
-      borderRadius: 2,
+      borderRadius: theme.borderRadius.full,
       backgroundColor: colors.border,
       marginTop: theme.spacing.sm,
       marginBottom: theme.spacing.sm,

@@ -39,10 +39,6 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 Approved 2026-09-30: the sixteen findings of the UX/UI review of every screen against SPEC 9, in this order, each with its board in `design/proposals.html`.
 
-- **UX-MODAL-TOKENS** — The date sheet ignores the overlay and radius tokens
-  `chore · agent · low`
-  accept: `Modal.styles.js` uses `colors.overlay` (today `rgba(0, 0, 0, 0.35)`) and `borderRadius.full` for the
-  handle (today `2`); a test greps `src/` for literal colours and radii outside `src/theme`.
 - **UX-SEPARATORS** — A hyphen where every other caption uses a middle dot
   `chore · agent · low`
   accept: "Weekly - Sun 08:00" (`Settings.jsx:311`) reads "Weekly · Sun 08:00"; a test.

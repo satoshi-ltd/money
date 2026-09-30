@@ -442,12 +442,6 @@ const miniMasthead = (section, actions = '') => `<div class="m-masthead" style="
 
 const REVIEW = [
   {
-    id: 'UX-MODAL-TOKENS', area: 'Date sheet', title: 'A backdrop and a handle off the tokens',
-    why: 'Modal.styles.js paints rgba(0, 0, 0, 0.35) where Confirm uses colors.overlay, and gives the handle a radius of 2 where dots are full.',
-    now: `<div class="m" style="width:350px;padding:24px 0 0;background:rgba(0,0,0,0.35)"><div style="background:var(--color-background);border-radius:4px 4px 0 0;padding:12px 20px 16px;text-align:center"><span style="display:inline-block;width:32px;height:4px;border-radius:2px;background:var(--color-border)"></span><div style="margin-top:10px">${text('September 2026', { medium: true })}</div></div></div>`,
-    proposed: `<div class="m" style="width:350px;padding:24px 0 0;background:var(--color-overlay)"><div style="background:var(--color-background);border-radius:4px 4px 0 0;padding:12px 20px 16px;text-align:center"><span style="display:inline-block;width:32px;height:4px;border-radius:9999px;background:var(--color-border)"></span><div style="margin-top:10px">${text('September 2026', { medium: true })}</div></div></div>`,
-  },
-  {
     id: 'UX-SEPARATORS', area: 'Settings', title: 'A hyphen among middle dots',
     why: 'The backup reminder subtitle is built with " - " while every other caption joins its parts with " · ".',
     now: frame(setting(L.REMINDER_BACKUP, { subtitle: `${L.SCHEDULED_PATTERN_WEEKLY} - Sun 08:00`, right: switchEl(true) })),

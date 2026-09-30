@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.76 — 2026-09-30
+
+- The date sheet takes its backdrop and its handle from the theme, like the confirm dialog: the same overlay, darker in dark mode, and a fully rounded handle.
+
 ## 3.0.75 — 2026-09-30
 
 - Accounts shows a Total only under a currency filter. Under All it was the net worth again, to the cent, two hundred points under the net worth at the top.

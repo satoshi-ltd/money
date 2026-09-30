@@ -355,7 +355,8 @@ tests under `scripts/__tests__`, run against temporary copies.
   column and sits centred, so the open Fold keeps a phone's column and every phone is narrower than the cap. The
   top bar and its rule, the lists, the forms, the charts and the keypad share it; the tab bar and the banners are
   system chrome and span the window.
-- **Radius.** Three: 0 for flat blocks, 4 for anything touchable, full for dots. Every named radius is 4.
+- **Radius.** Three: 0 for flat blocks, 4 for anything touchable, full for dots. Every named radius is 4. No hex, rgb, hsl or named colour and no numeric radius is written outside
+  the theme; a test refuses one.
 - **Rules.** Separation is a 1 px hairline in `border`; a heading closes with a hairline in `rule`. Nothing is elevated
   except the dropdown, which floats over live content with no scrim.
 - **Motion.** `quick 250 ms`, `standard 350 ms`, cubic ease; the floating add button springs in after the push; the
