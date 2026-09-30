@@ -28,14 +28,14 @@ const Masthead = ({ children, onBack, onQueryChange, onSearch, query, rule = tru
                 onChange={onQueryChange}
               />
             </View>
-            <IconButton icon={ICON.CLOSE} onPress={onSearch} />
+            <IconButton icon={ICON.CLOSE} label={L10N.A11Y_CLOSE} onPress={onSearch} />
           </>
         ) : (
           <>
             {onBack ? (
               // On a pushed screen the name is the identity, so it takes the slot the wordmark holds on a tab.
               <View row style={style.left}>
-                <IconButton icon={ICON.BACK} onPress={onBack} />
+                <IconButton icon={ICON.BACK} label={L10N.A11Y_BACK} onPress={onBack} />
                 {section ? (
                   <Text bold numberOfLines={1} style={style.title} uppercase>
                     {section}
@@ -47,7 +47,7 @@ const Masthead = ({ children, onBack, onQueryChange, onSearch, query, rule = tru
             )}
             <View row style={style.right}>
               {!onBack && section ? <Eyebrow>{section}</Eyebrow> : null}
-              {onSearch ? <IconButton icon={ICON.SEARCH} onPress={onSearch} /> : null}
+              {onSearch ? <IconButton icon={ICON.SEARCH} label={L10N.A11Y_SEARCH} onPress={onSearch} /> : null}
               {children}
             </View>
           </>

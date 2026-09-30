@@ -355,13 +355,16 @@ const FormTransaction = ({
 
         {/* Not a FieldRow: its label column is a fixed twelve characters and this copy has to say what it does. */}
         <Pressable
+          accessibilityLabel={L10N.HIDE_FROM_ANALYTICS}
+          accessibilityRole="checkbox"
+          accessibilityState={{ checked: safeForm.moved === true }}
           onPress={() => handleField('moved', !safeForm.moved)}
           style={[style.checkRow, { borderTopColor: colors.border }]}
         >
           <Text size="s" tone="muted">
             {L10N.HIDE_FROM_ANALYTICS}
           </Text>
-          <Checkbox checked={safeForm.moved === true} />
+          <Checkbox accessible={false} checked={safeForm.moved === true} importantForAccessibility="no-hide-descendants" />
         </Pressable>
 
         {showDate ? (

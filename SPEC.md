@@ -385,6 +385,20 @@ Tabs sit in a Footer with the seal in the middle; forms open as native form shee
 that carries the back key and the screen name in the wordmark's slot. The sheet surface is `surface`; tabs and panels
 sit on `background`.
 
+### Accessibility
+
+Every control that is only a glyph carries a label and a role from the dictionaries: the masthead's search, back and
+close, the notification's close, the seal and the floating add (the same "Add transaction" the empty state uses), every
+key of the PIN keypad (the digit itself, "Delete the last digit", the reader's own name: Face ID, Touch ID, fingerprint,
+face), the dismissible chip (its text, with a "Dismiss" hint) and the adds in Accounts and Scheduled. Every Button has
+the button trait. Controls that carry text are read by that text, never by a label that would drop part of it: tabs
+are tabs with a selected state; segments and dropdown options are buttons with a selected state; a Settings row is a
+button with its disabled state. On iOS an accessible row is a leaf for VoiceOver, so a row that holds a control is
+the control: a toggle row is one switch with its checked state and the native switch hidden from the reader, and the
+"Hide from Analytics" row is one checkbox with its glyph hidden. A notification band that dismisses on tap is one
+button with a "Dismiss" hint; otherwise the band is not accessible and its close is. A keypad slot with nothing behind
+it is not accessible at all.
+
 ### Copy rules
 
 Product words: Overview, Accounts, Analytics, Settings, Scheduled, Swap. Sentence case everywhere but eyebrows.

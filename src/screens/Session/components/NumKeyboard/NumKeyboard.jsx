@@ -3,7 +3,7 @@ import React from 'react';
 
 import { style } from './NumKeyboard.style';
 import { Eyebrow, Icon, Pressable, Text, View } from '../../../../components';
-import { ICON } from '../../../../modules';
+import { ICON, L10N } from '../../../../modules';
 
 const KEY_BIOMETRIC = 'biometric';
 const KEY_DELETE = 'delete';
@@ -19,18 +19,27 @@ const LETTERS = {
   9: 'WXYZ',
 };
 
-const NumKeyboard = ({ biometricIcon = ICON.BIOMETRIC, onBiometric, onDelete, onPress }) => {
+const NumKeyboard = ({ biometricIcon = ICON.BIOMETRIC, biometricLabel, onBiometric, onDelete, onPress }) => {
   const handlerFor = (key) => {
     if (typeof key === 'number') return () => onPress(key);
     if (key === KEY_BIOMETRIC && onBiometric) return onBiometric;
     if (key === KEY_DELETE && onDelete) return onDelete;
     return undefined;
   };
+  const labelFor = (key) =>
+    typeof key === 'number' ? String(key) : key === KEY_BIOMETRIC ? biometricLabel : L10N.A11Y_DELETE_DIGIT;
 
   return (
     <View flex style={style.container}>
       {KEYS.map((key, index) => (
-        <Pressable key={index} onPress={handlerFor(key)} style={style.pressable}>
+        <Pressable
+          accessibilityLabel={handlerFor(key) ? labelFor(key) : undefined}
+          accessibilityRole={handlerFor(key) ? 'button' : undefined}
+          accessible={!!handlerFor(key)}
+          key={index}
+          onPress={handlerFor(key)}
+          style={style.pressable}
+        >
           <View style={style.key}>
             {typeof key === 'number' ? (
               <>
@@ -51,6 +60,7 @@ const NumKeyboard = ({ biometricIcon = ICON.BIOMETRIC, onBiometric, onDelete, on
 
 NumKeyboard.propTypes = {
   biometricIcon: PropTypes.string,
+  biometricLabel: PropTypes.string,
   onBiometric: PropTypes.func,
   onDelete: PropTypes.func,
   onPress: PropTypes.func.isRequired,

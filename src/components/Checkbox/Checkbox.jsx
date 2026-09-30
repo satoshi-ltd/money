@@ -6,14 +6,20 @@ import { useApp } from '../../contexts';
 import { ICON } from '../../modules';
 import { Icon, Pressable, View } from '../../primitives';
 
-const Checkbox = ({ checked = false, onPress, style: styleContainer }) => {
+const Checkbox = ({ checked = false, onPress, style: styleContainer, ...props }) => {
   const { colors } = useApp();
   const style = useMemo(() => getStyles(colors), [colors]);
 
   const Container = typeof onPress === 'function' ? Pressable : View;
 
   return (
-    <Container onPress={onPress} style={[style.box, checked && style.checked, styleContainer]}>
+    <Container
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked }}
+      {...props}
+      onPress={onPress}
+      style={[style.box, checked && style.checked, styleContainer]}
+    >
       {checked ? <Icon name={ICON.CHECK} size="xxs" tone="onAccent" /> : null}
     </Container>
   );

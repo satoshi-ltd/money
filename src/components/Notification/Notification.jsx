@@ -123,7 +123,12 @@ export const Notification = () => {
         animatedStyle,
       ]}
     >
-      <Pressable onPress={tapToDismiss ? handleClose : undefined}>
+      <Pressable
+        accessibilityHint={tapToDismiss ? L10N.A11Y_DISMISS : undefined}
+        accessibilityRole={tapToDismiss ? 'button' : undefined}
+        accessible={!!tapToDismiss}
+        onPress={tapToDismiss ? handleClose : undefined}
+      >
         <View row style={style.row}>
           <Icon name={error ? ICON.ALERT : ICON.INFO} tone={contentTone} />
           <View flex style={style.text}>
@@ -136,7 +141,7 @@ export const Notification = () => {
               </Text>
             ) : null}
           </View>
-          <Pressable onPress={handleClose}>
+          <Pressable accessibilityLabel={L10N.A11Y_CLOSE} accessibilityRole="button" onPress={handleClose}>
             <Icon name={ICON.CLOSE} tone={contentTone} />
           </Pressable>
         </View>

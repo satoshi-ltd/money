@@ -97,6 +97,7 @@ const Tabs = ({ navigation = {} }) => {
         component={Dashboard}
         options={{
           tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.OVERVIEW }),
+          tabBarAccessibilityLabel: L10N.OVERVIEW,
           title: L10N.NET_WORTH,
         }}
       />
@@ -105,6 +106,7 @@ const Tabs = ({ navigation = {} }) => {
         component={Accounts}
         options={{
           tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.ACCOUNTS }),
+          tabBarAccessibilityLabel: L10N.ACCOUNTS,
           title: L10N.ACCOUNTS,
         }}
       />
@@ -114,6 +116,7 @@ const Tabs = ({ navigation = {} }) => {
         component={Stats}
         options={{
           tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.ACTIVITY }),
+          tabBarAccessibilityLabel: L10N.ACTIVITY,
           title: L10N.ACTIVITY,
         }}
       />
@@ -122,6 +125,7 @@ const Tabs = ({ navigation = {} }) => {
         component={Settings}
         options={{
           tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.SETTINGS }),
+          tabBarAccessibilityLabel: L10N.SETTINGS,
           title: L10N.SETTINGS,
         }}
       />

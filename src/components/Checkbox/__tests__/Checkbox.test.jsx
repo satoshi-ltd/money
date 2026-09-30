@@ -28,6 +28,13 @@ const boxOf = (root) =>
     .find((flat) => flat.borderRadius === theme.borderRadius.sm);
 
 describe('components/Checkbox', () => {
+  test('it tells a screen reader that it is a checkbox, and whether it is checked', () => {
+    const box = (props) => render(props).findAll((node) => node.props?.accessibilityRole === 'checkbox')[0];
+
+    expect(box().props.accessibilityState).toEqual({ checked: false });
+    expect(box({ checked: true }).props.accessibilityState).toEqual({ checked: true });
+  });
+
   // The house has three radii and one hairline; a control that invents its own reads as a foreign part.
   test('unchecked, it is a hairline outline in the house radius', () => {
     const box = boxOf(render());

@@ -3,6 +3,7 @@ import { StyleSheet, Text as RNText, TouchableOpacity } from 'react-native';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import Footer from '../Footer';
+import { L10N } from '../../../modules';
 
 const COLORS = {
   accent: '#FFBC2D',
@@ -40,7 +41,7 @@ const buildProps = (overrides = {}) => ({
   descriptors: Object.fromEntries(
     ROUTE_NAMES.map((name) => [
       `${name}-key`,
-      { options: { tabBarLabel: () => <RNText>{`label-${name}`}</RNText> } },
+      { options: { tabBarAccessibilityLabel: `spoken-${name}`, tabBarLabel: () => <RNText>{`label-${name}`}</RNText> } },
     ]),
   ),
   navigation: { emit: jest.fn(() => ({ defaultPrevented: false })), navigate: jest.fn() },
@@ -57,6 +58,19 @@ const render = (props) => {
 };
 
 describe('components/Footer', () => {
+  test('a screen reader hears each tab by name with its state, and the seal as "Add transaction"', () => {
+    const root = render(buildProps());
+    const tabs = root.findAllByType(TouchableOpacity);
+    const seal = root.findAll((node) => node.props?.accessibilityLabel === L10N.EMPTY_TRANSACTIONS_ACTION);
+
+    expect(tabs.map((tab) => tab.props.accessibilityLabel)).toEqual(['spoken-dashboard', 'spoken-stats', 'spoken-accounts', 'spoken-settings']);
+    expect(tabs.every((tab) => tab.props.accessibilityRole === 'tab')).toBe(true);
+    expect(tabs[0].props.accessibilityState).toEqual({ selected: true });
+    expect(tabs[1].props.accessibilityState).toEqual({ selected: false });
+    expect(seal.length).toBeGreaterThan(0);
+    expect(seal[0].props.accessibilityRole).toBe('button');
+  });
+
   test('the tabs are words: the plus is the only glyph in the bar', () => {
     const root = render(buildProps());
 

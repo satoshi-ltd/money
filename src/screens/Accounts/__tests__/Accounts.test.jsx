@@ -269,6 +269,7 @@ describe('screens/Accounts', () => {
   test('the add action opens the account form and a row opens its transactions', () => {
     const root = render();
     const [add] = componentsBy(root, 'iconbutton');
+    expect(add.props.label).toBe(L10N.A11Y_ADD_ACCOUNT);
     act(() => add.props.onPress());
 
     expect(navigate).toHaveBeenCalledWith('account', { create: true });

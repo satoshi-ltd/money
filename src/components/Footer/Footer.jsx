@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useApp } from '../../contexts';
-import { ICON } from '../../modules';
+import { ICON, L10N } from '../../modules';
 import { Icon, Pressable, View } from '../../primitives';
 import { theme } from '../../theme';
 import { sealSize } from '../../theme/layout';
@@ -28,6 +28,9 @@ const Footer = ({ state, descriptors = {}, navigation, onActionPress }) => {
 
     return (
       <TouchableOpacity
+        accessibilityLabel={descriptors[route.key]?.options?.tabBarAccessibilityLabel}
+        accessibilityRole="tab"
+        accessibilityState={{ selected: isFocused }}
         key={route.key}
         style={[styles.tab, isFocused ? { backgroundColor: colors.surfaceSoft } : null]}
         onPress={() => handleTabPress(route, isFocused)}
@@ -48,7 +51,13 @@ const Footer = ({ state, descriptors = {}, navigation, onActionPress }) => {
         TABS.includes(route.name) ? (
           renderTab(route, index)
         ) : (
-          <Pressable key={route.key} onPress={onActionPress} style={[styles.seal, { backgroundColor: colors.inverse }]}>
+          <Pressable
+            accessibilityLabel={L10N.EMPTY_TRANSACTIONS_ACTION}
+            accessibilityRole="button"
+            key={route.key}
+            onPress={onActionPress}
+            style={[styles.seal, { backgroundColor: colors.inverse }]}
+          >
             <Icon name={ICON.ADD} size="l" tone="onInverse" />
           </Pressable>
         ),

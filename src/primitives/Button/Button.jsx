@@ -64,6 +64,7 @@ const Button = ({ children, disabled, grow, icon, loading, onPress, size, style,
 
   return (
     <Pressable
+      accessibilityRole="button"
       {...props}
       disabled={isDisabled}
       onPress={onPress}

@@ -26,6 +26,17 @@ const iconsNamed = (root, name) => root.findAllByProps({ name }).filter((node) =
 const texts = (root) => root.findAllByType(RNText).map((node) => node.props.children);
 
 describe('components/Masthead', () => {
+  test('every header button is named for a screen reader', () => {
+    const named = (props) =>
+      render(props)
+        .findAll((node) => typeof node.type === 'string' && node.props?.accessibilityRole === 'button')
+        .map((node) => node.props.accessibilityLabel);
+
+    expect(named({ onSearch: () => {} })).toEqual([L10N.A11Y_SEARCH]);
+    expect(named({ onBack: () => {} })).toEqual([L10N.A11Y_BACK]);
+    expect(named({ onSearch: () => {}, searching: true })).toEqual([L10N.A11Y_CLOSE]);
+  });
+
   test('the wordmark is always there, on every screen that uses it', () => {
     expect(render({}).findAll((node) => node.type?.name === 'Logo').length).toBeGreaterThan(0);
     expect(render({ section: undefined }).findAll((node) => node.type?.name === 'Logo').length).toBeGreaterThan(0);

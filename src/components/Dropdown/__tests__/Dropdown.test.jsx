@@ -41,6 +41,16 @@ const flats = (root) =>
     .filter(Boolean);
 
 describe('components/Dropdown', () => {
+  test('every option is a button read by its own text, and the selected one says so', () => {
+    const options = render({ selected: 'c3' }).findAll(
+      (node) => typeof node.type === 'string' && node.props?.accessibilityRole === 'button',
+    );
+
+    expect(options).toHaveLength(OPTIONS.length);
+    expect(options.every((node) => node.props.accessibilityLabel === undefined)).toBe(true);
+    expect(options.map((node) => node.props.accessibilityState.selected)).toEqual(OPTIONS.map(({ id }) => id === 'c3'));
+  });
+
   test('every row is exactly one row tall, last one included', () => {
     const rows = flats(render()).filter((flat) => flat.paddingHorizontal !== undefined && flat.justifyContent);
     const heights = new Set(rows.map((flat) => flat.height));

@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.63 — 2026-09-30
+
+- Name every control for VoiceOver and TalkBack. Nothing in the app carried an accessibility label or role, so the masthead's search, the add seal, the PIN keys, the suggestion chip, the tabs and the Settings rows were all read as a bare "button", and the two switches in Settings could not be flipped with VoiceOver at all. Each control now says what it is and does, in the app's language, with its state where it has one; a toggle row is the switch, so tapping anywhere on it flips it; a slot with nothing behind it is skipped.
+
 ## 3.0.62 — 2026-09-30
 
 - Open a category's "See all" on that category. The eyebrow counted the category's entries of the month and then opened an empty Transactions panel; it now opens Transactions filtered to that category and month, across accounts, titled after both, and the count is exactly what the panel lists.

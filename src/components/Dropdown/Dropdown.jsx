@@ -134,6 +134,8 @@ const Dropdown = ({
           <ScrollView bounces={false} ref={scrollRef} showsVerticalScrollIndicator style={styles.scrollView}>
             {options.map((option, index) => (
               <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityState={{ selected: option.id === selected }}
                 activeOpacity={0.7}
                 key={option.id || index}
                 onPress={() => onSelect(option)}

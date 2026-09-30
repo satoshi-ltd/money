@@ -14,6 +14,9 @@ const SegmentedToggle = ({ compact = false, onChange, options = [], scrollable =
 
     return (
       <Pressable
+        accessibilityLabel={`${option.label}`}
+        accessibilityRole="button"
+        accessibilityState={{ selected }}
         key={option.value}
         style={[
           styles.item,

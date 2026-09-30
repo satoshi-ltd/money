@@ -39,12 +39,6 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 Approved 2026-09-30: the sixteen findings of the UX/UI review of every screen against SPEC 9, in this order, each with its board in `design/proposals.html`.
 
-- **UX-A11Y-LABELS** — Icon-only controls say nothing to a screen reader
-  `chore · agent · high`
-  accept: no `accessibilityLabel` or `accessibilityRole` exists in `src/` today. Every icon-only control (IconButton,
-  the seal and FloatingAdd, keypad glyph keys, the chip's close, Checkbox and switch rows) carries a label and a role
-  from the dictionaries; a test renders each and asserts the props. The VoiceOver and TalkBack pass is a creator
-  `verify` that depends on this.
 - **UX-SCHEDULED-LINK** — The month block names four pending schedules and leads nowhere
   `feature · agent · normal`
   accept: the Scheduled line of MonthSummary is pressable and opens Scheduled (today reachable only from Settings);
@@ -108,19 +102,24 @@ _None._
 
 ### Builds and device checks
 
-- **BUILD-3061** — Production build of 3.0.61 on the phone
+- **BUILD-PHONE** — Production build of the current version on the phone
   `deploy · creator · high`
-  accept: the phone runs 3.0.61 (build 37): the current month's rates from the dated file, Save following the fields,
-  Metro opened by its own scheme.
+  accept: the phone runs the version at the tip of `v3`: the current month's rates from the dated file, Save following
+  the fields, the category "See all", every control named for the reader.
 - **VERIFY-RATES** — The day's rate on the phone
-  `verify · creator · high · depends: BUILD-3061`
+  `verify · creator · high · depends: BUILD-PHONE`
   accept: Settings → Update rates lands the file dated today (or yesterday before it is published); a BTC account reads
   at that day's price, not at a close from the week before; a failed download says so and leaves the last-update date
   alone.
 - **VERIFY-SAVE** — Save follows the fields
-  `verify · creator · normal · depends: BUILD-3061`
+  `verify · creator · normal · depends: BUILD-PHONE`
   accept: with title and amount filled, changing the account or the type keeps Save available once the default category
   is back; in Clone, changing only the account leaves Save available and Duplicate off.
+- **VERIFY-A11Y** — VoiceOver and TalkBack read the app
+  `verify · creator · normal · depends: BUILD-PHONE`
+  accept: with the screen reader on, every masthead button, the seal, the PIN keys, the suggestion chip, the tabs,
+  the segments, the Settings rows and the "Hide from Analytics" checkbox are announced by name (and state where they
+  have one); nothing is read as a bare "button".
 - **SCHED-DEVICE** — Scheduled transactions end to end on a device
   `verify · creator · normal`
   accept: create, edit and delete of weekly and monthly schedules; the monthly day clamp; no duplicate occurrence after
@@ -235,6 +234,10 @@ _None._
 
 ### Engineering
 
+- **A11Y-ANNOUNCE** — Notifications announce themselves to a screen reader
+  `feature · agent · low`
+  accept: a notification band arriving is announced (`accessibilityLiveRegion="polite"` on Android,
+  `AccessibilityInfo.announceForAccessibility` on iOS) before it auto-dismisses; a test on the announcement call.
 - **PERF-INDEX** — Index the ledger once
   `chore · agent · normal`
   accept: transactions indexed by account and by month once per change and reused by Overview, Transactions and

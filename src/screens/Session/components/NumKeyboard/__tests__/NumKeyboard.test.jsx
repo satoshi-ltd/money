@@ -3,6 +3,7 @@ import { Text as RNText } from 'react-native';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import { NumKeyboard } from '../NumKeyboard';
+import { L10N } from '../../../../../modules';
 
 jest.mock('../../../../../components', () => {
   const ReactNative = require('react-native');
@@ -31,6 +32,17 @@ const pressableOver = (node) => {
 };
 
 describe('screens/Session/NumKeyboard', () => {
+  test('every key is a named button, and an empty slot is nothing at all', () => {
+    const root = render({ biometricLabel: 'Unlock with Face ID', onBiometric: () => {}, onDelete: () => {} });
+    const host = (node) => typeof node.type === 'string';
+    const labels = root.findAll((node) => host(node) && node.props?.accessibilityRole === 'button').map((node) => node.props.accessibilityLabel);
+
+    expect(labels).toEqual(['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Unlock with Face ID', '0', L10N.A11Y_DELETE_DIGIT]);
+
+    const bare = render({}).findAll((node) => host(node) && node.props?.accessible === false);
+    expect(bare).toHaveLength(2);
+  });
+
   test('digits call onPress with their number', () => {
     const onPress = jest.fn();
     const root = render({ onPress });

@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useApp } from '../../contexts';
-import { ICON } from '../../modules';
+import { ICON, L10N } from '../../modules';
 import { theme } from '../../theme';
 import { viewOffset } from '../../theme/layout';
 import { IconButton } from '../IconButton';
@@ -40,7 +40,7 @@ const Panel = ({
       {sheet ? (
         <Masthead rule={false} section={title}>
           {rightElement}
-          {onBack ? <IconButton icon={ICON.CLOSE} onPress={onBack} /> : null}
+          {onBack ? <IconButton icon={ICON.CLOSE} label={L10N.A11Y_CLOSE} onPress={onBack} /> : null}
         </Masthead>
       ) : showHeader ? (
         <Masthead section={title} onBack={onBack}>

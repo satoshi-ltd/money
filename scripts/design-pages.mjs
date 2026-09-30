@@ -442,12 +442,6 @@ const miniMasthead = (section, actions = '') => `<div class="m-masthead" style="
 
 const REVIEW = [
   {
-    id: 'UX-A11Y-LABELS', area: 'Every screen', title: 'Icon-only controls read as nothing',
-    why: 'There is no accessibilityLabel or accessibilityRole anywhere in src/. VoiceOver and TalkBack announce the masthead search, the seal, the keypad keys and the chip\'s close as unlabeled buttons.',
-    now: frame(`<div style="display:flex;gap:16px;align-items:center">${iconButton(ICON.SEARCH)}${seal()}${iconButton(ICON.CLOSE)}${chip(`${L.SUGGESTED}: Home`, { variant: 'soft', iconRight: ICON.CLOSE })}</div><div style="margin-top:12px">${fig('reads as: "button" · "button" · "button" · "button"', { size: 'xs', tone: 'danger' })}</div>`),
-    proposed: frame(`<div style="display:flex;gap:16px;align-items:center">${iconButton(ICON.SEARCH)}${seal()}${iconButton(ICON.CLOSE)}${chip(`${L.SUGGESTED}: Home`, { variant: 'soft', iconRight: ICON.CLOSE })}</div><div style="margin-top:12px">${fig('reads as: "Search" · "Add transaction" · "Close" · "Dismiss suggestion"', { size: 'xs', tone: 'positive' })}</div>`),
-  },
-  {
     id: 'UX-SCHEDULED-LINK', area: 'Overview', title: 'Four pending schedules with nowhere to go',
     why: 'MonthSummary has no onPress; Scheduled is reached only through Settings, two levels away from the line that names it.',
     now: frame(`<div style="display:flex;align-items:baseline;gap:8px;padding:7px 0;border-bottom:var(--hairline) solid var(--color-border)"><span style="width:96px">${text(L.SCHEDULED_AHEAD, { size: 's', tone: 'muted' })}</span><span style="flex:1">${price(1325.29, { operator: true })}</span>${text('4 pending', { size: 'xs', tone: 'muted' })}</div>`),

@@ -14,7 +14,7 @@ import {
 import { getStyles } from './Session.style';
 import { Logo, Text, View } from '../../components';
 import { useApp, useStore } from '../../contexts';
-import { C, eventEmitter, ICON, L10N } from '../../modules';
+import { biometricName, C, eventEmitter, ICON, L10N } from '../../modules';
 import { BiometricAuthService, NotificationsService, ServiceRates } from '../../services';
 
 const { EVENT, VERSION } = C;
@@ -181,6 +181,7 @@ const Session = ({ navigation: { reset } = {} }) => {
 
         <NumKeyboard
           biometricIcon={biometricKind === 'face' ? ICON.BIOMETRIC_FACE : ICON.BIOMETRIC}
+          biometricLabel={biometricName(biometricKind)}
           onBiometric={
             biometricOffered && !biometricSubmitting ? () => handleBiometricUnlock({ silent: false }) : undefined
           }

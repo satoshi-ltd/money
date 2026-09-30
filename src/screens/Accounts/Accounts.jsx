@@ -90,7 +90,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
   return (
     <>
       <Masthead section={L10N.ACCOUNTS}>
-        <IconButton icon={ICON.ADD} onPress={() => navigate('account', { create: true })} />
+        <IconButton icon={ICON.ADD} label={L10N.A11Y_ADD_ACCOUNT} onPress={() => navigate('account', { create: true })} />
       </Masthead>
       <Screen ref={scrollRef} style={style.screen}>
         <View style={style.hero}>

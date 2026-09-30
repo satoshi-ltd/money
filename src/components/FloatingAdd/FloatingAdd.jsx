@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useApp } from '../../contexts';
 import { useMotion } from '../../hooks/useMotion';
-import { ICON } from '../../modules';
+import { ICON, L10N } from '../../modules';
 import { Icon, Pressable } from '../../primitives';
 import { theme } from '../../theme';
 import { sealSize } from '../../theme/layout';
@@ -31,7 +31,13 @@ const FloatingAdd = ({ onPress }) => {
         { opacity: enter, transform: [{ scale: enter }] },
       ]}
     >
-      <Pressable style={styles.press} testID="floating-add" onPress={onPress}>
+      <Pressable
+        accessibilityLabel={L10N.EMPTY_TRANSACTIONS_ACTION}
+        accessibilityRole="button"
+        style={styles.press}
+        testID="floating-add"
+        onPress={onPress}
+      >
         <Icon name={ICON.ADD} size="l" tone="onInverse" />
       </Pressable>
     </Animated.View>

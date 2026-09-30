@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 
 import { getStyles } from './Chip.styles';
 import { useApp } from '../../contexts';
+import { ICON, L10N } from '../../modules';
 import { Icon, Pressable, Text, View } from '../../primitives';
 
 const Chip = ({ icon, iconRight, label, onPress, shape = 'pill', size = 'xs', style, variant = 'muted' }) => {
@@ -37,6 +38,9 @@ const Chip = ({ icon, iconRight, label, onPress, shape = 'pill', size = 'xs', st
 
   return (
     <Container
+      accessibilityHint={isPressable && iconRight === ICON.CLOSE ? L10N.A11Y_DISMISS : undefined}
+      accessibilityLabel={isPressable ? `${label}` : undefined}
+      accessibilityRole={isPressable ? 'button' : undefined}
       disabled={!isPressable ? undefined : false}
       onPress={onPress}
       style={[styles.base, variantStyle, sizeStyle, shapeStyle, style]}

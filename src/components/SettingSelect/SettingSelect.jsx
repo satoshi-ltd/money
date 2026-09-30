@@ -16,7 +16,11 @@ const SettingSelect = ({ divider, onChange, options = [], subtitle, title, value
 
   return (
     <View style={style.wrapper}>
-      <Pressable style={[style.row, divider && style.divider]} onPress={() => setOpen(true)}>
+      <Pressable
+        accessibilityRole="button"
+        style={[style.row, divider && style.divider]}
+        onPress={() => setOpen(true)}
+      >
         <View flex>
           <Text medium>{title}</Text>
           {subtitle ? (

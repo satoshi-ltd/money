@@ -7,11 +7,16 @@ import { Icon, Pressable } from '../../primitives';
 import { theme } from '../../theme';
 import { iconButtonSize } from '../../theme/layout';
 
-const IconButton = ({ icon, onPress, style, tone }) => {
+const IconButton = ({ icon, label, onPress, style, tone }) => {
   const { colors } = useApp();
 
   return (
-    <Pressable onPress={onPress} style={[styles.container, { borderColor: colors.border }, style]}>
+    <Pressable
+      accessibilityLabel={label}
+      accessibilityRole="button"
+      onPress={onPress}
+      style={[styles.container, { borderColor: colors.border }, style]}
+    >
       <Icon name={icon} size="m" tone={tone} />
     </Pressable>
   );
@@ -30,6 +35,7 @@ const styles = StyleSheet.create({
 
 IconButton.propTypes = {
   icon: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
   onPress: PropTypes.func,
   style: PropTypes.any,
   tone: PropTypes.string,

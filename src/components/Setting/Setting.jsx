@@ -34,7 +34,7 @@ const Setting = ({
   const isToggle = type === 'toggle';
 
   const handlePress = () => {
-    if (disabled) return;
+    if (disabled || activity) return;
     if (isToggle && onValueChange) {
       onValueChange(!value);
       return;
@@ -48,9 +48,11 @@ const Setting = ({
 
   return (
     <Pressable
+      accessibilityRole={isToggle ? 'switch' : 'button'}
+      accessibilityState={isToggle ? { busy: !!activity, checked: !!value, disabled: !!disabled } : { busy: !!activity, disabled: !!disabled }}
       {...props}
       disabled={disabled}
-      onPress={isToggle ? undefined : handlePress}
+      onPress={handlePress}
       style={[styles.container, divider ? styles.divider : null, disabled && styles.disabled, style]}
     >
       <View style={styles.row}>
@@ -72,7 +74,9 @@ const Setting = ({
           <ActivityIndicator size="small" color={colors.textSecondary} />
         ) : isToggle ? (
           <Switch
+            accessible={false}
             disabled={disabled}
+            importantForAccessibility="no-hide-descendants"
             ios_backgroundColor={colors.surfaceSoft}
             thumbColor={colors.surface}
             trackColor={{ false: colors.surfaceSoft, true: colors.accent }}

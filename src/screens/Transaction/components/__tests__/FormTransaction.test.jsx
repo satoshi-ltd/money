@@ -190,6 +190,15 @@ describe('screens/Transaction/FormTransaction', () => {
     expect(rows[0].props.divider).toBeFalsy();
   });
 
+  test('the hide row is one checkbox to a screen reader, named and stated', () => {
+    const row = (form) =>
+      render({ form, onChange: () => {} }).findAll((node) => node.props?.accessibilityRole === 'checkbox' && node.props?.accessibilityLabel)[0];
+
+    expect(row({}).props.accessibilityLabel).toBe(L10N.HIDE_FROM_ANALYTICS);
+    expect(row({}).props.accessibilityState).toEqual({ checked: false });
+    expect(row({ moved: true }).props.accessibilityState).toEqual({ checked: true });
+  });
+
   test('normalizes commas and rejects non-numeric amounts', () => {
     const onChange = jest.fn();
     const root = render({ onChange });

@@ -6,6 +6,13 @@ const nth = (day) => {
 };
 
 export const EN = {
+  A11Y_ADD_ACCOUNT: 'Add account',
+  A11Y_ADD_SCHEDULED: 'Add scheduled transaction',
+  A11Y_BACK: 'Back',
+  A11Y_CLOSE: 'Close',
+  A11Y_DELETE_DIGIT: 'Delete the last digit',
+  A11Y_DISMISS: 'Dismiss',
+  A11Y_SEARCH: 'Search',
   SCHEDULED_ONE: 'Scheduled transaction',
   SHOW_LESS: 'Show less',
   ACCOUNT_BALANCE: 'Account balance',
@@ -318,6 +325,13 @@ export const EN = {
 };
 
 export const PT = {
+  A11Y_ADD_ACCOUNT: 'Adicionar conta',
+  A11Y_ADD_SCHEDULED: 'Adicionar transação agendada',
+  A11Y_BACK: 'Voltar',
+  A11Y_CLOSE: 'Fechar',
+  A11Y_DELETE_DIGIT: 'Apagar o último dígito',
+  A11Y_DISMISS: 'Dispensar',
+  A11Y_SEARCH: 'Pesquisar',
   SCHEDULED_ONE: 'Transação agendada',
   SHOW_LESS: 'Ver menos',
   ACCOUNT_BALANCE: 'Saldo da conta',
@@ -614,6 +628,13 @@ export const PT = {
   YESTERDAY: 'Ontem',
 };
 export const FR = {
+  A11Y_ADD_ACCOUNT: 'Ajouter un compte',
+  A11Y_ADD_SCHEDULED: 'Ajouter une transaction planifiée',
+  A11Y_BACK: 'Retour',
+  A11Y_CLOSE: 'Fermer',
+  A11Y_DELETE_DIGIT: 'Effacer le dernier chiffre',
+  A11Y_DISMISS: 'Ignorer',
+  A11Y_SEARCH: 'Rechercher',
   SCHEDULED_ONE: 'Transaction planifiée',
   SHOW_LESS: 'Voir moins',
   ACCOUNT_BALANCE: 'Solde du compte',
@@ -912,6 +933,13 @@ export const FR = {
   YESTERDAY: 'Hier',
 };
 export const DE = {
+  A11Y_ADD_ACCOUNT: 'Konto hinzufügen',
+  A11Y_ADD_SCHEDULED: 'Geplante Buchung hinzufügen',
+  A11Y_BACK: 'Zurück',
+  A11Y_CLOSE: 'Schließen',
+  A11Y_DELETE_DIGIT: 'Letzte Ziffer löschen',
+  A11Y_DISMISS: 'Verwerfen',
+  A11Y_SEARCH: 'Suchen',
   SCHEDULED_ONE: 'Geplante Buchung',
   SHOW_LESS: 'Weniger',
   ACCOUNT_BALANCE: 'Kontostand',
@@ -1209,6 +1237,13 @@ export const DE = {
   YESTERDAY: 'Gestern',
 };
 export const ES = {
+  A11Y_ADD_ACCOUNT: 'Añadir cuenta',
+  A11Y_ADD_SCHEDULED: 'Añadir transacción programada',
+  A11Y_BACK: 'Atrás',
+  A11Y_CLOSE: 'Cerrar',
+  A11Y_DELETE_DIGIT: 'Borrar el último dígito',
+  A11Y_DISMISS: 'Descartar',
+  A11Y_SEARCH: 'Buscar',
   SCHEDULED_ONE: 'Transacción programada',
   SHOW_LESS: 'Ver menos',
   ACCOUNT_BALANCE: 'Saldo de la cuenta',
