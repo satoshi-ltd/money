@@ -308,7 +308,7 @@ const Settings = ({ navigation = {} }) => {
       minute: '2-digit',
     });
 
-    return `${L10N.SCHEDULED_PATTERN_WEEKLY} - ${weekday} ${time}`;
+    return `${L10N.SCHEDULED_PATTERN_WEEKLY} \u00B7 ${weekday} ${time}`;
   })();
 
   const { stale: backupStale } = backupAge(backupAt);

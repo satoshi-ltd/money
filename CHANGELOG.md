@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.77 — 2026-09-30
+
+- The backup reminder row reads "Weekly · Sun 08:00" with a middle dot, like every other caption, instead of a hyphen.
+
 ## 3.0.76 — 2026-09-30
 
 - The date sheet takes its backdrop and its handle from the theme, like the confirm dialog: the same overlay, darker in dark mode, and a fully rounded handle.

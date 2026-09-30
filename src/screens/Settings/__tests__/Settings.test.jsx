@@ -359,6 +359,13 @@ describe('screens/Settings', () => {
     expect(row(await render()).props.value).toBe(true);
   });
 
+  test('the reminder caption joins its parts with the middle dot every other caption uses', async () => {
+    const row = componentsBy(await render(), 'setting').find((node) => node.props.title === L10N.REMINDER_BACKUP);
+
+    expect(row.props.subtitle.startsWith(`${L10N.SCHEDULED_PATTERN_WEEKLY} \u00B7 `)).toBe(true);
+    expect(row.props.subtitle).not.toContain(' - ');
+  });
+
   test('the two things you switch on and off are switched the same way', async () => {
     const root = await render();
     const toggles = componentsBy(root, 'setting').filter((node) => node.props.type === 'toggle');
