@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.72 — 2026-09-30
+
+- Scheduled adds with the same icon button as Accounts. Its bar carried an outlined button with a plus; now every bar that adds looks alike, and the round seal stays for adding a transaction.
+- The lock dialog's button says "Lock" instead of "Accept".
+
 ## 3.0.71 — 2026-09-30
 
 - "Log out" becomes "Lock". The row takes you back to the PIN screen and nothing more, since there is no account to leave; the dialog says so: "Lock Môney?" and "You will be asked for your PIN." The same in the other four languages.

@@ -442,12 +442,6 @@ const miniMasthead = (section, actions = '') => `<div class="m-masthead" style="
 
 const REVIEW = [
   {
-    id: 'UX-ADD-CONTROLS', area: 'Accounts · Scheduled', title: 'Three shapes for the same verb',
-    why: 'Accounts adds with an IconButton, Scheduled with an outlined Button carrying the icon, and transactions with the seal.',
-    now: frame(`<div style="display:flex;gap:16px;align-items:center">${iconButton(ICON.ADD)}${btn('', { variant: 'outlined', iconName: ICON.ADD })}${seal()}</div><div style="margin-top:10px">${text('Accounts masthead · Scheduled masthead · transactions', { size: 'xxs', tone: 'muted' })}</div>`),
-    proposed: frame(`<div style="display:flex;gap:16px;align-items:center">${iconButton(ICON.ADD)}${iconButton(ICON.ADD)}${seal()}</div><div style="margin-top:10px">${text('every masthead that adds · the seal only for a transaction', { size: 'xxs', tone: 'muted' })}</div>`),
-  },
-  {
     id: 'UX-MASK-AFFORDANCE', area: 'Overview · Settings', title: 'A hidden tap masks every amount',
     why: 'Tapping the net-worth hero toggles maskAmount; nothing on the screen says so, and nothing in Settings shows the state.',
     now: frame(`${eyebrow(netEyebrow())}<div style="margin-top:4px">${price(NET, { size: 'hero', bold: true, masked: true })}</div>${text('(tap the figure)', { size: 'xxs', tone: 'muted' })}`),

@@ -59,7 +59,7 @@ describe('design kit', () => {
   test('every review board is filed as a roadmap task', () => {
     const html = pages['proposals.html'];
     const boards = [...html.matchAll(/data-review="([A-Z0-9-]+)"/g)].map((m) => m[1]);
-    expect(boards.length).toBeGreaterThan(5);
+    expect(boards).toHaveLength((html.match(/data-review=/g) || []).length);
     for (const id of boards) expect(html).toContain(`data-task="${id}"`);
   });
 

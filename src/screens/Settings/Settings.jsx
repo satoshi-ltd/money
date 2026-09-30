@@ -232,7 +232,7 @@ const Settings = ({ navigation = {} }) => {
     eventEmitter.emit(EVENT.CONFIRM, {
       title: L10N.CONFIRM_LOCK,
       caption: L10N.CONFIRM_LOCK_CAPTION,
-      actionLabel: L10N.ACCEPT,
+      actionLabel: L10N.LOCK,
       onAction: () => {
         // Settings lives inside Tabs -> Stack, so the root stack owns the lock screen.
         const root = navigation?.getParent?.()?.getParent?.();

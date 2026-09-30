@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
 import { getStyles } from './Scheduled.style';
-import { Button, Eyebrow, Panel, Pressable, PriceFriendly, ScrollView, Text, View } from '../../components';
+import { Eyebrow, IconButton, Panel, Pressable, PriceFriendly, ScrollView, Text, View } from '../../components';
 import { useApp, useStore } from '../../contexts';
 import { C, exchange, getNextOccurrenceAt, ICON, L10N, monthlyImpact, verboseDate } from '../../modules';
 
@@ -134,7 +134,7 @@ const Scheduled = ({ navigation = {} }) => {
       subtitle={`${scheduledTxs.length} ${L10N.SCHEDULED_ACTIVE}`}
       title={L10N.SCHEDULED}
       onBack={goBack}
-      rightElement={<Button accessibilityLabel={L10N.A11Y_ADD_SCHEDULED} icon={ICON.ADD} variant="outlined" onPress={handleNew} />}
+      rightElement={<IconButton icon={ICON.ADD} label={L10N.A11Y_ADD_SCHEDULED} onPress={handleNew} />}
     >
       <ScrollView contentContainerStyle={style.content} style={style.list}>
         <View style={style.summary}>

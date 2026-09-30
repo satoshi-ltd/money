@@ -142,7 +142,7 @@ describe('screens/Settings', () => {
     eventEmitter.off(C.EVENT.CONFIRM, confirm);
 
     expect(confirm).toHaveBeenCalledWith(
-      expect.objectContaining({ title: L10N.CONFIRM_LOCK, caption: L10N.CONFIRM_LOCK_CAPTION }),
+      expect.objectContaining({ actionLabel: L10N.LOCK, caption: L10N.CONFIRM_LOCK_CAPTION, title: L10N.CONFIRM_LOCK }),
     );
     confirm.mock.calls[0][0].onAction();
     expect(reset).toHaveBeenCalledWith({ index: 0, routes: [{ name: 'session' }] });

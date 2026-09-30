@@ -2,6 +2,7 @@ import React from 'react';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import { Scheduled } from '../Scheduled';
+import { L10N } from '../../../modules';
 
 let mockStore = {};
 
@@ -15,7 +16,7 @@ jest.mock('../../../components', () => {
   const MockReact = require('react');
   return {
     Eyebrow: ({ children, ...props }) => MockReact.createElement(ReactNative.Text, { testID: 'eyebrow', ...props }, children),
-    Button: (props) => MockReact.createElement(ReactNative.View, { testID: 'button', ...props }),
+    IconButton: (props) => MockReact.createElement(ReactNative.View, { testID: 'iconbutton', ...props }),
     Panel: ({ children, rightElement, ...props }) =>
       MockReact.createElement(ReactNative.View, { testID: 'panel', ...props }, rightElement, children),
     Pressable: (props) => MockReact.createElement(ReactNative.View, { testID: 'pressable', ...props }),
@@ -42,6 +43,20 @@ const componentsBy = (root, testID) =>
   root.findAllByProps({ testID }).filter((node) => typeof node.type === 'function');
 
 describe('screens/Scheduled', () => {
+  test('the bar adds with the same named icon button as Accounts, and it opens the form', () => {
+    const navigate = jest.fn();
+    let renderer;
+    act(() => {
+      renderer = TestRenderer.create(<Scheduled navigation={{ goBack: () => {}, navigate }} />);
+    });
+    const [add] = componentsBy(renderer.root, 'iconbutton');
+
+    expect(add.props.label).toBe(L10N.A11Y_ADD_SCHEDULED);
+    expect(componentsBy(renderer.root, 'button')).toHaveLength(0);
+    act(() => add.props.onPress());
+    expect(navigate).toHaveBeenCalledWith('scheduledForm', { create: true });
+  });
+
   beforeEach(() => {
     jest.useFakeTimers().setSystemTime(NOW);
     mockStore = {

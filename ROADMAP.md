@@ -39,11 +39,6 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 Approved 2026-09-30: the sixteen findings of the UX/UI review of every screen against SPEC 9, in this order, each with its board in `design/proposals.html`.
 
-- **UX-ADD-CONTROLS** — Three shapes for "add"
-  `chore · agent · low`
-  accept: the Accounts masthead (IconButton), the Scheduled masthead (outlined Button with icon) and the seal
-  (Footer, FloatingAdd) become two: an IconButton in every masthead that adds, the seal only for a transaction;
-  a test per masthead.
 - **UX-MASK-AFFORDANCE** — Masking amounts is a hidden tap on the hero
   `feature · agent · low`
   accept: a "Mask amounts" switch under Preferences stores `maskAmount`; the hero tap stays; a test.

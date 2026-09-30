@@ -267,7 +267,8 @@ button, "See all N" with a chevron, that opens Scheduled.
   shows from, send, destination, receive.
 - **Clone** (sheet) — the same form seeded from an entry, with Delete, Duplicate (only when unchanged) and Save.
 - **Scheduled** — a panel with the monthly impact, then the templates in three groups (next 7 days, this month, later)
-  with the next date, the rule in words and the amount. Reached from Settings and from the Overview month block.
+  with the next date, the rule in words and the amount. Reached from Settings and from the Overview month block. Its
+  bar adds a schedule with the same icon button Accounts uses; the seal adds a transaction and nothing else.
 - **Scheduled form** (sheet) — type, concept, amount, account, category, weekly (weekday chips) or monthly (date) rule,
   a preview of the next occurrence, Delete and Save.
 - **Analytics** (Stats) — range toggle (6M, 1Y, All) in the masthead; the balance chart with its trailing average over a
@@ -283,7 +284,7 @@ button, "See all N" with a chevron, that opens Scheduled.
 - **Settings** — a backup nudge when the last export is over a week old; Data (Update rates with its last run, Export,
   Import, Export CSV); Appearance (theme, text size); Preferences (language, currency, Scheduled with its count, backup
   reminder switch); Unlock (the biometric switch named after the reader); About (terms, privacy, security); Account &
-  data (log out, reset); the colophon.
+  data (lock, reset); the colophon.
 
 ## 8. Operations
 
