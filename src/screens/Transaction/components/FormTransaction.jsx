@@ -276,24 +276,33 @@ const FormTransaction = ({
 
         {proposals.map((proposal) => {
           const proposalAccount = accountOf(proposal);
+          const where = [proposalAccount?.title, L10N.CATEGORIES[safeType]?.[proposal.category]].filter(Boolean);
 
           return (
-            <FieldRow divider key={proposal.title} label="" onPress={() => applyProposal(proposal)}>
-              <Text medium numberOfLines={1} size="s">
-                {proposal.title}
-              </Text>
-              {proposalAccount ? (
-                <Text numberOfLines={1} size="xs" tone="muted">
-                  {proposalAccount.title}
+            <Pressable
+              accessibilityRole="button"
+              key={proposal.title}
+              style={[style.proposal, { borderTopColor: colors.border }]}
+              onPress={() => applyProposal(proposal)}
+            >
+              <View flex>
+                <Text medium numberOfLines={1} size="s">
+                  {proposal.title}
                 </Text>
-              ) : null}
+                {where.length ? (
+                  <Text numberOfLines={1} size="xxs" tone="muted">
+                    {where.join(' \u00b7 ')}
+                  </Text>
+                ) : null}
+              </View>
               <PriceFriendly
                 currency={proposalAccount?.currency || account.currency}
+                showSymbol
                 size="md"
                 tone="accent"
                 value={proposal.value}
               />
-            </FieldRow>
+            </Pressable>
           );
         })}
 

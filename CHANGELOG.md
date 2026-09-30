@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.68 — 2026-09-30
+
+- A proposal is one full-width row. Each offer under the concept field sat in a field row with an empty label, so it read as a value with no key; it is now the title with its account and category under it and the amount in the accent at the right.
+
 ## 3.0.67 — 2026-09-30
 
 - The swing says which way it went. "Swing −208.11 · Personal" is the category's spend minus its usual, which the figure alone never said; the line now reads "Personal, less than usual". The caption takes the room the figure leaves, and a long category name shortens before the direction does.

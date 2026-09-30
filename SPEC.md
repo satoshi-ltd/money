@@ -237,8 +237,9 @@ button, "See all N" with a chevron, that opens Scheduled.
   the amount comes from the stable word rule (`suggestAmount`, minimum three sightings at 90%). A category the screen
   defaulted counts as free; one the reader chose is never overruled. The type flips to the other one only when the
   exact title exists there and not here. A dismissible chip names what was filled.
-- **Proposals.** Two rows under the concept field; a tap writes title, amount, account and category and withdraws the
-  rows until the title changes.
+- **Proposals.** Two full-width rows under the concept field, each the title with its account and category under it
+  and its amount in the accent; a tap writes title, amount, account and category and withdraws the rows until the
+  title changes.
 - **Completeness.** `isTransactionComplete`: a title, a positive amount and, where the form shows one, a category. The
   Transaction and Clone screens derive Save from it at render; nothing stores a validity flag.
 - **Defaults.** A new transaction opens on the account's most frequent category for its type; choosing another account

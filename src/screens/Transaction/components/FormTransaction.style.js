@@ -22,6 +22,13 @@ export const style = StyleSheet.create({
     marginBottom: theme.spacing.md,
     zIndex: 1,
   },
+  proposal: {
+    alignItems: 'center',
+    borderTopWidth: theme.hairline,
+    flexDirection: 'row',
+    gap: theme.spacing.xs,
+    minHeight: rowHeight,
+  },
   rowWrap: {
     position: 'relative',
     zIndex: 1,

@@ -223,7 +223,7 @@ describe('screens/Transaction/FormTransaction', () => {
     // Only a proposal row carries a price: its first text is the title it offers.
     const offered = (root) =>
       root
-        .findAllByProps({ testID: 'fieldrow' })
+        .findAllByProps({ testID: 'pressable' })
         .filter((node) => typeof node.type === 'function' && node.findAllByProps({ testID: 'price' }).length)
         .map((row) => row.findAll((node) => typeof node.props?.children === 'string' && node.props.children)[0])
         .map((node) => node.props.children);
@@ -248,12 +248,29 @@ describe('screens/Transaction/FormTransaction', () => {
     });
 
     test('with nothing to repeat there is no extra row', () => {
-      const before = render({ form: {}, onChange: () => {} }).findAllByProps({ testID: 'fieldrow' }).length;
-      const after = render({ autoSuggest: true, form: { title: 'zz' }, onChange: () => {} }).findAllByProps({
-        testID: 'fieldrow',
-      }).length;
+      expect(offered(render({ autoSuggest: true, form: { title: 'zz' }, onChange: () => {} }))).toEqual([]);
+    });
 
-      expect(after).toBe(before);
+    test('an offer is one full-width row: the title, where it went under it, the amount in the accent', () => {
+      mockTxs = [{ account: 'a1', category: 1, timestamp: 10, title: 'Coffee', type: 0, value: 40 }];
+      const root = render({
+        accountsList: [{ hash: 'a1', title: 'N26', currency: 'EUR' }],
+        autoSuggest: true,
+        form: { title: 'cof' },
+        onChange: () => {},
+      });
+      const [row] = root
+        .findAllByProps({ testID: 'pressable' })
+        .filter((node) => typeof node.type === 'function' && node.findAllByProps({ testID: 'price' }).length);
+      const strings = row
+        .findAll((node) => node.type === 'Text' && typeof node.props.children === 'string')
+        .map((node) => node.props.children);
+      const [price] = row.findAllByProps({ testID: 'price' }).filter((node) => typeof node.type === 'function');
+
+      expect(row.props.accessibilityRole).toBe('button');
+      expect(row.findAllByProps({ testID: 'fieldrow' })).toHaveLength(0);
+      expect(strings).toEqual(['Coffee', `N26 \u00b7 ${L10N.CATEGORIES[0][1]}`]);
+      expect(price.props).toMatchObject({ currency: 'EUR', showSymbol: true, tone: 'accent' });
     });
 
     // The word rule mock answers 1; the title's own history says 2.
@@ -319,7 +336,7 @@ describe('screens/Transaction/FormTransaction', () => {
     const currentAccount = (root) => root.findByType(FormTransaction).props.account;
     const proposalRows = (root) =>
       root
-        .findAllByProps({ testID: 'fieldrow' })
+        .findAllByProps({ testID: 'pressable' })
         .filter((node) => typeof node.type === 'function' && node.findAllByProps({ testID: 'price' }).length);
 
     beforeEach(() => {

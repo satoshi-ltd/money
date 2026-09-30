@@ -39,10 +39,6 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 Approved 2026-09-30: the sixteen findings of the UX/UI review of every screen against SPEC 9, in this order, each with its board in `design/proposals.html`.
 
-- **UX-PROPOSAL-ROW** — Proposals sit in a field row with an empty label
-  `feature · agent · normal`
-  accept: the two proposal rows (`FormTransaction.jsx`, `FieldRow label=""`) become one full-width row shape:
-  title left, account muted, amount right in the accent, no dead label column; a test on the rendered tree.
 - **UX-FOLD-WIDTH** — One column stretches across the open Fold
   `feature · agent · normal`
   accept: no layout `maxWidth` exists today; forms, lists and the keypad (`width: '33.333%'`) cap their content
