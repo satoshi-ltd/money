@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.70 — 2026-09-30
+
+- Settings reads in sentence case like the rest of the app: "Update rates", "Back up data", "Restore data", "Base currency", "Backup reminder", "Privacy policy", and the backup reminder notification. The other four languages already did.
+
 ## 3.0.69 — 2026-09-30
 
 - The open Fold keeps a column. Lists, forms, the top bar, the charts and the PIN keypad stop at 480 points and sit centred, instead of stretching across the whole window. Phones are narrower than that and look the same.

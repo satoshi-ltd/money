@@ -167,7 +167,7 @@ export const EN = {
     },
   ],
 
-  CHOOSE_CURRENCY: 'Base Currency',
+  CHOOSE_CURRENCY: 'Base currency',
   CONCEPT: 'Concept',
   CONFIRM_DELETION: 'Confirm deletion',
   CONFIRM_DELETION_CAPTION: 'Confirm permanent deletion of this transaction? This action is irreversible.',
@@ -230,7 +230,7 @@ export const EN = {
   ERROR_TRY_AGAIN: 'Something wrong happened. Try again.',
   EXPENSE: 'Expense',
   EXPENSES: 'Expenses',
-  EXPORT_DATA: 'Backup Data',
+  EXPORT_DATA: 'Back up data',
   EXPORT_CSV: 'Export CSV',
 
   FIRST_ACCOUNT: 'Your first account',
@@ -239,7 +239,7 @@ export const EN = {
 
   OVERVIEW: 'Overview',
 
-  IMPORT_DATA: 'Restore Data',
+  IMPORT_DATA: 'Restore data',
   INCOME: 'Income',
   INCOMES: 'Incomes',
   INITIAL_BALANCE: 'Initial balance',
@@ -270,8 +270,8 @@ export const EN = {
   PENDING: 'pending',
   PIN_CHOOSE: 'Choose PIN code',
   PREFERENCES: 'Preferences',
-  PRIVACY: 'Privacy Policy',
-  REMINDER_BACKUP: 'Backup Reminder',
+  PRIVACY: 'Privacy policy',
+  REMINDER_BACKUP: 'Backup reminder',
   REMINDER_BACKUP_CAPTION: 'Get backup alerts.',
   SCHEDULED: 'Scheduled transactions',
   SECURITY: 'Security',
@@ -311,7 +311,7 @@ export const EN = {
   STATS_RANGE_1Y: '1Y',
   STATS_FLOW_6M: '6M',
   SAVE: 'Save',
-  SCHEDULE_BACKUP: 'Secure Your Finances!',
+  SCHEDULE_BACKUP: 'Secure your finances!',
   SCHEDULE_BACKUP_CAPTION:
     "Don't forget to perform your weekly backup. Keep your financial information safe and up-to-date. It's quick and easy. Do it now!",
   SEARCH: 'Search',
@@ -322,7 +322,7 @@ export const EN = {
   DATE: 'Date',
   DESTINATION: 'To',
   SETTINGS: 'Settings',
-  SYNC_RATES_CTA: 'Update Rates',
+  SYNC_RATES_CTA: 'Update rates',
   SWAP: 'Swap',
 
   TERMS: 'Terms',

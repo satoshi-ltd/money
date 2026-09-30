@@ -39,10 +39,6 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 Approved 2026-09-30: the sixteen findings of the UX/UI review of every screen against SPEC 9, in this order, each with its board in `design/proposals.html`.
 
-- **UX-SETTINGS-CASE** — Settings labels in Title Case
-  `chore · agent · low`
-  accept: `Update Rates`, `Backup Data`, `Restore Data`, `Base Currency`, `Backup Reminder`, `Privacy Policy` and
-  `About Money` follow the sentence case of every other screen, in the five dictionaries; a dictionary test.
 - **UX-LOCK-COPY** — "Log out" locks the app
   `chore · agent · low`
   accept: the row (`handleLogout` resets to the lock screen) and its dialog say lock, not log out, in the five

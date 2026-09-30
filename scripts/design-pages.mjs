@@ -442,12 +442,6 @@ const miniMasthead = (section, actions = '') => `<div class="m-masthead" style="
 
 const REVIEW = [
   {
-    id: 'UX-SETTINGS-CASE', area: 'Settings', title: 'Title Case on one screen',
-    why: 'Every other screen is sentence case; Settings rows arrived capitalised word by word.',
-    now: frame(`${setting('Update Rates', { right: rightValue('2 h ago', { figure: true }) })}${setting('Backup Data', { divider: true, right: chevronRight() })}${setting('Restore Data', { divider: true, right: chevronRight() })}${setting('Base Currency', { divider: true, right: rightValue('US Dollar') })}${setting('Backup Reminder', { divider: true, right: switchEl(true) })}${setting('Privacy Policy', { divider: true })}`),
-    proposed: frame(`${setting('Update rates', { right: rightValue('2 h ago', { figure: true }) })}${setting('Back up data', { divider: true, right: chevronRight() })}${setting('Restore data', { divider: true, right: chevronRight() })}${setting('Base currency', { divider: true, right: rightValue('US Dollar') })}${setting('Backup reminder', { divider: true, right: switchEl(true) })}${setting('Privacy policy', { divider: true })}`),
-  },
-  {
     id: 'UX-LOCK-COPY', area: 'Settings', title: '"Log out" of an app with no account',
     why: 'The action resets to the lock screen; the copy, and its translations (Déconnexion, Abmelden), promise an account that does not exist.',
     now: frame(`${setting(L.LOG_OUT)}<div style="height:12px"></div><div class="m-dialog" style="border:var(--hairline) solid var(--color-rule);padding:16px">${text(L.CONFIRM_LOG_OUT, { size: 'l', bold: true })}${text(L.CONFIRM_LOG_OUT_CAPTION, { size: 's', tone: 'secondary', center: true })}</div>`),
