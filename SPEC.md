@@ -257,7 +257,8 @@ button, "See all N" with a chevron, that opens Scheduled.
   days with their balance and month delta; the latest transactions grouped by day, loading 32 at a time; search filters
   the list. Empty ledger: an empty state that leads to the first account.
 - **Accounts** — net worth, the distribution bar by currency with its legend, a currency filter, every account with its
-  balance and base figure, and the total of the filter. A row opens Transactions for that account.
+  balance and base figure, and, under a currency filter, the total of that filter (under All the net
+  worth above is the total). A row opens Transactions for that account.
 - **Transactions** — a panel for one account: balance hero with the month delta, the month's incomes and expenses as
   bars, the list by day, a floating add button, Edit in the masthead. Swipe a row to delete; tap to open Clone. Opened
   from a category it lists that category's entries of the month across accounts, titled after both, without the
@@ -376,7 +377,8 @@ tests under `scripts/__tests__`, run against temporary copies.
 Masthead (wordmark or back + name, an eyebrow section, a search field, actions; a rule under it on tabs), Footer (four
 tabs and the seal), Eyebrow, Heading (title, eyebrow, actions, rule), PriceFriendly (figure ramp, sign, symbol only for a
 foreign currency, mask), Delta (a chip beside a hero, plain in a row; accent when the move is wanted), Chip (muted,
-accent, soft, outline, inverse; pill or circle), Checkbox, SegmentedToggle (flex, scrollable or compact; the selected
+accent, soft, outline, inverse; pill or circle; 24 or 32 points tall, a pressable one reaching 44 by hit slop),
+Checkbox, SegmentedToggle (flex, scrollable or compact; the selected
 segment inverts), FieldRow (twelve-character muted label, value column, chevron), Setting and SettingSelect (row,
 subtitle, right value, switch, dropdown), Dropdown (floating list with symbol wells and a check), Field, InputField,
 InputAmount (base equivalent as suffix), InputCurrency (symbol well), Card, Chart (line, trend, pointer, axis, legend),

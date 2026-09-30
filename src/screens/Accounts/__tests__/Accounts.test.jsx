@@ -207,13 +207,24 @@ describe('screens/Accounts', () => {
     expect(converted).toHaveLength(3);
   });
 
-  test('a total row closes the list under a strong rule', () => {
+  test('a filtered list closes under a strong rule with its total', () => {
     const root = render();
+    act(() => componentsBy(root, 'segmented')[0].props.onChange('USD'));
     const rule = flats(root).find((flat) => flat.borderTopWidth === theme.hairline);
     const totals = componentsBy(root, 'price').filter((node) => node.props.size === 'lg');
 
     expect(rule.borderTopColor).toBe(RULE);
-    expect(totals[totals.length - 1].props.value).toBe(6000 + 1800 + 1200 + 1000);
+    expect(componentsBy(root, 'eyebrow').map((node) => node.props.children)).toContain(L10N.TOTAL);
+    expect(totals[totals.length - 1].props.value).toBe(2000);
+  });
+
+  // Under All the total summed the base figures, which is the net worth two hundred points above it, to the cent.
+  test('under All there is no total: the hero above already is it', () => {
+    const root = render();
+
+    expect(componentsBy(root, 'eyebrow').map((node) => node.props.children)).not.toContain(L10N.TOTAL);
+    expect(flats(root).filter((flat) => flat.borderTopWidth === theme.hairline && flat.borderTopColor === RULE)).toHaveLength(0);
+    expect(componentsBy(root, 'price').filter((node) => node.props.size === 'lg')).toHaveLength(4);
   });
 
   test('picking a currency filters the rows and retotals them in that currency', () => {
@@ -240,6 +251,21 @@ describe('screens/Accounts', () => {
 
     expect(converted).toHaveLength(2);
     expect(converted[converted.length - 1].props.value).toBe(1800);
+  });
+
+  test('a filter outliving its last account falls back to All instead of stranding an empty list', () => {
+    let renderer;
+    const tree = () => <Accounts navigation={{ navigate }} />;
+    act(() => {
+      renderer = TestRenderer.create(tree());
+    });
+    act(() => componentsBy(renderer.root, 'segmented')[0].props.onChange('USD'));
+    mockStore = { ...mockStore, accounts: mockStore.accounts.filter(({ currency }) => currency !== 'USD') };
+    act(() => renderer.update(tree()));
+
+    expect(componentsBy(renderer.root, 'segmented')[0].props.value).toBe('all');
+    expect(componentsBy(renderer.root, 'eyebrow').map((node) => node.props.children)).not.toContain(L10N.TOTAL);
+    expect(componentsBy(renderer.root, 'price').filter((node) => node.props.size === 'lg')).toHaveLength(3);
   });
 
   test('filtering by the base currency itself says it once, not twice', () => {

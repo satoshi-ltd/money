@@ -39,9 +39,6 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 Approved 2026-09-30: the sixteen findings of the UX/UI review of every screen against SPEC 9, in this order, each with its board in `design/proposals.html`.
 
-- **UX-ACCOUNTS-TOTAL** — Under "All" the total repeats the hero
-  `chore · agent · low`
-  accept: the Total row shows only with a currency filter (under All it equals net worth to the cent); a test.
 - **UX-MODAL-TOKENS** — The date sheet ignores the overlay and radius tokens
   `chore · agent · low`
   accept: `Modal.styles.js` uses `colors.overlay` (today `rgba(0, 0, 0, 0.35)`) and `borderRadius.full` for the

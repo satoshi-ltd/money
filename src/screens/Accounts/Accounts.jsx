@@ -30,9 +30,10 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
   const scrollRef = useRef(null);
   useScrollToTop(scrollRef);
 
-  const [selected, setSelected] = useState();
+  const [picked, setPicked] = useState();
 
   const currencies = useMemo(() => query(accounts), [accounts]);
+  const selected = currencies.some(({ currency }) => currency === picked) ? picked : undefined;
   const visible = useMemo(() => filter(accounts, selected), [accounts, selected]);
 
   const distribution = useMemo(() => {
@@ -64,7 +65,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
 
   const totals = visible.reduce(
     (memo, { currentBalance = 0, currentBalanceBase = 0 }) => ({
-      amount: memo.amount + (selected ? currentBalance : currentBalanceBase),
+      amount: memo.amount + currentBalance,
       base: memo.base + currentBalanceBase,
     }),
     { amount: 0, base: 0 },
@@ -140,7 +141,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
                 ...currencies.map(({ currency }) => ({ label: currency, value: currency })),
               ]}
               value={selected || ALL}
-              onChange={(value) => setSelected(value === ALL ? undefined : value)}
+              onChange={(value) => setPicked(value === ALL ? undefined : value)}
             />
           </View>
         ) : null}
@@ -182,17 +183,19 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
             );
           })}
 
-          <View row spaceBetween style={style.totalRow}>
-            <Eyebrow>{L10N.TOTAL}</Eyebrow>
-            <View style={style.accountRight}>
-              <PriceFriendly bold currency={selected || baseCurrency} showSymbol size="lg" value={totals.amount} />
-              <View row style={style.accountMeta}>
-                {showTotalBase ? (
-                  <PriceFriendly currency={baseCurrency} showSymbol size="xs" tone="muted" value={totals.base} />
-                ) : null}
+          {selected ? (
+            <View row spaceBetween style={style.totalRow}>
+              <Eyebrow>{L10N.TOTAL}</Eyebrow>
+              <View style={style.accountRight}>
+                <PriceFriendly bold currency={selected} showSymbol size="lg" value={totals.amount} />
+                <View row style={style.accountMeta}>
+                  {showTotalBase ? (
+                    <PriceFriendly currency={baseCurrency} showSymbol size="xs" tone="muted" value={totals.base} />
+                  ) : null}
+                </View>
               </View>
             </View>
-          </View>
+          ) : null}
         </View>
       </Screen>
     </>

@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.75 — 2026-09-30
+
+- Accounts shows a Total only under a currency filter. Under All it was the net worth again, to the cent, two hundred points under the net worth at the top.
+- A currency filter no longer outlives its last account: delete the last USD account and Accounts returns to All instead of showing an empty list.
+
 ## 3.0.74 — 2026-09-30
 
 - The suggestion chip is easier to hit. It was 24 points tall and dismisses on a tap; it is now 32 points with a touch area that reaches 44, and every pressable chip gets the same reach.
