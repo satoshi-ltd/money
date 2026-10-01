@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.83 — 2026-10-01
+
+- Soft budgets. An expense category gets a monthly limit from its sheet; the month block says what is left of the limits and how many categories are over, and Analytics draws each budgeted category against its limit (ink while within, accent from 80%, danger past it with the excess beside). What was left of a limit last month rides into the next, and nothing ever blocks an entry. Alerts are not part of this.
+
 ## 3.0.82 — 2026-10-01
 
 - An account can be one you owe. The opening balance accepts a minus, so a credit card or a loan starts below zero; Accounts and the Overview name it "Owed" beside its title, Accounts splits the net worth into what you hold and what you owe once there is a debt, the distribution bar draws only what you hold, and paying a card down now reads as a rise in the month's delta instead of a fall.

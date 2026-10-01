@@ -25,7 +25,7 @@ const Stats = ({ navigation }) => {
   const {
     accounts = [],
     rates = {},
-    settings: { baseCurrency, statsRangeMonths = STATS_MONTHS_LIMIT } = {},
+    settings: { baseCurrency, budgets, statsRangeMonths = STATS_MONTHS_LIMIT } = {},
     overall = {},
     txs = [],
     updateSettings,
@@ -90,6 +90,10 @@ const Stats = ({ navigation }) => {
     [statsSource, safePointerIndex, monthsLimit],
   );
   const { expenses = {}, incomes = {} } = monthData;
+  const previousExpenses = useMemo(
+    () => (safePointerIndex > 0 ? queryMonth(statsSource, safePointerIndex - 1, monthsLimit)?.expenses : undefined),
+    [statsSource, safePointerIndex, monthsLimit],
+  );
   const monthTotals = useMemo(() => {
     const sum = (group) =>
       Object.values(group).reduce(
@@ -155,9 +159,11 @@ const Stats = ({ navigation }) => {
             {Object.keys(expenses).length > 0 ? (
               <View style={style.sectionGap}>
                 <ItemGroupCategories
+                  budgets={budgets}
                   dataSource={expenses}
                   month={selectedMonth?.month}
                   monthLabel={monthLabel}
+                  previous={previousExpenses}
                   type={EXPENSE}
                   year={selectedMonth?.year}
                 />

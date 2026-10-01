@@ -6,7 +6,7 @@ import { HorizontalChartItem } from './HorizontalChartItem';
 import { getStyles } from './ItemGroupCategories.style';
 import { Eyebrow, Heading, Pressable, View } from '../../../../components';
 import { useAmountSettings, useApp } from '../../../../contexts';
-import { C, L10N, rankInk } from '../../../../modules';
+import { budgetOf, C, L10N, rankInk } from '../../../../modules';
 import { orderByAmount } from '../../modules';
 
 const {
@@ -17,7 +17,7 @@ const {
 
 const TOP_CATEGORIES = 3;
 
-const ItemGroupCategories = ({ dataSource, month, monthLabel, type, year }) => {
+const ItemGroupCategories = ({ budgets, dataSource, month, monthLabel, previous, type, year }) => {
   const { baseCurrency } = useAmountSettings();
   const { colors } = useApp();
   const { navigate } = useNavigation();
@@ -32,6 +32,17 @@ const ItemGroupCategories = ({ dataSource, month, monthLabel, type, year }) => {
       total += totals[category];
     }
   });
+
+  const spentIn = (source, key) => Object.values(source?.[key] || {}).reduce((a, b) => a + b, 0);
+  const budgetFor = (key, amount) =>
+    type === EXPENSE && budgets?.[key]
+      ? budgetOf({
+          entry: budgets[key],
+          month: year * 12 + month,
+          spent: amount,
+          spentBefore: previous ? spentIn(previous, key) : budgets[key].limit,
+        })
+      : undefined;
 
   const ordered = orderByAmount(totals);
   const top = ordered.slice(0, TOP_CATEGORIES);
@@ -61,6 +72,7 @@ const ItemGroupCategories = ({ dataSource, month, monthLabel, type, year }) => {
             }
           >
             <HorizontalChartItem
+              budget={budgetFor(key, amount)}
               color={color}
               currency={baseCurrency}
               title={L10N.CATEGORIES[type][key]}
@@ -94,9 +106,11 @@ const ItemGroupCategories = ({ dataSource, month, monthLabel, type, year }) => {
 };
 
 ItemGroupCategories.propTypes = {
+  budgets: PropTypes.shape({}),
   dataSource: PropTypes.shape({}).isRequired,
   month: PropTypes.number,
   monthLabel: PropTypes.string,
+  previous: PropTypes.shape({}),
   type: PropTypes.number.isRequired,
   year: PropTypes.number,
 };

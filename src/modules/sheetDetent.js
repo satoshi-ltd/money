@@ -1,3 +1,4 @@
+import { C } from './constants';
 import { theme } from '../theme';
 import { buttonHeight, iconButtonSize, rowHeight, viewOffset } from '../theme/layout';
 
@@ -8,6 +9,8 @@ const HEADING = theme.typography.lineHeights.subtitle + theme.spacing.xs * 2;
 const GROUP = theme.spacing.md;
 const ACTIONS = buttonHeight + theme.spacing.sm;
 const KEYBOARD = 320;
+const LATEST_ROWS = 3;
+const BUDGET_BAR = 5;
 const MIN = 0.3;
 const MAX = 0.94;
 
@@ -48,3 +51,14 @@ export const sheetDetents = (content, windowHeight, { keyboard = false, topInset
   const raised = sheetDetent(content + KEYBOARD, windowHeight, topInset);
   return raised > resting ? [resting, raised] : [resting];
 };
+
+// The Budget block an expense category adds: a bar, the limit row, a line for what was carried and the Left row.
+const BUDGET_BLOCK = theme.spacing.lg + BUDGET_BAR + theme.spacing.xs + rowHeight * 2 + theme.typography.lineHeights.caption;
+
+export const categorySheet = ({ merchants = 0, type } = {}) => ({
+  actions: 0,
+  headings: 2,
+  hero: true,
+  rows: Math.max(0, merchants) + LATEST_ROWS,
+  ...(type === C.TX.TYPE.EXPENSE ? { extra: BUDGET_BLOCK, keyboard: true } : {}),
+});

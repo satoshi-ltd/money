@@ -6,6 +6,13 @@ const nth = (day) => {
 };
 
 export const EN = {
+  BUDGET: 'Budget',
+  BUDGETS: 'Budgets',
+  BUDGETS_ON_TRACK: 'on track',
+  BUDGETS_OVER: (count) => `${count} over`,
+  BUDGET_CARRIED: 'carried over',
+  BUDGET_LEFT: 'Left',
+  BUDGET_OF: (amount) => `of ${amount}`,
   ASSETS: 'Assets',
   OWED: 'Owed',
   REMINDER_TIME: 'Reminder time',
@@ -340,6 +347,13 @@ export const EN = {
 };
 
 export const PT = {
+  BUDGET: 'Orçamento',
+  BUDGETS: 'Orçamentos',
+  BUDGETS_ON_TRACK: 'em dia',
+  BUDGETS_OVER: (count) => (count === 1 ? '1 estourado' : `${count} estourados`),
+  BUDGET_CARRIED: 'transportado',
+  BUDGET_LEFT: 'Resta',
+  BUDGET_OF: (amount) => `de ${amount}`,
   ASSETS: 'Ativos',
   OWED: 'Dívida',
   REMINDER_TIME: 'Hora dos lembretes',
@@ -658,6 +672,13 @@ export const PT = {
   YESTERDAY: 'Ontem',
 };
 export const FR = {
+  BUDGET: 'Budget',
+  BUDGETS: 'Budgets',
+  BUDGETS_ON_TRACK: 'dans les clous',
+  BUDGETS_OVER: (count) => (count === 1 ? '1 dépassé' : `${count} dépassés`),
+  BUDGET_CARRIED: 'reporté',
+  BUDGET_LEFT: 'Reste',
+  BUDGET_OF: (amount) => `sur ${amount}`,
   ASSETS: 'Actifs',
   OWED: 'Dettes',
   REMINDER_TIME: 'Heure des rappels',
@@ -978,6 +999,13 @@ export const FR = {
   YESTERDAY: 'Hier',
 };
 export const DE = {
+  BUDGET: 'Budget',
+  BUDGETS: 'Budgets',
+  BUDGETS_ON_TRACK: 'im Plan',
+  BUDGETS_OVER: (count) => `${count} überschritten`,
+  BUDGET_CARRIED: 'übertragen',
+  BUDGET_LEFT: 'Übrig',
+  BUDGET_OF: (amount) => `von ${amount}`,
   ASSETS: 'Vermögen',
   OWED: 'Schulden',
   REMINDER_TIME: 'Uhrzeit der Erinnerungen',
@@ -1297,6 +1325,13 @@ export const DE = {
   YESTERDAY: 'Gestern',
 };
 export const ES = {
+  BUDGET: 'Presupuesto',
+  BUDGETS: 'Presupuestos',
+  BUDGETS_ON_TRACK: 'al día',
+  BUDGETS_OVER: (count) => (count === 1 ? '1 pasado' : `${count} pasados`),
+  BUDGET_CARRIED: 'arrastrado',
+  BUDGET_LEFT: 'Queda',
+  BUDGET_OF: (amount) => `de ${amount}`,
   ASSETS: 'Activos',
   OWED: 'Deuda',
   REMINDER_TIME: 'Hora de los recordatorios',

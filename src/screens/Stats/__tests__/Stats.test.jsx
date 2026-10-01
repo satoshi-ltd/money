@@ -14,13 +14,15 @@ jest.mock('../../../contexts', () => ({
     accounts: [{ currency: 'USD', hash: 'a1', title: 'Chase' }],
     overall: { chartBalance: mockChartBalance, currentBalance: 0 },
     rates: {},
-    settings: { baseCurrency: 'USD', statsRangeMonths: 12 },
+    settings: { baseCurrency: 'USD', budgets: { 4: { limit: 300, since: 1 } }, statsRangeMonths: 12 },
     txs: [],
     updateSettings: () => {},
   }),
 }));
 
-jest.mock('../modules', () => ({ ...jest.requireActual('../modules'), queryMonth: () => ({}) }));
+let mockQueryMonth = () => ({});
+
+jest.mock('../modules', () => ({ ...jest.requireActual('../modules'), queryMonth: (...args) => mockQueryMonth(...args) }));
 
 jest.mock('../components', () => {
   const ReactNative = require('react-native');
@@ -75,6 +77,17 @@ describe('screens/Stats', () => {
 
     act(() => empty.props.onAction());
     expect(navigate).toHaveBeenCalledWith('transaction', { type: 0 });
+  });
+
+  test('the expense categories get the budgets and the month before, so a limit can carry what was left', () => {
+    mockChartBalance = [1200, 1350];
+    mockQueryMonth = jest.fn((source, index) => ({ expenses: { 4: { shop: 10 + index } } }));
+    const root = render();
+    const [expenses] = nodes(root, 'categories');
+
+    expect(expenses.props.budgets).toEqual({ 4: { limit: 300, since: 1 } });
+    expect(expenses.props.previous).toEqual({ 4: { shop: 10 + 10 } });
+    mockQueryMonth = () => ({});
   });
 
   test('with two months of history the charts take the screen and the empty state is gone', () => {

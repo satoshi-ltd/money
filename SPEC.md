@@ -112,7 +112,7 @@ the insights. Screens query it; nothing recomputes per row.
 
 | Store | Shape |
 | --- | --- |
-| `settings` | `schemaVersion`, `baseCurrency`, `ratesBaseCurrency`, `lastRatesUpdate`, `theme` (`light`, `dark`, `system`), `textSize`, `language`, `onboarded`, `pin`, `biometricUnlockEnabled`, `fingerprint`, `maskAmount`, `reminders`, `reminderHour`, `backupAt`, `statsRangeMonths`, `autoCategory`, `autoAccount`, `autoAmount`, and the legacy `userProfile` and `marketingLead` |
+| `settings` | `schemaVersion`, `baseCurrency`, `ratesBaseCurrency`, `lastRatesUpdate`, `theme` (`light`, `dark`, `system`), `textSize`, `language`, `onboarded`, `pin`, `biometricUnlockEnabled`, `fingerprint`, `maskAmount`, `reminders`, `reminderHour`, `budgets`, `backupAt`, `statsRangeMonths`, `autoCategory`, `autoAccount`, `autoAmount`, and the legacy `userProfile` and `marketingLead` |
 | `accounts` | `{ hash, title, currency, balance, timestamp }` — `balance` is the opening balance; the current one is computed |
 | `txs` | `{ hash, account, category, type, value, timestamp, title, meta? }` — `value` is positive; `type` is 0 expense, 1 income, 2 transfer; `meta` may carry `{ kind: 'scheduled', scheduledId, occurrenceAt }` and `moved: true` |
 | `scheduledTxs` | `{ id, account, category, type, value, title, startAt, pattern: { kind: 'weekly', byWeekday[] } \| { kind: 'monthly', byMonthDay }, updatedAt }` |
@@ -221,10 +221,17 @@ early one-off outvoted the ordinary one. It emits:
 - **swing** — the category that moved most against its median to date, when the move is at least 5% of the baseline;
   its line says which way, "Personal, less than usual".
 - **incomes** — the month's incomes and their reading.
+- **budgets** — only when a category has a budget: what is left of the sum of the limits this month and how many
+  categories are over. A budget is a soft monthly limit on one expense category, in the base currency, kept in
+  `settings.budgets` as `{ limit, since }`; it never blocks an entry. What was left of the limit last month rides into
+  this one, never a debt: the month a budget begins carries nothing, and an overspent month carries nothing. A month
+  before `since` reads as if there were no budget. The limit is in the base currency and is not converted when the base
+  currency changes. An entry hidden from Analytics is never spent against a budget. The Overview line converts at the
+  day's rate like the rest of its block, Analytics and the category sheet at each entry's date.
 - **scheduled** — what is still scheduled this month and its net effect.
 
 The Overview month block draws the lead line (spent so far, its pace), a bar of spent against usual with a tick at the
-usual, "Usual by the 9th · figure" in the language's own ordinal, then one line per insight. The scheduled line is a
+usual, "Usual by the 9th · figure" in the language's own ordinal, then one line per insight, Budgets among them. The scheduled line is a
 button, "See all N" with a chevron, that opens Scheduled.
 
 ### The transaction form
@@ -279,11 +286,13 @@ button, "See all N" with a chevron, that opens Scheduled.
 - **Analytics** (Stats) — range toggle (6M, 1Y, All) in the masthead; the balance chart with its trailing average over a
   quarter of the range and a legend; the cash-flow chart with incomes above and expenses below the baseline, median
   reference lines, bars clipped at three times the median with a break, and a pointer that selects a month; month KPIs
-  (in, out, net); expenses and incomes by category with an "Others" fold. A category opens its sheet. Under two
+  (in, out, net); expenses and incomes by category with an "Others" fold; a budgeted expense category draws its track against its
+  limit (ink while within, accent from 80%, danger past it with the excess beside). A category opens its sheet. Under two
   months of history there is no line to draw: the screen shows an empty state that leads to the first entry.
 - **Category** (sheet) — the category's month total and share of spend, the delta against its average, "Where it went"
   by merchant with bars and counts, and the latest entries; "See all N" opens Transactions filtered to that category
-  and month.
+  and month. An expense category carries its Budget: a field for the monthly limit, saved when it loses focus or the sheet closes
+  (empty removes it); the sheet opens tall enough for it and raises with the keyboard, what was carried in, and what is left.
 - **Account** (sheet) — currency, opening balance with its base equivalent (below zero for a card or a loan), name; Delete, Cancel, Save. The first account
   hides Cancel and Delete.
 - **Settings** — a backup nudge when the last export is over a week old; Data (Update rates with its last run, Export,

@@ -1,3 +1,4 @@
+import { budgetsSummary } from './budgets';
 import { C } from './constants';
 import { exchange } from './exchange';
 import { isMovement } from './isMovement';
@@ -58,6 +59,7 @@ export const buildInsights = ({
     if (!months.has(key))
       months.set(key, {
         byDay: [],
+        categories: {},
         categoriesToDate: {},
         creditCategoriesToDate: {},
         expenses: 0,
@@ -102,6 +104,8 @@ export const buildInsights = ({
 
     if (tx.type === TYPE.EXPENSE) {
       entry.expenses += amount;
+      if (tx.category !== undefined && tx.category !== null)
+        entry.categories[tx.category] = (entry.categories[tx.category] || 0) + amount;
       entry.byDay[date.getDate()] = (entry.byDay[date.getDate()] || 0) + amount;
       if (toDate) {
         entry.expensesToDate += amount;
@@ -272,6 +276,22 @@ export const buildInsights = ({
         // One source is always the whole of it: a 100% beside its own name says nothing twice.
         share: sources.length > 1 ? Math.round((source[1] / currentIncomes) * 100) : undefined,
       },
+    });
+  }
+
+  const budgets = budgetsSummary({
+    budgets: settings.budgets,
+    month: now.getFullYear() * 12 + now.getMonth(),
+    spent: currentCategories,
+    spentBefore: months.get(shiftMonthKey(now, 1))?.categories,
+  });
+
+  if (budgets) {
+    insights.push({
+      id: 'budgets',
+      type: 'budgets',
+      value: budgets.left,
+      meta: { over: budgets.over, total: budgets.total },
     });
   }
 

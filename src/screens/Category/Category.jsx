@@ -1,11 +1,21 @@
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import { getStyles } from './Category.style';
 import { AVERAGE_MONTHS, queryCategory } from './modules';
-import { Delta, Eyebrow, Heading, Panel, Pressable, PriceFriendly, Text, View } from '../../components';
+import { Delta, Eyebrow, Heading, InputAmount, Panel, Pressable, PriceFriendly, Text, View } from '../../components';
 import { useApp, useStore } from '../../contexts';
-import { C, categoryMonthTxs, L10N, percentText, verboseDate } from '../../modules';
+import {
+  budgetOf,
+  C,
+  categoryMonthTxs,
+  compactFigure,
+  isMovement,
+  L10N,
+  percentText,
+  verboseDate,
+  withBudget,
+} from '../../modules';
 
 const { TX: { TYPE: { EXPENSE } } = {} } = C;
 const LATEST_LIMIT = 3;
@@ -15,7 +25,7 @@ const Category = ({ navigation: { goBack, navigate } = {}, route: { params = {} 
   const store = useStore();
   const { colors } = useApp();
   const style = useMemo(() => getStyles(colors), [colors]);
-  const { accounts = [], rates = {}, settings: { baseCurrency } = {}, txs = [] } = store;
+  const { accounts = [], rates = {}, settings: { baseCurrency, budgets } = {}, txs = [], updateSettings } = store;
   const categorySource = useMemo(
     () => ({ accounts, rates, settings: { baseCurrency }, txs }),
     [accounts, rates, baseCurrency, txs],
@@ -25,6 +35,30 @@ const Category = ({ navigation: { goBack, navigate } = {}, route: { params = {} 
     () => queryCategory(categorySource, { category, month, type, year }),
     [categorySource, category, month, type, year],
   );
+
+  const before = month === 0 ? { month: 11, year: year - 1 } : { month: month - 1, year };
+  const previousMonth = useMemo(
+    () => queryCategory(categorySource, { category, month: before.month, type, year: before.year }),
+    [categorySource, category, before.month, before.year, type],
+  );
+  const spentOf = ({ entries: list }) => list.filter((entry) => !isMovement(entry)).reduce((sum, { value }) => sum + value, 0);
+  const budget =
+    type === EXPENSE
+      ? budgetOf({ entry: budgets?.[category], month: year * 12 + month, spent: spentOf({ entries }), spentBefore: spentOf(previousMonth) })
+      : undefined;
+  const stored = budgets?.[category]?.limit;
+  const [limit, setLimit] = useState(stored ? `${stored}` : '');
+  const commit = () => {
+    const next = Number(limit) > 0 ? Number(limit) : undefined;
+    if (next !== stored) updateSettings?.({ budgets: withBudget(budgets, category, limit) });
+  };
+  const pendingCommit = useRef(commit);
+  pendingCommit.current = commit;
+  useEffect(() => () => pendingCommit.current(), []);
+  const saveLimit = () => {
+    commit();
+    if (!(Number(limit) > 0)) setLimit('');
+  };
 
   const count = useMemo(() => categoryMonthTxs(txs, { category, month, type, year }).length, [txs, category, month, type, year]);
 
@@ -60,6 +94,59 @@ const Category = ({ navigation: { goBack, navigate } = {}, route: { params = {} 
             {L10N.VS_YOUR_AVERAGE(AVERAGE_MONTHS)}
           </Text>
           <PriceFriendly currency={baseCurrency} size="xs" tone="muted" value={average} />
+        </View>
+      ) : null}
+
+      {type === EXPENSE ? (
+        <View style={style.section}>
+          {budget ? (
+            <View style={style.budgetBar}>
+              <View
+                style={[
+                  style.budgetFill,
+                  {
+                    backgroundColor: { near: colors.accent, over: colors.danger, within: colors.text }[budget.state],
+                    width: `${Math.min(100, Math.round((budget.spent * 100) / budget.total))}%`,
+                  },
+                ]}
+              />
+            </View>
+          ) : null}
+          <View row style={style.budgetRow}>
+            <Text size="s" style={style.budgetLabel} tone="muted">
+              {L10N.BUDGET}
+            </Text>
+            <InputAmount
+              accessibilityLabel={L10N.BUDGET}
+              label={null}
+              placeholder="—"
+              style={style.budgetField}
+              value={limit}
+              onBlur={saveLimit}
+              onChange={(value) => setLimit(value ?? '')}
+            />
+          </View>
+          {budget ? (
+            <>
+              {budget.carried > 0 ? (
+                <View row style={style.budgetNote}>
+                  <PriceFriendly currency={baseCurrency} size="xs" tone="muted" value={budget.carried} />
+                  <Text size="xs" tone="muted">
+                    {L10N.BUDGET_CARRIED}
+                  </Text>
+                </View>
+              ) : null}
+              <View row style={[style.row, style.divider]}>
+                <Text flex size="s" tone="muted">
+                  {L10N.BUDGET_LEFT}
+                </Text>
+                <PriceFriendly currency={baseCurrency} size="md" tone={budget.left < 0 ? 'danger' : undefined} value={budget.left} />
+                <Text size="xs" tone="muted">
+                  {L10N.BUDGET_OF(compactFigure(budget.total))}
+                </Text>
+              </View>
+            </>
+          ) : null}
         </View>
       ) : null}
 

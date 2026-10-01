@@ -40,12 +40,6 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 ## Queue
 
-- **BUDGETS** — Soft category budgets
-  `feature · agent · normal`
-  accept: phase 1: a soft budget per category with monthly rollover and a line in the month block; alerts are a
-  later task;
-  the interface follows board UI-BUDGETS.
-
 ## In progress
 
 _None._
@@ -154,8 +148,6 @@ _None._
 - **NOTIF-DIGEST** — A weekly or monthly digest
   `feature · agent · low`
   accept: an optional notification summarising the period, scoped by its own `kind`, never cancelling the others.
-
-### Product
 
 ### Engineering
 

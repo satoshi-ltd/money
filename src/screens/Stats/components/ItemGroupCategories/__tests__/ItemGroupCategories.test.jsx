@@ -84,6 +84,34 @@ describe('screens/Stats/ItemGroupCategories', () => {
     );
   });
 
+  describe('with a budget', () => {
+    const SEPTEMBER = 2026 * 12 + 7;
+    const budgets = { 4: { limit: 300, since: SEPTEMBER - 2 }, 5: { limit: 150, since: SEPTEMBER - 2 }, 6: { limit: 500, since: SEPTEMBER } };
+    const bars = (props) => componentsBy(render({ budgets, ...props }), 'bar');
+
+    test('a budgeted category reads against its limit, the rest as a share as before', () => {
+      const [food, eating, transit, gym] = bars();
+
+      expect(food.props.budget).toMatchObject({ over: 100, state: 'over' });
+      expect(eating.props.budget).toMatchObject({ over: 50, state: 'over' });
+      expect(transit.props.budget).toMatchObject({ state: 'within', total: 500 });
+      expect(gym.props.budget).toBeUndefined();
+    });
+
+    test('what was left of last month is carried in, and a month with no previous month carries nothing', () => {
+      const withPrevious = bars({ previous: { 4: { mercadona: 100 }, 5: { 'casa paco': 150 } } });
+      const withoutPrevious = bars();
+
+      expect(withPrevious[0].props.budget).toMatchObject({ carried: 200, state: 'near', total: 500 });
+      expect(withPrevious[1].props.budget).toMatchObject({ carried: 0, state: 'over', total: 150 });
+      expect(withoutPrevious[0].props.budget.carried).toBe(0);
+    });
+
+    test('incomes never carry a budget', () => {
+      expect(componentsBy(render({ budgets, type: 1 }), 'bar').every(({ props }) => props.budget === undefined)).toBe(true);
+    });
+  });
+
   test('the leader is the only coloured row: accent first, ink after', () => {
     const bars = componentsBy(render(), 'bar');
 

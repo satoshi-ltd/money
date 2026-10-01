@@ -1,6 +1,26 @@
-import { sheetContentHeight, sheetDetent, sheetDetents } from '../sheetDetent';
+import { categorySheet, sheetContentHeight, sheetDetent, sheetDetents } from '../sheetDetent';
 import { theme } from '../../theme';
 import { buttonHeight, iconButtonSize, rowHeight } from '../../theme/layout';
+
+describe('modules/sheetDetent category sheet', () => {
+  const height = (spec) => sheetContentHeight(spec);
+
+  // The Budget block is a field in the middle of the sheet: without the second detent the keyboard covers it.
+  test('an expense category pays for its Budget block and gets the keyboard detent, an income does not', () => {
+    const expense = categorySheet({ merchants: 3, type: 0 });
+    const income = categorySheet({ merchants: 3, type: 1 });
+
+    expect(height(expense)).toBeGreaterThan(height(income));
+    expect(expense.keyboard).toBe(true);
+    expect(income.keyboard).toBeUndefined();
+    expect(sheetDetents(height(expense), 800, { keyboard: expense.keyboard })).toHaveLength(2);
+  });
+
+  test('the sheet is as tall as the category has to say: its merchants and the latest rows', () => {
+    expect(height(categorySheet({ merchants: 4, type: 1 })) - height(categorySheet({ merchants: 3, type: 1 }))).toBe(rowHeight);
+    expect(categorySheet({ merchants: -2, type: 1 }).rows).toBe(3);
+  });
+});
 
 describe('modules/sheetDetent', () => {
   test('each row adds exactly one row of height', () => {

@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Footer, Logo, Text } from './components';
 import { useApp, useStore } from './contexts';
-import { C, L10N, getNavigationTheme, sheetContentHeight, sheetDetents } from './modules';
+import { C, L10N, categorySheet, getNavigationTheme, sheetContentHeight, sheetDetents } from './modules';
 import {
   Account,
   Accounts,
@@ -29,8 +29,6 @@ import { rowHeight } from './theme/layout';
 
 const { TX: { TYPE: { EXPENSE } } = {} } = C;
 
-const LATEST_ROWS = 3;
-
 // The weekday chips or the date row that replaces them, whichever is taller, plus the sentence reading the rule back.
 const SCHEDULED_REPEAT =
   rowHeight + theme.spacing.md + theme.typography.lineHeights.body + theme.spacing.sm;
@@ -38,14 +36,10 @@ const SCHEDULED_REPEAT =
 // What each form is made of, so its height comes from the same tokens the form is built from.
 const FORM = {
   account: { keyboard: true, rows: 3 },
-  category: { actions: 0, headings: 2, hero: true, rows: 6 },
   clone: { keyboard: true, rows: 5 },
   scheduled: { extra: SCHEDULED_REPEAT, headings: 1, keyboard: true, rows: 4, toggles: 2 },
   transaction: { keyboard: true, rows: 5, toggles: 1 },
 };
-
-// The sheet is as tall as the category has to say, and no taller.
-const categoryRows = (merchants) => (merchants > 0 ? merchants : 0) + LATEST_ROWS;
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -182,7 +176,7 @@ export const Navigator = () => {
         <Stack.Screen
           name="category"
           component={Category}
-          options={({ route }) => sheet({ ...FORM.category, rows: categoryRows(route.params?.merchants) })}
+          options={({ route }) => sheet(categorySheet(route.params))}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -1,6 +1,6 @@
 {
   "name": "money",
-  "version": "3.0.82",
+  "version": "3.0.83",
   "main": "index.js",
   "private": true,
   "scripts": {

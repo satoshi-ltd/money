@@ -30,6 +30,17 @@ describe('contexts/modules/migrateState', () => {
     expect(hourOf('9')).toBe(8);
   });
 
+  test('budgets are kept when they are limits on a category and dropped when they are not', () => {
+    const budgets = migrateState({
+      accounts: [],
+      settings: { budgets: { 4: { limit: 300, since: 24312 }, 7: { limit: 'x' }, y: { limit: 5 } } },
+      txs: [],
+    }).settings.budgets;
+
+    expect(budgets).toEqual({ 4: { limit: 300, since: 24312 } });
+    expect(migrateState({ accounts: [], settings: {}, txs: [] }).settings.budgets).toEqual({});
+  });
+
   test('keeps only what an account really is', () => {
     const { accounts } = migrateState({ accounts: [consolidatedAccount], settings: {}, txs: [] });
 

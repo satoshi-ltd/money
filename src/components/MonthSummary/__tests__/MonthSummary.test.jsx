@@ -263,6 +263,15 @@ describe('components/MonthSummary', () => {
     expect(texts(root).join(' ')).toContain(`4 ${L10N.PENDING}`);
   });
 
+  test('the budgets line says what is left, and how many are over or that none is', () => {
+    const line = (value, over) => render({ insights: [...INSIGHTS, { type: 'budgets', value, meta: { over, total: 520 } }] });
+
+    expect(texts(line(68, 1))).toEqual(expect.arrayContaining([L10N.BUDGETS, L10N.BUDGETS_OVER(1)]));
+    expect(texts(line(68, 0))).toContain(L10N.BUDGETS_ON_TRACK);
+    expect(prices(line(-30, 2)).find(({ value }) => value === -30).tone).toBe('danger');
+    expect(prices(line(68, 0)).find(({ value }) => value === 68).tone).toBeNull();
+  });
+
   test('a row with no insight behind it is absent, never a zero', () => {
     const shown = texts(render());
 

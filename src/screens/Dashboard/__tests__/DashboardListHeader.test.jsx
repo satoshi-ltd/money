@@ -171,6 +171,17 @@ describe('screens/Dashboard/ListHeader', () => {
     expect(chips[0].props.label).toBe(L10N.OWED);
   });
 
+  test('the month block gets the budgets, so its line can say what is left', () => {
+    mockStore = {
+      ...mockStore,
+      settings: { baseCurrency: 'EUR', budgets: { 4: { limit: 300, since: 2026 * 12 + 5 } } },
+      txs: [{ account: 'a1', category: 4, hash: 't1', timestamp: new Date(2026, 7, 3).getTime(), type: 0, value: 100 }],
+    };
+    const [summary] = componentsBy(render(), 'month-summary');
+
+    expect(summary.props.insights.find(({ type }) => type === 'budgets')).toMatchObject({ meta: { over: 0, total: 600 }, value: 500 });
+  });
+
   test('hides the hero when there are no accounts', () => {
     mockStore = { ...mockStore, accounts: [] };
 

@@ -76,6 +76,7 @@ const MonthSummary = ({ currency, insights = [], onScheduledPress }) => {
   const closed = insights.find(({ type }) => type === 'closed');
   const swing = insights.find(({ type }) => type === 'swing');
   const incomes = insights.find(({ type }) => type === 'incomes');
+  const budgets = insights.find(({ type }) => type === 'budgets');
   const scheduled = insights.find(({ type }) => type === 'scheduled');
 
   const spent = trend?.meta?.spent;
@@ -149,6 +150,18 @@ const MonthSummary = ({ currency, insights = [], onScheduledPress }) => {
           styleContainer={style.row}
           tone={swing.value < 0 ? 'positive' : null}
           value={swing.value}
+        />
+      ) : null}
+
+      {budgets ? (
+        <Line
+          currency={currency}
+          hint={budgets.meta.over > 0 ? L10N.BUDGETS_OVER(budgets.meta.over) : L10N.BUDGETS_ON_TRACK}
+          label={L10N.BUDGETS}
+          style={style}
+          styleContainer={style.row}
+          tone={budgets.value < 0 ? 'danger' : null}
+          value={budgets.value}
         />
       ) : null}
 

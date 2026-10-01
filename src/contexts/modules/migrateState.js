@@ -1,5 +1,5 @@
 import { parseAccount } from '../reducers/modules';
-import { C, clampTextScale } from '../../modules';
+import { C, clampTextScale, validBudgets } from '../../modules';
 import { DEFAULTS, RATES_SCHEMA, SCHEMA_VERSION } from '../store.constants';
 
 const ensureArray = (value) => (Array.isArray(value) ? value : []);
@@ -35,6 +35,7 @@ export const migrateState = ({ accounts, rates, scheduledTxs, schemaVersion, set
     // A backup can carry any number here, and an unbounded one renders the app unusable.
     textSize: clampTextScale(settings?.textSize),
     reminderHour: validReminderHour(settings?.reminderHour),
+    budgets: validBudgets(settings?.budgets),
   };
   // Read before DEFAULTS lends its own: merged settings always look current, and the gate needs what was stored.
   const storedSchema = Number.isFinite(settings?.schemaVersion) ? settings.schemaVersion : schemaVersion;

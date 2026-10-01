@@ -12,6 +12,7 @@ const DEFAULTS = {
   settings: {
     baseCurrency: CURRENCY,
     biometricUnlockEnabled: false,
+    budgets: {},
     fingerprint: getFingerprint(),
     language: undefined,
     maskAmount: false,

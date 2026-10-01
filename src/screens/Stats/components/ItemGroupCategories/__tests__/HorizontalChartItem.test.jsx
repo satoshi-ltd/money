@@ -3,9 +3,10 @@ import { StyleSheet, Text as RNText } from 'react-native';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import { HorizontalChartItem } from '../HorizontalChartItem';
+import { L10N } from '../../../../../modules';
 
 jest.mock('../../../../../contexts', () => ({
-  useApp: () => ({ colors: {} }),
+  useApp: () => ({ colors: { accent: '#ACCE07', danger: '#DANG00', text: '#TEXT00' } }),
   useAmountSettings: () => ({ baseCurrency: 'EUR', maskAmount: false }),
 }));
 
@@ -25,6 +26,33 @@ const render = (props = {}) => {
   });
   return renderer.root;
 };
+
+const BUDGET = { over: 0, spent: 105, state: 'near', total: 120 };
+
+describe('screens/Stats/HorizontalChartItem with a budget', () => {
+  const colors = { accent: '#ACCE07', danger: '#DANG00', text: '#TEXT00' };
+  const fillOf = (root) => root.findAllByType('View').map((node) => StyleSheet.flatten(node.props.style)).find((flat) => flat?.height === '100%');
+  const noteOf = (root) => root.findAllByType(RNText).map((node) => collect(node.props.children)).find((text) => /^(of|\+)/.test(text));
+
+  test('ink while within, accent from four fifths, danger past it', () => {
+    const fill = (budget) => fillOf(render({ budget: { ...BUDGET, ...budget } }));
+
+    expect(fill({ spent: 60, state: 'within' }).backgroundColor).toBe(colors.text);
+    expect(fill({}).backgroundColor).toBe(colors.accent);
+    expect(fill({ over: 21, spent: 141, state: 'over' }).backgroundColor).toBe(colors.danger);
+  });
+
+  test('the track runs to the limit, never past it, and the note names the limit or the excess', () => {
+    expect(fillOf(render({ budget: BUDGET })).width).toBe('88%');
+    expect(fillOf(render({ budget: { over: 21, spent: 141, state: 'over', total: 120 } })).width).toBe('100%');
+    expect(noteOf(render({ budget: BUDGET }))).toBe(L10N.BUDGET_OF('120'));
+    expect(noteOf(render({ budget: { over: 21, spent: 141, state: 'over', total: 120 } }))).toBe('+21');
+  });
+
+  test('without a budget the track is the share and the note is the percentage, as before', () => {
+    expect(fillOf(render()).width).toBe('42%');
+  });
+});
 
 describe('screens/Stats/HorizontalChartItem', () => {
   test('the percent column keeps one line and grows with the font scale instead of wrapping', () => {

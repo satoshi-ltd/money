@@ -20,7 +20,7 @@ const DashboardListHeader = ({ navigate }) => {
   const { colors } = useApp();
   const style = useMemo(() => getStyles(colors), [colors]);
   const { accounts = [], scheduledTxs = [], rates = {}, settings = {}, overall = {}, today, txs = [] } = store;
-  const { baseCurrency, maskAmount } = settings || {};
+  const { baseCurrency, budgets, maskAmount } = settings || {};
 
   const sortedAccounts = queryAccounts({ accounts, query: undefined });
   const insights = useMemo(
@@ -30,10 +30,10 @@ const DashboardListHeader = ({ navigate }) => {
         now: today,
         scheduledTxs,
         rates,
-        settings: { baseCurrency },
+        settings: { baseCurrency, budgets },
         txs,
       }),
-    [accounts, scheduledTxs, rates, baseCurrency, today, txs],
+    [accounts, scheduledTxs, rates, baseCurrency, budgets, today, txs],
   );
   const progression = getProgressionPercentage(overall?.currentBalance, overall?.currentMonth?.progression);
   const visibleAccounts = sortedAccounts.slice(0, 3);

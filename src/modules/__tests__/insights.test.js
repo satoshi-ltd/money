@@ -141,6 +141,33 @@ describe('modules/insights lead', () => {
   });
 });
 
+describe('modules/insights budgets', () => {
+  const NOW = new Date(2025, 5, 20, 12);
+  const SINCE = 2025 * 12 + 2;
+  const withBudgets = (budgets, txs) => find(build({ now: NOW, settings: { ...SETTINGS, budgets }, txs }), 'budgets');
+
+  test('says what is left of the limits this month and how many categories are over', () => {
+    const budgets = { 1: { limit: 300, since: SINCE }, 4: { limit: 100, since: SINCE } };
+    const txs = [expense(2025, 4, 5, 300, 1), expense(2025, 4, 6, 100, 4), expense(2025, 5, 3, 120, 1), expense(2025, 5, 4, 140, 4)];
+    const insight = withBudgets(budgets, txs);
+
+    expect(insight).toMatchObject({ type: 'budgets', value: 300 + 100 - 120 - 140, meta: { over: 1, total: 400 } });
+  });
+
+  test('last month is carried only from what was left of its limit, all of its days', () => {
+    const budgets = { 1: { limit: 300, since: SINCE } };
+    const early = withBudgets(budgets, [expense(2025, 4, 2, 100, 1), expense(2025, 4, 28, 50, 1)]);
+
+    expect(early.meta.total).toBe(300 + 150);
+  });
+
+  test('a budget set this month starts without a carry, and a ledger with no budget draws no line', () => {
+    expect(withBudgets({ 1: { limit: 300, since: 2025 * 12 + 5 } }, [expense(2025, 5, 3, 100, 1)]).meta.total).toBe(300);
+    expect(withBudgets({}, [expense(2025, 5, 3, 100, 1)])).toBeUndefined();
+    expect(find(build({ now: NOW, txs: [expense(2025, 5, 3, 100, 1)] }), 'budgets')).toBeUndefined();
+  });
+});
+
 describe('modules/insights swing', () => {
   // Figure and name must refer to the same thing: a total overshoot beside one category's name reads as
   // if that category explained all of it, and at month end it did not.

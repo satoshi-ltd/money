@@ -23,6 +23,7 @@ jest.mock('../../../components', () => {
   return {
     Eyebrow: ({ children, ...props }) => MockReact.createElement(ReactNative.Text, { testID: 'eyebrow', ...props }, children),
     Delta: stub('delta'),
+    InputAmount: stub('budget-input'),
     Heading: stub('heading'),
     Panel: ({ children, footerElement }) =>
       MockReact.createElement(ReactNative.View, null, children, footerElement),
@@ -83,6 +84,99 @@ beforeEach(() => {
       tx('t6', 'Lidl', 63.4, 7, 2),
     ],
   };
+});
+
+describe('screens/Category budget', () => {
+  const SINCE = 2026 * 12 + 5;
+  const withBudget = (limit, params) => {
+    mockStore = { ...mockStore, settings: { baseCurrency: 'EUR', budgets: { 4: { limit, since: SINCE } } }, updateSettings: jest.fn() };
+    return render(params);
+  };
+
+  test('the field holds the limit, and leaving it saves what was typed under the month it began', () => {
+    const root = withBudget(500);
+    const input = componentsBy(root, 'budget-input')[0];
+
+    expect(input.props.value).toBe('500');
+    act(() => input.props.onChange('600'));
+    act(() => componentsBy(root, 'budget-input')[0].props.onBlur());
+
+    expect(mockStore.updateSettings).toHaveBeenCalledWith({ budgets: { 4: { limit: 600, since: SINCE } } });
+  });
+
+  test('clearing the field removes the budget', () => {
+    const root = withBudget(500);
+    act(() => componentsBy(root, 'budget-input')[0].props.onChange(undefined));
+    act(() => componentsBy(root, 'budget-input')[0].props.onBlur());
+
+    expect(mockStore.updateSettings).toHaveBeenCalledWith({ budgets: {} });
+  });
+
+  test('with no limit there is only the empty field, and typing one starts it this month', () => {
+    mockStore = { ...mockStore, updateSettings: jest.fn() };
+    const root = render();
+
+    expect(componentsBy(root, 'budget-input')[0].props.value).toBe('');
+    expect(allText(root)).not.toContain(L10N.BUDGET_LEFT);
+    act(() => componentsBy(root, 'budget-input')[0].props.onChange('250'));
+    act(() => componentsBy(root, 'budget-input')[0].props.onBlur());
+
+    expect(mockStore.updateSettings).toHaveBeenCalledWith({ budgets: { 4: { limit: 250, since: expect.any(Number) } } });
+  });
+
+  test('says what was carried in from last month and what is left of the total', () => {
+    const root = withBudget(500);
+    const values = componentsBy(root, 'price').map((node) => node.props.value);
+
+    expect(allText(root)).toEqual(expect.arrayContaining([L10N.BUDGET_CARRIED, L10N.BUDGET_LEFT, L10N.BUDGET_OF('550')]));
+    expect(values).toEqual(expect.arrayContaining([50, 150]));
+  });
+
+  test('past the total what is left is negative and in the danger tone', () => {
+    const left = componentsBy(withBudget(300), 'price').find((node) => node.props.tone === 'danger');
+
+    expect(left.props.value).toBeCloseTo(-100);
+  });
+
+  test('an entry hidden from Analytics is not spent against the budget, as in the month block and the bar', () => {
+    mockStore = { ...mockStore, txs: [...mockStore.txs, tx('t7', 'Cash', 77, 7, 5, { meta: { moved: true } })] };
+    const values = componentsBy(withBudget(500), 'price').map((node) => node.props.value);
+
+    expect(values).toContain(150);
+    expect(values).not.toContain(73);
+  });
+
+  test('leaving the sheet with the field focused still saves what was typed, once', () => {
+    let renderer;
+    mockStore = { ...mockStore, settings: { baseCurrency: 'EUR', budgets: { 4: { limit: 500, since: SINCE } } }, updateSettings: jest.fn() };
+    act(() => {
+      renderer = TestRenderer.create(<Category navigation={{ goBack, navigate }} route={{ params: PARAMS }} />);
+    });
+    act(() => componentsBy(renderer.root, 'budget-input')[0].props.onChange('700'));
+    act(() => renderer.unmount());
+
+    expect(mockStore.updateSettings).toHaveBeenCalledTimes(1);
+    expect(mockStore.updateSettings).toHaveBeenCalledWith({ budgets: { 4: { limit: 700, since: SINCE } } });
+  });
+
+  test('a focus that changes nothing writes nothing, and a zero empties the field it removed', () => {
+    const root = withBudget(500);
+    act(() => componentsBy(root, 'budget-input')[0].props.onBlur());
+    expect(mockStore.updateSettings).not.toHaveBeenCalled();
+
+    act(() => componentsBy(root, 'budget-input')[0].props.onChange('0'));
+    act(() => componentsBy(root, 'budget-input')[0].props.onBlur());
+    expect(mockStore.updateSettings).toHaveBeenCalledWith({ budgets: {} });
+    expect(componentsBy(root, 'budget-input')[0].props.value).toBe('');
+  });
+
+  test('the field is named for a screen reader', () => {
+    expect(componentsBy(withBudget(500), 'budget-input')[0].props.accessibilityLabel).toBe(L10N.BUDGET);
+  });
+
+  test('an income category has no budget to set', () => {
+    expect(componentsBy(withBudget(500, { ...PARAMS, type: 1 }), 'budget-input')).toHaveLength(0);
+  });
 });
 
 describe('screens/Category', () => {

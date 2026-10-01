@@ -47,6 +47,33 @@ export const getStyles = (colors) =>
       borderTopColor: colors.border,
       borderTopWidth: theme.hairline,
     },
+    budgetBar: {
+      backgroundColor: colors.surface,
+      height: 5,
+      marginBottom: theme.spacing.xs,
+    },
+    budgetFill: {
+      height: '100%',
+    },
+    budgetRow: {
+      alignItems: 'center',
+      minHeight: rowHeight,
+    },
+    budgetLabel: {
+      width: theme.spacing.xxl * 2,
+    },
+    budgetField: {
+      backgroundColor: 'transparent',
+      borderWidth: 0,
+      flex: 1,
+      justifyContent: 'center',
+      minHeight: rowHeight,
+    },
+    budgetNote: {
+      alignItems: 'baseline',
+      gap: theme.spacing.xs,
+      paddingBottom: theme.spacing.xs,
+    },
     track: {
       backgroundColor: colors.surface,
       flexShrink: 1,
