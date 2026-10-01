@@ -62,7 +62,7 @@ jest.mock('../../services', () => {
   }
 
   return {
-    NotificationsService: { syncScheduled: jest.fn(() => Promise.resolve()) },
+    NotificationsService: { setHour: jest.fn(), syncScheduled: jest.fn(() => Promise.resolve()) },
     ratesOrSeed: () => ({ rates: {}, seeded: false }),
     rebaseRates: (rates) => rates,
     ServiceRates: { get: (...args) => mockServiceRatesGet(...args) },

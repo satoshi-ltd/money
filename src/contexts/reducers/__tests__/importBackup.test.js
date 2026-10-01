@@ -1,7 +1,9 @@
 import { importBackup } from '../importBackup';
+import { NotificationsService } from '../../../services';
 import { createTestStore } from '../../../test/createTestStore';
 
 jest.mock('../../../services', () => ({
+  NotificationsService: { reminders: jest.fn(), setHour: jest.fn(), syncScheduled: jest.fn() },
   ratesOrSeed: jest.requireActual('../../../services/RatesService').ratesOrSeed,
 }));
 
@@ -22,6 +24,17 @@ const createState = async (settings = {}) => {
 };
 
 describe('contexts/reducers/importBackup', () => {
+  // The service keeps the hour in memory, so a stored hour that nothing applies leaves the old one scheduling.
+  test('the reminder hour of a backup is applied to both reminders, not only stored', async () => {
+    const { state } = await createState();
+
+    await importBackup(backup('EUR', { reminderHour: 19 }), [state, jest.fn()]);
+
+    expect(NotificationsService.setHour).toHaveBeenCalledWith(19);
+    expect(NotificationsService.reminders).toHaveBeenCalledWith([1]);
+    expect(NotificationsService.syncScheduled).toHaveBeenCalledWith({ scheduledTxs: [], txs: expect.any(Array) });
+  });
+
   // Leaving the cache empty made every foreign balance read 0.00 until a fetch landed, which offline never does.
   test('a backup in another base currency lands on the bundled series, never on nothing', async () => {
     const { state, store } = await createState();

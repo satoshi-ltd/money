@@ -1,10 +1,12 @@
-import { getOccurrencesBetween } from '../../modules';
+import { C, getOccurrencesBetween } from '../../modules';
 
 const MS_IN_DAY = 24 * 60 * 60 * 1000;
 const MAX_PER_SCHEDULED = 8;
 const MAX_TOTAL = 48;
 const HORIZON_DAYS = 90;
 const TOLERANCE = 60 * 1000;
+
+export const backupTrigger = ({ hour = C.REMINDER_HOUR, type } = {}) => ({ hour, minute: 0, weekday: 1, type });
 
 export const notificationKey = ({ scheduledId, occurrenceAt } = {}) => `${scheduledId}:${occurrenceAt}`;
 
@@ -18,7 +20,7 @@ export const scheduledTime = (notification = {}) => {
   return Number.isFinite(time) ? time : undefined;
 };
 
-export const buildDesiredNotifications = ({ now, scheduledTxs = [] } = {}) => {
+export const buildDesiredNotifications = ({ hour = C.REMINDER_HOUR, now, scheduledTxs = [] } = {}) => {
   const horizonAt = now + HORIZON_DAYS * MS_IN_DAY;
   const desired = [];
   const perScheduledCount = new Map();
@@ -33,7 +35,7 @@ export const buildDesiredNotifications = ({ now, scheduledTxs = [] } = {}) => {
         dayBefore.getFullYear(),
         dayBefore.getMonth(),
         dayBefore.getDate(),
-        8,
+        hour,
         0,
         0,
         0,

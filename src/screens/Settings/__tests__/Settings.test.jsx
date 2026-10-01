@@ -6,7 +6,7 @@ import { Settings } from '../Settings';
 import { theme } from '../../../theme';
 import { viewOffset } from '../../../theme/layout';
 import { biometricName, C, eventEmitter, ICON, L10N, TEXT_SCALES } from '../../../modules';
-import { BackupService, BiometricAuthService } from '../../../services';
+import { BackupService, BiometricAuthService, NotificationsService } from '../../../services';
 
 const ACCENT_SOFT = '#S0FT00';
 const SURFACE = '#SURFA0';
@@ -26,7 +26,7 @@ jest.mock('../../../services', () => ({
     exportCsv: jest.fn(() => Promise.resolve(true)),
     import: jest.fn(() => Promise.resolve(undefined)),
   },
-  NotificationsService: { reminders: jest.fn() },
+  NotificationsService: { reminders: jest.fn(), setHour: jest.fn(), syncScheduled: jest.fn() },
   ServiceRates: { get: jest.fn(() => Promise.resolve({})) },
 }));
 
@@ -146,6 +146,23 @@ describe('screens/Settings', () => {
     );
     confirm.mock.calls[0][0].onAction();
     expect(reset).toHaveBeenCalledWith({ index: 0, routes: [{ name: 'session' }] });
+  });
+
+  test('the reminder hour is one row under the backup switch, from 06:00 to 22:00, and it moves both reminders', async () => {
+    mockStore.scheduledTxs = [{ id: 's1' }];
+    const root = await render();
+    const row = componentsBy(root, 'select').find((node) => node.props.title === L10N.REMINDER_TIME);
+
+    expect(row.props.subtitle).toBe(L10N.REMINDER_TIME_CAPTION);
+    expect(row.props.value).toBe(8);
+    expect(row.props.options.map((option) => option.value)).toEqual(Array.from({ length: 17 }, (_, index) => 6 + index));
+
+    await act(async () => row.props.onChange(19));
+
+    expect(NotificationsService.setHour).toHaveBeenCalledWith(19);
+    expect(mockStore.updateSettings).toHaveBeenCalledWith({ reminderHour: 19 });
+    expect(NotificationsService.reminders).toHaveBeenCalledWith([1]);
+    expect(NotificationsService.syncScheduled).toHaveBeenCalledWith({ scheduledTxs: [{ id: 's1' }], txs: [] });
   });
 
   test('the backup CTA exports the ledger', async () => {

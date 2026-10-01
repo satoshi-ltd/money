@@ -1,8 +1,12 @@
 import { parseAccount } from '../reducers/modules';
-import { clampTextScale } from '../../modules';
+import { C, clampTextScale } from '../../modules';
 import { DEFAULTS, RATES_SCHEMA, SCHEMA_VERSION } from '../store.constants';
 
 const ensureArray = (value) => (Array.isArray(value) ? value : []);
+const validReminderHour = (hour) =>
+  Number.isInteger(hour) && hour >= C.REMINDER_HOURS.from && hour <= C.REMINDER_HOURS.to
+    ? hour
+    : DEFAULTS.settings.reminderHour;
 const normalizeScheduled = (item = {}) => {
   // Drop legacy scheduled fields if present (we keep scheduled items "active-only").
   const rest = { ...(item || {}) };
@@ -30,6 +34,7 @@ export const migrateState = ({ accounts, rates, scheduledTxs, schemaVersion, set
     },
     // A backup can carry any number here, and an unbounded one renders the app unusable.
     textSize: clampTextScale(settings?.textSize),
+    reminderHour: validReminderHour(settings?.reminderHour),
   };
   // Read before DEFAULTS lends its own: merged settings always look current, and the gate needs what was stored.
   const storedSchema = Number.isFinite(settings?.schemaVersion) ? settings.schemaVersion : schemaVersion;

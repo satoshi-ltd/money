@@ -6,6 +6,8 @@ const nth = (day) => {
 };
 
 export const EN = {
+  REMINDER_TIME: 'Reminder time',
+  REMINDER_TIME_CAPTION: 'Scheduled and backup',
   MONTHS_SHORT: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'],
   MASK_AMOUNTS: 'Mask amounts',
   MASK_AMOUNTS_CAPTION: 'Also toggled by tapping the net worth',
@@ -336,6 +338,8 @@ export const EN = {
 };
 
 export const PT = {
+  REMINDER_TIME: 'Hora dos lembretes',
+  REMINDER_TIME_CAPTION: 'Programados e backup',
   MONTHS_SHORT: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
   MASK_AMOUNTS: 'Ocultar valores',
   MASK_AMOUNTS_CAPTION: 'Também com um toque no patrimônio total',
@@ -650,6 +654,8 @@ export const PT = {
   YESTERDAY: 'Ontem',
 };
 export const FR = {
+  REMINDER_TIME: 'Heure des rappels',
+  REMINDER_TIME_CAPTION: 'Planifiées et sauvegarde',
   MONTHS_SHORT: ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'],
   MASK_AMOUNTS: 'Masquer les montants',
   MASK_AMOUNTS_CAPTION: 'Aussi en touchant le patrimoine total',
@@ -966,6 +972,8 @@ export const FR = {
   YESTERDAY: 'Hier',
 };
 export const DE = {
+  REMINDER_TIME: 'Uhrzeit der Erinnerungen',
+  REMINDER_TIME_CAPTION: 'Geplant und Backup',
   MONTHS_SHORT: ['jan.', 'feb.', 'märz', 'apr.', 'mai', 'juni', 'juli', 'aug.', 'sept.', 'okt.', 'nov.', 'dez.'],
   MASK_AMOUNTS: 'Beträge ausblenden',
   MASK_AMOUNTS_CAPTION: 'Auch per Tipp auf das Gesamtvermögen',
@@ -1281,6 +1289,8 @@ export const DE = {
   YESTERDAY: 'Gestern',
 };
 export const ES = {
+  REMINDER_TIME: 'Hora de los recordatorios',
+  REMINDER_TIME_CAPTION: 'Programados y backup',
   MONTHS_SHORT: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'],
   MASK_AMOUNTS: 'Ocultar importes',
   MASK_AMOUNTS_CAPTION: 'También con un toque en el patrimonio total',

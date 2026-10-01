@@ -53,6 +53,7 @@ const Settings = ({ navigation = {} }) => {
     language = 'en',
     lastRatesUpdate = '',
     pin,
+    reminderHour = C.REMINDER_HOUR,
     reminders,
   } = settings;
 
@@ -295,11 +296,22 @@ const Settings = ({ navigation = {} }) => {
   };
   const lastRatesUpdatedValue = lastRunValue(lastRatesUpdate);
   const lastBackupValue = lastRunValue(backupAt);
+  const formatHour = (hour) =>
+    new Date(2024, 0, 7, hour, 0, 0, 0).toLocaleTimeString(resolvedLocale, { hour: '2-digit', minute: '2-digit' });
+  const hourOptions = Array.from({ length: C.REMINDER_HOURS.to - C.REMINDER_HOURS.from + 1 }, (_, index) => {
+    const hour = C.REMINDER_HOURS.from + index;
+    return { label: formatHour(hour), value: hour };
+  });
+  const handleReminderHour = async (hour) => {
+    NotificationsService.setHour(hour);
+    await updateSettings({ reminderHour: hour });
+    NotificationsService.reminders([backupReminderEnabled ? 1 : 0]);
+    NotificationsService.syncScheduled({ scheduledTxs, txs });
+  };
   const backupReminderSubtitle = (() => {
     if (!backupReminderEnabled) return L10N.REMINDER_BACKUP_CAPTION;
 
-    // Matches NotificationsService.reminders() weekly trigger: Sunday at 08:00 local time.
-    const sunday = new Date(2024, 0, 7, 8, 0, 0, 0); // Sunday
+    const sunday = new Date(2024, 0, 7, reminderHour, 0, 0, 0);
     const weekday = sunday.toLocaleDateString(resolvedLocale, {
       weekday: 'short',
     });
@@ -431,6 +443,14 @@ const Settings = ({ navigation = {} }) => {
             type="toggle"
             value={backupReminderEnabled}
             onValueChange={handleChangeReminder}
+          />
+          <SettingSelect
+            divider
+            options={hourOptions}
+            subtitle={L10N.REMINDER_TIME_CAPTION}
+            title={L10N.REMINDER_TIME}
+            value={reminderHour}
+            onChange={handleReminderHour}
           />
         </View>
 

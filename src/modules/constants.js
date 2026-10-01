@@ -49,6 +49,8 @@ export const C = {
 
   PRIVACY_URL: 'https://www.satoshi-ltd.com/privacy',
 
+  REMINDER_HOUR: 8,
+  REMINDER_HOURS: { from: 6, to: 22 },
   STATS_MONTHS_LIMIT: 12,
   // Single-glyph forms only. Anything that would collide resolves to its ISO code via currencySymbol().
   // The onboarding picker is drawn from this; every code in SYMBOL belongs to exactly one group.

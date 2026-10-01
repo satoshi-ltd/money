@@ -158,7 +158,7 @@ const Session = ({ navigation: { reset } = {} }) => {
 
   const handleSubmit = async () => {
     if (signup) await updateSettings({ pin });
-    await NotificationsService.init({ reminders: settings.reminders, scheduledTxs, txs });
+    await NotificationsService.init({ hour: settings.reminderHour, reminders: settings.reminders, scheduledTxs, txs });
 
     reset({ index: 0, routes: [{ name: 'main' }] });
   };

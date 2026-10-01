@@ -1,8 +1,8 @@
 import {
-  ACCOUNTS, BASE, ICON, L, NET, accountRow,
+  ACCOUNTS, BASE, L, NET, accountRow,
   chip, esc, eyebrow, fieldRow, fig,
-  heading, icon, kebab, masthead, monthRow,
-  monthSummary, price, rightValue, setting, switchEl, text, 
+  heading, kebab, monthRow,
+  monthSummary, price, text, 
 } from './draw.mjs';
 
 const frame = (body, { sheet, width = 350 } = {}) => `<div class="m" style="width:${width}px;padding:12px 0;background:var(--color-${sheet ? 'surface' : 'background'})">${body}</div>`;
@@ -43,10 +43,6 @@ const categoryHero = (budget) =>
 
 
 
-const SETTINGS_PREFS = (extra = '', hour = '08:00') =>
-  `<div><div class="m-group">${eyebrow(L.PREFERENCES, { style: 'display:block' })}${setting(L.SCHEDULED, { right: rightValue('4') })}${setting(L.MASK_AMOUNTS, { divider: true, subtitle: L.MASK_AMOUNTS_CAPTION, right: switchEl(false) })}${setting(L.REMINDER_BACKUP, { divider: true, subtitle: `${L.SCHEDULED_PATTERN_WEEKLY} · Sun ${hour}`, right: switchEl(true) })}${extra}</div></div>`;
-const hourRows = (hours, chosen) =>
-  hours.map((hour, index) => `<div style="display:flex;align-items:center;gap:12px;height:44px${index ? ';border-top:var(--hairline) solid var(--color-border)' : ''}">${fig(hour, { size: 'md', bold: hour === chosen, style: 'flex:1' })}${hour === chosen ? icon(ICON.CHECK, { tone: 'accent' }) : ''}</div>`).join('');
 
 
 
@@ -72,16 +68,6 @@ export const REVIEW = [
       frame(monthSummary({ spent: 552.78, baseline: 1042.29, pace: `−47% ${L.BELOW_PACE}`, day: 9, swing: -208.11, swingCategory: 'Personal', scheduled: 1325.29, pending: 4, lines: monthRow('Budgets', price(68, { size: 'md' }), text('left of 520 · 1 over', { size: 'xs', tone: 'muted' })) })),
       frame(categoryBars(true)),
       frame(categoryHero(true), { sheet: true }),
-    ),
-  },
-  {
-    id: 'UI-NOTIF-TIME', area: 'Settings', title: 'The hour of the reminders',
-    why: 'Both reminders fire at 08:00 today and Settings offers no way to move them. Recommended: one "Reminder time" row in Preferences under the backup switch, its caption naming what it moves, opening a sheet of hours with a check on the chosen one; the backup caption then reads the chosen hour. Alternative: one row per reminder kind, which doubles the rows for a setting few will tell apart.',
-    accept: 'Preferences shows the Reminder time row with the stored hour, the sheet lists the hours with the chosen one checked, and the backup reminder caption follows it; the five dictionaries carry the row and its caption.',
-    now: frame(SETTINGS_PREFS()),
-    proposed: stack(
-      frame(SETTINGS_PREFS(setting('Reminder time', { divider: true, subtitle: 'Scheduled transactions the day before, backup on Sundays', right: rightValue('09:00', { figure: true }) }), '09:00')),
-      frame(`<div>${masthead({ section: 'Reminder time', sheet: true })}<div style="margin-top:8px">${hourRows(['06:00', '07:00', '08:00', '09:00', '10:00', '11:00'], '09:00')}</div></div>`, { sheet: true }),
     ),
   },
 ];

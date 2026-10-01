@@ -18,6 +18,7 @@ const DEFAULTS = {
     onboarded: false,
     pin: undefined,
     ratesBaseCurrency: undefined,
+    reminderHour: C.REMINDER_HOUR,
     reminders: [1],
     // Local-only user profile collected via onboarding survey (opt-in lead capture).
     userProfile: {

@@ -1,4 +1,5 @@
 import {
+  backupTrigger,
   buildDesiredNotifications,
   buildTxIndex,
   notificationKey,
@@ -27,6 +28,21 @@ const asNotification = ({ identifier, item, trigger }) => ({
 });
 
 describe('services/modules/scheduledNotifications', () => {
+  test('the weekly backup reminder fires on Sunday morning at the chosen hour, 8am when none was', () => {
+    expect(backupTrigger({ hour: 19, type: 'weekly' })).toEqual({ hour: 19, minute: 0, weekday: 1, type: 'weekly' });
+    expect(backupTrigger({ type: 'weekly' }).hour).toBe(8);
+  });
+
+  test('announces at the hour the reader chose, 8am when none was', () => {
+    const hourOf = (hour) =>
+      buildDesiredNotifications({ hour, now: NOW, scheduledTxs: [monthly('rent', 20)] }).map(({ notifyAt }) =>
+        new Date(notifyAt).getHours(),
+      );
+
+    expect(new Set(hourOf(undefined))).toEqual(new Set([8]));
+    expect(new Set(hourOf(19))).toEqual(new Set([19]));
+  });
+
   test('announces each occurrence the day before at 8am', () => {
     const [first] = buildDesiredNotifications({ now: NOW, scheduledTxs: [monthly('s1', 20)] });
 

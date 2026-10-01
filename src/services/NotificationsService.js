@@ -1,8 +1,8 @@
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
-import { buildDesiredNotifications, buildTxIndex, reconcileNotifications } from './modules/scheduledNotifications';
-import { L10N } from '../modules';
+import { backupTrigger, buildDesiredNotifications, buildTxIndex, reconcileNotifications } from './modules/scheduledNotifications';
+import { C, L10N } from '../modules';
 
 const GRANTED = 'granted';
 const NOTIFICATION_KIND = {
@@ -12,6 +12,7 @@ const NOTIFICATION_KIND = {
 
 const IS_EXPO_GO_ANDROID = Platform.OS === 'android' && Constants.appOwnership === 'expo';
 
+let reminderHour = C.REMINDER_HOUR;
 let _Notifications;
 const getNotifications = async () => {
   if (IS_EXPO_GO_ANDROID) return null;
@@ -26,7 +27,12 @@ const resolveDateTrigger = (Notifications, date) => {
 };
 
 export const NotificationsService = {
-  init: async ({ reminders, scheduledTxs, txs } = {}) => {
+  setHour: (hour) => {
+    reminderHour = Number.isInteger(hour) ? hour : C.REMINDER_HOUR;
+  },
+
+  init: async ({ hour, reminders, scheduledTxs, txs } = {}) => {
+    NotificationsService.setHour(hour);
     await NotificationsService.reminders(reminders);
     await NotificationsService.syncScheduled({ scheduledTxs, txs });
   },
@@ -99,7 +105,7 @@ export const NotificationsService = {
             sound: true,
             data: { kind: NOTIFICATION_KIND.BACKUP },
           },
-          trigger: { hour: 8, minute: 0, weekday: 1, type: Notifications.SchedulableTriggerInputTypes.WEEKLY },
+          trigger: backupTrigger({ hour: reminderHour, type: Notifications.SchedulableTriggerInputTypes.WEEKLY }),
         });
       }
     } catch {
@@ -126,7 +132,7 @@ export const NotificationsService = {
         return;
       }
 
-      const desired = buildDesiredNotifications({ now, scheduledTxs: source });
+      const desired = buildDesiredNotifications({ hour: reminderHour, now, scheduledTxs: source });
 
       const scheduled = await Notifications.getAllScheduledNotificationsAsync();
       const existing = scheduled.filter((item) => item?.content?.data?.kind === NOTIFICATION_KIND.SCHEDULED);

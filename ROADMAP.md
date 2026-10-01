@@ -40,11 +40,6 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 ## Queue
 
-- **NOTIF-TIME** — A reminder time of the reader's own
-  `feature · agent · normal`
-  accept: Settings offers the hour of the scheduled and backup reminders (today fixed at 08:00 the day before); the
-  stored preference survives a backup round trip;
-  the interface follows board UI-NOTIF-TIME.
 - **ACC-NEGATIVE** — Liabilities and credit cards
   `feature · agent · normal`
   accept: an account can hold a negative balance end to end (storage, `consolidate`, the account row, insights);

@@ -20,6 +20,16 @@ const consolidatedAccount = {
 };
 
 describe('contexts/modules/migrateState', () => {
+  test('the reminder hour is 8 by default, kept when it is one the selector offers, and reset when it is not', () => {
+    const hourOf = (reminderHour) => migrateState({ accounts: [], settings: { reminderHour }, txs: [] }).settings.reminderHour;
+
+    expect(hourOf(undefined)).toBe(8);
+    expect(hourOf(19)).toBe(19);
+    expect(hourOf(3)).toBe(8);
+    expect(hourOf(25)).toBe(8);
+    expect(hourOf('9')).toBe(8);
+  });
+
   test('keeps only what an account really is', () => {
     const { accounts } = migrateState({ accounts: [consolidatedAccount], settings: {}, txs: [] });
 

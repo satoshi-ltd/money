@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.81 — 2026-10-01
+
+- The reminders have an hour of their own. Settings gets a "Reminder time" row under the backup switch, from 06:00 to 22:00, that moves both the scheduled-transaction reminders (the day before) and the weekly backup reminder, which were fixed at 08:00. The backup row reads the chosen hour, and the choice travels in a backup.
+
 ## 3.0.80 — 2026-10-01
 
 - A title you only ever filed as the other type is offered too. Typing "sal" on Expense used to offer nothing because Salary only exists as an income; it now appears marked with "Income" and its signed amount when the current type has no proposal, and a tap fills the entry and switches the type.

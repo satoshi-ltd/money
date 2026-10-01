@@ -112,7 +112,7 @@ the insights. Screens query it; nothing recomputes per row.
 
 | Store | Shape |
 | --- | --- |
-| `settings` | `schemaVersion`, `baseCurrency`, `ratesBaseCurrency`, `lastRatesUpdate`, `theme` (`light`, `dark`, `system`), `textSize`, `language`, `onboarded`, `pin`, `biometricUnlockEnabled`, `fingerprint`, `maskAmount`, `reminders`, `backupAt`, `statsRangeMonths`, `autoCategory`, `autoAccount`, `autoAmount`, and the legacy `userProfile` and `marketingLead` |
+| `settings` | `schemaVersion`, `baseCurrency`, `ratesBaseCurrency`, `lastRatesUpdate`, `theme` (`light`, `dark`, `system`), `textSize`, `language`, `onboarded`, `pin`, `biometricUnlockEnabled`, `fingerprint`, `maskAmount`, `reminders`, `reminderHour`, `backupAt`, `statsRangeMonths`, `autoCategory`, `autoAccount`, `autoAmount`, and the legacy `userProfile` and `marketingLead` |
 | `accounts` | `{ hash, title, currency, balance, timestamp }` — `balance` is the opening balance; the current one is computed |
 | `txs` | `{ hash, account, category, type, value, timestamp, title, meta? }` — `value` is positive; `type` is 0 expense, 1 income, 2 transfer; `meta` may carry `{ kind: 'scheduled', scheduledId, occurrenceAt }` and `moved: true` |
 | `scheduledTxs` | `{ id, account, category, type, value, title, startAt, pattern: { kind: 'weekly', byWeekday[] } \| { kind: 'monthly', byMonthDay }, updatedAt }` |
@@ -168,8 +168,9 @@ successful export and drives the weekly backup nudge in Settings.
   patterns carry the day, clamped to the month's length. The next occurrence is what Scheduled shows and what the
   monthly impact sums.
 - **Notifications.** Two kinds, each with its own `kind` metadata: `scheduled-tx` (the day before an occurrence at
-  08:00 local, at most 8 per template and 48 in total over the next 90 days, reconciled against what is already
-  scheduled) and `backup-reminder` (weekly, Sunday 08:00 local, when the reminder is on). Turning a feature off cancels
+  the reminder hour, 08:00 local by default, at most 8 per template and 48 in total over the next 90 days, reconciled against what is already
+  scheduled) and `backup-reminder` (weekly, Sunday at the reminder hour, when the reminder is on). The reminder hour is one
+  setting, `reminderHour`, chosen in Settings between 06:00 and 22:00; a stored value outside that range resets to 08:00. Turning a feature off cancels
   only its own kind. Notifications are unavailable in Expo Go on Android and quietly skipped there.
 - **Recommender learning.** Creating or editing a transaction feeds the three word catalogs (`learnAutoCategory`,
   `learnAutoAccount`, `learnAutoAmount`); the title memory is not stored, it is built from `txs` when the form mounts.
@@ -285,7 +286,7 @@ button, "See all N" with a chevron, that opens Scheduled.
   hides Cancel and Delete.
 - **Settings** — a backup nudge when the last export is over a week old; Data (Update rates with its last run, Export,
   Import, Export CSV); Appearance (theme, text size); Preferences (language, currency, Scheduled with its count, mask
-  amounts switch, backup reminder switch); Unlock (the biometric switch named after the reader); About (terms, privacy, security); Account &
+  amounts switch, backup reminder switch, reminder time); Unlock (the biometric switch named after the reader); About (terms, privacy, security); Account &
   data (lock, reset); the colophon.
 
 ## 8. Operations

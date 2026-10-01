@@ -175,6 +175,7 @@ const StoreProvider = ({ children }) => {
     syncRatesRef.current = syncRates;
 
     const current = stateRef.current;
+    NotificationsService.setHour(current.settings?.reminderHour);
     NotificationsService.syncScheduled({
       scheduledTxs: scheduledForAccounts(current),
       txs: current.txs || [],
@@ -208,6 +209,7 @@ const StoreProvider = ({ children }) => {
             txs: nextMigrated.txs,
           }));
         }
+        NotificationsService.setHour(nextMigrated.settings?.reminderHour);
         NotificationsService.syncScheduled({
           scheduledTxs: scheduledForAccounts(nextMigrated),
           txs: nextMigrated.txs || [],

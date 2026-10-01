@@ -49,7 +49,7 @@ jest.mock('../../services', () => {
   return {
     ratesOrSeed: (...args) => rates().ratesOrSeed(...args),
     rebaseRates: (...args) => rates().rebaseRates(...args),
-    NotificationsService: { init: jest.fn(), syncScheduled: jest.fn(() => Promise.resolve()) },
+    NotificationsService: { init: jest.fn(), setHour: jest.fn(), syncScheduled: jest.fn(() => Promise.resolve()) },
     ServiceRates: { get: jest.fn(() => Promise.reject(new Error('offline'))) },
     StorageService,
     __data: data,

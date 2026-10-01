@@ -1,5 +1,5 @@
 import { migrateState } from '../modules';
-import { ratesOrSeed } from '../../services';
+import { NotificationsService, ratesOrSeed } from '../../services';
 export const importBackup = async (
   { accounts = [], scheduledTxs = [], schemaVersion, settings = {}, txs = [] } = {},
   [state, setState],
@@ -29,6 +29,10 @@ export const importBackup = async (
     settings: migrated.settings,
     txs: migrated.txs,
   });
+
+  NotificationsService.setHour(migrated.settings.reminderHour);
+  NotificationsService.reminders(migrated.settings.reminders);
+  NotificationsService.syncScheduled({ scheduledTxs: migrated.scheduledTxs, txs: migrated.txs });
 
   setState((prev) => ({
     ...prev,
