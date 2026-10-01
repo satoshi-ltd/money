@@ -56,7 +56,7 @@ const Footer = ({ state, descriptors = {}, navigation, onActionPress }) => {
             accessibilityRole="button"
             key={route.key}
             onPress={onActionPress}
-            style={[styles.seal, { backgroundColor: colors.inverse }]}
+            style={[styles.seal, { backgroundColor: colors.text }]}
           >
             <Icon name={ICON.ADD} size="l" tone="onInverse" />
           </Pressable>

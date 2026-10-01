@@ -17,7 +17,7 @@ export const getStyles = (colors) =>
     variantMuted: { backgroundColor: colors.surface },
     variantSoft: { backgroundColor: colors.accentSoft },
     variantAccent: { backgroundColor: colors.accent },
-    variantInverse: { backgroundColor: colors.inverse },
+    variantInverse: { backgroundColor: colors.text },
     variantOutline: {
       backgroundColor: 'transparent',
       borderColor: colors.border,

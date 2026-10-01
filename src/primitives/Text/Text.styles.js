@@ -71,10 +71,9 @@ export const getStyles = (colors) =>
     tonePositive: { color: colors.positive },
     toneAccent: { color: colors.accent },
     toneDanger: { color: colors.danger },
-    toneWarning: { color: colors.warning },
     toneOnAccent: { color: colors.onAccent },
-    toneOnAccentSoft: { color: colors.onAccentSoft },
-    toneOnInverse: { color: colors.onInverse },
+    toneOnAccentSoft: { color: colors.text },
+    toneOnInverse: { color: colors.background },
 
     alignLeft: { textAlign: 'left' },
     alignCenter: { textAlign: 'center' },

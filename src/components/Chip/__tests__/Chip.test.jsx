@@ -7,7 +7,7 @@ import { chipHeight } from '../Chip.styles';
 import { rowHeight } from '../../../theme/layout';
 
 jest.mock('../../../contexts', () => ({
-  useApp: () => ({ colors: { accent: '#ACCE07', accentSoft: '#ACCE70', border: '#B0RDE0', inverse: '#1', onAccent: '#0', onAccentSoft: '#0', onInverse: '#F', surface: '#5', textSecondary: '#2' } }),
+  useApp: () => ({ colors: { accent: '#ACCE07', accentSoft: '#ACCE70', border: '#B0RDE0', text: '#1', onAccent: '#0', onAccentSoft: '#0', background: '#F', surface: '#5', textSecondary: '#2' } }),
 }));
 
 const render = (props) => {

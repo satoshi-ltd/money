@@ -19,6 +19,6 @@ export const getStyles = (colors) =>
       backgroundColor: colors.accent,
     },
     activeAlt: {
-      backgroundColor: colors.inverse,
+      backgroundColor: colors.text,
     },
   });

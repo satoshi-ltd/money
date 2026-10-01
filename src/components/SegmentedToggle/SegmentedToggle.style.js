@@ -38,6 +38,6 @@ export const getStyles = (colors) =>
       borderLeftWidth: theme.hairline,
     },
     itemActive: {
-      backgroundColor: colors.inverse,
+      backgroundColor: colors.text,
     },
   });

@@ -1,3 +1,6 @@
+import fs from 'fs';
+import path from 'path';
+
 import { theme } from '../theme';
 
 const channel = (value) => {
@@ -22,9 +25,9 @@ const PAIRS = [
   ['text', 'surface'],
   ['textMuted', 'surface'],
   ['onAccent', 'accent'],
-  ['onAccentSoft', 'accentSoft'],
+  ['text', 'accentSoft'],
   ['danger', 'dangerSoft'],
-  ['onInverse', 'inverse'],
+  ['background', 'text'],
 ];
 
 describe('theme/contrast', () => {
@@ -51,5 +54,40 @@ describe('theme/contrast', () => {
       expect(theme.colors[mode].category).toBeUndefined();
       expect(theme.colors[mode].currency).toBeUndefined();
     });
+  });
+
+  test('the palette is fifteen roles, the same in both themes, and nothing in src reads a role that is not there', () => {
+    const roles = Object.keys(theme.colors.light);
+
+    expect(roles).toHaveLength(15);
+    expect(Object.keys(theme.colors.dark)).toEqual(roles);
+
+    const walk = (dir) =>
+      fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) return entry.name === '__tests__' ? [] : walk(full);
+        return /\.jsx?$/.test(entry.name) ? [full] : [];
+      });
+    const read = walk(path.join(__dirname, '..', '..'))
+      .flatMap((file) => [...fs.readFileSync(file, 'utf8').matchAll(/(?<![\w.])colors(?:\?\.|\.|\[['"])(\w+)/g)].map((match) => `${path.basename(file)}: ${match[1]}`))
+      .filter((use) => !roles.includes(use.split(': ')[1]));
+
+    expect(read).toEqual([]);
+  });
+
+  test('the tones of Text and Icon resolve to a role that exists', () => {
+    const roles = Object.keys(theme.colors.light);
+    const tones = [...fs.readFileSync(path.join(__dirname, '..', '..', 'primitives', 'Text', 'Text.styles.js'), 'utf8').matchAll(/tone\w+: \{ color: colors\.(\w+)/g)];
+    const icon = [...fs.readFileSync(path.join(__dirname, '..', '..', 'primitives', 'Icon', 'Icon.jsx'), 'utf8').matchAll(/^ {2}\w+: '(\w+)',$/gm)];
+
+    expect(tones.length).toBeGreaterThan(5);
+    expect(icon.length).toBeGreaterThan(5);
+    [...tones, ...icon].forEach(([, role]) => expect(roles).toContain(role));
+
+    const styles = fs.readFileSync(path.join(__dirname, '..', '..', 'primitives', 'Text', 'Text.styles.js'), 'utf8');
+    const named = [...fs.readFileSync(path.join(__dirname, '..', '..', 'primitives', 'Text', 'Text.jsx'), 'utf8').matchAll(/^ {2}\w+: '(tone\w+)',$/gm)];
+
+    expect(named.length).toBeGreaterThan(5);
+    named.forEach(([, style]) => expect(styles).toContain(`    ${style}: {`));
   });
 });

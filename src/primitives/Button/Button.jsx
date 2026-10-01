@@ -85,7 +85,7 @@ const Button = ({ children, disabled, grow, icon, loading, onPress, size, style,
           size="small"
           color={
             contentTone === 'onInverse'
-              ? colors.onInverse
+              ? colors.background
               : contentTone === 'onAccent'
               ? colors.onAccent
               : contentTone === 'secondary'

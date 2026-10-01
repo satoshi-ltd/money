@@ -12,10 +12,9 @@ const TONES = {
   accent: 'accent',
   positive: 'positive',
   danger: 'danger',
-  warning: 'warning',
   onAccent: 'onAccent',
-  onAccentSoft: 'onAccentSoft',
-  onInverse: 'onInverse',
+  onAccentSoft: 'text',
+  onInverse: 'background',
 };
 const STROKE = 1.5;
 

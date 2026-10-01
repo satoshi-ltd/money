@@ -12,9 +12,9 @@ import { REVIEW, reviewBoards } from './proposals.mjs';
 const ticks = (months) => months.map((month) => L.MONTHS_SHORT[month]);
 const COLOUR_GROUPS = [
   ['Paper and ink', ['background', 'surface', 'surfaceSoft', 'text', 'textSecondary', 'textMuted', 'border', 'rule']],
-  ['Accent', ['accent', 'onAccent', 'accentSoft', 'onAccentSoft']],
-  ['Semantic', ['positive', 'danger', 'dangerSoft', 'warning', 'success']],
-  ['Inverse and overlay', ['inverse', 'onInverse', 'overlay']],
+  ['Accent', ['accent', 'onAccent', 'accentSoft']],
+  ['Semantic', ['positive', 'danger', 'dangerSoft']],
+  ['Overlay', ['overlay']],
 ];
 
 const system = () => {

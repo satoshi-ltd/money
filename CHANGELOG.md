@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.90 — 2026-10-01
+
+- Fifteen colours instead of twenty. Five roles that nothing needed are gone: two never used (success, warning) and three that were another role renamed (inverse is the text colour, the ink written on it is the background, the ink on a soft accent is the text colour). No screen changes except the text on the soft accent surfaces (the backup nudge and the suggestion chip), a shade darker in light mode.
+
 ## 3.0.89 — 2026-10-01
 
 - The days of the calendar are bigger targets: 48 points high and a seventh of the sheet wide (they were 40 high with a gap between them), so a thumb lands on the day it means.

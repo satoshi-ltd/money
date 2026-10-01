@@ -5,7 +5,7 @@ import { Notification } from '../Notification';
 import { C, eventEmitter, L10N } from '../../../modules';
 
 jest.mock('../../../contexts', () => ({
-  useApp: () => ({ colors: { accent: '#ACCE07', danger: '#DA0000', inverse: '#1', onAccent: '#0', onInverse: '#F', rule: '#R' } }),
+  useApp: () => ({ colors: { accent: '#ACCE07', danger: '#DA0000', text: '#1', onAccent: '#0', background: '#F', rule: '#R' } }),
 }));
 jest.mock('react-native-safe-area-context', () => ({ useSafeAreaInsets: () => ({ top: 0 }) }));
 

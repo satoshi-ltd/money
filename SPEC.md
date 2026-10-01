@@ -363,12 +363,14 @@ tests under `scripts/__tests__`, run against temporary copies.
 
 ### Foundations
 
-- **Colour.** Paper and ink: light `background #F6F4EE`, `surface #EEEBE0`, `surfaceSoft #E6E2D5`, `text #15140F`,
-  `textSecondary #3D3A31`, `textMuted #6E6857`, `border #DCD7C7`, `rule #15140F`; the accent `#FFBC2D` with
-  `onAccent #2A2008` and `accentSoft #F6E7C0`; `positive #87620E`, `danger #A8442A`, `dangerSoft #F0E0DA`,
-  `warning #A87515`, `inverse #15140F` / `onInverse #F6F4EE`, `overlay rgba(21,20,15,0.36)`. Dark keeps the roles on
-  `#14130E` / `#1E1C16` / `#2A2720` with ink `#F2EEE2` and accent `#FFC94D`. Colours are read from `useApp().colors`;
-  the app icon is the one place the mark inverts on fixed colours.
+- **Colour.** Fifteen roles, the same in both themes. Paper and ink: light `background #F6F4EE`, `surface #EEEBE0`,
+  `surfaceSoft #E6E2D5` (what a disabled button or an inactive track sits on, since a sheet is itself `surface`),
+  `text #15140F`, `textSecondary #3D3A31`, `textMuted #6E6857`, `border #DCD7C7`, `rule #15140F`; the accent `#FFBC2D`
+  with `onAccent #2A2008` and `accentSoft #F6E7C0`; `positive #87620E` (income and gain read as ink, since the accent
+  is too light to read on paper), `danger #A8442A`, `dangerSoft #F0E0DA`, `overlay rgba(21,20,15,0.36)`. Dark keeps the
+  roles on `#14130E` / `#1E1C16` / `#2A2720` with ink `#F2EEE2` and accent `#FFC94D`. An inverse surface is `text`
+  with `background` written on it; the tones `onInverse` and `onAccentSoft` name those uses and read `background` and
+  `text`. Colours are read from `useApp().colors`; the app icon is the one place the mark inverts on fixed colours.
 - **Type.** Euclid Circular A for copy, in two ramps: `micro 10`, `tiny 11`, `caption 12`, `body 14`, `subtitle 15`,
   `heading 22`, `title 28` (line heights 14 to 32). Geist Mono for figures, tabular, tracking −0.3: `xs 10`, `sm 12`,
   `md 14`, `lg 19`, `xl 26`, `hero 36`. Eyebrows are `tiny`, bold, uppercase, tracked 1.4. Titles track −0.56. Four

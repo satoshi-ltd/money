@@ -21,7 +21,7 @@ export const getStyles = (colors) =>
       backgroundColor: colors.danger,
     },
     info: {
-      backgroundColor: colors.inverse,
+      backgroundColor: colors.text,
     },
     text: {
       flex: 1,

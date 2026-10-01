@@ -4,7 +4,7 @@ import TestRenderer, { act } from 'react-test-renderer';
 import Button from '../Button';
 
 jest.mock('../../../contexts', () => ({
-  useApp: () => ({ colors: { accent: '#ACCE07', border: '#B0RDE0', danger: '#D', inverse: '#1', onAccent: '#0', onInverse: '#F', surfaceSoft: '#6', text: '#T', textSecondary: '#2' } }),
+  useApp: () => ({ colors: { accent: '#ACCE07', border: '#B0RDE0', danger: '#D', onAccent: '#0', background: '#F', surfaceSoft: '#6', text: '#T', textSecondary: '#2' } }),
 }));
 
 const render = (props) => {

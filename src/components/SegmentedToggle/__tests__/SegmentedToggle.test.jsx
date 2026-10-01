@@ -4,7 +4,7 @@ import TestRenderer, { act } from 'react-test-renderer';
 import { SegmentedToggle } from '../SegmentedToggle';
 
 jest.mock('../../../contexts', () => ({
-  useApp: () => ({ colors: { border: '#B0RDE0', inverse: '#1', onInverse: '#F', textMuted: '#6' } }),
+  useApp: () => ({ colors: { border: '#B0RDE0', text: '#1', background: '#F', textMuted: '#6' } }),
 }));
 
 const OPTIONS = [

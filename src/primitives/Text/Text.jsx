@@ -14,7 +14,6 @@ const TONES = {
   positive: 'tonePositive',
   accent: 'toneAccent',
   danger: 'toneDanger',
-  warning: 'toneWarning',
   onAccent: 'toneOnAccent',
   onAccentSoft: 'toneOnAccentSoft',
   onInverse: 'toneOnInverse',

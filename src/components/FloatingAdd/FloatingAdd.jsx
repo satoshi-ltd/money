@@ -27,7 +27,7 @@ const FloatingAdd = ({ onPress }) => {
     <Animated.View
       style={[
         styles.seal,
-        { backgroundColor: colors.inverse, bottom: bottom + theme.spacing.xs },
+        { backgroundColor: colors.text, bottom: bottom + theme.spacing.xs },
         { opacity: enter, transform: [{ scale: enter }] },
       ]}
     >

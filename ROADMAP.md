@@ -1,6 +1,6 @@
 # Môney roadmap
 
-Updated 2026-10-01 · 3.0.89, build 65.
+Updated 2026-10-01 · 3.0.90, build 66.
 
 This is the task pool. [SPEC.md](SPEC.md) owns current state, contracts, operations and the design system;
 [CHANGELOG.md](CHANGELOG.md) records what each version shipped; [AGENTS.md](AGENTS.md) defines the autonomous workflow
@@ -40,9 +40,7 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 ## Queue
 
-- **COLOUR-ROLES** — Thirteen colours instead of twenty
-  `ui · agent · normal`
-  accept: the board.
+_None._
 
 ## In progress
 

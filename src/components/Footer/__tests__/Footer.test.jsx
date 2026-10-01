@@ -10,7 +10,7 @@ const COLORS = {
   accentSoft: '#F6E7C0',
   background: '#F6F4EE',
   border: '#DCD7C7',
-  inverse: '#15140F',
+  text: '#15140F',
   surface: '#EEEBE0',
   surfaceSoft: '#E6E2D5',
 };
@@ -22,7 +22,7 @@ jest.mock('../../../contexts', () => ({
       accentSoft: '#F6E7C0',
       background: '#F6F4EE',
       border: '#DCD7C7',
-      inverse: '#15140F',
+      text: '#15140F',
       surface: '#EEEBE0',
       surfaceSoft: '#E6E2D5',
     },
@@ -123,7 +123,7 @@ describe('components/Footer', () => {
     const seal = root
       .findAll((node) => node.props?.style !== undefined)
       .map((node) => StyleSheet.flatten(node.props.style))
-      .find((style) => style?.backgroundColor === COLORS.inverse);
+      .find((style) => style?.backgroundColor === COLORS.text);
 
     expect(seal).toBeDefined();
     expect(seal.borderRadius).toBe(4);

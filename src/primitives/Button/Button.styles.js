@@ -43,7 +43,7 @@ export const getStyles = (colors) =>
     },
 
     primary: { backgroundColor: colors.accent },
-    secondary: { backgroundColor: colors.inverse },
+    secondary: { backgroundColor: colors.text },
     ghost: { backgroundColor: 'transparent' },
     outlined: {
       backgroundColor: 'transparent',

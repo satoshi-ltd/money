@@ -11,15 +11,10 @@
   --color-accent: #FFBC2D;
   --color-on-accent: #2A2008;
   --color-accent-soft: #F6E7C0;
-  --color-on-accent-soft: #2A2008;
   --color-positive: #87620E;
   --color-danger: #A8442A;
   --color-danger-soft: #F0E0DA;
-  --color-warning: #A87515;
-  --color-success: #87620E;
   --color-overlay: rgba(21, 20, 15, 0.36);
-  --color-inverse: #15140F;
-  --color-on-inverse: #F6F4EE;
   --font-sans: 'Euclid Circular A', 'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'Geist Mono', ui-monospace, Menlo, monospace;
   --space-xxs: 4px;
@@ -70,13 +65,8 @@
   --color-accent: #FFC94D;
   --color-on-accent: #2A2008;
   --color-accent-soft: #3A2F14;
-  --color-on-accent-soft: #F2EEE2;
   --color-positive: #E9BE55;
   --color-danger: #D08163;
   --color-danger-soft: #3A241C;
-  --color-warning: #D0A54A;
-  --color-success: #E9BE55;
   --color-overlay: rgba(0, 0, 0, 0.55);
-  --color-inverse: #F2EEE2;
-  --color-on-inverse: #14130E;
 }
