@@ -1,15 +1,13 @@
 import {
   ACCOUNTS, BASE, DE, FR, ICON, L, NET, accountRow,
-  btn, check, chip, dayHead, esc, eyebrow, fieldRow, fig,
+  check, chip, esc, eyebrow, fieldRow, fig,
   flowChart, heading, icon, input, kebab, masthead, monthRow,
-  monthSummary, price, rightValue, seg, setting, switchEl, text, txRow,
+  monthSummary, price, rightValue, seg, setting, switchEl, text, 
 } from './draw.mjs';
 
 const frame = (body, { sheet, width = 350 } = {}) => `<div class="m" style="width:${width}px;padding:12px 0;background:var(--color-${sheet ? 'surface' : 'background'})">${body}</div>`;
 
 const stack = (...parts) => parts.join('<div style="height:16px"></div>');
-const tail = (...parts) => `<span style="display:flex;align-items:center;gap:8px">${parts.join('')}</span>`;
-const weekBars = (values, top) => `<span style="display:flex;align-items:flex-end;gap:3px;height:18px">${values.map((value, index) => `<i style="display:block;width:6px;height:${Math.round(value * 18)}px;background:var(--color-${index === top ? 'accent' : 'text-muted'})"></i>`).join('')}</span>`;
 const dot = (tone) => `<i class="m-dot" style="width:9px;height:9px;background:var(--color-${tone})"></i>`;
 
 const CARD = { title: 'Visa', currency: 'USD', balance: -1284.3 };
@@ -43,17 +41,9 @@ const categoryBars = (budgeted) =>
 const categoryHero = (budget) =>
   `<div><div style="display:flex;align-items:center;gap:8px">${dot('accent')}${text('Personal', { size: 'l', bold: true, style: 'flex:1' })}${eyebrow(`September · ${BASE}`)}</div><div style="display:flex;align-items:baseline;gap:8px;margin-top:8px">${price(226, { size: 'xl', bold: true })}${fig(`41% ${L.OF_SPEND}`, { size: 'sm', tone: 'muted' })}</div>${budget ? `<div class="m-bar" style="margin:12px 0 4px"><div class="fill" style="width:65.5%"></div></div>${fieldRow('Budget', `${price(345, { tone: undefined })}${text('300 + 45 carried over', { size: 'xxs', tone: 'muted' })}`, { chevron: true })}${monthRow('Left', price(119, { size: 'md' }), text('of 345', { size: 'xs', tone: 'muted' }))}` : ''}</div>`;
 
-const goalBlock = ({ title, saved, target, pace, month }) =>
-  `<div style="padding:12px 0;border-bottom:var(--hairline) solid var(--color-border)"><div style="display:flex;align-items:baseline;gap:8px">${text(title, { medium: true, style: 'flex:1' })}${eyebrow(pace)}</div><div style="display:flex;align-items:baseline;gap:8px;margin-top:6px">${price(saved, { size: 'lg', bold: true, fixed: 0 })}${text('of', { size: 'xs', tone: 'muted' })}${price(target, { size: 'md', tone: 'muted', fixed: 0 })}${fig(`${Math.round((saved / target) * 100)}%`, { size: 'xs', tone: 'muted', style: 'margin-left:auto' })}</div><div class="m-bar" style="margin:9px 0 6px"><div class="fill" style="width:${((saved / target) * 100).toFixed(1)}%"></div></div><div style="display:flex;align-items:baseline;gap:8px">${price(month, { size: 'xs', operator: true, tone: 'positive', fixed: 0 })}${text('this month', { size: 'xxs', tone: 'muted' })}</div></div>`;
-const goalsSection = () =>
-  `<div class="m-section">${heading('Goals', { eyebrow: '2' })}${goalBlock({ title: 'Emergency fund', saved: 9800, target: 15000, pace: 'Sep 2027 at this pace', month: 450 })}${goalBlock({ title: 'Japan trip', saved: 1200, target: 4000, pace: 'Jun 2027 at this pace', month: 150 })}</div>`;
-const overviewSlice = (goals) =>
-  frame(`<div><div class="m-section">${heading(L.ACCOUNTS, { actions: eyebrow(L.SEE_ALL_COUNT(ACCOUNTS.length)) })}${ACCOUNTS.slice(0, 2).map(accountRow).join('')}</div>${goals ? goalsSection() : ''}<div class="m-section">${heading(L.TRANSACTIONS, { actions: eyebrow(L.SEE_ALL) })}${dayHead('Today', -36.36)}${txRow({ time: '11:16', title: 'Gasoline', category: 'Transit', value: 1000, currency: 'THB', base: 30.43 })}</div></div>`);
 
 const amountRow = (value) => fieldRow(L.AMOUNT, `${input(value, { right: true, figure: true })}${fig('$', { size: 'sm', tone: 'muted' })}`, { divider: true });
 const accountField = () => fieldRow(L.ACCOUNT, `${text('Chase ·', { size: 's', medium: true })}${price(12480.55)}`, { divider: true, chevron: true });
-const splitPart = (category, value) => fieldRow(category, `${input(value, { right: true, figure: true })}${fig('$', { size: 'sm', tone: 'muted' })}`, { divider: true });
-const formFrame = (body, button) => frame(`<div>${body}<div style="margin-top:20px">${button}</div></div>`, { sheet: true });
 
 const SETTINGS_PREFS = (extra = '', hour = '08:00') =>
   `<div><div class="m-group">${eyebrow(L.PREFERENCES, { style: 'display:block' })}${setting(L.SCHEDULED, { right: rightValue('4') })}${setting(L.MASK_AMOUNTS, { divider: true, subtitle: L.MASK_AMOUNTS_CAPTION, right: switchEl(false) })}${setting(L.REMINDER_BACKUP, { divider: true, subtitle: `${L.SCHEDULED_PATTERN_WEEKLY} · Sun ${hour}`, right: switchEl(true) })}${extra}</div></div>`;
@@ -101,37 +91,6 @@ export const REVIEW = [
       frame(categoryBars(true)),
       frame(categoryHero(true), { sheet: true }),
     ),
-  },
-  {
-    id: 'UI-GOALS', area: 'Overview · Goals', title: 'A goal with a target and this month\'s progress',
-    why: 'Recommended: a Goals section on the Overview between Accounts and Transactions, present only once a goal exists: name, saved of target, one accent bar, the month\'s contribution and the month the target lands at this pace, all in the base currency; a small sheet creates or edits a goal. Alternative: the goals inside Analytics, which keeps the Overview shorter but hides them. Which balances feed a goal is logic and lives in GOALS.',
-    accept: 'The Overview draws the Goals section from the first goal and nothing before it; a goal sheet takes name, target and an optional date; figures and the bar follow the base currency; the five dictionaries carry the new copy.',
-    now: overviewSlice(false),
-    proposed: stack(
-      overviewSlice(true),
-      frame(`<div>${masthead({ section: 'Goal', sheet: true })}<div style="margin-top:8px">${fieldRow(L.NAME, input('Emergency fund', { right: true }))}${fieldRow('Target', `${input('15000', { right: true, figure: true })}${fig('$', { size: 'sm', tone: 'muted' })}`, { divider: true })}${fieldRow('By', text('Optional', { size: 's', tone: 'muted' }), { divider: true, chevron: true })}</div><div style="display:flex;gap:12px;margin-top:24px">${btn(L.DELETE, { variant: 'dangerSoft', grow: true })}${btn(L.SAVE, { grow: true })}</div></div>`, { sheet: true }),
-    ),
-  },
-  {
-    id: 'UI-SPLIT-TX', area: 'Transaction form · Transactions', title: 'One entry, several categories',
-    why: 'Recommended: the Category row gains a "Split" outline chip; choosing it turns the row into one row per part (category and amount), an "Add a part" chip and a "Left to assign" line that must read zero before Save is available; in lists the entry reads "Split · 3 categories". Alternative: parts entered as percentages, or splitting only from the Clone sheet. The single balance effect and the per-category reporting are logic and live in SPLIT-TX.',
-    accept: 'The Category row offers Split; the split form lists the parts with a live "Left to assign" and keeps Save off until it is zero; the transaction row marks a split entry; the five dictionaries carry Split, Add a part and Left to assign.',
-    now: formFrame(`${fieldRow(L.CONCEPT, input('Market', { right: true }))}${amountRow('120')}${accountField()}${fieldRow(L.CATEGORY, text('Food & Drinks', { size: 's', medium: true }), { divider: true, chevron: true })}`, btn(L.SAVE_EXPENSE, { grow: true })),
-    proposed: stack(
-      formFrame(`${fieldRow(L.CONCEPT, input('Market', { right: true }))}${amountRow('120')}${accountField()}${fieldRow(L.CATEGORY, `${chip('Split', { variant: 'outline' })}${text('Food & Drinks', { size: 's', medium: true })}`, { divider: true, chevron: true })}`, btn(L.SAVE_EXPENSE, { grow: true })),
-      formFrame(`${fieldRow(L.CONCEPT, input('Market', { right: true }))}${amountRow('120')}${accountField()}<div style="display:flex;align-items:center;margin-top:16px">${eyebrow('Split · 3 parts', { style: 'flex:1' })}${chip('Add a part', { variant: 'outline', iconName: ICON.ADD })}</div>${splitPart('Food & Drinks', '80')}${splitPart('Home', '30')}${splitPart('Personal', '10')}${monthRow('Left to assign', price(0, { size: 'md' }), icon(ICON.CHECK, { size: 'xs', tone: 'accent' }))}`, btn(L.SAVE_EXPENSE, { grow: true })),
-      frame(`${dayHead('Today', -120)}${txRow({ time: '18:02', title: 'Market', category: 'Split · 3 categories', value: 120, currency: 'USD' })}`),
-    ),
-  },
-  {
-    id: 'UI-INS-V2', area: 'Overview', title: 'Three more lines in the month block',
-    why: 'Recommended: each pattern is one line under the swing and above Scheduled, in the block\'s own grammar (label, figure or word, muted hint): the busiest weekday with seven small bars and its share of spend, the largest entry of the month with its title and date, and the subscriptions found with their monthly total and count. Alternative: lines that open the entries behind them, as Scheduled does; not drawn, to keep the block quiet.',
-    accept: 'The month block shows the Busiest day, Largest and Subscriptions lines when their data exists and omits each one otherwise; the lines keep the 96-point label column and hold at large text sizes; the five dictionaries carry the three labels.',
-    now: frame(monthSummary({ spent: 552.78, baseline: 1042.29, pace: `−47% ${L.BELOW_PACE}`, day: 9, swing: -208.11, swingCategory: 'Personal', scheduled: 1325.29, pending: 4 })),
-    proposed: frame(monthSummary({
-      spent: 552.78, baseline: 1042.29, pace: `−47% ${L.BELOW_PACE}`, day: 9, swing: -208.11, swingCategory: 'Personal', scheduled: 1325.29, pending: 4,
-      lines: `${monthRow('Busiest day', text('Saturday'), tail(weekBars([0.35, 0.3, 0.4, 0.3, 0.55, 1, 0.45], 5), text('34% of spend', { size: 'xs', tone: 'muted' })))}${monthRow('Largest', price(-180, { size: 'md' }), text('Dentist, Sep 3', { size: 'xs', tone: 'muted' }))}${monthRow('Subscriptions', price(-66.98, { size: 'md' }), text('3 every month', { size: 'xs', tone: 'muted' }))}`,
-    })),
   },
   {
     id: 'UI-NOTIF-TIME', area: 'Settings', title: 'The hour of the reminders',

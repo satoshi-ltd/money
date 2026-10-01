@@ -66,7 +66,8 @@ describe('design kit', () => {
 
     expect(new Set(boards).size).toBe(boards.length);
     for (const { id, type } of tasks) if (type !== 'ui') expect(boards).not.toContain(id);
-    for (const id of boards.filter((board) => board.startsWith('UI-'))) expect(named).toContain(id);
+    const own = tasks.filter(({ type }) => type === 'ui').map(({ id }) => id);
+    for (const id of boards.filter((board) => board.startsWith('UI-') && !own.includes(board))) expect(named).toContain(id);
     for (const id of named) expect(boards).toContain(id);
     for (const match of html.matchAll(/data-review="[A-Z0-9-]+"[\s\S]*?<b>Accept<\/b> · ([^<]*)</g)) expect(match[1].length).toBeGreaterThan(20);
   });

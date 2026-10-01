@@ -40,7 +40,35 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 ## Queue
 
-_None._
+- **UX-MONTH-TICKS** — Month ticks from the dictionaries
+  `bug · agent · normal`
+  accept: Chart and FlowChart build their ticks with `L10N.MONTHS[i].slice(0, 3).toLowerCase()`, so German ships
+  "mär" and French draws "jui" twice (juin, juillet). A `MONTHS_SHORT` key per language ("juin", "juil.") feeds both
+  charts; whether ticks stay lower case is stated in SPEC 9; a French test with distinct ticks;
+  the interface follows board UI-MONTH-TICKS.
+- **UI-HIDE-COPY** — What "Hide from Analytics" promises
+  `ui · agent · normal`
+  accept: the board UI-HIDE-COPY: the Transaction and Clone forms say "Hide from Analytics and the month" in the five
+  languages.
+- **REC-CROSS-TYPE** — Proposals from the other type
+  `feature · agent · normal`
+  accept: typing a title known only under the other type offers it, marked, when the current type has nothing;
+  the interface follows board UI-REC-CROSS-TYPE.
+- **NOTIF-TIME** — A reminder time of the reader's own
+  `feature · agent · normal`
+  accept: Settings offers the hour of the scheduled and backup reminders (today fixed at 08:00 the day before); the
+  stored preference survives a backup round trip;
+  the interface follows board UI-NOTIF-TIME.
+- **ACC-NEGATIVE** — Liabilities and credit cards
+  `feature · agent · normal`
+  accept: an account can hold a negative balance end to end (storage, `consolidate`, the account row, insights);
+  tests for a negative opening balance and a card paid off;
+  the interface follows board UI-ACC-NEGATIVE.
+- **BUDGETS** — Soft category budgets
+  `feature · agent · normal`
+  accept: phase 1: a soft budget per category with monthly rollover and a line in the month block; alerts are a
+  later task;
+  the interface follows board UI-BUDGETS.
 
 ## In progress
 
@@ -92,11 +120,6 @@ _None._
   accept: the `autoCategory`, `autoAccount` and `autoAmount` catalogs are persisted in settings, rebuilt only when
   empty and learned incrementally, so a tokenizer change never reaches an installed catalog; backups already omit
   them. Decide whether they become memory built from `txs` at boot (REC-CATALOGS-DERIVED).
-- **DEC-HIDE-COPY** — What "Hide from Analytics" promises
-  `decision · creator · low`
-  accept: the checkbox also keeps a transaction out of the Overview month block; decide between a wider label and
-  documenting the current one;
-  the interface follows board UI-HIDE-COPY.
 - **DEC-CATEGORY-HIDDEN** — Do hidden entries belong to a category's sheet?
   `decision · creator · normal`
   accept: an entry marked "Hide from Analytics" leaves the Analytics category bar (`queryMonth` skips `isMovement`)
@@ -112,11 +135,6 @@ _None._
 
 ### Ledger and rates
 
-- **ACC-NEGATIVE** — Liabilities and credit cards
-  `feature · agent · normal`
-  accept: an account can hold a negative balance end to end (storage, `consolidate`, the account row, insights);
-  tests for a negative opening balance and a card paid off;
-  the interface follows board UI-ACC-NEGATIVE.
 - **FX-ONE-RULE** — One rule for historical conversion
   `chore · agent · normal`
   accept: charts, month summaries and insights convert past entries with the same month table, stated in SPEC 5 and
@@ -148,11 +166,6 @@ _None._
   `chore · agent · low`
   accept: the tokenizer and the title memory split words on the same boundaries (`Coffee:beans` behaves the same in
   both); a shared helper with a test.
-- **REC-CROSS-TYPE** — Proposals from the other type
-  `feature · agent · low`
-  accept: typing a title known only under the other type offers it, marked, when the current type has nothing;
-  the interface follows board UI-REC-CROSS-TYPE.
-
 ### Insights and notifications
 
 - **INS-PACE-SCHEDULED** — Pace with scheduled transactions
@@ -162,44 +175,14 @@ _None._
 - **INS-EDGE-TESTS** — Scheduled-aware edge cases
   `chore · agent · low`
   accept: tests for a month with no spend, day 1, and conversion dates across a month boundary.
-- **INS-V2** — Patterns
-  `feature · agent · low`
-  accept: day-of-week patterns, the largest entries of the month and subscription detection, each as one line in the
-  month block, each behind a test;
-  the interface follows board UI-INS-V2.
-- **NOTIF-TIME** — A reminder time of the reader's own
-  `feature · agent · normal`
-  accept: Settings offers the hour of the scheduled and backup reminders (today fixed at 08:00 the day before); the
-  stored preference survives a backup round trip;
-  the interface follows board UI-NOTIF-TIME.
 - **NOTIF-DIGEST** — A weekly or monthly digest
   `feature · agent · low`
   accept: an optional notification summarising the period, scoped by its own `kind`, never cancelling the others.
 
 ### Product
 
-- **BUDGETS** — Soft category budgets
-  `feature · agent · low`
-  accept: phase 1: a soft budget per category with monthly rollover and a line in the month block; alerts are a
-  later task;
-  the interface follows board UI-BUDGETS.
-- **GOALS** — Savings goals
-  `feature · agent · low`
-  accept: a goal with a target and monthly progress, in the base currency;
-  the interface follows board UI-GOALS.
-- **SPLIT-TX** — One entry, several categories
-  `feature · agent · low`
-  accept: a transaction split across categories keeps one balance effect and reports per category in Analytics;
-  the interface follows board UI-SPLIT-TX.
-
 ### Engineering
 
-- **UX-MONTH-TICKS** — Month ticks from the dictionaries
-  `bug · agent · low`
-  accept: Chart and FlowChart build their ticks with `L10N.MONTHS[i].slice(0, 3).toLowerCase()`, so German ships
-  "mär" and French draws "jui" twice (juin, juillet). A `MONTHS_SHORT` key per language ("juin", "juil.") feeds both
-  charts; whether ticks stay lower case is stated in SPEC 9; a French test with distinct ticks;
-  the interface follows board UI-MONTH-TICKS.
 - **A11Y-ANNOUNCE** — Notifications announce themselves to a screen reader
   `feature · agent · low`
   accept: a notification band arriving is announced (`accessibilityLiveRegion="polite"` on Android,
@@ -233,3 +216,6 @@ _None._
 | Amount-based disambiguation of the recommender | Measured as a wash against the title memory. |
 | Hiding Transfer or Investment categories from cash flow | Only swaps between own accounts and entries marked as moved leave the chart; a category is not a reason. |
 | A hard six-month window for proposals | Ranking by the last six months keeps the gain; a cut lost 1.5% of repeats, the yearly ones, exactly when they came round. |
+| Savings goals | Out by the creator's decision, 2026-10-01. |
+| Splitting one entry across categories | Out by the creator's decision, 2026-10-01. |
+| More month-block patterns: busiest weekday, largest entry, subscriptions | The creator sees no value in them, 2026-10-01. |
