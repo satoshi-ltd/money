@@ -31,6 +31,8 @@
   --motion-standard: 350ms;
   --view-offset: 20px;
   --column-width: 480px;
+  --rail-breakpoint: 600px;
+  --rail-width: 128px;
   --column-style: [object Object]px;
   --card-gap: 12px;
   --well-size: 32px;

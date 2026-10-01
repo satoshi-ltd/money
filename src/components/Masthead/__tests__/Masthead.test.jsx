@@ -9,6 +9,10 @@ import { columnWidth, iconButtonSize } from '../../../theme/layout';
 
 const BORDER = '#B0RDE0';
 
+let mockRail = false;
+
+jest.mock('../../../hooks', () => ({ useRail: () => mockRail }));
+
 jest.mock('../../../contexts', () => ({
   useApp: () => ({ colors: { accent: '#ACCE07', background: '#8ACC60', border: '#B0RDE0', rule: '#RULE00' } }),
 }));
@@ -26,6 +30,10 @@ const iconsNamed = (root, name) => root.findAllByProps({ name }).filter((node) =
 const texts = (root) => root.findAllByType(RNText).map((node) => node.props.children);
 
 describe('components/Masthead', () => {
+  afterEach(() => {
+    mockRail = false;
+  });
+
   test('every header button is named for a screen reader', () => {
     const named = (props) =>
       render(props)
@@ -55,6 +63,18 @@ describe('components/Masthead', () => {
 
     expect(StyleSheet.flatten(name.props.style).flexShrink).toBe(1);
     expect(StyleSheet.flatten(slot.props.style).flexShrink).toBe(1);
+  });
+
+  test('beside the rail the bar drops the wordmark, which the rail carries, and fills the width', () => {
+    mockRail = true;
+    const root = render({ onSearch: () => {} });
+    const bar = root.findAll(
+      (node) => typeof node.type === 'string' && StyleSheet.flatten(node.props.style)?.maxWidth === '100%',
+    );
+
+    expect(texts(root)).not.toContain('MÔNEY');
+    expect(texts(root)).toContain('Aug 23');
+    expect(bar.length).toBeGreaterThan(0);
   });
 
   test('the wordmark is always there, on every screen that uses it', () => {

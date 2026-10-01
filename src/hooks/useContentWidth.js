@@ -1,5 +1,11 @@
 import { useWindowDimensions } from 'react-native';
 
-import { columnWidth, viewOffset } from '../theme/layout';
+import { useRail } from './useRail';
+import { columnWidth, railWidth, viewOffset } from '../theme/layout';
 
-export const useContentWidth = () => Math.min(useWindowDimensions().width, columnWidth) - viewOffset * 2;
+export const useContentWidth = () => {
+  const { width } = useWindowDimensions();
+  const rail = useRail();
+
+  return (rail ? width - railWidth : Math.min(width, columnWidth)) - viewOffset * 2;
+};

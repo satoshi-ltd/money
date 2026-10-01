@@ -60,7 +60,7 @@ Môney keeps one person's money on one person's phone and reads it back to them 
   before it touches anything; an invalid file never overwrites the ledger.
 - **A PIN, optionally a finger.** Four digits asked on every open; the phone's biometric reader can stand in for them,
   with the PIN kept in the keychain. Neither is recoverable, and neither travels in a backup.
-- **Mobile only.** iOS 15.1+ and Android, phones and the Fold in one layout. No web target.
+- **Mobile only.** iOS 15.1+ and Android, phones and the Fold. A window under 600 points keeps the phone's layout; from 600 the tabs move to a side rail. No web target.
 - **Five languages,** EN, ES, PT, FR, DE, chosen from the device or in Settings. The product says Overview, Accounts,
   Analytics and Settings; copy is sentence case; ordinals and marks follow each language.
 - **Quiet and exact.** Hairlines separate, nothing is elevated but a dropdown, there are three radii, figures are set
@@ -79,7 +79,7 @@ Môney keeps one person's money on one person's phone and reads it back to them 
 App.js → src/App.jsx: fonts, GestureHandlerRootView, SafeAreaProvider, ErrorBoundary
   └─ StoreProvider (src/contexts/store.jsx): boot, migrations, rates sync, scheduled sync, reducers
        └─ Navigator (src/App.Navigator.jsx): onboarding | session | main tabs + sheets
-            Overview · Accounts · (+) · Analytics · Settings        transactions · scheduled (panels)
+            Overview · Accounts · (+) · Analytics · Settings        (a side rail from 600 points)   transactions · scheduled (panels)
             transaction · clone · scheduledForm · account · category (form sheets)
   Notification and Confirm mount beside the navigator and listen to the event emitter.
 ```
@@ -378,9 +378,10 @@ tests under `scripts/__tests__`, run against temporary copies.
 - **Icons.** Lucide glyphs drawn inline (`src/primitives/Icon`), stroke 1.5, sized from the icon ramp (11 to 24) and
   inked from the tone.
 - **Space.** `xxs 4 · xs 8 · sm 12 · md 16 · lg 20 · xl 32 · xxl 48`. The screen gutter is `lg`. Content stops at a 480-point
-  column and sits centred, so the open Fold keeps a phone's column and every phone is narrower than the cap. The
-  top bar and its rule, the lists, the forms, the charts and the keypad share it; the tab bar and the banners are
-  system chrome and span the window.
+  column and sits centred, so every phone is narrower than the cap. The top bar and its rule, the lists, the forms, the
+  charts and the keypad share it; the tab bar and the banners are system chrome and span the window. Beside the rail
+  (a window of 600 points or more, read live, so folding switches it) the tab screens drop the cap and fill the width
+  that is left from the same gutter; the pushed panels and the sheets keep their column.
 - **Radius.** Three: 0 for flat blocks, 4 for anything touchable, full for dots. Every named radius is 4. No hex, rgb, hsl or named colour and no numeric radius is written outside
   the theme; a test refuses one.
 - **Rules.** Separation is a 1 px hairline in `border`; a heading closes with a hairline in `rule`. Nothing is elevated
@@ -390,7 +391,7 @@ tests under `scripts/__tests__`, run against temporary copies.
 
 ### Shared geometry
 
-`viewOffset 20`, `columnWidth 480`, `rowHeight 44`, `fieldHeight 42`, `buttonHeight 46`, `iconButtonSize 34`, `sealSize 40`,
+`viewOffset 20`, `columnWidth 480`, `railBreakpoint 600`, `railWidth 128`, `rowHeight 44`, `fieldHeight 42`, `buttonHeight 46`, `iconButtonSize 34`, `sealSize 40`,
 `wellSize 32`, `categorySize 80`, `dropdownWidth 260`, cards `216 × 152`, options `83`.
 
 ### Primitives
@@ -402,7 +403,8 @@ tests under `scripts/__tests__`, run against temporary copies.
 ### Components
 
 Masthead (wordmark or back + name, an eyebrow section, a search field, actions; a rule under it on tabs), Footer (four
-tabs and the seal), Eyebrow, Heading (title, eyebrow, actions, rule), PriceFriendly (figure ramp, sign, symbol only for a
+tabs and the seal), Rail (the same four tabs as words, the wordmark above them and New at the foot, 128
+points wide, in place of the Footer from 600 points), Eyebrow, Heading (title, eyebrow, actions, rule), PriceFriendly (figure ramp, sign, symbol only for a
 foreign currency, mask), Delta (a chip beside a hero, plain in a row; accent when the move is wanted), Chip (muted,
 accent, soft, outline, inverse; pill or circle; 24 or 32 points tall, a pressable one reaching 44 by hit slop),
 Checkbox, SegmentedToggle (flex, scrollable or compact; the selected segment inverts), FieldRow (twelve-character muted
@@ -417,7 +419,8 @@ FloatingAdd, Logo, Mark, Colophon.
 
 ### Sheets and navigation
 
-Tabs sit in a Footer with the seal in the middle; forms open as native form sheets whose detents come from the tokens
+Tabs sit in a Footer with the seal in the middle, or in a Rail on the left from 600 points of width (New there opens a new
+expense, and the top bar drops the wordmark the rail carries); forms open as native form sheets whose detents come from the tokens
 (rows, headings, toggles, keyboard), never measured, so Android reads them once at mount. Panels push with a masthead
 that carries the back key and the screen name in the wordmark's slot. The sheet surface is `surface`; tabs and panels
 sit on `background`.

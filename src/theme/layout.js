@@ -4,6 +4,8 @@ import { theme } from './theme';
 // Keep these as plain numbers so they can be safely used in RN props/styles.
 export const viewOffset = theme.spacing.lg;
 export const columnWidth = theme.spacing.xxl * 10;
+export const railBreakpoint = 600;
+export const railWidth = theme.spacing.xxl * 2 + theme.spacing.xl;
 export const columnStyle = { alignSelf: 'center', maxWidth: columnWidth, width: '100%' };
 export const cardGap = theme.spacing.sm;
 

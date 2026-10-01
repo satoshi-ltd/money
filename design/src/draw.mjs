@@ -161,8 +161,8 @@ export const footer = (active) =>
   `<div class="m-footer">${TABS.map((tab) => (tab === null ? seal() : `<span class="tab${tab === active ? ' on' : ''}">${text(tab, { size: 'xs', medium: tab === active, tone: tab === active ? undefined : 'muted' })}</span>`)).join('')}</div>`;
 export const statusBar = () => `<div class="m-status"><span class="figure">9:41</span><span class="figure">●●●</span></div>`;
 
-export const phone = (name, caption, body, { sheet, fold, tab } = {}) =>
-  `<div class="kit-board" data-screen="${name}"><div class="kit-caption">${esc(caption)}</div><div class="m kit-phone${sheet ? ' sheet' : ''}${fold ? ' fold' : ''}">${statusBar()}${fold ? `<div style="max-width:480px;margin:0 auto">${body}</div>` : body}${tab ? footer(tab) : ''}</div></div>`;
+export const phone = (name, caption, body, { sheet, tab } = {}) =>
+  `<div class="kit-board" data-screen="${name}"><div class="kit-caption">${esc(caption)}</div><div class="m kit-phone${sheet ? ' sheet' : ''}">${statusBar()}${body}${tab ? footer(tab) : ''}</div></div>`;
 export const content = (body, style = '') => `<div class="m-content"${style ? ` style="${style}"` : ''}>${body}</div>`;
 
 export const linePoints = (series, { width, height, padding, min, max }) =>
@@ -310,3 +310,25 @@ export const calendar = ({ month = 8, year = 2026, language = 'en', picked = 4, 
 
   return `<div style="padding:24px 0 0;background:var(--color-overlay)"><div style="background:var(--color-background);border-radius:4px 4px 0 0;padding:16px 20px 20px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center">${icon(ICON.BACK, { size: 's', tone: 'textMuted' })}</span>${text(`${L.MONTHS[month]} ${year}`, { medium: true })}<span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;opacity:.3">${icon(ICON.RIGHT, { size: 's', tone: 'textMuted' })}</span></div><div style="display:grid;grid-template-columns:repeat(7,1fr);text-align:center">${weekdays}</div><div style="display:grid;grid-template-columns:repeat(7,1fr)">${days}</div><div style="display:flex;gap:8px;margin-top:20px">${btn(L.CANCEL, { variant: 'outlined', grow: true })}${btn(L.ACCEPT, { grow: true })}</div></div></div>`;
 };
+
+export const overviewParts = () => ({
+  hero: `<div class="m-hero">${eyebrow(netEyebrow())}<div style="margin-top:4px">${price(NET, { size: 'hero', bold: true })}</div><div class="meta">${delta(3.2, { caption: L.THIS_MONTH_CAPTION })}</div></div>`,
+  month: `<div class="m-section">${heading(L.THIS_MONTH, { eyebrow: 'September' })}${monthSummary({ spent: 552.78, baseline: 1042.29, pace: `−47% ${L.BELOW_PACE}`, day: 9, swing: -208.11, swingCategory: 'Personal', scheduled: 1325.29, pending: 4, lines: monthRow(L.BUDGETS, price(68, { size: 'md' }), text(L.BUDGETS_OVER(1), { size: 'xs', tone: 'muted' })) })}</div>`,
+  accounts: `<div class="m-section">${heading(L.ACCOUNTS, { actions: eyebrow(L.SEE_ALL_COUNT(ACCOUNTS.length)) })}${ACCOUNTS.slice(0, 3).map(accountRow).join('')}</div>`,
+  transactions: `<div class="m-section">${heading(L.TRANSACTIONS, { actions: eyebrow(L.SEE_ALL) })}${dayHead('Today', -36.36)}${txRow({ time: '11:16', title: 'Gasoline', category: 'Transit', value: 1000, currency: 'THB', base: 30.43 })}${txRow({ time: '08:25', title: 'Breakfast', category: 'Leisure', value: 160, currency: 'THB', base: 4.87 })}</div>`,
+});
+
+export const overviewBody = () => {
+  const { hero, month, accounts, transactions } = overviewParts();
+
+  return content(`${hero}${month}${accounts}${transactions}`);
+};
+
+export const rail = (active) =>
+  `<div class="m-rail"><div class="brand">${logo()}</div>${[L.OVERVIEW, L.ACCOUNTS, L.ACTIVITY, L.SETTINGS]
+    .map((tab) => `<span class="tab${tab === active ? ' on' : ''}">${text(tab, { size: 's', medium: tab === active, tone: tab === active ? undefined : 'muted' })}</span>`)
+    .join('')}<span style="flex:1"></span><div style="display:flex">${btn(L.NEW, { iconName: ICON.ADD, grow: true })}</div></div>`;
+
+export const foldOverview = () =>
+  `<div class="m kit-phone fold" style="min-height:640px">${statusBar()}<div style="display:flex;flex:1">${rail(L.OVERVIEW)}<div style="flex:1;min-width:0;display:flex;flex-direction:column"><div class="m-masthead" style="border-bottom:var(--hairline) solid var(--color-rule)">${eyebrow('Wed 9 Sep 2026')}${iconButton(ICON.SEARCH)}</div>${overviewBody()}</div></div></div>`;
+

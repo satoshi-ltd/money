@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 
 import { getStyles } from './Screen.styles';
 import { useApp } from '../../contexts';
-import { useKeyboardInset } from '../../hooks';
+import { useKeyboardInset, useRail } from '../../hooks';
 import { getFocusedInput, ScrollView, View } from '../../primitives';
 
 const isAndroid = Platform.OS === 'android';
@@ -13,6 +13,7 @@ const Screen = React.forwardRef(({ children, disableScroll, gap, keyboardSpacer 
   const { colors } = useApp();
   const styles = useMemo(() => getStyles(colors), [colors]);
   const { height: keyboardHeight, top: keyboardTop } = useKeyboardInset();
+  const rail = useRail();
 
   const innerRef = useRef();
   const offsetRef = useRef(0);
@@ -37,7 +38,7 @@ const Screen = React.forwardRef(({ children, disableScroll, gap, keyboardSpacer 
     });
   }, [keyboardTop, scrollRef]);
 
-  const contentStyle = [styles.base, offset && styles.offset, gap && styles.gap, style];
+  const contentStyle = [styles.base, rail && styles.fill, offset && styles.offset, gap && styles.gap, style];
   const spacer = keyboardSpacer && keyboardHeight ? <View style={{ height: keyboardHeight }} /> : null;
 
   if (disableScroll) {

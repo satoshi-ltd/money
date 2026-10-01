@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 
 import { getStyles } from './Masthead.style';
 import { useApp } from '../../contexts';
+import { useRail } from '../../hooks';
 import { ICON, L10N } from '../../modules';
 import { Icon, Input, Text, View } from '../../primitives';
 import { Eyebrow } from '../Eyebrow';
@@ -12,9 +13,10 @@ import { Logo } from '../Logo';
 const Masthead = ({ children, onBack, onQueryChange, onSearch, query, rule = true, searching = false, section }) => {
   const { colors } = useApp();
   const style = useMemo(() => getStyles(colors), [colors]);
+  const rail = useRail();
 
   return (
-    <View style={style.wrapper}>
+    <View style={[style.wrapper, rail && style.wrapperFill]}>
       <View row spaceBetween style={style.container}>
         {searching ? (
           <>
@@ -42,6 +44,8 @@ const Masthead = ({ children, onBack, onQueryChange, onSearch, query, rule = tru
                   </Text>
                 ) : null}
               </View>
+            ) : rail ? (
+              <View />
             ) : (
               <Logo />
             )}

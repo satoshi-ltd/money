@@ -7,6 +7,7 @@ export const getStyles = (colors) =>
   StyleSheet.create({
     // No fill: the masthead sits on whatever surface hosts it — paper on a tab, sheet on a sheet.
     wrapper: columnStyle,
+    wrapperFill: { maxWidth: '100%' },
     container: {
       alignItems: 'center',
       gap: theme.spacing.xs,

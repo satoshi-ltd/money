@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.91 — 2026-10-01
+
+- On the open Fold the tab bar and the seal give way to a side rail: the wordmark, the four tabs as words and New at the foot, with the screen filling the width beside it instead of a centred column of 480 points. A phone, or the folded Fold, keeps its bar; the layout follows the window as the device folds and unfolds. Pushed screens and sheets keep their column.
+
 ## 3.0.90 — 2026-10-01
 
 - Fifteen colours instead of twenty. Five roles that nothing needed are gone: two never used (success, warning) and three that were another role renamed (inverse is the text colour, the ink written on it is the background, the ink on a soft accent is the text colour). No screen changes except the text on the soft accent surfaces (the backup nudge and the suggestion chip), a shade darker in light mode.

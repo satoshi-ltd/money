@@ -6,9 +6,10 @@ import Screen from '../Screen';
 import { columnWidth } from '../../../theme/layout';
 
 jest.mock('../../../contexts', () => ({ useApp: () => ({ colors: {} }) }));
-jest.mock('../../../hooks', () => ({ useKeyboardInset: () => mockKeyboard }));
+jest.mock('../../../hooks', () => ({ useKeyboardInset: () => mockKeyboard, useRail: () => mockRail }));
 
 let mockKeyboard = { height: 0, top: 0 };
+let mockRail = false;
 
 const render = (props) => {
   let renderer;
@@ -26,6 +27,7 @@ const heightOf = ({ props }) => {
 describe('components/Screen', () => {
   afterEach(() => {
     mockKeyboard = { height: 0, top: 0 };
+    mockRail = false;
   });
 
   test('reserves the space the keyboard takes so the content can clear it', () => {
@@ -64,6 +66,16 @@ describe('components/Screen', () => {
 
     expect(scrolling).toMatchObject(column);
     expect(fixed).toMatchObject(column);
+  });
+
+  test('beside the rail the content fills the width that is left instead of keeping the 480 column', () => {
+    mockRail = true;
+    const scrolling = StyleSheet.flatten(render({}).findByType(RNScrollView).props.contentContainerStyle);
+    const fixed = StyleSheet.flatten(render({ disableScroll: true }).findAllByType(RNView)[0].props.style);
+
+    expect(scrolling.maxWidth).toBe('100%');
+    expect(fixed.maxWidth).toBe('100%');
+    expect(scrolling.width).toBe('100%');
   });
 
   test('keeps caller props over the defaults', () => {

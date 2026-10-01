@@ -6,8 +6,9 @@ import React from 'react';
 import { Platform, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Footer, Logo, Text } from './components';
+import { Footer, Logo, Rail, Text } from './components';
 import { useApp, useStore } from './contexts';
+import { RailProvider, useRailFits } from './hooks';
 import { C, L10N, categorySheet, getNavigationTheme, sheetContentHeight, sheetDetents } from './modules';
 import {
   Account,
@@ -55,9 +56,10 @@ const commonScreenOptions = (colors) => ({
 });
 
 // eslint-disable-next-line react/prop-types
-const Tabs = ({ navigation = {} }) => {
+export const Tabs = ({ navigation = {} }) => {
   const insets = useSafeAreaInsets();
   const { colors } = useApp();
+  const rail = useRailFits();
 
   // ! TODO: Somehow we should use new accent
 
@@ -65,65 +67,74 @@ const Tabs = ({ navigation = {} }) => {
     ...commonScreenOptions(colors),
     freezeOnBlur: true,
     headerShown: false,
-    sceneStyle: { backgroundColor: colors.background, paddingTop: insets.top },
+    sceneStyle: { backgroundColor: colors.background, paddingBottom: rail ? insets.bottom : 0, paddingTop: insets.top },
+    tabBarPosition: rail ? 'left' : 'bottom',
     headerLeft: () => <></>,
     headerRight: () => <></>,
   };
 
 
-  const tabBarLabel = ({ focused, text }) => (
-    <Text medium={focused} numberOfLines={1} size="xs" tone={focused ? undefined : 'muted'}>
+  const tabBarLabel = ({ focused, size = 'xs', text }) => (
+    <Text medium={focused} numberOfLines={1} size={size} tone={focused ? undefined : 'muted'}>
       {text}
     </Text>
   );
 
+  const openExpense = () => navigation.navigate('transaction', { type: EXPENSE });
+
   return (
-    <Tab.Navigator
-      initialRouteName="dashboard"
-      shifting
-      screenOptions={screenOptions}
-      tabBar={(props) => (
-        <Footer {...props} onActionPress={() => navigation.navigate('transaction', { type: EXPENSE })} />
-      )}
-    >
-      <Tab.Screen
-        name="dashboard"
-        component={Dashboard}
-        options={{
-          tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.OVERVIEW }),
-          tabBarAccessibilityLabel: L10N.OVERVIEW,
-          title: L10N.NET_WORTH,
-        }}
-      />
-      <Tab.Screen
-        name="accounts"
-        component={Accounts}
-        options={{
-          tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.ACCOUNTS }),
-          tabBarAccessibilityLabel: L10N.ACCOUNTS,
-          title: L10N.ACCOUNTS,
-        }}
-      />
-      <Tab.Screen name="transaction" component={Transaction} />
-      <Tab.Screen
-        name="stats"
-        component={Stats}
-        options={{
-          tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.ACTIVITY }),
-          tabBarAccessibilityLabel: L10N.ACTIVITY,
-          title: L10N.ACTIVITY,
-        }}
-      />
-      <Tab.Screen
-        name="settings"
-        component={Settings}
-        options={{
-          tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.SETTINGS }),
-          tabBarAccessibilityLabel: L10N.SETTINGS,
-          title: L10N.SETTINGS,
-        }}
-      />
-    </Tab.Navigator>
+    <RailProvider value={rail}>
+      <Tab.Navigator
+        initialRouteName="dashboard"
+        shifting
+        screenOptions={screenOptions}
+        tabBar={(props) =>
+          rail ? (
+            <Rail {...props} onActionPress={openExpense} />
+          ) : (
+            <Footer {...props} onActionPress={openExpense} />
+          )
+        }
+      >
+        <Tab.Screen
+          name="dashboard"
+          component={Dashboard}
+          options={{
+            tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.OVERVIEW }),
+            tabBarAccessibilityLabel: L10N.OVERVIEW,
+            title: L10N.NET_WORTH,
+          }}
+        />
+        <Tab.Screen
+          name="accounts"
+          component={Accounts}
+          options={{
+            tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.ACCOUNTS }),
+            tabBarAccessibilityLabel: L10N.ACCOUNTS,
+            title: L10N.ACCOUNTS,
+          }}
+        />
+        <Tab.Screen name="transaction" component={Transaction} />
+        <Tab.Screen
+          name="stats"
+          component={Stats}
+          options={{
+            tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.ACTIVITY }),
+            tabBarAccessibilityLabel: L10N.ACTIVITY,
+            title: L10N.ACTIVITY,
+          }}
+        />
+        <Tab.Screen
+          name="settings"
+          component={Settings}
+          options={{
+            tabBarLabel: (props) => tabBarLabel({ ...props, text: L10N.SETTINGS }),
+            tabBarAccessibilityLabel: L10N.SETTINGS,
+            title: L10N.SETTINGS,
+          }}
+        />
+      </Tab.Navigator>
+    </RailProvider>
   );
 };
 

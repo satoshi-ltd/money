@@ -1,6 +1,6 @@
 # Môney roadmap
 
-Updated 2026-10-01 · 3.0.90, build 66.
+Updated 2026-10-01 · 3.0.91, build 67.
 
 This is the task pool. [SPEC.md](SPEC.md) owns current state, contracts, operations and the design system;
 [CHANGELOG.md](CHANGELOG.md) records what each version shipped; [AGENTS.md](AGENTS.md) defines the autonomous workflow
@@ -65,6 +65,9 @@ _None._
   in the sheet, a tap on a day then Accept sets the date, Cancel leaves it, days past the limit do not answer, the arrows
   stop at the limits, a screen reader names every day, a 6-week month fits the sheet at the largest
   text size, the 48 pt days are easy to hit, and the sheet's drag to close works on Android.
+- **VERIFY-FOLD** — The side rail on the unfolded Fold
+  `verify · creator · normal`
+  accept: with the Fold open the four tabs are in a 128-point rail on the left, the bar and the seal are gone, New opens a new expense, the screens fill the width beside the rail from the same gutter as the bar, charts and lists use it, and Android back and the tab state behave as before; folding the device back brings the bar and the 480 column; try a rotation; the labels in German and French at the largest text size fit the rail; say how the sheets (Transaction, Clone, Scheduled, Account) and pushed panels look on the open Fold.
 - **SCHED-DEVICE** — Scheduled transactions end to end on a device
   `verify · creator · normal`
   accept: create, edit and delete of weekly and monthly schedules; the monthly day clamp; no duplicate occurrence after

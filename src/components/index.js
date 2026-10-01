@@ -4,6 +4,7 @@ export { default as Chip } from './Chip';
 export { default as Dropdown } from './Dropdown';
 export { default as ErrorBoundary } from './ErrorBoundary';
 export { default as Footer } from './Footer';
+export { default as Rail } from './Rail';
 export { default as Modal } from './Modal';
 export { default as Panel } from './Panel';
 export { default as Screen } from './Screen';

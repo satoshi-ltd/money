@@ -207,6 +207,10 @@ body.kit {
 .m-footer .tab { flex: 1; display: flex; align-items: center; justify-content: center; height: 34px; margin-bottom: 8px; border-radius: var(--radius-sm); }
 .m-footer .tab.on { background: var(--color-surface-soft); }
 .m-content { padding: 0 var(--view-offset); flex: 1; }
+.m-rail { width: var(--rail-width); flex: none; display: flex; flex-direction: column; gap: 4px; box-sizing: border-box; padding: 0 12px 20px; border-right: var(--hairline) solid var(--color-border); }
+.m-rail .brand { padding: 16px 12px; }
+.m-rail .tab { display: flex; align-items: center; min-height: 40px; padding: 0 12px; border-radius: var(--radius-sm); }
+.m-rail .tab.on { background: var(--color-surface-soft); }
 .m-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px 16px; padding: 0 28px; }
 .m-key { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 64px; }
 .m-pins { display: flex; justify-content: center; gap: 16px; margin: 20px 0 28px; }

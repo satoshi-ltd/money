@@ -12,6 +12,9 @@ export const getStyles = (colors) =>
       backgroundColor: colors.background,
       paddingBottom: viewOffset,
     },
+    fill: {
+      maxWidth: '100%',
+    },
     offset: {
       paddingHorizontal: viewOffset,
     },
