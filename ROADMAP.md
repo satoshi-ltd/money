@@ -149,11 +149,6 @@ _None._
   `chore · agent · low`
   accept: `userProfile` and `marketingLead` leave `DEFAULTS` through a migration that drops them from stored settings;
   a backup carrying them still imports.
-- **JEST-SHIMS** — Drop the Jest module shims
-  `chore · agent · low`
-  accept: the `moduleNameMapper` block of `package.json` and the five files of `src/test/mocks` go; the suite is green
-  without them (measured 2026-10-01 with the block removed: 134 suites, 942 tests).
-
 ## Discarded — don't relitigate
 
 | Decision | Reason |

@@ -68,13 +68,6 @@
     "transformIgnorePatterns": [
       "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg)"
     ],
-    "moduleNameMapper": {
-      "^expo-modules-core/src/Refs$": "<rootDir>/src/test/mocks/expo-modules-core-Refs.js",
-      "^expo-modules-core/src/web/index\\.web$": "<rootDir>/src/test/mocks/expo-modules-core-web-index.js",
-      "^expo/src/async-require/messageSocket$": "<rootDir>/src/test/mocks/expo-async-require-messageSocket.js",
-      "^expo/src/winter/FormData$": "<rootDir>/src/test/mocks/expo-winter-FormData.js",
-      "^expo/src/winter$": "<rootDir>/src/test/mocks/expo-winter-index.js"
-    },
     "moduleFileExtensions": [
       "js",
       "jsx",
