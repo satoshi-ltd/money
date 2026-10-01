@@ -40,6 +40,12 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 ## Queue
 
+- **DATE-PICKER-ANDROID** — The calendar floats over the sheet and does not answer taps
+  `bug · agent · high`
+  accept: on Android the date of the Transaction and Clone sheets and of the scheduled form opens above the sheet and
+  every day, Cancel and OK answer a tap; the picker is opened imperatively (`DateTimePickerAndroid.open`) and not
+  inside the app's own `Modal`, which stays only for iOS's inline picker; a test on the Android path.
+
 ## In progress
 
 _None._
@@ -48,28 +54,19 @@ _None._
 
 ### Builds and device checks
 
-- **BUILD-PHONE** — Production build of the current version on the phone
-  `deploy · creator · high`
-  accept: the phone runs the version at the tip of `main`: the current month's rates from the dated file, Save following
-  the fields, the category "See all", every control named for the reader.
-- **VERIFY-RATES** — The day's rate on the phone
-  `verify · creator · high · depends: BUILD-PHONE`
-  accept: Settings → Update rates lands the file dated today (or yesterday before it is published); a BTC account reads
-  at that day's price, not at a close from the week before; a failed download says so and leaves the last-update date
-  alone.
 - **VERIFY-SAVE** — Save follows the fields
-  `verify · creator · normal · depends: BUILD-PHONE`
+  `verify · creator · normal`
   accept: with title and amount filled, changing the account or the type keeps Save available once the default category
   is back; in Clone, changing only the account leaves Save available and Duplicate off.
 - **VERIFY-A11Y** — VoiceOver and TalkBack read the app
-  `verify · creator · normal · depends: BUILD-PHONE`
+  `verify · creator · normal`
   accept: with the screen reader on, every masthead button, the seal, the PIN keys, the suggestion chip, the tabs,
   the segments, the Settings rows and the "Hide from Analytics" checkbox are announced by name (and state where they
   have one); nothing is read as a bare "button".
-- **VERIFY-FOLD** — One column on the open Fold
-  `verify · creator · normal · depends: BUILD-PHONE`
-  accept: on the open Pixel Fold, Overview, Analytics, the panels, the sheets and the PIN keypad sit in one centred
-  column of at most 480 points with the charts drawn to its width; on a phone nothing moved.
+- **VERIFY-DATE** — The date picker on a device
+  `verify · creator · high · depends: DATE-PICKER-ANDROID`
+  accept: on the phone the date row of a new transaction, of a clone and of a scheduled form opens the calendar above
+  the sheet, a tap on a day then OK sets the date, and Cancel leaves it.
 - **SCHED-DEVICE** — Scheduled transactions end to end on a device
   `verify · creator · normal`
   accept: create, edit and delete of weekly and monthly schedules; the monthly day clamp; no duplicate occurrence after
@@ -77,6 +74,15 @@ _None._
 
 ### Decisions
 
+- **DEC-OWN-CALENDAR** — Fix the native calendar, or draw our own?
+  `decision · creator · high`
+  accept: the Android calendar is the system's Material dialog, a teal header and system colours in an app whose
+  accent is gold, and it already broke inside a sheet. Fixing it (DATE-PICKER-ANDROID) is a day's work and leaves
+  it native; an own calendar is a month grid in the design system (hairlines, mono figures, the accent on the chosen
+  day, Today and the maximum date, the language's own months and first weekday, every day named for a screen reader)
+  that looks the same on both platforms and can be tested. Recommended: fix now, then draw our own, because every
+  entry carries a date. Decide whether to build it; if yes it is drawn first as a board in `design/proposals.html`
+  and enters the queue as CALENDAR-OWN on approval.
 - **DEC-AMOUNT-FILL** — Drop the word-rule amount fill
   `decision · creator · normal`
   accept: on the creator's ledger the stable amount rule answered 5.5% of repeated titles and was right 25.6% of the
