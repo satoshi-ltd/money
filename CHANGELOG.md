@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.89 — 2026-10-01
+
+- The days of the calendar are bigger targets: 48 points high and a seventh of the sheet wide (they were 40 high with a gap between them), so a thumb lands on the day it means.
+
 ## 3.0.88 — 2026-10-01
 
 - Analytics says one thing beside each category bar: its share of the month. A budgeted category no longer swaps that for "of 300" or "+21"; its bar still runs to the limit, turns danger and reddens the amount when passed, and the budget's own figures stay in the category sheet. Neither the list nor the sheet turns its bar accent at four fifths any more: ink up to the limit, danger past it.

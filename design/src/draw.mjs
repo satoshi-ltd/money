@@ -299,7 +299,7 @@ export const calendar = ({ month = 8, year = 2026, language = 'en', picked = 4, 
     const enabled = dayAllowed({ date: new Date(year, month, day), maximumDate });
     const chosen = day === picked;
     const style = [
-      'min-height:40px;display:flex;align-items:center;justify-content:center;border-radius:4px',
+      'min-height:48px;display:flex;align-items:center;justify-content:center;border-radius:4px',
       chosen ? 'background:var(--color-accent)' : day === today ? 'border:var(--hairline) solid var(--color-border)' : '',
       enabled ? '' : 'opacity:.4',
     ].filter(Boolean).join(';');
@@ -308,5 +308,5 @@ export const calendar = ({ month = 8, year = 2026, language = 'en', picked = 4, 
   const weekdays = weekdayOrder(weekStart).map((weekday) => text(initial(weekday), { size: 'xs', tone: 'muted', center: true })).join('');
   const days = monthWeeks({ month, weekStart, year }).flat().map(cell).join('');
 
-  return `<div style="padding:24px 0 0;background:var(--color-overlay)"><div style="background:var(--color-background);border-radius:4px 4px 0 0;padding:16px 20px 20px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center">${icon(ICON.BACK, { size: 's', tone: 'textMuted' })}</span>${text(`${L.MONTHS[month]} ${year}`, { medium: true })}<span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;opacity:.3">${icon(ICON.RIGHT, { size: 's', tone: 'textMuted' })}</span></div><div style="display:grid;grid-template-columns:repeat(7,1fr);text-align:center">${weekdays}</div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-top:2px">${days}</div><div style="display:flex;gap:8px;margin-top:20px">${btn(L.CANCEL, { variant: 'outlined', grow: true })}${btn(L.ACCEPT, { grow: true })}</div></div></div>`;
+  return `<div style="padding:24px 0 0;background:var(--color-overlay)"><div style="background:var(--color-background);border-radius:4px 4px 0 0;padding:16px 20px 20px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center">${icon(ICON.BACK, { size: 's', tone: 'textMuted' })}</span>${text(`${L.MONTHS[month]} ${year}`, { medium: true })}<span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;opacity:.3">${icon(ICON.RIGHT, { size: 's', tone: 'textMuted' })}</span></div><div style="display:grid;grid-template-columns:repeat(7,1fr);text-align:center">${weekdays}</div><div style="display:grid;grid-template-columns:repeat(7,1fr)">${days}</div><div style="display:flex;gap:8px;margin-top:20px">${btn(L.CANCEL, { variant: 'outlined', grow: true })}${btn(L.ACCEPT, { grow: true })}</div></div></div>`;
 };

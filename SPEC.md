@@ -257,7 +257,8 @@ button, "See all N" with a chevron, that opens Scheduled.
   starts the category over from that account's habit.
 - **Date.** The Date row of the Transaction and Clone sheets (capped at today) and of the scheduled form (not before
   today, or not before its own start when that is already past) opens `DatePicker`: a month drawn by Môney in a
-  `Modal`, the same on iOS and Android, with no system dialog. Arrows move between months and stop at the first month
+  `Modal`, the same on iOS and Android, with no system dialog; each day is 48 points high and a seventh of the sheet
+  wide. Arrows move between months and stop at the first month
   the limits allow; the month is named from the dictionary and the week opens on Monday, or on Sunday in English. Days
   outside the limits are dimmed and not tappable, today is outlined and the chosen day wears the accent. A tap chooses,
   Accept hands over the day at the time of the value it replaces (never past the maximum or before the minimum) and

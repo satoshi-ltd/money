@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 import { theme } from '../../theme';
-import { rowHeight } from '../../theme/layout';
+import { dayCellHeight, rowHeight } from '../../theme/layout';
 
 export const getStyles = (colors) =>
   StyleSheet.create({
@@ -23,16 +23,12 @@ export const getStyles = (colors) =>
     weekday: {
       flex: 1,
     },
-    grid: {
-      gap: theme.spacing.xxs / 2,
-    },
     week: {
       flexDirection: 'row',
-      gap: theme.spacing.xxs / 2,
     },
     cell: {
       flex: 1,
-      minHeight: theme.spacing.xl + theme.spacing.xs,
+      minHeight: dayCellHeight,
     },
     day: {
       alignItems: 'center',

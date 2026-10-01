@@ -1,6 +1,6 @@
 # Môney roadmap
 
-Updated 2026-10-01 · 3.0.88, build 64.
+Updated 2026-10-01 · 3.0.89, build 65.
 
 This is the task pool. [SPEC.md](SPEC.md) owns current state, contracts, operations and the design system;
 [CHANGELOG.md](CHANGELOG.md) records what each version shipped; [AGENTS.md](AGENTS.md) defines the autonomous workflow
@@ -40,9 +40,6 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 ## Queue
 
-- **CALENDAR-TARGET** — Days a thumb can hit
-  `ui · agent · normal`
-  accept: the board.
 - **COLOUR-ROLES** — Thirteen colours instead of twenty
   `ui · agent · normal`
   accept: the board.
@@ -69,7 +66,7 @@ _None._
   accept: on iOS and on Android the date row of a new transaction, of a clone and of a scheduled form opens the month
   in the sheet, a tap on a day then Accept sets the date, Cancel leaves it, days past the limit do not answer, the arrows
   stop at the limits, a screen reader names every day, a 6-week month fits the sheet at the largest
-  text size, the 40 pt days are easy to hit, and the sheet's drag to close works on Android.
+  text size, the 48 pt days are easy to hit, and the sheet's drag to close works on Android.
 - **SCHED-DEVICE** — Scheduled transactions end to end on a device
   `verify · creator · normal`
   accept: create, edit and delete of weekly and monthly schedules; the monthly day clamp; no duplicate occurrence after

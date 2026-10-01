@@ -3,6 +3,7 @@ import { Platform, StyleSheet } from 'react-native';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import { setLanguage } from '../../../i18n';
+import { dayCellHeight } from '../../../theme/layout';
 import { DatePicker } from '../DatePicker';
 
 let mockLanguage = 'en';
@@ -214,6 +215,22 @@ describe.each(['ios', 'android'])('components/DatePicker on %s', (os) => {
     const header = render().findAll((node) => node.props.accessibilityRole === 'header')[0];
 
     expect(header.props.accessibilityLiveRegion).toBe('polite');
+  });
+
+  test('a day is a target a thumb can hit: 48 points high, a seventh of the sheet wide, nothing between cells', () => {
+    const cell = day(render(), 4);
+    const spacing = /^(gap|rowGap|columnGap|margin|padding)/;
+    const ancestors = [];
+    for (let node = cell.parent; node && node.props.testID !== 'modal'; node = node.parent) ancestors.push(node);
+    const weekRow = ancestors.find((node) => StyleSheet.flatten(node.props.style)?.flexDirection === 'row');
+    const between = [cell, ...ancestors]
+      .flatMap((node) => Object.keys(StyleSheet.flatten(node.props.style) || {}))
+      .filter((key) => spacing.test(key));
+
+    expect(dayCellHeight).toBeGreaterThanOrEqual(48);
+    expect(StyleSheet.flatten(cell.props.style)).toMatchObject({ flex: 1, minHeight: dayCellHeight });
+    expect(weekRow.children.filter((node) => typeof node.type === 'string' || node.children).length).toBeGreaterThanOrEqual(7);
+    expect(between).toEqual([]);
   });
 
   test('today is outlined and the chosen day wears the accent', () => {

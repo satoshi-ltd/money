@@ -1,5 +1,5 @@
 import {
-  calendar, esc, fig, kebab, text,
+  esc, fig, kebab, text,
 } from './draw.mjs';
 
 
@@ -16,9 +16,6 @@ const paletteNow = () =>
 const paletteProposed = () =>
   `<div style="width:320px;display:grid;grid-template-columns:1fr 1fr;gap:4px 20px">${KEEP.map((name) => swatch(name, '')).join('')}<div style="grid-column:1 / -1;margin-top:8px">${text('Folded', { size: 'xs', tone: 'muted', uppercase: true })}</div>${Object.entries(FOLD).map(([name, into]) => swatch(name, `→ ${into}`, { gone: true })).join('')}</div>`;
 
-const calendarCells = (height) =>
-  calendar().replace(/min-height:40px/g, `min-height:${height}px`).replace('padding:16px 20px 20px', `padding:16px 20px 20px;outline:var(--hairline) solid var(--color-border)`);
-
 export const REVIEW = [
   {
     id: 'COLOUR-ROLES', area: 'Design system · colour', title: 'Thirteen colours instead of twenty',
@@ -26,13 +23,6 @@ export const REVIEW = [
     accept: 'theme.colors has the thirteen roles on the right in both themes and no other; every colors.X in src/ and every tone name in Text and Icon resolves to one of them; the folded tokens are gone from theme.js, store, kit and SPEC; the contrast test still passes; no screen changes a pixel except where an alias had drifted (the kit diff shows them).',
     now: paletteNow(),
     proposed: paletteProposed(),
-  },
-  {
-    id: 'CALENDAR-TARGET', area: 'DatePicker', title: 'Days a thumb can hit',
-    why: 'The day cells of the new calendar are 40 points high with 2 points between them, under the 44 of iOS and the 48 of Android, and there is no room for a hit slop. A six-week month at 48 points grows the sheet by 48 and still fits a phone. Recommended once the creator has tried the 40 on a device (VERIFY-DATE).',
-    accept: 'Every day cell is at least 48 points high and wide on a 360-point screen; a six-week month fits the sheet with its buttons visible at the default text size; the kit specimen shows the new height; a test on the style.',
-    now: calendarCells(40),
-    proposed: calendarCells(48),
   },
 ];
 

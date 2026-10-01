@@ -11,6 +11,7 @@ export const wellSize = theme.spacing.xl;
 export const iconButtonSize = theme.spacing.xl + 2;
 export const sealSize = theme.spacing.xl + theme.spacing.xs;
 
+export const dayCellHeight = theme.spacing.xxl;
 export const rowHeight = theme.spacing.xxl - theme.spacing.xxs;
 export const fieldHeight = theme.spacing.xl + theme.spacing.sm - 2;
 export const buttonHeight = theme.spacing.xxl - 2;

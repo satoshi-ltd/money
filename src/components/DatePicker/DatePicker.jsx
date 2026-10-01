@@ -72,7 +72,7 @@ const DatePicker = ({ maximumDate, minimumDate, onClose, onSelect, value }) => {
         ))}
       </View>
 
-      <View style={styles.grid}>
+      <View>
         {weeks.map((week, row) => (
           <View key={`week-${row}`} style={styles.week}>
             {week.map((day, column) => {
