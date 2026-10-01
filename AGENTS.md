@@ -43,7 +43,7 @@ Project wiring for those tools:
   commits do not bump. `yarn check:release` proves the manifests and the changelog agree.
 - **Validation:** `yarn validate` (`check:release`, `lint`, `test`) before claiming done. Report it apart from device
   evidence.
-- **CI:** none. There is no pipeline; builds are the creator's (README). A failing `yarn validate` on `v3` is the
+- **CI:** none. There is no pipeline; builds are the creator's (README). A failing `yarn validate` on `main` is the
   next task.
 - **Review checklist**, on top of the generic one: core flows stay offline (the only network calls are the rates feed);
   a `settings` shape change updates `store.constants.js`, `migrateState.js` and keeps old backups importable;
@@ -85,7 +85,7 @@ Rules of the loop:
 - Copy in code is English. A new key goes into all five dictionaries (EN, ES, PT, FR, DE) in the same change; a label
   that needs the language's own shape (ordinals, marks) is a function of its argument, not a template.
 - Parallel shell calls use absolute paths; a `cd` in one call leaks into its siblings.
-- Remote: `git@github.com:satoshi-ltd/money.git`, branch `v3`; Mikel also pushes there. Never rewrite pushed history.
+- Remote: `git@github.com:satoshi-ltd/money.git`, branch `main`; Mikel also pushes there. Never rewrite pushed history.
 
 ## Design kit
 

@@ -52,7 +52,7 @@ _None._
 
 - **BUILD-PHONE** — Production build of the current version on the phone
   `deploy · creator · high`
-  accept: the phone runs the version at the tip of `v3`: the current month's rates from the dated file, Save following
+  accept: the phone runs the version at the tip of `main`: the current month's rates from the dated file, Save following
   the fields, the category "See all", every control named for the reader.
 - **VERIFY-RATES** — The day's rate on the phone
   `verify · creator · high · depends: BUILD-PHONE`
