@@ -49,7 +49,7 @@ const Masthead = ({ children, onBack, onQueryChange, onSearch, query, rule = tru
             ) : (
               <Logo />
             )}
-            <View row style={style.right}>
+            <View row style={[style.right, onBack && style.actions]}>
               {!onBack && section ? <Eyebrow style={style.eyebrow}>{section}</Eyebrow> : null}
               {onSearch ? <IconButton icon={ICON.SEARCH} label={L10N.A11Y_SEARCH} onPress={onSearch} /> : null}
               {children}

@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.94 — 2026-10-01
+
+- A long name in the bar of a pushed screen, such as an account called "Savings and travel money" on its transactions, shortens with an ellipsis instead of pushing the action buttons off the right edge.
+
 ## 3.0.93 — 2026-10-01
 
 - The net on a day's header in a transaction list is priced like the rows under it, each at the rate of its own month. It used today's rate, so on a day in a past month the header and the rows disagreed when a rate had moved since.

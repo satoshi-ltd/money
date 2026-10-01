@@ -24,7 +24,11 @@ export const getStyles = (colors) =>
     title: {
       fontSize: theme.typography.sizes.tiny,
       letterSpacing: theme.typography.sizes.tiny * 0.145,
+      flexShrink: 1,
       lineHeight: Math.round(theme.typography.sizes.tiny * 1.45),
+    },
+    actions: {
+      flexShrink: 0,
     },
     right: {
       alignItems: 'center',

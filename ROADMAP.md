@@ -1,6 +1,6 @@
 # Môney roadmap
 
-Updated 2026-10-01 · 3.0.93, build 69.
+Updated 2026-10-01 · 3.0.94, build 70.
 
 This is the task pool. [SPEC.md](SPEC.md) owns current state, contracts, operations and the design system;
 [CHANGELOG.md](CHANGELOG.md) records what each version shipped; [AGENTS.md](AGENTS.md) defines the autonomous workflow
@@ -97,9 +97,6 @@ _None._
 
 ### Interface
 
-- **MASTHEAD-LONG-TITLE** — A long name on a pushed screen keeps the back button
-  `bug · agent · low`
-  accept: the pushed-screen title (an account's name on Transactions) shrinks before it pushes the actions off the bar, at the largest text size; a test on the style.
 - **NEW-ACCOUNT-COPY** — The new-account title in the language's own shape
   `chore · agent · low`
   accept: a `NEW_ACCOUNT` key in the five dictionaries replaces `${NEW} ${ACCOUNT}`, which reads "Nuevo Cuenta", "Novo Conta" and "Neu Konto"; a test per language.

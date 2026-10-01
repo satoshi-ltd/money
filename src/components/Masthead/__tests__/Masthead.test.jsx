@@ -65,6 +65,20 @@ describe('components/Masthead', () => {
     expect(StyleSheet.flatten(slot.props.style).flexShrink).toBe(1);
   });
 
+  test('on a pushed screen a long name shrinks before it pushes the actions off the bar', () => {
+    const root = render({ onBack: () => {}, section: 'A savings account with a very long name' });
+    const name = root.findAll((node) => typeof node.type === 'string' && node.props.numberOfLines === 1)[0];
+    const flat = (node) => StyleSheet.flatten(node.props.style) || {};
+    const ancestors = [];
+    for (let node = name.parent; node; node = node.parent) ancestors.push(node);
+    const slot = ancestors.find((node) => flat(node).flexShrink === 1 && flat(node).alignItems === 'center');
+    const actions = root.findAll((node) => typeof node.type === 'string' && flat(node).flexShrink === 0 && flat(node).gap);
+
+    expect(flat(name).flexShrink).toBe(1);
+    expect(slot).toBeDefined();
+    expect(actions.length).toBeGreaterThan(0);
+  });
+
   test('beside the rail the bar drops the wordmark, which the rail carries, and fills the width', () => {
     mockRail = true;
     const root = render({ onSearch: () => {} });
