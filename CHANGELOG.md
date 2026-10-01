@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.97 — 2026-10-01
+
+- A screen reader hears each category row of Analytics as a button with its name, its share of the month and its amount, and "over budget" when its budget is passed, which was only a colour; with amounts masked it leaves the amount out, as the screen does. The folded "Others" row and "Show less" are buttons too.
+
 ## 3.0.96 — 2026-10-01
 
 - A screen reader now hears a notification when it arrives ("Rates updated", an error), before it fades; on iOS it waits behind whatever VoiceOver is already saying.

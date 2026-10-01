@@ -2,17 +2,20 @@ import React from 'react';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import { ItemGroupCategories } from '../ItemGroupCategories';
-import { L10N } from '../../../../../modules';
+import { L10N, percentText } from '../../../../../modules';
 
 const mockNavigate = jest.fn();
 
 jest.mock('@react-navigation/native', () => ({ useNavigation: () => ({ navigate: mockNavigate }) }));
 
+let mockMask = false;
+
 jest.mock('../../../../../contexts', () => ({
   useApp: () => ({
     colors: { accent: '#ACCE07', text: '#TEXT00', textMuted: '#MUTED0', textSecondary: '#SECON0' },
+    language: 'en',
   }),
-  useAmountSettings: () => ({ baseCurrency: 'EUR' }),
+  useAmountSettings: () => ({ baseCurrency: 'EUR', maskAmount: mockMask }),
 }));
 
 jest.mock('../../../../../components', () => {
@@ -57,7 +60,10 @@ const heading = (root) => root.findAllByProps({ testID: 'heading' })[0].props;
 const componentsBy = (root, testID) =>
   root.findAllByProps({ testID }).filter((node) => typeof node.type === 'function');
 
-beforeEach(() => mockNavigate.mockClear());
+beforeEach(() => {
+  mockNavigate.mockClear();
+  mockMask = false;
+});
 
 describe('screens/Stats/ItemGroupCategories', () => {
   test('the same block reads the month either way, expenses or incomes', () => {
@@ -107,6 +113,25 @@ describe('screens/Stats/ItemGroupCategories', () => {
       expect(withoutPrevious[0].props.budget.carried).toBe(0);
     });
 
+    test('a screen reader hears each row as its category, its share and its amount, and that a budget is passed only when it is', () => {
+      const labels = componentsBy(render({ budgets }), 'pressable').map(({ props }) => props.accessibilityLabel);
+
+      expect(labels[0]).toBe(`${L10N.CATEGORIES[0][4]}, ${percentText(57)}, €400, ${L10N.BUDGET_PASSED}`);
+      expect(labels[1]).toBe(`${L10N.CATEGORIES[0][5]}, ${percentText(28)}, €200, ${L10N.BUDGET_PASSED}`);
+      expect(labels[2]).toBe(`${L10N.CATEGORIES[0][6]}, ${percentText(7)}, €50`);
+      expect(labels[2]).not.toContain(L10N.BUDGET_PASSED);
+      expect(componentsBy(render({ budgets }), 'pressable')[0].props.accessibilityRole).toBe('button');
+    });
+
+    test('with the amounts masked a screen reader is not told what the screen hides', () => {
+      mockMask = true;
+      const labels = componentsBy(render({ budgets }), 'pressable').map(({ props }) => props.accessibilityLabel);
+
+      expect(labels[0]).toBe(`${L10N.CATEGORIES[0][4]}, ${percentText(57)}, ${L10N.BUDGET_PASSED}`);
+      expect(labels[2]).toBe(`${L10N.CATEGORIES[0][6]}, ${percentText(7)}`);
+      expect(labels.join(' ')).not.toMatch(/€/);
+    });
+
     test('incomes never carry a budget', () => {
       expect(componentsBy(render({ budgets, type: 1 }), 'bar').every(({ props }) => props.budget === undefined)).toBe(true);
     });
@@ -116,6 +141,19 @@ describe('screens/Stats/ItemGroupCategories', () => {
     const bars = componentsBy(render(), 'bar');
 
     expect(bars.map(({ props }) => props.color)).toEqual(['#ACCE07', '#TEXT00', '#SECON0', '#MUTED0']);
+  });
+
+  test('the folded row reads as a button with its count, share and amount, and Show less as one too', () => {
+    const root = render();
+    const [, , , others] = componentsBy(root, 'pressable');
+
+    expect(others.props.accessibilityRole).toBe('button');
+    expect(others.props.accessibilityLabel).toBe(`${L10N.OTHERS} · 2, ${percentText(7)}, €50`);
+
+    act(() => others.props.onPress());
+    const fold = componentsBy(root, 'pressable').find(({ props }) => props.accessibilityLabel === L10N.SHOW_LESS);
+
+    expect(fold.props.accessibilityRole).toBe('button');
   });
 
   test('only the top three categories are listed, with the tail folded into one row', () => {

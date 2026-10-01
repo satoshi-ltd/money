@@ -446,7 +446,9 @@ the control: a toggle row is one switch with its checked state and the native sw
 "Hide from Analytics and the month" row is one checkbox with its glyph hidden. A notification band that dismisses on tap is one
 button with a "Dismiss" hint; otherwise the band is not accessible and its close is. A band is announced when it
 arrives, its title and its text, through `AccessibilityInfo` (queued behind the current speech on iOS), and again if a
-new one replaces it. A keypad slot with nothing behind
+new one replaces it. A category row of the Analytics list is a button read as its name, its share of the month and its amount, with "over budget"
+added when its budget is passed (the amount is left out while amounts are masked); the folded Others row and Show less are
+buttons too. A keypad slot with nothing behind
 it is not accessible at all.
 
 ### Copy rules

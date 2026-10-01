@@ -1,6 +1,6 @@
 # Môney roadmap
 
-Updated 2026-10-01 · 3.0.96, build 72.
+Updated 2026-10-01 · 3.0.97, build 73.
 
 This is the task pool. [SPEC.md](SPEC.md) owns current state, contracts, operations and the design system;
 [CHANGELOG.md](CHANGELOG.md) records what each version shipped; [AGENTS.md](AGENTS.md) defines the autonomous workflow
@@ -98,9 +98,6 @@ _None._
 
 ### Interface
 
-- **A11Y-BUDGET-ROW** — A budget passed is said, not only coloured
-  `feature · agent · low`
-  accept: a category row of the Analytics list names its share and, when its budget is passed, says so to a screen reader; a test on the label.
 - **KIT-STATES** — The states the kit does not draw
   `chore · agent · low`
   accept: `design/mobile.html` draws the empty Accounts and Scheduled screens, a paused schedule and the Later section, the Settings backup row that was never run, and the new-account sheet, each from the app's real copy, so no screen state of the code is missing from the views.

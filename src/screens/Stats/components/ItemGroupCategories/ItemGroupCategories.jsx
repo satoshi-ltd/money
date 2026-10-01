@@ -6,7 +6,7 @@ import { HorizontalChartItem } from './HorizontalChartItem';
 import { getStyles } from './ItemGroupCategories.style';
 import { Eyebrow, Heading, Pressable, View } from '../../../../components';
 import { useAmountSettings, useApp } from '../../../../contexts';
-import { budgetOf, C, L10N, rankInk } from '../../../../modules';
+import { budgetOf, C, L10N, percentText, rankInk } from '../../../../modules';
 import { orderByAmount } from '../../modules';
 
 const {
@@ -17,9 +17,17 @@ const {
 
 const TOP_CATEGORIES = 3;
 
+const spokenAmount = (value, currency, language) => {
+  try {
+    return new Intl.NumberFormat(language, { currency, maximumFractionDigits: 0, style: 'currency' }).format(value);
+  } catch {
+    return `${Math.round(value)} ${currency}`;
+  }
+};
+
 const ItemGroupCategories = ({ budgets, dataSource, month, monthLabel, previous, type, year }) => {
-  const { baseCurrency } = useAmountSettings();
-  const { colors } = useApp();
+  const { baseCurrency, maskAmount } = useAmountSettings();
+  const { colors, language } = useApp();
   const { navigate } = useNavigation();
   const [showRest, setShowRest] = useState(false);
   const style = useMemo(() => getStyles(colors), [colors]);
@@ -55,9 +63,21 @@ const ItemGroupCategories = ({ budgets, dataSource, month, monthLabel, previous,
 
       {[...top, ...(showRest ? rest : [])].map(({ key, amount }, index) => {
         const color = rankInk(colors, index);
+        const budget = budgetFor(key, amount);
+        const share = Math.floor((amount / total) * 100);
+        const label = [
+          L10N.CATEGORIES[type][key],
+          percentText(share),
+          maskAmount ? undefined : spokenAmount(amount, baseCurrency, language),
+          budget?.state === 'over' ? L10N.BUDGET_PASSED : undefined,
+        ]
+          .filter(Boolean)
+          .join(', ');
 
         return (
           <Pressable
+            accessibilityLabel={label}
+            accessibilityRole="button"
             key={key}
             onPress={() =>
               navigate('category', {
@@ -72,12 +92,12 @@ const ItemGroupCategories = ({ budgets, dataSource, month, monthLabel, previous,
             }
           >
             <HorizontalChartItem
-              budget={budgetFor(key, amount)}
+              budget={budget}
               color={color}
               currency={baseCurrency}
               title={L10N.CATEGORIES[type][key]}
               value={amount}
-              width={Math.floor((amount / total) * 100)}
+              width={share}
             />
           </Pressable>
         );
@@ -85,7 +105,21 @@ const ItemGroupCategories = ({ budgets, dataSource, month, monthLabel, previous,
 
       {/* The summary was a dead end: a fifth of the spend sat behind a row that looked tappable and was not. */}
       {rest.length ? (
-        <Pressable onPress={() => setShowRest(!showRest)}>
+        <Pressable
+          accessibilityLabel={
+            showRest
+              ? L10N.SHOW_LESS
+              : [
+                  `${L10N.OTHERS} · ${rest.length}`,
+                  percentText(Math.floor((restTotal / total) * 100)),
+                  maskAmount ? undefined : spokenAmount(restTotal, baseCurrency, language),
+                ]
+                  .filter(Boolean)
+                  .join(', ')
+          }
+          accessibilityRole="button"
+          onPress={() => setShowRest(!showRest)}
+        >
           {showRest ? (
             <View style={style.showLess}>
               <Eyebrow style={style.showLessLabel}>{L10N.SHOW_LESS}</Eyebrow>
