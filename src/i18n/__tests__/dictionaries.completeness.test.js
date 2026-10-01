@@ -41,6 +41,16 @@ describe('i18n/dictionaries', () => {
     });
   });
 
+  test('every language owns twelve distinct short months, lower case and short enough for a chart slot', () => {
+    [['EN', EN], ...LANGUAGES].forEach(([name, dictionary]) => {
+      const months = dictionary.MONTHS_SHORT;
+
+      expect({ [name]: months.length }).toEqual({ [name]: 12 });
+      expect({ [name]: new Set(months).size }).toEqual({ [name]: 12 });
+      expect({ [name]: months.filter((month) => month !== month.toLowerCase() || month.length > 5) }).toEqual({ [name]: [] });
+    });
+  });
+
   test('no screen renders a raw key: the analytics copy resolves', () => {
     [EN, ...LANGUAGES.map(([, dictionary]) => dictionary)].forEach((dictionary) => {
       ['NET_WORTH', 'ACCOUNT_BALANCE', 'MONTH_TO_DATE', 'FLOW_IN', 'FLOW_OUT', 'AVERAGE', 'NET'].forEach((key) => {

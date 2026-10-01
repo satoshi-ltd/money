@@ -141,7 +141,7 @@ const Chart = ({
         <View row style={style.axis}>
           {labels.map((item, index) => (
             <Text key={index} figure="xs" tone="muted">
-              {`${L10N.MONTHS[item?.month] || ''}`.slice(0, 3).toLowerCase()}
+              {L10N.MONTHS_SHORT[item?.month] || ''}
             </Text>
           ))}
         </View>

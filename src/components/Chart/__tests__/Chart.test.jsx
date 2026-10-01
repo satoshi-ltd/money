@@ -3,7 +3,8 @@ import { Text as RNText } from 'react-native';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import { Chart } from '../Chart';
-import { percentText } from '../../../modules';
+import { setLanguage } from '../../../i18n';
+import { L10N, percentText } from '../../../modules';
 import { columnWidth, viewOffset } from '../../../theme/layout';
 
 const ACCENT = '#ACCE07';
@@ -54,6 +55,21 @@ const texts = (root) => root.findAllByType(RNText).map((node) => node.props.chil
 describe('components/Chart', () => {
   afterEach(() => {
     mockWindow = { height: 844, width: 390 };
+  });
+
+  // The ticks were the first three letters of the month name: French drew "jui" for juin and juillet.
+  test('the axis names its months with its own language\'s short months, never two alike', async () => {
+    jest.useFakeTimers().setSystemTime(new Date(2026, 8, 15));
+    await setLanguage('fr');
+    const months = [...L10N.MONTHS_SHORT];
+    const axis = texts(render({ monthsLimit: 12, values: Array.from({ length: 12 }, (_, index) => 100 + index * 10) }));
+    await setLanguage('en');
+    jest.useRealTimers();
+    const ticks = axis.filter((text) => months.includes(text));
+
+    expect(ticks.length).toBeGreaterThanOrEqual(4);
+    expect(new Set(ticks).size).toBe(ticks.length);
+    expect(axis).not.toContain('jui');
   });
 
   test('the line is drawn across the window on a phone and across the column on the open Fold', () => {

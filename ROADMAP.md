@@ -40,12 +40,6 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 ## Queue
 
-- **UX-MONTH-TICKS** — Month ticks from the dictionaries
-  `bug · agent · normal`
-  accept: Chart and FlowChart build their ticks with `L10N.MONTHS[i].slice(0, 3).toLowerCase()`, so German ships
-  "mär" and French draws "jui" twice (juin, juillet). A `MONTHS_SHORT` key per language ("juin", "juil.") feeds both
-  charts; whether ticks stay lower case is stated in SPEC 9; a French test with distinct ticks;
-  the interface follows board UI-MONTH-TICKS.
 - **UI-HIDE-COPY** — What "Hide from Analytics" promises
   `ui · agent · normal`
   accept: the board UI-HIDE-COPY: the Transaction and Clone forms say "Hide from Analytics and the month" in the five

@@ -72,14 +72,6 @@ describe('design kit', () => {
     for (const match of html.matchAll(/data-review="[A-Z0-9-]+"[\s\S]*?<b>Accept<\/b> · ([^<]*)</g)) expect(match[1].length).toBeGreaterThan(20);
   });
 
-  test('the month ticks board draws the ticks the app ships, from the dictionaries', () => {
-    const html = pages['proposals.html'];
-
-    expect(html).toContain('>mär<');
-    expect(html.match(/>jui</g)).toHaveLength(2);
-    expect(html).toContain('>juil.<');
-  });
-
   test('every page carries the project icon as a favicon copied inside design/', () => {
     const names = Object.keys(pages).filter((name) => name.endsWith('.html'));
 

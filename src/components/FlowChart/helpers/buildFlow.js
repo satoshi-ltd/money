@@ -3,7 +3,7 @@ import { getLastMonths, L10N, median } from '../../../modules';
 // How many columns fit the width; the rest are reached by scrolling, never by a second range control.
 export const FLOW_VISIBLE = 6;
 
-const shortMonth = (monthIndex) => `${L10N.MONTHS[monthIndex] || ''}`.slice(0, 3).toLowerCase();
+const shortMonth = (monthIndex) => L10N.MONTHS_SHORT[monthIndex] || '';
 
 export const buildFlowColumns = ({ incomes = [], expenses = [], monthsLimit = 0 }) => {
   const length = Math.min(monthsLimit, Math.max(incomes.length, expenses.length));

@@ -6,6 +6,7 @@ const nth = (day) => {
 };
 
 export const EN = {
+  MONTHS_SHORT: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'],
   MASK_AMOUNTS: 'Mask amounts',
   MASK_AMOUNTS_CAPTION: 'Also toggled by tapping the net worth',
   SEE_ALL_COUNT: (count) => `See all ${count}`,
@@ -335,6 +336,7 @@ export const EN = {
 };
 
 export const PT = {
+  MONTHS_SHORT: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
   MASK_AMOUNTS: 'Ocultar valores',
   MASK_AMOUNTS_CAPTION: 'Também com um toque no patrimônio total',
   SEE_ALL_COUNT: (count) => `Ver tudo \u00b7 ${count}`,
@@ -648,6 +650,7 @@ export const PT = {
   YESTERDAY: 'Ontem',
 };
 export const FR = {
+  MONTHS_SHORT: ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'],
   MASK_AMOUNTS: 'Masquer les montants',
   MASK_AMOUNTS_CAPTION: 'Aussi en touchant le patrimoine total',
   SEE_ALL_COUNT: (count) => `Voir les ${count}`,
@@ -963,6 +966,7 @@ export const FR = {
   YESTERDAY: 'Hier',
 };
 export const DE = {
+  MONTHS_SHORT: ['jan.', 'feb.', 'märz', 'apr.', 'mai', 'juni', 'juli', 'aug.', 'sept.', 'okt.', 'nov.', 'dez.'],
   MASK_AMOUNTS: 'Beträge ausblenden',
   MASK_AMOUNTS_CAPTION: 'Auch per Tipp auf das Gesamtvermögen',
   SEE_ALL_COUNT: (count) => `Alle ${count} ansehen`,
@@ -1277,6 +1281,7 @@ export const DE = {
   YESTERDAY: 'Gestern',
 };
 export const ES = {
+  MONTHS_SHORT: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'],
   MASK_AMOUNTS: 'Ocultar importes',
   MASK_AMOUNTS_CAPTION: 'También con un toque en el patrimonio total',
   SEE_ALL_COUNT: (count) => `Ver todo \u00b7 ${count}`,

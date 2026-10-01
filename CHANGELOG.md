@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.78 — 2026-10-01
+
+- The months on the charts read as months in every language. They were the first three letters of the name, so German drew "mär" and French drew "jui" for both juin and juillet; each language now has its own short months ("juin", "juil.", "märz").
+
 ## 3.0.77 — 2026-09-30
 
 - The backup reminder row reads "Weekly · Sun 08:00" with a middle dot, like every other caption, instead of a hyphen.

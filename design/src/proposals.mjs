@@ -1,7 +1,7 @@
 import {
-  ACCOUNTS, BASE, DE, FR, ICON, L, NET, accountRow,
+  ACCOUNTS, BASE, DE, ICON, L, NET, accountRow,
   check, chip, esc, eyebrow, fieldRow, fig,
-  flowChart, heading, icon, input, kebab, masthead, monthRow,
+  heading, icon, input, kebab, masthead, monthRow,
   monthSummary, price, rightValue, seg, setting, switchEl, text, 
 } from './draw.mjs';
 
@@ -55,15 +55,6 @@ const proposalFrom = ({ title, where, value, mark }) =>
 const conceptForm = (rows) =>
   frame(`<div><div>${seg([L.EXPENSE, L.INCOME, L.SWAP], L.EXPENSE)}</div><div style="margin-top:16px">${fieldRow(L.CONCEPT, input('sal', { right: true }))}${rows}${amountRow('')}${accountField()}${fieldRow(L.CATEGORY, text('Food & Drinks', { size: 's', medium: true }), { divider: true, chevron: true })}</div></div>`, { sheet: true });
 
-const tickTable = (dict, months) => months.map((month) => dict.MONTHS[month].slice(0, 3).toLowerCase());
-const MONTHS_SHORT = {
-  FR: ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'],
-  DE: ['jan.', 'feb.', 'märz', 'apr.', 'mai', 'juni', 'juli', 'aug.', 'sept.', 'okt.', 'nov.', 'dez.'],
-};
-const FLOW_SAMPLE = { incomes: [3000, 3000, 3200, 3000, 4100, 3000], expenses: [2100, 2450, 1980, 2600, 2300, 1900] };
-const tickChart = (labels, caption) => `${eyebrow(caption, { style: 'display:block;margin-bottom:4px' })}${flowChart({ ...FLOW_SAMPLE, labels, figureLabels: true })}`;
-const FR_WINDOW = [3, 4, 5, 6, 7, 8];
-const DE_WINDOW = [0, 1, 2, 3, 4, 5];
 
 const hideRow = (label, size) => `<div class="m-checkrow">${text(label, { size, tone: 'muted', style: 'flex:1' })}${check(false)}</div>`;
 const hideFrame = (label, deLabel) =>
@@ -108,16 +99,6 @@ export const REVIEW = [
     accept: 'With no proposal under the current type, the row for the other type appears marked with that type\'s name; it never appears when the current type has a proposal; the chip names the type in the five languages.',
     now: conceptForm(''),
     proposed: conceptForm(proposalFrom({ title: 'Salary', where: 'Chase · Salary', value: 3000, mark: L.INCOME })),
-  },
-  {
-    id: 'UI-MONTH-TICKS', area: 'Analytics', title: 'Month ticks that read as months',
-    why: 'Now: the ticks are the first three letters of the month name, so German draws "mär" and French draws "jui" twice, for juin and juillet. Proposed: each language owns its short month (MONTHS_SHORT), with a full stop where the word is cut, still lower case like every figure label. Alternative: sentence case ("Juin", "Juil."), which reads better in German but sets the ticks apart from the mono figures.',
-    accept: 'Chart and FlowChart draw MONTHS_SHORT, every tick of a 12-month window is distinct in the five languages, and the longest tick fits a slot of one sixth of the chart at the largest text size.',
-    now: stack(tickChart(tickTable(DE, DE_WINDOW), 'Deutsch · Jan to Jun'), tickChart(tickTable(FR, FR_WINDOW), 'Français · Apr to Sep')),
-    proposed: stack(
-      tickChart(DE_WINDOW.map((month) => MONTHS_SHORT.DE[month]), 'Deutsch · Jan to Jun'),
-      tickChart(FR_WINDOW.map((month) => MONTHS_SHORT.FR[month]), 'Français · Apr to Sep'),
-    ),
   },
   {
     id: 'UI-HIDE-COPY', area: 'Transaction form', title: 'What the checkbox promises',

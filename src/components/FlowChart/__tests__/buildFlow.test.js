@@ -1,4 +1,6 @@
 import { buildFlowColumns, flowLayout, flowScrollOffset } from '../helpers';
+import { setLanguage } from '../../../i18n';
+import { L10N } from '../../../modules';
 
 const incomes = [2450, 2450, 2450, 2610, 2450, 2450, 2450, 2450, 2610, 2450, 2900, 2450];
 const expenses = [2260, 2310, 2295, 2380, 2530, 2610, 2280, 2190, 2440, 2870, 2540, 1318];
@@ -19,6 +21,18 @@ describe('components/FlowChart/buildFlowColumns', () => {
     expect(columns[11].globalIndex).toBe(11);
     expect(columns[11].income).toBe(2450);
     expect(columns[11].expense).toBe(1318);
+  });
+
+  afterEach(() => setLanguage('en'));
+
+  test('the tick of every month is its own language\'s short month, distinct across a year', async () => {
+    for (const language of ['de', 'fr', 'es', 'pt', 'en']) {
+      await setLanguage(language);
+      const labels = buildFlowColumns({ incomes, expenses, monthsLimit: 12 }).map(({ label }) => label);
+
+      expect({ language, distinct: new Set(labels).size }).toEqual({ language, distinct: 12 });
+      expect(labels.every((label) => L10N.MONTHS_SHORT.includes(label))).toBe(true);
+    }
   });
 
   test('short histories yield fewer columns without crashing', () => {
