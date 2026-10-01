@@ -259,7 +259,7 @@ button, "See all N" with a chevron, that opens Scheduled.
 ## 7. Screens
 
 - **Onboarding** — four steps with a folio (01 / 04): cover (four claims), base currency (grouped picker, the seed
-  converts offline), first account (currency, opening balance written as the first entry, name), then a four-digit PIN
+  converts offline), first account (currency, opening balance kept on the account, name), then a four-digit PIN
   typed twice. Finishing marks `onboarded`, saves the PIN and creates the account.
 - **Session** — the lock screen: wordmark, four dots, a numeric keypad with letters, a biometric key when the reader is
   on (auto-prompted on arrival), the version at the foot. A wrong PIN shakes.
