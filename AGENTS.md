@@ -103,7 +103,7 @@ Rules of the loop:
 - Local-first. The ledger lives on the phone in AsyncStorage; the only request the app makes is for public exchange
   rates, and it carries nothing about the user. No account, no cloud, no analytics, no crash reports, no identifiers,
   no lead capture and no subscription: those were removed and stay out.
-- Mobile only: iOS 15.1+ and Android, phones and the Fold in one layout. No web target until the creator decides one.
+- Mobile only: iOS 15.1+ and Android, phones and the Fold in one layout. No web or desktop target: the creator decided against one.
 - One base currency the reader thinks in; everything converts to it at the day's public rate, and a closed month at its
   closing day. Metals are priced per troy ounce.
 - Backups are plain JSON the user owns, plus CSV export; the PIN, the biometric preference and the learned catalogs

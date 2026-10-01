@@ -77,9 +77,6 @@ _None._
 
 ### Decisions
 
-- **DEC-DESKTOP** — Does Môney get a desktop or web target?
-  `decision · creator · low`
-  accept: a yes or no. Until yes, `design/` carries no desktop page and SPEC keeps "mobile only".
 - **DEC-AMOUNT-FILL** — Drop the word-rule amount fill
   `decision · creator · normal`
   accept: on the creator's ledger the stable amount rule answered 5.5% of repeated titles and was right 25.6% of the
@@ -97,10 +94,6 @@ _None._
   swaps only), so the sheet can disagree with the bar it opened from and a share can pass 100%. Decide whether the
   sheet, its count and the filtered panel follow the bar (`!isMovement`) or keep listing hidden entries, marked; the
   agent task follows the decision.
-- **DEC-INCOME-FORECAST** — Should scheduled incomes shape any forecast signal?
-  `decision · creator · low`
-  accept: a yes with the signal named, or a no; no new card either way.
-
 ## Proposed
 
 ### Ledger and rates
@@ -113,15 +106,6 @@ _None._
   `bug · agent · low`
   accept: `RatesService` keys months in UTC while `exchange()` reads the entry's local month, so in UTC+7 the first
   hours of a month read the previous table; one calendar for both, with a test at the boundary.
-- **RATES-CONCURRENCY** — Bounded downloads
-  `chore · agent · low`
-  accept: a first run no longer fires every month's request at once; at most a handful in flight, today first, with a
-  test on the order.
-- **BACKUP-CHECKSUM** — A checksum in the backup
-  `feature · agent · low`
-  accept: exports carry a checksum of their payload and imports refuse a file that does not match it, with a test for a
-  truncated file; older backups without one still import.
-
 ### Recommender
 
 - **REC-CATALOGS-DERIVED** — Word catalogs as memory
@@ -132,23 +116,12 @@ _None._
 - **REC-AMOUNT-DROP** — Retire the amount fill
   `chore · agent · normal · depends: DEC-AMOUNT-FILL`
   accept: `suggestAmount` and `autoAmount` are gone; the proposal rows keep the title's latest amount as the hint.
-- **REC-WORD-BOUNDARY** — One definition of a word
-  `chore · agent · low`
-  accept: the tokenizer and the title memory split words on the same boundaries (`Coffee:beans` behaves the same in
-  both); a shared helper with a test.
 ### Insights and notifications
 
 - **INS-PACE-SCHEDULED** — Pace with scheduled transactions
   `feature · agent · normal`
   accept: the month lead accounts for what is still scheduled this month, with tests for a low-activity month, a
-  fixed-cost month and mixed currencies.
-- **INS-EDGE-TESTS** — Scheduled-aware edge cases
-  `chore · agent · low`
-  accept: tests for a month with no spend, day 1, and conversion dates across a month boundary.
-- **NOTIF-DIGEST** — A weekly or monthly digest
-  `feature · agent · low`
-  accept: an optional notification summarising the period, scoped by its own `kind`, never cancelling the others.
-
+  fixed-cost month, mixed currencies, a month with no spend, day 1 and conversion dates across a month boundary.
 ### Engineering
 
 - **A11Y-ANNOUNCE** — Notifications announce themselves to a screen reader
@@ -159,9 +132,6 @@ _None._
   `chore · agent · normal`
   accept: transactions indexed by account and by month once per change and reused by Overview, Transactions and
   Analytics; a benchmark test on 10,000 entries shows no repeated sorts.
-- **STATS-REVEAL** — No re-animation on range switch
-  `chore · agent · low`
-  accept: switching 6M / 1Y / All keeps the drawn chart and moves the pointer; the reveal plays only on arrival.
 - **LINT-HOOKS** — Remaining hooks warnings
   `chore · agent · low`
   accept: `yarn lint` prints no `react-hooks` warning (Modal animations, `useMotion`, `FormTransfer` deps).
@@ -187,3 +157,10 @@ _None._
 | Savings goals | Out by the creator's decision, 2026-10-01. |
 | Splitting one entry across categories | Out by the creator's decision, 2026-10-01. |
 | More month-block patterns: busiest weekday, largest entry, subscriptions | The creator sees no value in them, 2026-10-01. |
+| A desktop or web target | Out by the creator's decision, 2026-10-01: Môney stays mobile only. |
+| A forecast signal from scheduled incomes | Out by the creator's decision, 2026-10-01: no new card either way. |
+| Bounded rate downloads | Out by the creator's decision, 2026-10-01: only the first run downloads many months at once. |
+| A checksum in the backup | Out by the creator's decision, 2026-10-01: an import already refuses an invalid file. |
+| A weekly or monthly digest notification | Out by the creator's decision, 2026-10-01. |
+| No re-animation on a range switch | Out by the creator's decision, 2026-10-01. |
+| One definition of a word for the tokenizer and the title memory | Out by the creator's decision, 2026-10-01. |

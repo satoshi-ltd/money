@@ -86,4 +86,4 @@ opens from any folder.
   is USD.
 - Colours come from `tokens.css`, never hardcoded; hairlines instead of elevation, three radii, the accent for what
   moves. SPEC's design section is the contract the views show.
-- Phones and the Fold only; no desktop page until the creator decides one.
+- Phones and the Fold only; no desktop page.
