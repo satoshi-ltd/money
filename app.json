@@ -5,7 +5,7 @@
     "owner": "satoshi-ltd",
     "scheme": "money",
     "description": "Your private finance ledger running on your own blockchain",
-    "version": "3.0.95",
+    "version": "3.0.96",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -15,7 +15,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.satoshi-limited.money",
-      "buildNumber": "71",
+      "buildNumber": "72",
       "usesIcloudStorage": true,
       "infoPlist": {
         "LSMinimumSystemVersion": "15.1",
@@ -29,7 +29,7 @@
         "backgroundColor": "#15140F"
       },
       "package": "com.satoshilimited.money",
-      "versionCode": 71,
+      "versionCode": 72,
       "softwareKeyboardLayoutMode": "resize"
     },
     "plugins": [

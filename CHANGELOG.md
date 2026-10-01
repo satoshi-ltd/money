@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.96 — 2026-10-01
+
+- A screen reader now hears a notification when it arrives ("Rates updated", an error), before it fades; on iOS it waits behind whatever VoiceOver is already saying.
+
 ## 3.0.95 — 2026-10-01
 
 - The title of the new-account sheet is a phrase of its own in each language: "Nueva cuenta", "Nova conta", "Neues Konto" and "Nouveau compte", where joining the two words had read "Nuevo Cuenta", "Novo Conta" and "Neu Konto". The French first-account title says "Votre premier compte", not "première".

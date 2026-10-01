@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, Easing } from 'react-native';
+import { AccessibilityInfo, Animated, Easing, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { getStyles } from './Notification.style';
@@ -10,6 +10,14 @@ import { theme } from '../../theme';
 
 const { EVENT } = C;
 const DEFAULT_DISMISS_MS = 5000;
+
+const announcement = ({ error, text, title }) =>
+  [title || (error ? L10N.ERROR : L10N.INFO), text].filter(Boolean).join('. ');
+
+const announce = (message) =>
+  Platform.OS === 'ios'
+    ? AccessibilityInfo.announceForAccessibilityWithOptions(message, { queue: true })
+    : AccessibilityInfo.announceForAccessibility(message);
 
 export const Notification = () => {
   const { top } = useSafeAreaInsets();
@@ -29,6 +37,7 @@ export const Notification = () => {
         setValue(data);
         setRendered(true);
         isVisibleRef.current = true;
+        announce(announcement(data));
         Animated.timing(anim, {
           toValue: 1,
           duration: theme.animations.duration.quick,

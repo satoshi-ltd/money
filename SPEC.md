@@ -444,7 +444,9 @@ are tabs with a selected state; segments and dropdown options are buttons with a
 button with its disabled state. On iOS an accessible row is a leaf for VoiceOver, so a row that holds a control is
 the control: a toggle row is one switch with its checked state and the native switch hidden from the reader, and the
 "Hide from Analytics and the month" row is one checkbox with its glyph hidden. A notification band that dismisses on tap is one
-button with a "Dismiss" hint; otherwise the band is not accessible and its close is. A keypad slot with nothing behind
+button with a "Dismiss" hint; otherwise the band is not accessible and its close is. A band is announced when it
+arrives, its title and its text, through `AccessibilityInfo` (queued behind the current speech on iOS), and again if a
+new one replaces it. A keypad slot with nothing behind
 it is not accessible at all.
 
 ### Copy rules

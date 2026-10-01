@@ -1,6 +1,6 @@
 # Môney roadmap
 
-Updated 2026-10-01 · 3.0.95, build 71.
+Updated 2026-10-01 · 3.0.96, build 72.
 
 This is the task pool. [SPEC.md](SPEC.md) owns current state, contracts, operations and the design system;
 [CHANGELOG.md](CHANGELOG.md) records what each version shipped; [AGENTS.md](AGENTS.md) defines the autonomous workflow
@@ -58,7 +58,8 @@ _None._
   `verify · creator · normal`
   accept: with the screen reader on, every masthead button, the seal, the PIN keys, the suggestion chip, the tabs,
   the segments, the Settings rows and the "Hide from Analytics" checkbox are announced by name (and state where they
-  have one); nothing is read as a bare "button".
+  have one); nothing is read as a bare "button"; a notification band is read when it arrives (TalkBack: the first one
+  after idle, an error and a swap; VoiceOver: once, after a sheet closes).
 - **VERIFY-DATE** — The date picker on a device
   `verify · creator · high`
   accept: on iOS and on Android the date row of a new transaction, of a clone and of a scheduled form opens the month
@@ -133,10 +134,6 @@ _None._
 
 ### Engineering
 
-- **A11Y-ANNOUNCE** — Notifications announce themselves to a screen reader
-  `feature · agent · low`
-  accept: a notification band arriving is announced (`accessibilityLiveRegion="polite"` on Android,
-  `AccessibilityInfo.announceForAccessibility` on iOS) before it auto-dismisses; a test on the announcement call.
 - **SETTINGS-LEGACY** — Retire the lead-capture fields
   `chore · agent · low`
   accept: `userProfile` and `marketingLead` leave `DEFAULTS` through a migration that drops them from stored settings;
