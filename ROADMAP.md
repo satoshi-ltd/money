@@ -86,12 +86,6 @@ _None._
 
 ## Proposed
 
-### Interface
-
-- **KIT-STATES** — The states the kit does not draw
-  `chore · agent · low`
-  accept: `design/mobile.html` draws the empty Accounts and Scheduled screens, a paused schedule and the Later section, the Settings backup row that was never run, and the new-account sheet, each from the app's real copy, so no screen state of the code is missing from the views.
-
 ### Ledger and rates
 
 - **FX-CLOSED-MONTH** — The closed month on Overview at its own rates
