@@ -431,7 +431,9 @@ case, and a count is a function of its number ("1 account", "4 accounts"); a lab
 own order ("Save expense", "Ausgabe speichern") is its own key too. Code never lowercases or templates translated
 copy, because German capitalises its nouns and puts the verb last. The month ticks of the charts are the language's own
 short months (`MONTHS_SHORT`: "juin", "juil.", "märz"), lower case like every figure label, never the first three
-letters of the name. Figures never wrap: columns size from their text. A verdict is a word when a percentage would overclaim.
+letters of the name. Copy has a ceiling for the slot it sits in, in every language: 24 characters beside a figure, 32 under
+a row, 48 in an empty state or a toast, 60 in a dialog or an error toast, 90 where the product speaks (onboarding); a test holds the
+strings measured against it. Figures never wrap: columns size from their text. A verdict is a word when a percentage would overclaim.
 
 ### Boundaries
 

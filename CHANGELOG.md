@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.84 — 2026-10-01
+
+- Shorter copy. Twelve captions, errors and empty states said their point twice or explained the app to itself ("Unable to fetch updated currency rates. Please check your internet connection."); they now say it once ("Couldn't update rates. Check your connection."), in the five languages, each within the room of its slot (a line that already fit kept its words). The onboarding note no longer claims the opening balance is written as the first entry in the ledger: it is where the account starts.
+
 ## 3.0.83 — 2026-10-01
 
 - Soft budgets. An expense category gets a monthly limit from its sheet; the month block says what is left of the limits and how many categories are over, and Analytics draws each budgeted category against its limit (ink while within, accent from 80%, danger past it with the excess beside). What was left of a limit last month rides into the next, and nothing ever blocks an entry. Alerts are not part of this.

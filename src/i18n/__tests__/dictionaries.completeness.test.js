@@ -59,6 +59,33 @@ describe('i18n/dictionaries', () => {
     });
   });
 
+  // One line at the default size: a caption that has to wrap has said more than its slot can hold.
+  test('the strings in a tight slot stay under that slot\'s ceiling in every language', () => {
+    const CEILINGS = {
+      ERROR_SERVICE_RATES: 60,
+      ERROR_IMPORT: 60,
+      CONFIRM_DELETION_CAPTION: 60,
+      CONFIRM_LOCK_CAPTION: 60,
+      SCHEDULED_AUTOCREATE_LIMIT: 60,
+      SCHEDULED_EMPTY_GUIDE: 48,
+      EMPTY_ACCOUNTS_CAPTION: 48,
+      BIOMETRIC_UNLOCK_INVALIDATED: 48,
+      BIOMETRIC_UNLOCK_NOT_AVAILABLE: 32,
+      MASK_AMOUNTS_CAPTION: 32,
+      REMINDER_TIME_CAPTION: 32,
+      SCHEDULED_IMPACT_CAPTION: 24,
+      ONB_ACCOUNT_NOTE: 90,
+    };
+
+    [['EN', EN], ...LANGUAGES].forEach(([name, dictionary]) => {
+      const over = Object.entries(CEILINGS)
+        .filter(([key, ceiling]) => [...dictionary[key]].length > ceiling)
+        .map(([key]) => key);
+
+      expect({ [name]: over }).toEqual({ [name]: [] });
+    });
+  });
+
   test('no screen renders a raw key: the analytics copy resolves', () => {
     [EN, ...LANGUAGES.map(([, dictionary]) => dictionary)].forEach((dictionary) => {
       ['NET_WORTH', 'ACCOUNT_BALANCE', 'MONTH_TO_DATE', 'FLOW_IN', 'FLOW_OUT', 'AVERAGE', 'NET'].forEach((key) => {
