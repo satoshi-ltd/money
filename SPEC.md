@@ -49,7 +49,7 @@ Môney keeps one person's money on one person's phone and reads it back to them 
   no crash reporting, no identifier, no lead capture and no subscription; the last two were removed and their settings
   fields survive only for backup compatibility ([3](#3-data-and-storage)).
 - **One base currency.** The reader chooses the currency they think in; every figure converts to it at the day's rate
-  and a closed month at its closing day. The base can change at any time and the cached series converts in place
+  and a closed month at its closing day (the Overview month block's comparison with the usual is the one exception, [5](#5-rates-and-conversion)). The base can change at any time and the cached series converts in place
   without a request.
 - **Money moved is not money earned.** A swap between two own accounts and a transaction the reader marks as hidden
   from Analytics stay in every balance and leave every month figure: the Overview month, the cash-flow chart,
@@ -204,6 +204,12 @@ by the seed at boot; a seeded cache never dates itself as a download.
 falls in (local calendar), or of the latest month with that currency when no timestamp is given, or of the nearest
 earlier month when that one is missing. It returns `undefined` when there is nothing to convert with; callers skip the
 figure and never substitute 0. Lookups are memoised per rates object.
+
+Two rules use it, and each is stated once. What happened is told at the rate of the month it happened in: Analytics, its
+charts and category list, the category sheet, a row of a list and the day header over its rows price an entry
+identically. What is still to come, and the current balances, are read at the latest month. The one deliberate
+exception is the Overview month block, which compares this month with the reader's usual: every month there converts at
+one table, so a rate that moved between months cannot move the comparison.
 
 **Sync.** At boot, every six hours and on foreground when `lastRatesUpdate` is older than six hours; the manual
 "Update rates" in Settings always downloads. Settings shows the last successful download beside the row.

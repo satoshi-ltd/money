@@ -1,6 +1,6 @@
 # Môney roadmap
 
-Updated 2026-10-01 · 3.0.92, build 68.
+Updated 2026-10-01 · 3.0.93, build 69.
 
 This is the task pool. [SPEC.md](SPEC.md) owns current state, contracts, operations and the design system;
 [CHANGELOG.md](CHANGELOG.md) records what each version shipped; [AGENTS.md](AGENTS.md) defines the autonomous workflow
@@ -112,10 +112,10 @@ _None._
 
 ### Ledger and rates
 
-- **FX-ONE-RULE** — One rule for historical conversion
-  `chore · agent · normal`
-  accept: charts, month summaries and insights convert past entries with the same month table, stated in SPEC 5 and
-  proved by one shared test.
+- **FX-CLOSED-MONTH** — The closed month on Overview at its own rates
+  `feature · agent · low`
+  accept: the closed-month line of the Overview month block shows the figure Analytics shows for that month; its
+  comparison with the usual stays in constant currency; a test that both read the same number.
 
 ### Recommender
 

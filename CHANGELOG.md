@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.93 — 2026-10-01
+
+- The net on a day's header in a transaction list is priced like the rows under it, each at the rate of its own month. It used today's rate, so on a day in a past month the header and the rows disagreed when a rate had moved since.
+
 ## 3.0.92 — 2026-10-01
 
 - Rates are filed under the month on your clock, the one your entries are read in. Away from UTC an entry made in the first or last hours of a month could be priced from the neighbouring month's table, a day off; now the table of today is the table of that month wherever you are.
