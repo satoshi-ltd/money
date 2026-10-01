@@ -80,7 +80,11 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
     setBusy(false);
   };
 
-  const headerTitle = firstAccount ? L10N.FIRST_ACCOUNT : hash ? params.title?.trim() || L10N.ACCOUNT : `${L10N.NEW} ${L10N.ACCOUNT}`;
+  const headerTitle = firstAccount
+    ? L10N.FIRST_ACCOUNT
+    : hash
+      ? params.title?.trim() || L10N.ACCOUNT
+      : L10N.NEW_ACCOUNT;
 
   return (
     <Panel offset sheet title={headerTitle} onBack={firstAccount ? undefined : goBack}>

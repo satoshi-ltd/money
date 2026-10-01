@@ -102,7 +102,7 @@ describe('screens/Account', () => {
     expect(title({ hash: 'a1', currency: 'EUR', title: 'N26' })).toBe('N26');
     expect(title({ hash: 'a1', currency: 'EUR' })).toBe(L10N.ACCOUNT);
     expect(title({ hash: 'a1', currency: 'EUR', title: '  ' })).toBe(L10N.ACCOUNT);
-    expect(title({})).toBe(`${L10N.NEW} ${L10N.ACCOUNT}`);
+    expect(title({})).toBe(L10N.NEW_ACCOUNT);
     expect(title({ firstAccount: true })).toBe(L10N.FIRST_ACCOUNT);
     expect(componentsBy(render({ hash: 'a1', title: 'N26' }), 'heading')).toHaveLength(0);
   });

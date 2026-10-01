@@ -278,6 +278,7 @@ export const EN = {
 
   NAME: 'Name',
   NEW: 'New',
+  NEW_ACCOUNT: 'New account',
   NEXT: 'Next',
   LOCK: 'Lock',
   CONFIRM_LOCK: 'Lock Môney?',
@@ -618,6 +619,7 @@ export const PT = {
   ],
   NAME: 'Nome',
   NEW: 'Novo',
+  NEW_ACCOUNT: 'Nova conta',
   NEXT: 'Próximo',
   LOCK: 'Bloquear',
   CONFIRM_LOCK: 'Bloquear o Môney?',
@@ -917,7 +919,7 @@ export const FR = {
   EXPORT_DATA: 'Sauvegarder les données',
   EXPORT_CSV: 'Exporter en CSV',
 
-  FIRST_ACCOUNT: 'Votre première compte',
+  FIRST_ACCOUNT: 'Votre premier compte',
   FIRST_ACCOUNT_CAPTION: 'Choisissez votre devise principale. Ajoutez d’autres comptes ensuite.',
 
 
@@ -944,6 +946,7 @@ export const FR = {
   ],
   NAME: 'Nom',
   NEW: 'Nouveau',
+  NEW_ACCOUNT: 'Nouveau compte',
   NEXT: 'Suivant',
   LOCK: 'Verrouiller',
   CONFIRM_LOCK: 'Verrouiller Môney ?',
@@ -1270,6 +1273,7 @@ export const DE = {
   ],
   NAME: 'Name',
   NEW: 'Neu',
+  NEW_ACCOUNT: 'Neues Konto',
   NEXT: 'Weiter',
   LOCK: 'Sperren',
   CONFIRM_LOCK: 'Môney sperren?',
@@ -1598,6 +1602,7 @@ export const ES = {
 
   NAME: 'Nombre',
   NEW: 'Nuevo',
+  NEW_ACCOUNT: 'Nueva cuenta',
   NEXT: 'Siguiente',
   LOCK: 'Bloquear',
   CONFIRM_LOCK: '¿Bloquear Môney?',

@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.95 — 2026-10-01
+
+- The title of the new-account sheet is a phrase of its own in each language: "Nueva cuenta", "Nova conta", "Neues Konto" and "Nouveau compte", where joining the two words had read "Nuevo Cuenta", "Novo Conta" and "Neu Konto". The French first-account title says "Votre premier compte", not "première".
+
 ## 3.0.94 — 2026-10-01
 
 - A long name in the bar of a pushed screen, such as an account called "Savings and travel money" on its transactions, shortens with an ellipsis instead of pushing the action buttons off the right edge.

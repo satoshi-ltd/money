@@ -7,6 +7,18 @@ const LANGUAGES = [
   ['DE', DE],
 ];
 
+describe('i18n/dictionaries new account', () => {
+  const EXPECTED = { DE: 'Neues Konto', EN: 'New account', ES: 'Nueva cuenta', FR: 'Nouveau compte', PT: 'Nova conta' };
+
+  test('the title of a new account agrees in gender in every language, which joining New and Account never did', () => {
+    const all = { DE, EN, ES, FR, PT };
+
+    Object.entries(EXPECTED).forEach(([name, title]) => expect({ [name]: all[name].NEW_ACCOUNT }).toEqual({ [name]: title }));
+    ['DE', 'ES', 'PT'].forEach((name) => expect(all[name].NEW_ACCOUNT).not.toBe(`${all[name].NEW} ${all[name].ACCOUNT}`));
+    expect(FR.FIRST_ACCOUNT).toBe('Votre premier compte');
+  });
+});
+
 describe('i18n/dictionaries', () => {
   test('every English key is translated in every language', () => {
     const keys = Object.keys(EN);
