@@ -1,19 +1,7 @@
 import {
-  BUDGET_ROWS, budgetCategories, budgetState, calendar, esc, fig, heading, kebab, price, text, L,
+  calendar, esc, fig, kebab, text,
 } from './draw.mjs';
 
-
-const categoriesProposed = () =>
-  BUDGET_ROWS.map((row) => {
-    const state = budgetState(row);
-    const share = row.pct || Math.round((row.spent / 552.78) * 100);
-    const fillColor = { over: 'danger', near: 'text', within: 'text', none: kebab(row.color) }[state];
-    const width = state === 'none' ? share : Math.min(100, Math.round((row.spent / row.limit) * 100));
-
-    return `<div class="m-category"><i class="m-dot" style="width:9px;height:9px;background:var(--color-${kebab(row.color)})"></i><span style="flex:1">${text(row.name, { size: 's' })}</span><span class="track" style="max-width:96px"><i class="fill" style="display:block;width:${width}%;background:var(--color-${fillColor})"></i></span>${fig(`${share}%`, { size: 'xs', tone: 'muted', style: 'min-width:34px;text-align:right' })}${price(row.spent, { fixed: 0, bold: true, tone: state === 'over' ? 'danger' : undefined })}</div>`;
-  }).join('');
-
-const categoryList = (rows) => `<div class="m" style="width:320px;background:var(--color-background);padding:0 20px 16px">${heading(L.EXPENSES, { eyebrow: 'September' })}${rows}</div>`;
 
 const USES = { background: 18, surface: 17, surfaceSoft: 6, text: 19, textSecondary: 7, textMuted: 9, border: 40, rule: 5, accent: 27, onAccent: 6, accentSoft: 4, onAccentSoft: 5, positive: 3, danger: 9, dangerSoft: 2, warning: 0, success: 0, overlay: 2, inverse: 8, onInverse: 5 };
 const KEEP = ['background', 'surface', 'text', 'textSecondary', 'textMuted', 'border', 'rule', 'accent', 'onAccent', 'accentSoft', 'danger', 'dangerSoft', 'overlay'];
@@ -38,13 +26,6 @@ export const REVIEW = [
     accept: 'theme.colors has the thirteen roles on the right in both themes and no other; every colors.X in src/ and every tone name in Text and Icon resolves to one of them; the folded tokens are gone from theme.js, store, kit and SPEC; the contrast test still passes; no screen changes a pixel except where an alias had drifted (the kit diff shows them).',
     now: paletteNow(),
     proposed: paletteProposed(),
-  },
-  {
-    id: 'CATEGORY-FIGURES', area: 'Analytics · the expenses list', title: 'One figure beside every category',
-    why: 'The small figure to the right of the bar means three different things in one list: the share of the month (11%) for a category without a budget, the budget (of 300) for one within it and the excess (+21) for one over it; the bar changes ink with each. Recommended: the slot says the share for every row, since that is the question the list answers, and the budget stays in the bar (fill is spent over limit, danger when over) and in the category sheet, which already explains it in full.',
-    accept: 'Every row of the expenses list shows its share of the month\'s spend in the right slot; a budgeted row fills its bar by spent over limit, in ink within the budget and in danger over it, with the amount in danger too; no row shows "of" or "+"; a test per rule.',
-    now: categoryList(budgetCategories()),
-    proposed: categoryList(categoriesProposed()),
   },
   {
     id: 'CALENDAR-TARGET', area: 'DatePicker', title: 'Days a thumb can hit',

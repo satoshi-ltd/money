@@ -270,23 +270,22 @@ export const NET = 61648.74;
 export const CARD = { title: 'Visa', currency: 'USD', balance: -1284.3, base: -1284.3 };
 export const netEyebrow = () => `${L.NET_WORTH} · ${ACCOUNTS.length} ${L.ACCOUNTS_CAPTION(ACCOUNTS.length)} · ${BASE}`;
 
-export const BUDGET_ROWS = [
+const BUDGET_ROWS = [
   { name: 'Personal', limit: 300, spent: 226, color: 'accent' },
   { name: 'Transit', limit: 100, spent: 121, color: 'text' },
   { name: 'Food & Drinks', limit: 120, spent: 105, color: 'textSecondary' },
   { name: 'Leisure', spent: 61, pct: 11, color: 'textMuted' },
 ];
-export const budgetState = ({ limit, spent }) => (!limit ? 'none' : spent > limit ? 'over' : spent / limit >= 0.8 ? 'near' : 'within');
+const budgetState = ({ limit, spent }) => (!limit ? 'none' : spent > limit ? 'over' : spent / limit >= 0.8 ? 'near' : 'within');
 
 export const budgetCategories = () =>
   BUDGET_ROWS.map((row) => {
     const state = budgetState(row);
     const share = row.pct || Math.round((row.spent / 552.78) * 100);
-    const fillColor = { over: 'danger', near: 'accent', within: 'text', none: kebab(row.color) }[state];
+    const fillColor = state === 'over' ? 'danger' : state === 'none' ? kebab(row.color) : 'text';
     const width = state === 'none' ? share : Math.min(100, Math.round((row.spent / row.limit) * 100));
-    const note = state === 'none' ? `${share}%` : state === 'over' ? `+${row.spent - row.limit}` : L.BUDGET_OF(`${row.limit}`);
 
-    return `<div class="m-category"><i class="m-dot" style="width:9px;height:9px;background:var(--color-${kebab(row.color)})"></i><span style="flex:1">${text(row.name, { size: 's' })}</span><span class="track" style="max-width:96px"><i class="fill" style="display:block;width:${width}%;background:var(--color-${fillColor})"></i></span>${fig(note, { size: 'xs', tone: state === 'over' ? 'danger' : 'muted', style: 'min-width:34px;text-align:right' })}${price(row.spent, { fixed: 0, bold: true, tone: state === 'over' ? 'danger' : undefined })}</div>`;
+    return `<div class="m-category"><i class="m-dot" style="width:9px;height:9px;background:var(--color-${kebab(row.color)})"></i><span style="flex:1">${text(row.name, { size: 's' })}</span><span class="track" style="max-width:96px"><i class="fill" style="display:block;width:${width}%;background:var(--color-${fillColor})"></i></span>${fig(`${share}%`, { size: 'xs', tone: 'muted', style: 'min-width:34px;text-align:right' })}${price(row.spent, { fixed: 0, bold: true, tone: state === 'over' ? 'danger' : undefined })}</div>`;
   }).join('');
 
 export const budgetBlock = () =>

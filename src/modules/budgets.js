@@ -1,11 +1,9 @@
 import { monthIndex } from './monthIndex';
 
-const NEAR_SHARE = 0.8;
-
 const sum = (values) => values.reduce((total, value) => total + value, 0);
 
 export const budgetState = ({ spent = 0, total }) =>
-  !(total > 0) ? 'none' : spent > total ? 'over' : spent / total >= NEAR_SHARE ? 'near' : 'within';
+  !(total > 0) ? 'none' : spent > total ? 'over' : 'within';
 
 export const budgetOf = ({ entry, month, spent = 0, spentBefore = 0 } = {}) => {
   const limit = Number(entry?.limit);

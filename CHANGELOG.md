@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.88 — 2026-10-01
+
+- Analytics says one thing beside each category bar: its share of the month. A budgeted category no longer swaps that for "of 300" or "+21"; its bar still runs to the limit, turns danger and reddens the amount when passed, and the budget's own figures stay in the category sheet. Neither the list nor the sheet turns its bar accent at four fifths any more: ink up to the limit, danger past it.
+
 ## 3.0.87 — 2026-10-01
 
 - The account sheet dresses like the others: its title is the account's name (a long one gives way to the close button), the "Details" heading and the Cancel button are gone, and the close button leaves the sheet.

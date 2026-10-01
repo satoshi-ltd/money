@@ -1,6 +1,6 @@
 # Môney roadmap
 
-Updated 2026-10-01 · 3.0.87, build 63.
+Updated 2026-10-01 · 3.0.88, build 64.
 
 This is the task pool. [SPEC.md](SPEC.md) owns current state, contracts, operations and the design system;
 [CHANGELOG.md](CHANGELOG.md) records what each version shipped; [AGENTS.md](AGENTS.md) defines the autonomous workflow
@@ -40,9 +40,6 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 ## Queue
 
-- **CATEGORY-FIGURES** — One figure beside every category
-  `ui · agent · normal`
-  accept: the board.
 - **CALENDAR-TARGET** — Days a thumb can hit
   `ui · agent · normal`
   accept: the board.
@@ -101,6 +98,9 @@ _None._
 
 ### Ledger and rates
 
+- **A11Y-BUDGET-ROW** — A budget passed is said, not only coloured
+  `feature · agent · low`
+  accept: a category row of the Analytics list names its share and, when its budget is passed, says so to a screen reader; a test on the label.
 - **NEW-ACCOUNT-COPY** — The new-account title in the language's own shape
   `chore · agent · low`
   accept: a `NEW_ACCOUNT` key in the five dictionaries replaces `${NEW} ${ACCOUNT}`, which reads "Nuevo Cuenta", "Novo Conta" and "Neu Konto"; a test per language.

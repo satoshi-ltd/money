@@ -294,8 +294,9 @@ button, "See all N" with a chevron, that opens Scheduled.
 - **Analytics** (Stats) — range toggle (6M, 1Y, All) in the masthead; the balance chart with its trailing average over a
   quarter of the range and a legend; the cash-flow chart with incomes above and expenses below the baseline, median
   reference lines, bars clipped at three times the median with a break, and a pointer that selects a month; month KPIs
-  (in, out, net); expenses and incomes by category with an "Others" fold; a budgeted expense category draws its track against its
-  limit (ink while within, accent from 80%, danger past it with the excess beside). A category opens its sheet. Under two
+  (in, out, net); expenses and incomes by category with an "Others" fold; every row says its share of the month beside the bar,
+  and a budgeted expense category draws its track against its limit (ink within it, danger past it, with the amount in
+  danger too; the limit and the excess are the category sheet's to tell). A category opens its sheet. Under two
   months of history there is no line to draw: the screen shows an empty state that leads to the first entry.
 - **Category** (sheet) — the category's month total and share of spend, the delta against its average, "Where it went"
   by merchant with bars and counts, and the latest entries; "See all N" opens Transactions filtered to that category

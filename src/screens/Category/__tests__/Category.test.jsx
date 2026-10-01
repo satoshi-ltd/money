@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text as RNText } from 'react-native';
+import { StyleSheet, Text as RNText } from 'react-native';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import { Category } from '../Category';
@@ -11,7 +11,7 @@ const goBack = jest.fn();
 let mockStore;
 
 jest.mock('../../../contexts', () => ({
-  useApp: () => ({ colors: { accent: '#ACCE07', border: '#B0RDE0', surface: '#5URFA0', text: '#TEXT00' } }),
+  useApp: () => ({ colors: { accent: '#ACCE07', danger: '#DANG00', border: '#B0RDE0', surface: '#5URFA0', text: '#TEXT00' } }),
   useStore: () => mockStore,
 }));
 
@@ -130,6 +130,18 @@ describe('screens/Category budget', () => {
 
     expect(allText(root)).toEqual(expect.arrayContaining([L10N.BUDGET_CARRIED, L10N.BUDGET_LEFT, L10N.BUDGET_OF('550')]));
     expect(values).toEqual(expect.arrayContaining([50, 150]));
+  });
+
+  test('the budget bar is ink up to the limit, even close to it, and danger only past it', () => {
+    const fill = (limit) =>
+      withBudget(limit)
+        .findAllByType('View')
+        .map((node) => StyleSheet.flatten(node.props.style))
+        .find((flat) => flat?.width && /%$/.test(flat.width) && flat.backgroundColor)?.backgroundColor;
+
+    expect(fill(1000)).toBe('#TEXT00');
+    expect(fill(450)).toBe('#TEXT00');
+    expect(fill(300)).toBe('#DANG00');
   });
 
   test('past the total what is left is negative and in the danger tone', () => {

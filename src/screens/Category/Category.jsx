@@ -105,7 +105,7 @@ const Category = ({ navigation: { goBack, navigate } = {}, route: { params = {} 
                 style={[
                   style.budgetFill,
                   {
-                    backgroundColor: { near: colors.accent, over: colors.danger, within: colors.text }[budget.state],
+                    backgroundColor: budget.state === 'over' ? colors.danger : colors.text,
                     width: `${Math.min(100, Math.round((budget.spent * 100) / budget.total))}%`,
                   },
                 ]}

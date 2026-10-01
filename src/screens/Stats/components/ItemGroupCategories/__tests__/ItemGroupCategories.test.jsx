@@ -102,7 +102,7 @@ describe('screens/Stats/ItemGroupCategories', () => {
       const withPrevious = bars({ previous: { 4: { mercadona: 100 }, 5: { 'casa paco': 150 } } });
       const withoutPrevious = bars();
 
-      expect(withPrevious[0].props.budget).toMatchObject({ carried: 200, state: 'near', total: 500 });
+      expect(withPrevious[0].props.budget).toMatchObject({ carried: 200, state: 'within', total: 500 });
       expect(withPrevious[1].props.budget).toMatchObject({ carried: 0, state: 'over', total: 150 });
       expect(withoutPrevious[0].props.budget.carried).toBe(0);
     });

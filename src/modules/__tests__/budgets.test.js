@@ -3,10 +3,10 @@ import { budgetOf, budgetsSummary, budgetState, validBudgets, withBudget } from 
 const SEPTEMBER = 2026 * 12 + 8;
 
 describe('modules/budgets state', () => {
-  test('within until four fifths of the limit, near from there, over only past it', () => {
+  test('within up to the limit itself, over only past it', () => {
     expect(budgetState({ spent: 79, total: 100 })).toBe('within');
-    expect(budgetState({ spent: 80, total: 100 })).toBe('near');
-    expect(budgetState({ spent: 100, total: 100 })).toBe('near');
+    expect(budgetState({ spent: 80, total: 100 })).toBe('within');
+    expect(budgetState({ spent: 100, total: 100 })).toBe('within');
     expect(budgetState({ spent: 100.01, total: 100 })).toBe('over');
   });
 
