@@ -9,8 +9,12 @@ export const style = StyleSheet.create({
     alignItems: 'center',
     borderTopWidth: theme.hairline,
     flexDirection: 'row',
+    gap: theme.spacing.sm,
     justifyContent: 'space-between',
     minHeight: rowHeight,
+  },
+  checkLabel: {
+    flexShrink: 1,
   },
   suggestion: {
     alignSelf: 'center',

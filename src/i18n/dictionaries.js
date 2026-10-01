@@ -118,7 +118,7 @@ export const EN = {
   ACCOUNT_ACTIONS: 'Account & data',
   ACCEPT: 'Accept',
   ACTIVITY: 'Analytics',
-  HIDE_FROM_ANALYTICS: 'Hide from Analytics',
+  HIDE_FROM_ANALYTICS: 'Hide from Analytics and the month',
   AMOUNT: 'Amount',
   DATA: 'Data',
 
@@ -448,7 +448,7 @@ export const PT = {
   ACCOUNT_ACTIONS: 'Conta e dados',
   ACCEPT: 'Aceitar',
   ACTIVITY: 'Análises',
-  HIDE_FROM_ANALYTICS: 'Ocultar das Análises',
+  HIDE_FROM_ANALYTICS: 'Ocultar das Análises e do mês',
   AMOUNT: 'Valor',
   DATA: 'Dados',
 
@@ -762,7 +762,7 @@ export const FR = {
   ACCOUNT_ACTIONS: 'Compte et données',
   ACCEPT: 'Accepter',
   ACTIVITY: 'Analyses',
-  HIDE_FROM_ANALYTICS: 'Masquer des Analyses',
+  HIDE_FROM_ANALYTICS: 'Exclure des Analyses et du mois',
   AMOUNT: 'Montant',
   DATA: 'Données',
 
@@ -1078,7 +1078,7 @@ export const DE = {
   ACCOUNT_ACTIONS: 'Konto & Daten',
   ACCEPT: 'Akzeptieren',
   ACTIVITY: 'Analysen',
-  HIDE_FROM_ANALYTICS: 'Nicht in Analysen',
+  HIDE_FROM_ANALYTICS: 'Nicht in Analysen und im Monat',
   AMOUNT: 'Betrag',
   DATA: 'Daten',
 
@@ -1393,7 +1393,7 @@ export const ES = {
   ACCOUNT_ACTIONS: 'Cuenta y datos',
   ACCEPT: 'Aceptar',
   ACTIVITY: 'Analíticas',
-  HIDE_FROM_ANALYTICS: 'Ocultar en Analíticas',
+  HIDE_FROM_ANALYTICS: 'Ocultar en Analíticas y en el mes',
   AMOUNT: 'Importe',
   DATA: 'Datos',
 

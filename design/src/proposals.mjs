@@ -1,6 +1,6 @@
 import {
-  ACCOUNTS, BASE, DE, ICON, L, NET, accountRow,
-  check, chip, esc, eyebrow, fieldRow, fig,
+  ACCOUNTS, BASE, ICON, L, NET, accountRow,
+  chip, esc, eyebrow, fieldRow, fig,
   heading, icon, input, kebab, masthead, monthRow,
   monthSummary, price, rightValue, seg, setting, switchEl, text, 
 } from './draw.mjs';
@@ -56,9 +56,6 @@ const conceptForm = (rows) =>
   frame(`<div><div>${seg([L.EXPENSE, L.INCOME, L.SWAP], L.EXPENSE)}</div><div style="margin-top:16px">${fieldRow(L.CONCEPT, input('sal', { right: true }))}${rows}${amountRow('')}${accountField()}${fieldRow(L.CATEGORY, text('Food & Drinks', { size: 's', medium: true }), { divider: true, chevron: true })}</div></div>`, { sheet: true });
 
 
-const hideRow = (label, size) => `<div class="m-checkrow">${text(label, { size, tone: 'muted', style: 'flex:1' })}${check(false)}</div>`;
-const hideFrame = (label, deLabel) =>
-  frame(`<div>${eyebrow('English', { style: 'display:block;margin-top:4px' })}${hideRow(label, 's')}${eyebrow('Deutsch', { style: 'display:block;margin-top:12px' })}${hideRow(deLabel, 's')}${eyebrow('Large text, Deutsch', { style: 'display:block;margin-top:12px' })}${hideRow(deLabel, 'l')}</div>`, { sheet: true });
 
 export const REVIEW = [
   {
@@ -99,13 +96,6 @@ export const REVIEW = [
     accept: 'With no proposal under the current type, the row for the other type appears marked with that type\'s name; it never appears when the current type has a proposal; the chip names the type in the five languages.',
     now: conceptForm(''),
     proposed: conceptForm(proposalFrom({ title: 'Salary', where: 'Chase · Salary', value: 3000, mark: L.INCOME })),
-  },
-  {
-    id: 'UI-HIDE-COPY', area: 'Transaction form', title: 'What the checkbox promises',
-    why: 'The box keeps an entry out of Analytics and out of the Overview month block, but the label names only Analytics. Recommended: the wider label, "Hide from Analytics and the month", which says what happens and still fits one line at the default size (it wraps to two at large text, as drawn). Alternative: keep the label and document the wider effect in SPEC, which costs no width but leaves the reader guessing.',
-    accept: 'The Transaction and Clone forms draw the wider label in the five languages; the row stays at least 44 points tall and wraps without clipping at the largest text size.',
-    now: hideFrame(L.HIDE_FROM_ANALYTICS, DE.HIDE_FROM_ANALYTICS),
-    proposed: hideFrame('Hide from Analytics and the month', 'Nicht in Analysen und im Monat'),
   },
 ];
 

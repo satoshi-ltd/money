@@ -40,10 +40,6 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 ## Queue
 
-- **UI-HIDE-COPY** — What "Hide from Analytics" promises
-  `ui · agent · normal`
-  accept: the board UI-HIDE-COPY: the Transaction and Clone forms say "Hide from Analytics and the month" in the five
-  languages.
 - **REC-CROSS-TYPE** — Proposals from the other type
   `feature · agent · normal`
   accept: typing a title known only under the other type offers it, marked, when the current type has nothing;

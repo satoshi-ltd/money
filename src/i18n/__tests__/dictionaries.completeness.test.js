@@ -51,6 +51,14 @@ describe('i18n/dictionaries', () => {
     });
   });
 
+  test('the hide label names the month as well as Analytics, because the box hides from both', () => {
+    const month = { EN: /month/i, ES: /mes/i, PT: /mês/i, FR: /mois/i, DE: /monat/i };
+
+    [['EN', EN], ...LANGUAGES].forEach(([name, dictionary]) => {
+      expect({ [name]: month[name].test(dictionary.HIDE_FROM_ANALYTICS) }).toEqual({ [name]: true });
+    });
+  });
+
   test('no screen renders a raw key: the analytics copy resolves', () => {
     [EN, ...LANGUAGES.map(([, dictionary]) => dictionary)].forEach((dictionary) => {
       ['NET_WORTH', 'ACCOUNT_BALANCE', 'MONTH_TO_DATE', 'FLOW_IN', 'FLOW_OUT', 'AVERAGE', 'NET'].forEach((key) => {

@@ -264,7 +264,7 @@ button, "See all N" with a chevron, that opens Scheduled.
   from a category it lists that category's entries of the month across accounts, titled after both, without the
   account hero or Edit.
 - **Transaction** (sheet) — expense, income or swap toggle; the form of [6](#6-insights-and-the-recommender) with
-  concept, proposals, amount with the account's symbol, account, category, "Hide from Analytics", date; Save. A swap
+  concept, proposals, amount with the account's symbol, account, category, "Hide from Analytics and the month", date; Save. A swap
   shows from, send, destination, receive.
 - **Clone** (sheet) — the same form seeded from an entry, with Delete, Duplicate (only when unchanged) and Save.
 - **Scheduled** — a panel with the monthly impact, then the templates in three groups (next 7 days, this month, later)
@@ -406,7 +406,7 @@ the button trait. Controls that carry text are read by that text, never by a lab
 are tabs with a selected state; segments and dropdown options are buttons with a selected state; a Settings row is a
 button with its disabled state. On iOS an accessible row is a leaf for VoiceOver, so a row that holds a control is
 the control: a toggle row is one switch with its checked state and the native switch hidden from the reader, and the
-"Hide from Analytics" row is one checkbox with its glyph hidden. A notification band that dismisses on tap is one
+"Hide from Analytics and the month" row is one checkbox with its glyph hidden. A notification band that dismisses on tap is one
 button with a "Dismiss" hint; otherwise the band is not accessible and its close is. A keypad slot with nothing behind
 it is not accessible at all.
 

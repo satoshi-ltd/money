@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.79 — 2026-10-01
+
+- The "Hide from Analytics" checkbox says what it does: "Hide from Analytics and the month", and the same in the other four languages, because it also keeps the entry out of the Overview month. The label wraps beside its box at large text instead of pushing it off.
+
 ## 3.0.78 — 2026-10-01
 
 - The months on the charts read as months in every language. They were the first three letters of the name, so German drew "mär" and French drew "jui" for both juin and juillet; each language now has its own short months ("juin", "juil.", "märz").

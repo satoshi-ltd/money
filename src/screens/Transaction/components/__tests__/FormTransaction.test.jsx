@@ -5,6 +5,7 @@ import TestRenderer, { act } from 'react-test-renderer';
 import FormTransaction from '../FormTransaction';
 import { L10N, suggestCategory } from '../../../../modules';
 import { theme } from '../../../../theme';
+import { rowHeight } from '../../../../theme/layout';
 
 
 let mockTxs = [];
@@ -189,6 +190,15 @@ describe('screens/Transaction/FormTransaction', () => {
     expect(rows).toHaveLength(5);
     expect(rows.filter((node) => node.props.divider)).toHaveLength(4);
     expect(rows[0].props.divider).toBeFalsy();
+  });
+
+  test('the hide label wraps beside its box instead of pushing it off, and the row keeps its height', () => {
+    const root = render({ form: {}, onChange: () => {} });
+    const [row] = root.findAll((node) => node.props?.accessibilityRole === 'checkbox' && node.props?.accessibilityLabel);
+    const label = root.findAll((node) => typeof node.type === 'string' && node.props?.children === L10N.HIDE_FROM_ANALYTICS)[0];
+
+    expect(StyleSheet.flatten(label.props.style).flexShrink).toBe(1);
+    expect(StyleSheet.flatten(row.props.style)).toMatchObject({ minHeight: rowHeight, gap: theme.spacing.sm });
   });
 
   test('the hide row is one checkbox to a screen reader, named and stated', () => {

@@ -371,7 +371,7 @@ const FormTransaction = ({
           onPress={() => handleField('moved', !safeForm.moved)}
           style={[style.checkRow, { borderTopColor: colors.border }]}
         >
-          <Text size="s" tone="muted">
+          <Text size="s" style={style.checkLabel} tone="muted">
             {L10N.HIDE_FROM_ANALYTICS}
           </Text>
           <Checkbox accessible={false} checked={safeForm.moved === true} importantForAccessibility="no-hide-descendants" />
