@@ -25,7 +25,7 @@ you: no account, no cloud, no analytics, no crash reports, no identifier.
 yarn install
 yarn start          # Metro for the development client; press a for Android
 yarn validate       # release check, lint, tests — before claiming anything done
-yarn design         # regenerate the design kit in design/
+yarn design         # regenerate the design kit in design/ (node design/build.mjs)
 ```
 
 The app runs in a development client, not Expo Go: build it once with `yarn build:local:dev` (below) and let Metro
@@ -62,7 +62,8 @@ Five documents, one question each: this README (what it is, how to run it), [AGE
 working here), [SPEC.md](SPEC.md) (how it works today: data, ledger rules, rates, insights, screens, operations, design
 system), [ROADMAP.md](ROADMAP.md) (what is left, as a task pool) and [CHANGELOG.md](CHANGELOG.md) (what each version
 shipped). `design/` is the design kit, generated from the tokens and the copy: open `design/index.html` for the
-system, `design/mobile.html` for every screen and `design/proposals.html` for open work.
+system, `design/mobile.html` for every screen and `design/proposals.html` for visual proposals; its rules are in
+`design/AGENTS.md`.
 
 Behaviour changes rewrite the SPEC section that owns them; remaining work goes to ROADMAP; every version that ships
 gets its CHANGELOG entry.

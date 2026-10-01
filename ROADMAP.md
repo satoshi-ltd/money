@@ -11,8 +11,8 @@ that consumes this file.
 Every task is one entry that a single commit can finish, with fixed fields (decisions only need their question):
 
 - **ID** — stable, never reused. Keep an existing ID when SPEC or the changelog cites it.
-- **type** — `bug`, `feature`, `chore`, `verify` (evidence from a real device), `deploy` (a build or an install outside
-  the repository) or `decision`.
+- **type** — `bug`, `feature`, `chore`, `ui` (a visible change approved from its board in `design/proposals.html`),
+  `verify` (evidence from a real device), `deploy` (a build or an install outside the repository) or `decision`.
 - **owner** — `agent` (finished in the repository and proved with tests) or `creator` (@soyjavi: an EAS build, an
   install, a device check, credentials or a product choice).
 - **priority** — `high`, `normal` or `low`. The Queue runs top to bottom in the creator's order; in the other lanes,
@@ -26,7 +26,12 @@ Lanes:
   exception that enters at the top: a bug the creator reports.
 - **In progress** — at most one agent task.
 - **Needs creator** — `verify`, `deploy` and `decision` tasks, and agent work waiting on one of them.
-- **Proposed** — ideas not yet approved, from the creator or from the agent. Never worked on until approved.
+- **Proposed** — ideas not yet approved, from the creator or from the agent. Never worked on until approved. A purely
+  visual idea is not filed here: it is a board in `design/proposals.html` and nothing else until the creator approves
+  it, when it enters the Queue as one `ui` line with the board's ID and "the board" as its accept. A task that mixes
+  logic and a screen splits: the screen is the board `UI-<TASKID>` and its `ui` line; the logic keeps its own ID and
+  its accept carries the line "the interface follows board `UI-<TASKID>`". A board ID never equals a non-`ui` task ID;
+  the rest of the contract is in [design/AGENTS.md](design/AGENTS.md).
 
 When a task ships, delete it and record it in the changelog and in the SPEC section it changes. When a feature needs
 device evidence, split it: the implementation is an agent task; the device check is a creator `verify` task that
@@ -90,7 +95,8 @@ _None._
 - **DEC-HIDE-COPY** — What "Hide from Analytics" promises
   `decision · creator · low`
   accept: the checkbox also keeps a transaction out of the Overview month block; decide between a wider label and
-  documenting the current one.
+  documenting the current one;
+  the interface follows board UI-HIDE-COPY.
 - **DEC-CATEGORY-HIDDEN** — Do hidden entries belong to a category's sheet?
   `decision · creator · normal`
   accept: an entry marked "Hide from Analytics" leaves the Analytics category bar (`queryMonth` skips `isMovement`)
@@ -109,7 +115,8 @@ _None._
 - **ACC-NEGATIVE** — Liabilities and credit cards
   `feature · agent · normal`
   accept: an account can hold a negative balance end to end (storage, `consolidate`, the account row, insights);
-  tests for a negative opening balance and a card paid off.
+  tests for a negative opening balance and a card paid off;
+  the interface follows board UI-ACC-NEGATIVE.
 - **FX-ONE-RULE** — One rule for historical conversion
   `chore · agent · normal`
   accept: charts, month summaries and insights convert past entries with the same month table, stated in SPEC 5 and
@@ -143,7 +150,8 @@ _None._
   both); a shared helper with a test.
 - **REC-CROSS-TYPE** — Proposals from the other type
   `feature · agent · low`
-  accept: typing a title known only under the other type offers it, marked, when the current type has nothing.
+  accept: typing a title known only under the other type offers it, marked, when the current type has nothing;
+  the interface follows board UI-REC-CROSS-TYPE.
 
 ### Insights and notifications
 
@@ -157,11 +165,13 @@ _None._
 - **INS-V2** — Patterns
   `feature · agent · low`
   accept: day-of-week patterns, the largest entries of the month and subscription detection, each as one line in the
-  month block, each behind a test.
+  month block, each behind a test;
+  the interface follows board UI-INS-V2.
 - **NOTIF-TIME** — A reminder time of the reader's own
   `feature · agent · normal`
   accept: Settings offers the hour of the scheduled and backup reminders (today fixed at 08:00 the day before); the
-  stored preference survives a backup round trip.
+  stored preference survives a backup round trip;
+  the interface follows board UI-NOTIF-TIME.
 - **NOTIF-DIGEST** — A weekly or monthly digest
   `feature · agent · low`
   accept: an optional notification summarising the period, scoped by its own `kind`, never cancelling the others.
@@ -171,13 +181,16 @@ _None._
 - **BUDGETS** — Soft category budgets
   `feature · agent · low`
   accept: phase 1: a soft budget per category with monthly rollover and a line in the month block; alerts are a
-  later task.
+  later task;
+  the interface follows board UI-BUDGETS.
 - **GOALS** — Savings goals
   `feature · agent · low`
-  accept: a goal with a target and monthly progress, in the base currency.
+  accept: a goal with a target and monthly progress, in the base currency;
+  the interface follows board UI-GOALS.
 - **SPLIT-TX** — One entry, several categories
   `feature · agent · low`
-  accept: a transaction split across categories keeps one balance effect and reports per category in Analytics.
+  accept: a transaction split across categories keeps one balance effect and reports per category in Analytics;
+  the interface follows board UI-SPLIT-TX.
 
 ### Engineering
 
@@ -185,7 +198,8 @@ _None._
   `bug · agent · low`
   accept: Chart and FlowChart build their ticks with `L10N.MONTHS[i].slice(0, 3).toLowerCase()`, so German ships
   "mär" and French draws "jui" twice (juin, juillet). A `MONTHS_SHORT` key per language ("juin", "juil.") feeds both
-  charts; whether ticks stay lower case is stated in SPEC 9; a French test with distinct ticks.
+  charts; whether ticks stay lower case is stated in SPEC 9; a French test with distinct ticks;
+  the interface follows board UI-MONTH-TICKS.
 - **A11Y-ANNOUNCE** — Notifications announce themselves to a screen reader
   `feature · agent · low`
   accept: a notification band arriving is announced (`accessibilityLiveRegion="polite"` on Android,

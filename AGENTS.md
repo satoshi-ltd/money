@@ -24,7 +24,8 @@ Five documents, each answering one question. Put information in the one that own
   `yarn check:release` refuses a version without its entry.
 - Update the owning document in the same change as the code. Decisions go to the list below or to SPEC, remaining work
   to ROADMAP, never to chat history or extra status files. `design/` is the design kit, not a document: after any
-  visible change run `yarn design` (`scripts/__tests__/design.test.js` fails until you do).
+  visible change run `yarn design` (`scripts/__tests__/design.test.js` fails until you do); its rules are in
+  `design/AGENTS.md`.
 
 ## Workflow
 
@@ -58,7 +59,8 @@ Rules of the loop:
   not to commit, prepare and validate but leave the change uncommitted until told otherwise.
 - Adversarial review before every commit; a second pass on the deltas when the fixes were substantive.
 - Interruptions: triage before continuing, and say where each item went. A bug the creator reports goes to the top of
-  Queue; a requested feature goes to Queue; ideas, including your own, go to Proposed; questions get answered.
+  Queue; a requested feature goes to Queue; ideas, including your own, go to Proposed, except purely visual ones, which
+  become a board in `design/proposals.html`; questions get answered.
 - Anything needing an EAS build, an install, a physical device, credentials or a product choice becomes a
   `Needs creator` task. When a feature needs device evidence, split it: the implementation is an agent task; the
   device check is a creator `verify` task that depends on it.
@@ -84,6 +86,17 @@ Rules of the loop:
   that needs the language's own shape (ordinals, marks) is a function of its argument, not a template.
 - Parallel shell calls use absolute paths; a `cd` in one call leaks into its siblings.
 - Remote: `git@github.com:satoshi-ltd/money.git`, branch `v3`; Mikel also pushes there. Never rewrite pushed history.
+
+## Design kit
+
+`design/` is the generated visual reference, never edited by hand: after any visible change run `yarn design`
+(`scripts/__tests__/design.test.js` fails until you do). The design-kit contract, board format and lifecycle live in
+`design/AGENTS.md`.
+
+- **Views in sync.** The views (System and every interface tab) show what ships; Proposals shows what is proposed.
+  Shipping a proposal is one change: the code, the views regenerated so they show the new design, the board deleted,
+  its `ui` line deleted, and the changelog and the spec updated. A board left standing after its change shipped, or a
+  view that still draws the old look, fails the adversarial review before the commit.
 
 ## Product decisions (non-negotiable)
 

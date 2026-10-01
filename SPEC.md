@@ -298,7 +298,7 @@ button, "See all N" with a chevron, that opens Scheduled.
 | `yarn validate` | `check:release`, `lint`, `test` — the one command before claiming done |
 | `yarn check:release` | `package.json` and `app.json` agree on version and build, and `CHANGELOG.md` has the entry |
 | `yarn bump [minor\|major]` | Moves `version`, `ios.buildNumber` and `android.versionCode` together and opens the changelog entry |
-| `yarn design` | Regenerates `design/` from the tokens, the copy and the roadmap |
+| `yarn design` | `node design/build.mjs`: regenerates the pages, `tokens.css` and `favicon.png` in `design/` from the tokens, the copy and the screens |
 | `yarn rates:seed` | Rebuilds `src/modules/ratesSeed.json` from the feed |
 | `yarn build:local:dev` · `yarn build:local:prod` | `eas build --local`: the dev client installed on the device; the signed APK in `release-assets/` |
 | `yarn build:dev` · `yarn build:prod` | The same profiles on EAS cloud, downloaded (and installed for dev) |
@@ -441,6 +441,8 @@ src/i18n/                                       dictionaries (EN, ES, PT, FR, DE
 src/theme/                                      theme.js (tokens), layout.js (geometry)
 src/primitives/, src/components/                the design system
 src/screens/<Screen>/                           the screen, its style, modules/ or helpers/, components/
-scripts/                                        check-release, bump, design, android-build, rates-seed, prepare-native
-design/                                         the generated kit (index, mobile, proposals)
+scripts/                                        check-release, bump, android-build, rates-seed, prepare-native
+design/                                         the design kit: AGENTS.md (its contract), build.mjs (generator),
+                                                src/ (draw, views, proposals), kit.css, kit.js, and the generated
+                                                index, mobile, proposals, tokens.css, favicon.png
 ```
