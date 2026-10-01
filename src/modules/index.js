@@ -31,6 +31,7 @@ export * from './ledgerDate';
 export * from './ledgerPosition';
 export * from './median';
 export * from './monthFlow';
+export * from './monthGrid';
 export * from './monthIndex';
 export * from './monthlyImpact';
 export * from './rankInk';

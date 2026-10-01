@@ -1,6 +1,6 @@
 {
   "name": "money",
-  "version": "3.0.85",
+  "version": "3.0.86",
   "main": "index.js",
   "private": true,
   "scripts": {
@@ -26,7 +26,6 @@
   "dependencies": {
     "@expo/metro-runtime": "~55.0.12",
     "@react-native-async-storage/async-storage": "2.2.0",
-    "@react-native-community/datetimepicker": "8.6.0",
     "@react-navigation/bottom-tabs": "^7",
     "@react-navigation/native": "^7",
     "@react-navigation/native-stack": "^7",

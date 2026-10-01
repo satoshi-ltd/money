@@ -22,7 +22,6 @@ jest.mock('../../../../modules', () => ({
   suggestAmount: jest.fn(() => undefined),
 }));
 
-jest.mock('@react-native-community/datetimepicker', () => () => null);
 
 jest.mock('../../../../components', () => {
   const ReactNative = require('react-native');

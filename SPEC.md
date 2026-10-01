@@ -256,9 +256,13 @@ button, "See all N" with a chevron, that opens Scheduled.
 - **Defaults.** A new transaction opens on the account's most frequent category for its type; choosing another account
   starts the category over from that account's habit.
 - **Date.** The Date row of the Transaction and Clone sheets (capped at today) and of the scheduled form (not before
-  today, or not before its own start when that is already past) opens `DatePicker`. On iOS it is the inline calendar in
-  a `Modal`; on Android it is the system dialog opened with `DateTimePickerAndroid.open` and drawn by no sheet of ours,
-  because a native dialog inside an app `Modal` floats under a second backdrop and answers no taps.
+  today, or not before its own start when that is already past) opens `DatePicker`: a month drawn by Môney in a
+  `Modal`, the same on iOS and Android, with no system dialog. Arrows move between months and stop at the first month
+  the limits allow; the month is named from the dictionary and the week opens on Monday, or on Sunday in English. Days
+  outside the limits are dimmed and not tappable, today is outlined and the chosen day wears the accent. A tap chooses,
+  Accept hands over the day at the time of the value it replaces (never past the maximum or before the minimum) and
+  Cancel, the sheet's drag or Android's back leave the date as it was. Every day is a button named in full for a screen
+  reader; the weekday header is hidden from one.
 
 ## 7. Screens
 
@@ -402,7 +406,7 @@ label, value column, chevron), Setting and SettingSelect (row, subtitle, right v
 (symbol well), Card, Chart (line, trend, pointer, axis, legend), FlowChart (bars, medians, break marks, month labels),
 MonthSummary, TransactionsList and TransactionItem (time, title, category, amount and base figure; swipe to delete),
 EmptyState, Notification (a band from the top: accent, inverse or danger), Confirm (dialog with a danger well),
-DatePicker (inline calendar in a sheet on iOS, the system dialog on Android), Modal (bottom sheet with a drag to close),
+DatePicker (a month in a sheet, drawn by Môney on both platforms), Modal (bottom sheet with a drag to close),
 Panel (screen with masthead, floating element, sheet mode), Screen (scroll with keyboard insets), IconButton,
 FloatingAdd, Logo, Mark, Colophon.
 

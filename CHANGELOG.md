@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.0.86 — 2026-10-01
+
+- One calendar, drawn by Môney on iOS and Android. The Date row of a transaction, a clone and a scheduled transaction opens a month in the sheet: hairlines, mono figures, the accent on the chosen day, today outlined, days past the limit dimmed and not tappable, the month in your language and the week opening on Monday (Sunday in English). Pick a day, then Accept; Cancel leaves the date as it was.
+- Every day is announced by its full name to a screen reader, and the arrows name the month they go to.
+- A picked day keeps the time of the entry, and never lands in the future.
+
 ## 3.0.85 — 2026-10-01
 
 - The Android calendar answers taps. The date of a transaction, a clone and a scheduled transaction opens the system calendar on its own instead of inside one of our sheets, where it floated dimmed and ignored every tap. iOS keeps the inline calendar in the sheet.

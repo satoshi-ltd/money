@@ -24,6 +24,7 @@ export const { theme } = evaluate('src/theme/theme.js');
 export const layout = evaluate('src/theme/layout.js', { theme });
 export const { EN: L, DE, FR } = evaluate('src/i18n/dictionaries.js');
 export const { ICON } = evaluate('src/modules/icon.js');
+export const { dayAllowed, monthWeeks, weekdayOrder, weekStartFor } = evaluate('src/modules/monthGrid.js');
 export const { GLYPHS } = evaluate('src/primitives/Icon/glyphs.js');
 export const { C } = evaluate('src/modules/constants.js', { Platform: { OS: 'ios', Version: 0 }, PKG, __DEV__: false });
 
@@ -290,3 +291,23 @@ export const budgetCategories = () =>
 
 export const budgetBlock = () =>
   `<div style="margin-top:16px"><div class="m-bar" style="margin-bottom:8px"><div class="fill" style="width:65.5%"></div></div>${fieldRow(L.BUDGET, fig('300', { size: 'md' }))}<div style="display:flex;align-items:baseline;gap:8px;padding-bottom:8px">${price(45, { size: 'xs', tone: 'muted' })}${text(L.BUDGET_CARRIED, { size: 'xs', tone: 'muted' })}</div>${monthRow(L.BUDGET_LEFT, price(119, { size: 'md' }), text(L.BUDGET_OF('345'), { size: 'xs', tone: 'muted' }))}</div>`;
+
+export const calendar = ({ month = 8, year = 2026, language = 'en', picked = 4, today = 9, maximumDate = new Date(year, month, today) } = {}) => {
+  const weekStart = weekStartFor(language);
+  const initial = (weekday) => new Intl.DateTimeFormat(language, { weekday: 'narrow' }).format(new Date(2023, 0, 1 + weekday));
+  const cell = (day) => {
+    if (!day) return '<span></span>';
+    const enabled = dayAllowed({ date: new Date(year, month, day), maximumDate });
+    const chosen = day === picked;
+    const style = [
+      'min-height:40px;display:flex;align-items:center;justify-content:center;border-radius:4px',
+      chosen ? 'background:var(--color-accent)' : day === today ? 'border:var(--hairline) solid var(--color-border)' : '',
+      enabled ? '' : 'opacity:.4',
+    ].filter(Boolean).join(';');
+    return fig(`${day}`, { size: 'sm', tone: chosen ? 'onAccent' : enabled ? undefined : 'muted', style });
+  };
+  const weekdays = weekdayOrder(weekStart).map((weekday) => text(initial(weekday), { size: 'xs', tone: 'muted', center: true })).join('');
+  const days = monthWeeks({ month, weekStart, year }).flat().map(cell).join('');
+
+  return `<div style="padding:24px 0 0;background:var(--color-overlay)"><div style="background:var(--color-background);border-radius:4px 4px 0 0;padding:16px 20px 20px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center">${icon(ICON.BACK, { size: 's', tone: 'textMuted' })}</span>${text(`${L.MONTHS[month]} ${year}`, { medium: true })}<span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;opacity:.3">${icon(ICON.RIGHT, { size: 's', tone: 'textMuted' })}</span></div><div style="display:grid;grid-template-columns:repeat(7,1fr);text-align:center">${weekdays}</div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-top:2px">${days}</div><div style="display:flex;gap:8px;margin-top:20px">${btn(L.CANCEL, { variant: 'outlined', grow: true })}${btn(L.ACCEPT, { grow: true })}</div></div></div>`;
+};

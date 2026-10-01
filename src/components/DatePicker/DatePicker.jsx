@@ -1,67 +1,116 @@
-import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef } from 'react';
-import { Platform } from 'react-native';
+import React, { useMemo, useState } from 'react';
 
+import { getStyles } from './DatePicker.styles';
 import { useApp } from '../../contexts';
+import {
+  composeDate,
+  dayAllowed,
+  dayKey,
+  dayStart,
+  ICON,
+  L10N,
+  monthWeeks,
+  weekdayOrder,
+  weekStartFor,
+} from '../../modules';
+import { Button, Icon, Pressable, Text, View } from '../../primitives';
 import Modal from '../Modal';
 
+const DAY_NAME = { day: 'numeric', month: 'long', weekday: 'long', year: 'numeric' };
+
 const DatePicker = ({ maximumDate, minimumDate, onClose, onSelect, value }) => {
-  const { colors, theme: themeMode } = useApp();
-  const android = Platform.OS === 'android';
-  const answered = useRef(false);
-  const latest = useRef({ onClose, onSelect });
-  latest.current = { onClose, onSelect };
+  const { colors, formatDate, language } = useApp();
+  const styles = useMemo(() => getStyles(colors), [colors]);
+  const [view, setView] = useState({ month: value.getMonth(), year: value.getFullYear() });
+  const [picked, setPicked] = useState(() => dayStart(value));
 
-  useEffect(() => {
-    if (!android) return undefined;
+  const today = new Date();
+  const weekStart = weekStartFor(language);
+  const weeks = useMemo(() => monthWeeks({ ...view, weekStart }), [view, weekStart]);
+  const allowed = (date) => dayAllowed({ date, maximumDate, minimumDate });
+  const monthOf = (date) => date.getFullYear() * 12 + date.getMonth();
+  const canGoBack = !minimumDate || monthOf(minimumDate) < view.year * 12 + view.month;
+  const canGoForward = !maximumDate || monthOf(maximumDate) > view.year * 12 + view.month;
 
-    DateTimePickerAndroid.open({
-      display: 'calendar',
-      is24Hour: true,
-      maximumDate,
-      minimumDate,
-      mode: 'date',
-      value,
-      onChange: (event, date) => {
-        answered.current = true;
-        if (event?.type === 'set' && date) latest.current.onSelect(date);
-        latest.current.onClose();
-      },
-    });
+  const shift = (step) => {
+    const next = new Date(view.year, view.month + step, 1);
+    setView({ month: next.getMonth(), year: next.getFullYear() });
+  };
 
-    return () => {
-      if (answered.current) return;
-      try {
-        Promise.resolve(DateTimePickerAndroid.dismiss('date')).catch(() => undefined);
-      } catch {
-        return;
-      }
-    };
-    // opens once per mount; later props reach the open dialog through the latest ref
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const handleAccept = () => {
+    onSelect(composeDate({ day: picked, maximumDate, minimumDate, time: value }));
+    onClose();
+  };
 
-  if (android) return null;
+  const renderStep = (step, icon, label, enabled) => (
+    <Pressable
+      accessibilityLabel={label}
+      accessibilityRole="button"
+      accessibilityState={{ disabled: !enabled }}
+      disabled={!enabled}
+      onPress={() => shift(step)}
+      style={[styles.step, !enabled && styles.stepOff]}
+    >
+      <Icon name={icon} size="s" tone="muted" />
+    </Pressable>
+  );
 
   return (
     <Modal onClose={onClose}>
-      <DateTimePicker
-        accentColor={colors.accent}
-        display="inline"
-        is24Hour
-        maximumDate={maximumDate}
-        minimumDate={minimumDate}
-        mode="date"
-        textColor={colors.text}
-        themeVariant={themeMode}
-        value={value}
-        onChange={(event, date) => {
-          if (!date) return;
-          onSelect(date);
-          onClose();
-        }}
-      />
+      <View style={styles.header}>
+        {renderStep(-1, ICON.BACK, L10N.A11Y_PREVIOUS_MONTH, canGoBack)}
+        <Text accessibilityLiveRegion="polite" accessibilityRole="header" medium>{`${L10N.MONTHS[view.month]} ${view.year}`}</Text>
+        {renderStep(1, ICON.RIGHT, L10N.A11Y_NEXT_MONTH, canGoForward)}
+      </View>
+
+      <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={styles.weekdays}>
+        {weekdayOrder(weekStart).map((weekday) => (
+          <Text key={weekday} align="center" size="xs" style={styles.weekday} tone="muted">
+            {formatDate(new Date(2023, 0, 1 + weekday), { weekday: 'narrow' })}
+          </Text>
+        ))}
+      </View>
+
+      <View style={styles.grid}>
+        {weeks.map((week, row) => (
+          <View key={`week-${row}`} style={styles.week}>
+            {week.map((day, column) => {
+              if (!day) return <View key={`blank-${column}`} style={styles.cell} />;
+
+              const date = new Date(view.year, view.month, day);
+              const enabled = allowed(date);
+              const chosen = dayKey(date) === dayKey(picked);
+              const current = dayKey(date) === dayKey(today);
+
+              return (
+                <Pressable
+                  key={`day-${day}`}
+                  accessibilityLabel={formatDate(date, DAY_NAME)}
+                  accessibilityRole="button"
+                  accessibilityState={{ disabled: !enabled, selected: chosen }}
+                  disabled={!enabled}
+                  onPress={() => setPicked(date)}
+                  style={[styles.cell, styles.day, current && styles.dayToday, chosen && styles.dayChosen, !enabled && styles.dayOff]}
+                >
+                  <Text figure="sm" tone={chosen ? 'onAccent' : enabled ? 'primary' : 'muted'}>
+                    {day}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        ))}
+      </View>
+
+      <View style={styles.actions}>
+        <Button grow variant="outlined" onPress={onClose}>
+          {L10N.CANCEL}
+        </Button>
+        <Button disabled={!allowed(picked)} grow onPress={handleAccept}>
+          {L10N.ACCEPT}
+        </Button>
+      </View>
     </Modal>
   );
 };
