@@ -4,6 +4,7 @@ import TestRenderer, { act } from 'react-test-renderer';
 
 import { DashboardListHeader } from '../Dashboard.ListHeader';
 import { setLanguage } from '../../../i18n';
+import { L10N } from '../../../modules';
 
 const mockUpdateSettings = jest.fn();
 let mockStore = {};
@@ -18,6 +19,7 @@ jest.mock('../../../components', () => {
   const MockReact = require('react');
   const stub = (testID) => (props) => MockReact.createElement(ReactNative.View, { testID, ...props });
   return {
+    Chip: stub('chip'),
     Eyebrow: ({ children, ...props }) => MockReact.createElement(ReactNative.Text, { testID: 'eyebrow', ...props }, children),
     Delta: stub('delta'),
     Heading: stub('heading'),
@@ -159,6 +161,14 @@ describe('screens/Dashboard/ListHeader', () => {
 
     act(() => summary.props.onScheduledPress());
     expect(navigate).toHaveBeenCalledWith('scheduled');
+  });
+
+  test('an account you owe is named Owed beside its title, and the others are not', () => {
+    mockStore = { ...mockStore, accounts: [...mockStore.accounts, account('a5', 'Visa', 'USD', -1284.3, 40)] };
+    const chips = componentsBy(render(), 'chip');
+
+    expect(chips).toHaveLength(1);
+    expect(chips[0].props.label).toBe(L10N.OWED);
   });
 
   test('hides the hero when there are no accounts', () => {

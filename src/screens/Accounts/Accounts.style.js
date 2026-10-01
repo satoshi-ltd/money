@@ -21,6 +21,11 @@ export const getStyles = (colors) =>
     heroValue: {
       marginTop: theme.spacing.xxs,
     },
+    position: {
+      alignItems: 'baseline',
+      gap: theme.spacing.sm,
+      marginTop: theme.spacing.xs,
+    },
 
     distribution: {
       gap: theme.spacing.xs,
@@ -62,6 +67,13 @@ export const getStyles = (colors) =>
       gap: theme.spacing.sm,
       minHeight: rowHeight + theme.spacing.md,
       paddingVertical: theme.spacing.xs + 2,
+    },
+    accountTitle: {
+      alignItems: 'center',
+      gap: theme.spacing.xs,
+    },
+    titleText: {
+      flexShrink: 1,
     },
     accountText: {
       gap: 2,

@@ -3,12 +3,13 @@ import React, { useMemo } from 'react';
 
 import { getStyles } from './Dashboard.style';
 import { queryAccounts } from './helpers';
-import { Delta, Eyebrow, Heading, MonthSummary, Pressable, PriceFriendly, Text, View } from '../../components';
+import { Chip, Delta, Eyebrow, Heading, MonthSummary, Pressable, PriceFriendly, Text, View } from '../../components';
 import { useApp, useStore } from '../../contexts';
 import {
   buildInsights,
   getProgressionPercentage,
   isFlat,
+  isOwed,
   L10N,
   netWorthEyebrow,
   verboseDate,
@@ -90,7 +91,12 @@ const DashboardListHeader = ({ navigate }) => {
             >
               <View row style={style.accountRow}>
                 <View flex style={style.accountText}>
-                  <Text medium>{title}</Text>
+                  <View row style={style.accountTitle}>
+                    <Text medium numberOfLines={1} style={style.titleText}>
+                      {title}
+                    </Text>
+                    {isOwed({ currentBalance }) ? <Chip label={L10N.OWED} variant="outline" /> : null}
+                  </View>
                   <Text size="xxs" tone="muted">
                     {currency}
                   </Text>

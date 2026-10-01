@@ -53,6 +53,24 @@ describe('balance consistency', () => {
     expect(state.overall.currentMonth.progression).toBe(-40);
   });
 
+  test('a card paid down moves toward zero and the net worth follows it', () => {
+    const now = Date.now();
+    const state = consolidate({
+      settings: { baseCurrency: 'EUR' },
+      rates: {},
+      accounts: [
+        { hash: 'a1', balance: 500, currency: 'EUR', timestamp: now, title: 'Wallet' },
+        { hash: 'a2', balance: -1000, currency: 'EUR', timestamp: now, title: 'Visa' },
+      ],
+      txs: [{ account: 'a2', category: 1, hash: 't1', timestamp: now, type: C.TX.TYPE.INCOME, value: 400 }],
+    });
+    const card = state.accounts.find(({ hash }) => hash === 'a2');
+
+    expect(card.currentBalance).toBe(-600);
+    expect(card.currentMonth.progression).toBe(400);
+    expect(state.overall.currentBalance).toBe(-100);
+  });
+
   test('keeps negative balances in chart and current balance', () => {
     const now = Date.now();
     const state = consolidate({

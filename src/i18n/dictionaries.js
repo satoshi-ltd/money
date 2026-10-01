@@ -6,6 +6,8 @@ const nth = (day) => {
 };
 
 export const EN = {
+  ASSETS: 'Assets',
+  OWED: 'Owed',
   REMINDER_TIME: 'Reminder time',
   REMINDER_TIME_CAPTION: 'Scheduled and backup',
   MONTHS_SHORT: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'],
@@ -338,6 +340,8 @@ export const EN = {
 };
 
 export const PT = {
+  ASSETS: 'Ativos',
+  OWED: 'Dívida',
   REMINDER_TIME: 'Hora dos lembretes',
   REMINDER_TIME_CAPTION: 'Programados e backup',
   MONTHS_SHORT: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
@@ -654,6 +658,8 @@ export const PT = {
   YESTERDAY: 'Ontem',
 };
 export const FR = {
+  ASSETS: 'Actifs',
+  OWED: 'Dettes',
   REMINDER_TIME: 'Heure des rappels',
   REMINDER_TIME_CAPTION: 'Planifiées et sauvegarde',
   MONTHS_SHORT: ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'],
@@ -972,6 +978,8 @@ export const FR = {
   YESTERDAY: 'Hier',
 };
 export const DE = {
+  ASSETS: 'Vermögen',
+  OWED: 'Schulden',
   REMINDER_TIME: 'Uhrzeit der Erinnerungen',
   REMINDER_TIME_CAPTION: 'Geplant und Backup',
   MONTHS_SHORT: ['jan.', 'feb.', 'märz', 'apr.', 'mai', 'juni', 'juli', 'aug.', 'sept.', 'okt.', 'nov.', 'dez.'],
@@ -1289,6 +1297,8 @@ export const DE = {
   YESTERDAY: 'Gestern',
 };
 export const ES = {
+  ASSETS: 'Activos',
+  OWED: 'Deuda',
   REMINDER_TIME: 'Hora de los recordatorios',
   REMINDER_TIME_CAPTION: 'Programados y backup',
   MONTHS_SHORT: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'],

@@ -6,6 +6,7 @@ import { getStyles } from './Accounts.style';
 import { filter, query } from './modules';
 import {
   EmptyState,
+  Chip,
   Eyebrow,
   Heading,
   IconButton,
@@ -18,7 +19,7 @@ import {
   View,
 } from '../../components';
 import { useApp, useStore } from '../../contexts';
-import { ICON, L10N, netWorthEyebrow, percentText, rankInk } from '../../modules';
+import { ICON, isOwed, L10N, ledgerPosition, netWorthEyebrow, percentText, rankInk } from '../../modules';
 
 const ALL = 'all';
 const SEGMENT_LIMIT = 3;
@@ -37,7 +38,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
   const visible = useMemo(() => filter(accounts, selected), [accounts, selected]);
 
   const distribution = useMemo(() => {
-    const funded = currencies.filter(({ base }) => base > 0);
+    const funded = query(accounts.filter((account) => !isOwed(account))).filter(({ base }) => base > 0);
     const total = funded.reduce((sum, { base }) => sum + base, 0);
     if (total <= 0) return [];
 
@@ -61,7 +62,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
     }
 
     return segments;
-  }, [colors, currencies]);
+  }, [accounts, colors]);
 
   const totals = visible.reduce(
     (memo, { currentBalance = 0, currentBalanceBase = 0 }) => ({
@@ -71,6 +72,7 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
     { amount: 0, base: 0 },
   );
   const showTotalBase = Boolean(selected) && selected !== baseCurrency;
+  const position = useMemo(() => ledgerPosition(accounts), [accounts]);
 
   if (accounts.length === 0)
     return (
@@ -103,6 +105,18 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
             style={style.heroValue}
             value={overall?.currentBalance || 0}
           />
+          {position.owed < 0 ? (
+            <View row style={style.position}>
+              <Text size="xxs" tone="muted">
+                {L10N.ASSETS}
+              </Text>
+              <PriceFriendly currency={baseCurrency} size="xs" tone="muted" value={position.assets} />
+              <Text size="xxs" tone="muted">
+                {L10N.OWED}
+              </Text>
+              <PriceFriendly currency={baseCurrency} size="xs" tone="muted" value={position.owed} />
+            </View>
+          ) : null}
         </View>
 
         {distribution.length > 1 ? (
@@ -157,9 +171,12 @@ const Accounts = ({ navigation: { navigate } = {} }) => {
               <Pressable key={hash} onPress={() => navigate('transactions', { account })}>
                 <View row style={style.accountRow}>
                   <View flex style={style.accountText}>
-                    <Text medium numberOfLines={1}>
-                      {title}
-                    </Text>
+                    <View row style={style.accountTitle}>
+                      <Text medium numberOfLines={1} style={style.titleText}>
+                        {title}
+                      </Text>
+                      {isOwed(account) ? <Chip label={L10N.OWED} variant="outline" /> : null}
+                    </View>
                     <Text size="xxs" tone="muted">
                       {currency}
                     </Text>

@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.82 — 2026-10-01
+
+- An account can be one you owe. The opening balance accepts a minus, so a credit card or a loan starts below zero; Accounts and the Overview name it "Owed" beside its title, Accounts splits the net worth into what you hold and what you owe once there is a debt, the distribution bar draws only what you hold, and paying a card down now reads as a rise in the month's delta instead of a fall.
+
 ## 3.0.81 — 2026-10-01
 
 - The reminders have an hour of their own. Settings gets a "Reminder time" row under the backup switch, from 06:00 to 22:00, that moves both the scheduled-transaction reminders (the day before) and the weekly backup reminder, which were fixed at 08:00. The backup row reads the chosen hour, and the choice travels in a backup.

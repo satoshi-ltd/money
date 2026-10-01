@@ -161,7 +161,9 @@ successful export and drives the weekly backup nudge in Settings.
   Analytics. Balances count everything.
 - **Balances.** An account's current balance is its opening balance plus incomes minus expenses in its own currency;
   its base figure converts that balance with the current month's table. Net worth is the sum over accounts of the base
-  figures that could be converted; an account whose currency has no rate is left out rather than counted as 0.
+  figures that could be converted; an account whose currency has no rate is left out rather than counted as 0. An
+  account can hold a negative balance, a card or a loan: it counts in the net worth, the lists name it "Owed", the
+  distribution bar leaves it out, and paying it down reads as a rise, by the size of what was owed.
 - **Scheduled transactions.** `runScheduledSync` runs at boot and on every return to the foreground: for each template
   it generates the occurrences between 90 days ago and now, skipping any whose `${scheduledId}:${occurrenceAt}` already
   exists in a transaction's `meta`, and creates at most 100 per run. Weekly patterns carry the weekdays; monthly
@@ -256,10 +258,10 @@ button, "See all N" with a chevron, that opens Scheduled.
   on (auto-prompted on arrival), the version at the foot. A wrong PIN shakes.
 - **Overview** (Dashboard) — masthead with the date and search; the net-worth hero (tap masks amounts, as the Settings switch does) with the
   month's delta; the month block ([6](#6-insights-and-the-recommender)); the three accounts with most activity in the last 30
-  days with their balance and month delta; the latest transactions grouped by day, loading 32 at a time; search filters
+  days with their balance, an "Owed" chip where one is below zero, and month delta; the latest transactions grouped by day, loading 32 at a time; search filters
   the list. Empty ledger: an empty state that leads to the first account.
-- **Accounts** — net worth, the distribution bar by currency with its legend, a currency filter, every account with its
-  balance and base figure, and, under a currency filter, the total of that filter (under All the net
+- **Accounts** — net worth, with what you hold and what you owe under it once an account is owed, the distribution bar
+  by currency of what you hold with its legend, a currency filter, every account with its balance and base figure, and, under a currency filter, the total of that filter (under All the net
   worth above is the total). A row opens Transactions for that account.
 - **Transactions** — a panel for one account: balance hero with the month delta, the month's incomes and expenses as
   bars, the list by day, a floating add button, Edit in the masthead. Swipe a row to delete; tap to open Clone. Opened
@@ -282,7 +284,7 @@ button, "See all N" with a chevron, that opens Scheduled.
 - **Category** (sheet) — the category's month total and share of spend, the delta against its average, "Where it went"
   by merchant with bars and counts, and the latest entries; "See all N" opens Transactions filtered to that category
   and month.
-- **Account** (sheet) — currency, opening balance with its base equivalent, name; Delete, Cancel, Save. The first account
+- **Account** (sheet) — currency, opening balance with its base equivalent (below zero for a card or a loan), name; Delete, Cancel, Save. The first account
   hides Cancel and Delete.
 - **Settings** — a backup nudge when the last export is over a week old; Data (Update rates with its last run, Export,
   Import, Export CSV); Appearance (theme, text size); Preferences (language, currency, Scheduled with its count, mask

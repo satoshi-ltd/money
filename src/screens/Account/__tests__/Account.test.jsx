@@ -45,6 +45,17 @@ const componentsBy = (root, testID) =>
   root.findAllByProps({ testID }).filter((node) => typeof node.type === 'function');
 
 describe('screens/Account', () => {
+  test('Save waits for a digit after a minus instead of saving an account at zero', () => {
+    const root = render({ title: 'Visa', currency: 'USD', balance: '-' });
+    const save = componentsBy(root, 'button').find((node) => node.props.children === L10N.SAVE);
+
+    expect(save.props.disabled).toBe(true);
+  });
+
+  test('the opening balance can be typed below zero, because that is how a card you owe starts', () => {
+    expect(componentsBy(render({}), 'input-amount')[0].props.signed).toBe(true);
+  });
+
   beforeEach(() => {
     mockStore = {
       settings: { baseCurrency: 'EUR' },

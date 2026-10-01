@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { Keyboard } from 'react-native';
+import { Keyboard, Platform } from 'react-native';
 
 import { View } from '../../primitives';
 import { getLastRates } from './helpers/getLastRates';
@@ -11,6 +11,7 @@ import { InputField } from '../InputField';
 import { PriceFriendly } from '../PriceFriendly';
 
 const isNumber = /^[0-9]+([,.][0-9]+)?$|^[0-9]+([,.][0-9]+)?[.,]$/;
+const isSignedNumber = /^-?[0-9]+([,.][0-9]+)?$|^-?[0-9]+([,.][0-9]+)?[.,]$|^-$/;
 
 const InputAmount = ({
   account: { currency } = {},
@@ -19,6 +20,7 @@ const InputAmount = ({
   label,
   last,
   onChange,
+  signed = false,
   value,
   ...others
 }) => {
@@ -33,13 +35,14 @@ const InputAmount = ({
   }, [baseCurrency, currency, rates]);
 
   const handleChange = (value = '') => {
-    if (!isNumber.test(value) || value.length === 0) return onChange(undefined);
+    if (!(signed ? isSignedNumber : isNumber).test(value) || value.length === 0) return onChange(undefined);
     onChange(value.replace(',', '.'));
   };
 
-  const suffix = exchange ? (
+  const amount = parseFloat(value, 10);
+  const suffix = exchange && Number.isFinite(amount) ? (
     <View style={styles.exchange}>
-      <PriceFriendly size="s" tone="secondary" currency={baseCurrency} value={parseFloat(value || 0, 10) / exchange} />
+      <PriceFriendly size="s" tone="secondary" currency={baseCurrency} value={amount / exchange} />
     </View>
   ) : null;
 
@@ -52,7 +55,7 @@ const InputAmount = ({
       last={last}
       suffix={suffix}
       value={value !== undefined && value !== null ? value.toString() : ''}
-      keyboardType="numeric"
+      keyboardType={signed && Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'numeric'}
       autoComplete="off"
       onSubmitEditing={Keyboard.dismiss}
       onChange={handleChange}
@@ -67,6 +70,7 @@ InputAmount.propTypes = {
   label: PropTypes.string,
   last: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
+  signed: PropTypes.bool,
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 

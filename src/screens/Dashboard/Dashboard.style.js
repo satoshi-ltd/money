@@ -29,6 +29,13 @@ export const getStyles = (colors) =>
       gap: theme.spacing.sm,
       paddingVertical: theme.spacing.xs + 2,
     },
+    accountTitle: {
+      alignItems: 'center',
+      gap: theme.spacing.xs,
+    },
+    titleText: {
+      flexShrink: 1,
+    },
     accountText: {
       gap: 2,
     },

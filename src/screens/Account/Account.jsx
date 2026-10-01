@@ -112,6 +112,7 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
           <InputAmount
             account={{ currency: form.currency }}
             label={null}
+            signed
             style={style.field}
             value={form.balance}
             onChange={(value) => handleChange('balance', value)}
@@ -137,7 +138,7 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
             {L10N.CANCEL}
           </Button>
         ) : null}
-        <Button disabled={busy || !form.currency || !form.title} grow onPress={handleSubmit}>
+        <Button disabled={busy || !form.currency || !form.title || form.balance === '-'} grow onPress={handleSubmit}>
           {L10N.SAVE}
         </Button>
       </View>

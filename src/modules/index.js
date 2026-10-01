@@ -27,6 +27,7 @@ export * from './isInternalTransfer';
 export * from './isMovement';
 export * from './l10n';
 export * from './ledgerDate';
+export * from './ledgerPosition';
 export * from './median';
 export * from './monthFlow';
 export * from './monthIndex';

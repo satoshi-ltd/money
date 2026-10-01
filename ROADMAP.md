@@ -40,11 +40,6 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 ## Queue
 
-- **ACC-NEGATIVE** — Liabilities and credit cards
-  `feature · agent · normal`
-  accept: an account can hold a negative balance end to end (storage, `consolidate`, the account row, insights);
-  tests for a negative opening balance and a card paid off;
-  the interface follows board UI-ACC-NEGATIVE.
 - **BUDGETS** — Soft category budgets
   `feature · agent · normal`
   accept: phase 1: a soft budget per category with monthly rollover and a line in the month block; alerts are a

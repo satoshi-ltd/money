@@ -210,7 +210,7 @@ export const txRow = ({ time, title, category, value, currency, base, income }) 
   `<div class="m-row"><span class="time">${fig(time, { size: 'xs', tone: 'muted' })}</span><span class="text">${text(title, { medium: true })}${text(category, { size: 'xxs', tone: 'muted' })}</span><span class="amount">${price(income ? value : -value, { currency, size: 'md', bold: true, operator: income, symbol: true })}${base !== undefined ? price(income ? base : -base, { size: 'xs', tone: 'muted' }) : ''}</span></div>`;
 export const dayHead = (label, net) => `<div class="m-dayhead">${eyebrow(label, { tone: 'ink' })}${net ? price(net, { size: 'xs', operator: true, tone: net > 0 ? 'positive' : 'muted' }) : ''}</div>`;
 export const accountRow = ({ title, currency, balance, base, change }) =>
-  `<div class="m-row" style="padding:10px 0"><span class="text">${text(title, { medium: true })}${text(currency, { size: 'xxs', tone: 'muted' })}</span><span class="amount">${price(balance, { currency, size: 'lg', bold: true, symbol: true })}${base !== undefined ? price(base, { size: 'xs', tone: 'muted' }) : change !== undefined ? delta(change, { plain: true }) : fig('—', { size: 'xs', tone: 'muted' })}</span></div>`;
+  `<div class="m-row" style="padding:10px 0"><span class="text">${balance < 0 ? `<span style="display:flex;align-items:center;gap:8px">${text(title, { medium: true })}${chip(L.OWED, { variant: 'outline' })}</span>` : text(title, { medium: true })}${text(currency, { size: 'xxs', tone: 'muted' })}</span><span class="amount">${price(balance, { currency, size: 'lg', bold: true, symbol: true })}${base !== undefined ? price(base, { size: 'xs', tone: 'muted' }) : change !== undefined ? delta(change, { plain: true }) : fig('—', { size: 'xs', tone: 'muted' })}</span></div>`;
 
 export const monthRow = (label, body, tail) => `<div style="display:flex;align-items:baseline;gap:8px;padding:7px 0;border-bottom:var(--hairline) solid var(--color-border)"><span style="width:96px">${text(label, { size: 's', tone: 'muted' })}</span><span style="flex:1">${body}</span>${tail}</div>`;
 
@@ -265,4 +265,5 @@ export const ACCOUNTS = [
   { title: 'Cold wallet', currency: 'BTC', balance: 0.52, base: 42197.14 },
 ];
 export const NET = 61648.74;
+export const CARD = { title: 'Visa', currency: 'USD', balance: -1284.3, base: -1284.3 };
 export const netEyebrow = () => `${L.NET_WORTH} · ${ACCOUNTS.length} ${L.ACCOUNTS_CAPTION(ACCOUNTS.length)} · ${BASE}`;

@@ -11,7 +11,7 @@ export const parseAccount = ({
   title,
 } = {}) => ({
   hash: hash || UUID({ entity: 'account', balance, currency, timestamp, title }),
-  balance: parseFloat(balance, 10),
+  balance: Number.isFinite(parseFloat(balance, 10)) ? parseFloat(balance, 10) : 0,
   currency,
   timestamp,
   title,

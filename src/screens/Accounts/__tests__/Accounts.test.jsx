@@ -35,6 +35,7 @@ jest.mock('../../../components', () => {
 
   return {
     Eyebrow: ({ children, ...props }) => MockReact.createElement(ReactNative.Text, { testID: 'eyebrow', ...props }, children),
+    Chip: (props) => MockReact.createElement(ReactNative.View, { testID: 'chip', ...props }),
     SegmentedToggle: (props) => MockReact.createElement(ReactNative.View, { testID: 'segmented', ...props }),
     EmptyState: stub('empty'),
     IconButton: (props) => MockReact.createElement(ReactNative.View, { testID: 'iconbutton', ...props }),
@@ -205,6 +206,46 @@ describe('screens/Accounts', () => {
     const converted = prices.filter((node) => node.props.currency === 'EUR' && node.props.size === 'xs');
 
     expect(converted).toHaveLength(3);
+  });
+
+  describe('an account you owe', () => {
+    const allText = (root) => root.findAllByType(RNText).map((node) => node.props.children);
+    const withCard = () => {
+      mockStore = {
+        ...mockStore,
+        accounts: [...mockStore.accounts, account('a5', 'Visa', 'USD', -1284.3, -1100)],
+        overall: { currentBalance: 8900 },
+      };
+    };
+
+    test('is named Owed beside its title, and only that account is', () => {
+      withCard();
+      const chips = componentsBy(render(), 'chip');
+
+      expect(chips).toHaveLength(1);
+      expect(chips[0].props.label).toBe(L10N.OWED);
+    });
+
+    test('splits the net worth into what you hold and what you owe, in the base currency', () => {
+      withCard();
+      const prices = componentsBy(render(), 'price').filter((node) => node.props.size === 'xs' && node.props.tone === 'muted');
+      const values = prices.map((node) => node.props.value);
+
+      expect(values).toEqual(expect.arrayContaining([10000, -1100]));
+    });
+
+    test('adds nothing to a ledger with no debt', () => {
+      const root = render();
+
+      expect(componentsBy(root, 'chip')).toHaveLength(0);
+      expect(allText(root)).not.toContain(L10N.OWED);
+    });
+
+    test('is left out of the distribution bar, which draws what you hold', () => {
+      withCard();
+
+      expect(allText(render())).toContain(percentText(60));
+    });
   });
 
   test('a filtered list closes under a strong rule with its total', () => {

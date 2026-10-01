@@ -1,6 +1,6 @@
 import {
-  ACCOUNTS, BASE, L, NET, accountRow,
-  chip, esc, eyebrow, fieldRow, fig,
+  BASE, L, 
+  esc, eyebrow, fieldRow, fig,
   heading, kebab, monthRow,
   monthSummary, price, text, 
 } from './draw.mjs';
@@ -10,17 +10,6 @@ const frame = (body, { sheet, width = 350 } = {}) => `<div class="m" style="widt
 const stack = (...parts) => parts.join('<div style="height:16px"></div>');
 const dot = (tone) => `<i class="m-dot" style="width:9px;height:9px;background:var(--color-${tone})"></i>`;
 
-const CARD = { title: 'Visa', currency: 'USD', balance: -1284.3 };
-const NET_WITH_CARD = NET + CARD.balance;
-const cardEyebrow = () => `${L.NET_WORTH} · ${ACCOUNTS.length + 1} ${L.ACCOUNTS_CAPTION(ACCOUNTS.length + 1)} · ${BASE}`;
-const liabilityRow = ({ title, currency, balance }) =>
-  `<div class="m-row" style="padding:10px 0"><span class="text"><span style="display:flex;align-items:center;gap:8px">${text(title, { medium: true })}${chip('Owed', { variant: 'outline' })}</span>${text(`${currency} · Credit card`, { size: 'xxs', tone: 'muted' })}</span><span class="amount">${price(balance, { currency, size: 'lg', bold: true, symbol: true })}${fig('—', { size: 'xs', tone: 'muted' })}</span></div>`;
-const accountsFrame = (card) =>
-  frame(
-    `<div class="m-hero">${eyebrow(cardEyebrow())}<div style="margin-top:4px">${price(NET_WITH_CARD, { size: 'hero', bold: true })}</div>${card ? `<div style="display:flex;gap:12px;margin-top:6px">${text('Assets', { size: 'xxs', tone: 'muted' })}${price(NET, { size: 'xs', tone: 'muted' })}${text('Owed', { size: 'xxs', tone: 'muted' })}${price(CARD.balance, { size: 'xs', tone: 'muted' })}</div>` : ''}</div><div><div class="m-section">${heading(L.ACCOUNTS, { eyebrow: `${ACCOUNTS.length + 1}` })}${[...ACCOUNTS.slice(0, 2).map((account) => accountRow({ ...account, change: undefined })), card ? liabilityRow(CARD) : accountRow(CARD)].join('')}</div></div>`,
-  );
-const overviewAccountsFrame = (card) =>
-  frame(`<div><div class="m-section">${heading(L.ACCOUNTS, { actions: eyebrow(L.SEE_ALL_COUNT(ACCOUNTS.length + 1)) })}${[accountRow(ACCOUNTS[0]), accountRow(ACCOUNTS[1]), card ? liabilityRow(CARD) : accountRow(CARD)].join('')}</div></div>`);
 
 const BUDGET_ROWS = [
   { name: 'Personal', limit: 300, spent: 226, color: 'accent' },
@@ -48,13 +37,6 @@ const categoryHero = (budget) =>
 
 
 export const REVIEW = [
-  {
-    id: 'UI-ACC-NEGATIVE', area: 'Accounts · Overview', title: 'A card you owe, next to the accounts you hold',
-    why: 'Today a negative balance is drawn like any other: a minus in ink and nothing that says it is a debt, and the net worth hides what is owed inside one figure. Recommended: the same row, a quiet "Owed" outline chip under the name and "Credit card" in the caption, the figure staying ink (red is kept for destructive actions), and an Assets / Owed pair under the net worth. The distribution bar keeps drawing assets only. Alternative: a separate "Owed" group under the list, or the figure in the danger tone. How an account becomes a liability (a negative opening balance is enough) is logic and lives in ACC-NEGATIVE.',
-    accept: 'Accounts and the Overview rows draw a negative balance with the "Owed" chip and its caption, the Accounts hero shows Assets and Owed under the net worth, and the distribution bar ignores the debt; the five dictionaries carry the two new words.',
-    now: stack(accountsFrame(false), overviewAccountsFrame(false)),
-    proposed: stack(accountsFrame(true), overviewAccountsFrame(true)),
-  },
   {
     id: 'UI-BUDGETS', area: 'Overview · Analytics · Category', title: 'A soft budget that says where you stand, never blocks',
     why: 'Phase 1 needs a line in the month block and a state per category. Recommended: one "Budgets" line (what is left of the sum of the limits, how many categories are over), the Analytics category track read against the limit instead of the share (ink while within, accent from 80%, danger beyond it with the excess beside), and the limit as one Budget row in the Category sheet with the carried-over amount in its caption. Alternative: only the month line and no per-category colour. Alerts are a later task and are not drawn.',
