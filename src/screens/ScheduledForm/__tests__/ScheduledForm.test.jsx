@@ -6,8 +6,6 @@ import { L10N } from '../../../modules';
 
 let mockStore = {};
 
-jest.mock('@react-native-community/datetimepicker', () => 'DateTimePicker');
-
 jest.mock('../../../contexts', () => ({
   useApp: () => ({ colors: {}, language: 'en' }),
   useStore: () => mockStore,
@@ -20,6 +18,7 @@ jest.mock('../../../components', () => {
   return {
     Eyebrow: ({ children, ...props }) => MockReact.createElement(ReactNative.Text, { testID: 'eyebrow', ...props }, children),
     Button: (props) => MockReact.createElement(ReactNative.View, { testID: 'button', ...props }, props.children),
+    DatePicker: (props) => MockReact.createElement(ReactNative.View, { testID: 'date-picker', ...props }),
     Dropdown: stub('dropdown'),
     FieldRow: ({ children, label, ...props }) =>
       MockReact.createElement(
@@ -119,6 +118,38 @@ describe('screens/ScheduledForm', () => {
       .map((row) => row.findAll((node) => typeof node.props?.children === 'string')[0].props.children);
 
     expect(labels).toEqual([L10N.CONCEPT, L10N.AMOUNT, L10N.ACCOUNT, L10N.CATEGORY]);
+  });
+
+  test('the start date opens the shared picker, never earlier than today', () => {
+    const root = render();
+    act(() => componentsBy(root, 'segmented')[1].props.onChange('monthly'));
+    const row = root.findAllByProps({ testID: 'fieldrow' }).find((node) => node.props.onPress && node.findAll((child) => child.props.children === L10N.DATE).length > 0);
+    const pickers = () => root.findAllByProps({ testID: 'date-picker' }).filter((node) => node.props.onSelect);
+    expect(pickers()).toHaveLength(0);
+
+    act(() => row.props.onPress());
+
+    const [open] = pickers();
+    expect(open.props.minimumDate.toDateString()).toBe(new Date().toDateString());
+    expect(Math.abs(open.props.value.getTime() - Date.now())).toBeLessThan(60000);
+
+    const day = new Date(2030, 2, 17, 9);
+    act(() => open.props.onSelect(day));
+    expect(pickers()[0].props.value.getTime()).toBe(day.getTime());
+
+    act(() => pickers()[0].props.onClose());
+    expect(pickers()).toHaveLength(0);
+  });
+
+  test('a start date already in the past stays the floor of its own picker, so OK never moves it to today', () => {
+    const root = render({ params: { id: 'gym' } });
+    act(() => componentsBy(root, 'segmented')[1].props.onChange('monthly'));
+    const row = root.findAllByProps({ testID: 'fieldrow' }).find((node) => node.props.onPress && node.findAll((child) => child.props.children === L10N.DATE).length > 0);
+
+    act(() => row.props.onPress());
+
+    const [open] = root.findAllByProps({ testID: 'date-picker' }).filter((node) => node.props.onSelect);
+    expect(open.props.minimumDate.getTime()).toBe(START);
   });
 
   test('the sheet names the thing, not the verb, whether it is new or not', () => {

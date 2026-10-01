@@ -12,6 +12,7 @@ export { default as Tabs } from './Tabs';
 export * from './Chart';
 export * from './Checkbox';
 export * from './Confirm';
+export * from './DatePicker';
 export * from './Delta';
 export * from './EmptyState';
 export * from './Eyebrow';

@@ -1,10 +1,8 @@
-import DateTimePicker from '@react-native-community/datetimepicker';
 import PropTypes from 'prop-types';
 import React, { useMemo, useState } from 'react';
-import { Platform } from 'react-native';
 
 import { style } from './FormTransaction.style';
-import { Checkbox, Chip, Dropdown, FieldRow, Input, Modal, Pressable, PriceFriendly, Text, View } from '../../../components';
+import { Checkbox, Chip, DatePicker, Dropdown, FieldRow, Input, Pressable, PriceFriendly, Text, View } from '../../../components';
 import { useApp, useStore } from '../../../contexts';
 import {
   buildTitleMemory,
@@ -51,7 +49,6 @@ const FormTransaction = ({
 } = {}) => {
   const { colors } = useApp();
   const { session: { locale } = {}, settings = {}, txs = [] } = useStore();
-  const { theme: themeMode } = settings;
   const safeForm = form || {};
   const safeType = type ?? EXPENSE;
   const memory = useMemo(() => buildTitleMemory(txs), [txs]);
@@ -402,23 +399,12 @@ const FormTransaction = ({
       </View>
 
       {openDate ? (
-        <Modal onClose={() => setOpenDate(false)}>
-          <DateTimePicker
-            accentColor={colors.accent}
-            is24Hour
-            maximumDate={new Date()}
-            mode="date"
-            display={Platform.OS === 'ios' ? 'inline' : 'calendar'}
-            textColor={colors.text}
-            themeVariant={themeMode}
-            value={dateValue}
-            onChange={(event, nextDate) => {
-              if (!nextDate) return;
-              handleField('timestamp', nextDate.getTime());
-              setOpenDate(false);
-            }}
-          />
-        </Modal>
+        <DatePicker
+          maximumDate={new Date()}
+          value={dateValue}
+          onClose={() => setOpenDate(false)}
+          onSelect={(date) => handleField('timestamp', date.getTime())}
+        />
       ) : null}
     </>
   );

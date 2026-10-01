@@ -1,16 +1,14 @@
-import DateTimePicker from '@react-native-community/datetimepicker';
 import PropTypes from 'prop-types';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Platform } from 'react-native';
 
 import { getStyles } from './ScheduledForm.style';
 import {
   Button,
+  DatePicker,
   Dropdown,
   Eyebrow,
   FieldRow,
   Input,
-  Modal,
   Panel,
   Pressable,
   SegmentedToggle,
@@ -39,7 +37,7 @@ const ScheduledForm = ({ navigation = {}, route = {} }) => {
   const { params: { id } = {} } = route;
   const { colors, language } = useApp();
   const style = useMemo(() => getStyles(colors), [colors]);
-  const { settings: { baseCurrency, theme: themeMode } = {}, session: { locale } = {} } = useStore();
+  const { settings: { baseCurrency } = {}, session: { locale } = {} } = useStore();
 
   const { accounts = [], scheduledTxs = [], createScheduled, deleteScheduled, updateScheduled } = useStore();
 
@@ -283,24 +281,15 @@ const ScheduledForm = ({ navigation = {}, route = {} }) => {
       )}
 
       {openDate ? (
-        <Modal onClose={() => setOpenDate(false)}>
-          <DateTimePicker
-            accentColor={colors.accent}
-            is24Hour
-            minimumDate={new Date()}
-            mode="date"
-            display={Platform.OS === 'ios' ? 'inline' : 'calendar'}
-            textColor={colors.text}
-            themeVariant={themeMode}
-            value={new Date(startAt)}
-            onChange={(event, nextDate) => {
-              if (!nextDate) return;
-              setStartAt(nextDate.getTime());
-              setByMonthDay(nextDate.getDate());
-              setOpenDate(false);
-            }}
-          />
-        </Modal>
+        <DatePicker
+          minimumDate={new Date(Math.min(Date.now(), startAt))}
+          value={new Date(startAt)}
+          onClose={() => setOpenDate(false)}
+          onSelect={(date) => {
+            setStartAt(date.getTime());
+            setByMonthDay(date.getDate());
+          }}
+        />
       ) : null}
 
       {Number.isFinite(previewNextAt) ? (

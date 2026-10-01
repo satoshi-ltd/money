@@ -255,6 +255,10 @@ button, "See all N" with a chevron, that opens Scheduled.
   Transaction and Clone screens derive Save from it at render; nothing stores a validity flag.
 - **Defaults.** A new transaction opens on the account's most frequent category for its type; choosing another account
   starts the category over from that account's habit.
+- **Date.** The Date row of the Transaction and Clone sheets (capped at today) and of the scheduled form (not before
+  today, or not before its own start when that is already past) opens `DatePicker`. On iOS it is the inline calendar in
+  a `Modal`; on Android it is the system dialog opened with `DateTimePickerAndroid.open` and drawn by no sheet of ours,
+  because a native dialog inside an app `Modal` floats under a second backdrop and answers no taps.
 
 ## 7. Screens
 
@@ -392,15 +396,15 @@ Masthead (wordmark or back + name, an eyebrow section, a search field, actions; 
 tabs and the seal), Eyebrow, Heading (title, eyebrow, actions, rule), PriceFriendly (figure ramp, sign, symbol only for a
 foreign currency, mask), Delta (a chip beside a hero, plain in a row; accent when the move is wanted), Chip (muted,
 accent, soft, outline, inverse; pill or circle; 24 or 32 points tall, a pressable one reaching 44 by hit slop),
-Checkbox, SegmentedToggle (flex, scrollable or compact; the selected
-segment inverts), FieldRow (twelve-character muted label, value column, chevron), Setting and SettingSelect (row,
-subtitle, right value, switch, dropdown), Dropdown (floating list with symbol wells and a check), Field, InputField,
-InputAmount (base equivalent as suffix), InputCurrency (symbol well), Card, Chart (line, trend, pointer, axis, legend),
-FlowChart (bars, medians, break marks, month labels), MonthSummary, TransactionsList and TransactionItem (time,
-title, category, amount and base figure; swipe to delete), EmptyState, Notification (a band from the top: accent,
-inverse or danger), Confirm (dialog with a danger well), Modal (bottom sheet with a drag to close), Panel (screen
-with masthead, floating element, sheet mode), Screen (scroll with keyboard insets), IconButton, FloatingAdd, Logo,
-Mark, Colophon.
+Checkbox, SegmentedToggle (flex, scrollable or compact; the selected segment inverts), FieldRow (twelve-character muted
+label, value column, chevron), Setting and SettingSelect (row, subtitle, right value, switch, dropdown), Dropdown
+(floating list with symbol wells and a check), Field, InputField, InputAmount (base equivalent as suffix), InputCurrency
+(symbol well), Card, Chart (line, trend, pointer, axis, legend), FlowChart (bars, medians, break marks, month labels),
+MonthSummary, TransactionsList and TransactionItem (time, title, category, amount and base figure; swipe to delete),
+EmptyState, Notification (a band from the top: accent, inverse or danger), Confirm (dialog with a danger well),
+DatePicker (inline calendar in a sheet on iOS, the system dialog on Android), Modal (bottom sheet with a drag to close),
+Panel (screen with masthead, floating element, sheet mode), Screen (scroll with keyboard insets), IconButton,
+FloatingAdd, Logo, Mark, Colophon.
 
 ### Sheets and navigation
 

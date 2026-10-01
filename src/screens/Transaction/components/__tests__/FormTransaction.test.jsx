@@ -33,6 +33,7 @@ jest.mock('../../../../components', () => {
     Chip: ({ label, onPress, size }) =>
       MockReact.createElement(ReactNative.View, { testID: 'suggestion-chip', accessibilityLabel: label, onPress, size }),
     Checkbox: (props) => MockReact.createElement(ReactNative.View, { testID: 'checkbox', ...props }),
+    DatePicker: stub('date-picker'),
     Dropdown: stub('dropdown'),
     FieldRow: ({ children, label, ...props }) =>
       MockReact.createElement(
@@ -221,6 +222,38 @@ describe('screens/Transaction/FormTransaction', () => {
     act(() => amount.props.onChange('abc'));
     const { form } = onChange.mock.calls[onChange.mock.calls.length - 1][0];
     expect(form.value).toBeUndefined();
+  });
+
+  describe('the date', () => {
+    const openDate = (root) => {
+      const row = root.findAllByProps({ testID: 'fieldrow' }).find((node) => node.props.onPress && node.findAll((child) => child.props.children === L10N.DATE).length > 0);
+      act(() => row.props.onPress());
+    };
+    const picker = (root) => root.findAllByProps({ testID: 'date-picker' }).filter((node) => node.props.onSelect);
+
+    test('the date row opens the shared picker, capped at today', () => {
+      const root = render({ onChange: () => {} });
+      expect(picker(root)).toHaveLength(0);
+
+      openDate(root);
+
+      const [open] = picker(root);
+      expect(open.props.maximumDate.toDateString()).toBe(new Date().toDateString());
+      expect(open.props.minimumDate).toBeUndefined();
+    });
+
+    test('a chosen day is written to the form as a timestamp, and closing removes the picker', () => {
+      const onChange = jest.fn();
+      const root = render({ onChange });
+      openDate(root);
+      const day = new Date(2026, 8, 9, 12);
+
+      act(() => picker(root)[0].props.onSelect(day));
+      expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ form: expect.objectContaining({ timestamp: day.getTime() }) }));
+
+      act(() => picker(root)[0].props.onClose());
+      expect(picker(root)).toHaveLength(0);
+    });
   });
 
   describe('the title memory', () => {

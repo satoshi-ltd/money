@@ -40,12 +40,6 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 ## Queue
 
-- **DATE-PICKER-ANDROID** — The calendar floats over the sheet and does not answer taps
-  `bug · agent · high`
-  accept: on Android the date of the Transaction and Clone sheets and of the scheduled form opens above the sheet and
-  every day, Cancel and OK answer a tap; the picker is opened imperatively (`DateTimePickerAndroid.open`) and not
-  inside the app's own `Modal`, which stays only for iOS's inline picker; a test on the Android path.
-
 ## In progress
 
 _None._
@@ -64,7 +58,7 @@ _None._
   the segments, the Settings rows and the "Hide from Analytics" checkbox are announced by name (and state where they
   have one); nothing is read as a bare "button".
 - **VERIFY-DATE** — The date picker on a device
-  `verify · creator · high · depends: DATE-PICKER-ANDROID`
+  `verify · creator · high`
   accept: on the phone the date row of a new transaction, of a clone and of a scheduled form opens the calendar above
   the sheet, a tap on a day then OK sets the date, and Cancel leaves it.
 - **SCHED-DEVICE** — Scheduled transactions end to end on a device
@@ -77,12 +71,11 @@ _None._
 - **DEC-OWN-CALENDAR** — Fix the native calendar, or draw our own?
   `decision · creator · high`
   accept: the Android calendar is the system's Material dialog, a teal header and system colours in an app whose
-  accent is gold, and it already broke inside a sheet. Fixing it (DATE-PICKER-ANDROID) is a day's work and leaves
-  it native; an own calendar is a month grid in the design system (hairlines, mono figures, the accent on the chosen
-  day, Today and the maximum date, the language's own months and first weekday, every day named for a screen reader)
-  that looks the same on both platforms and can be tested. Recommended: fix now, then draw our own, because every
-  entry carries a date. Decide whether to build it; if yes it is drawn first as a board in `design/proposals.html`
-  and enters the queue as CALENDAR-OWN on approval.
+  accent is gold, and it already broke inside a sheet. The fix keeps it native; an own calendar is a month grid in the
+  design system (hairlines, mono figures, the accent on the chosen day, Today and the maximum date, the language's own
+  months and first weekday, every day named for a screen reader) that looks the same on both platforms and can be
+  tested. Recommended: draw our own, because every entry carries a date. Decide whether to build it; if yes it is drawn
+  first as a board in `design/proposals.html` and enters the queue as CALENDAR-OWN on approval.
 - **DEC-AMOUNT-FILL** — Drop the word-rule amount fill
   `decision · creator · normal`
   accept: on the creator's ledger the stable amount rule answered 5.5% of repeated titles and was right 25.6% of the

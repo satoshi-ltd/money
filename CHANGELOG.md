@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.85 — 2026-10-01
+
+- The Android calendar answers taps. The date of a transaction, a clone and a scheduled transaction opens the system calendar on its own instead of inside one of our sheets, where it floated dimmed and ignored every tap. iOS keeps the inline calendar in the sheet.
+
 ## 3.0.84 — 2026-10-01
 
 - Shorter copy. Twelve captions, errors and empty states said their point twice or explained the app to itself ("Unable to fetch updated currency rates. Please check your internet connection."); they now say it once ("Couldn't update rates. Check your connection."), in the five languages, each within the room of its slot (a line that already fit kept its words). The onboarding note no longer claims the opening balance is written as the first entry in the ledger: it is where the account starts.
