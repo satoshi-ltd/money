@@ -1,6 +1,6 @@
 # Môney roadmap
 
-Updated 2026-09-30 · 3.0.61, build 37.
+Updated 2026-10-01 · 3.0.85, build 61.
 
 This is the task pool. [SPEC.md](SPEC.md) owns current state, contracts, operations and the design system;
 [CHANGELOG.md](CHANGELOG.md) records what each version shipped; [AGENTS.md](AGENTS.md) defines the autonomous workflow
@@ -68,14 +68,6 @@ _None._
 
 ### Decisions
 
-- **DEC-OWN-CALENDAR** — Fix the native calendar, or draw our own?
-  `decision · creator · high`
-  accept: the Android calendar is the system's Material dialog, a teal header and system colours in an app whose
-  accent is gold, and it already broke inside a sheet. The fix keeps it native; an own calendar is a month grid in the
-  design system (hairlines, mono figures, the accent on the chosen day, Today and the maximum date, the language's own
-  months and first weekday, every day named for a screen reader) that looks the same on both platforms and can be
-  tested. Recommended: draw our own, because every entry carries a date. Decide whether to build it; if yes it is drawn
-  first as a board in `design/proposals.html` and enters the queue as CALENDAR-OWN on approval.
 - **DEC-AMOUNT-FILL** — Drop the word-rule amount fill
   `decision · creator · normal`
   accept: on the creator's ledger the stable amount rule answered 5.5% of repeated titles and was right 25.6% of the
