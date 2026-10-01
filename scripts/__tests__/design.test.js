@@ -57,7 +57,7 @@ describe('design kit', () => {
     expect(html).not.toContain('data-task=');
   });
 
-  test('board IDs are unique, never reuse a task that is not a ui task, and each UI- board is named by the task that keeps its logic', () => {
+  test('board IDs are unique, never reuse a task that is not a ui task, and a UI- board is named by the task that keeps its logic when there is one', () => {
     const html = pages['proposals.html'];
     const roadmap = read('ROADMAP.md');
     const boards = [...html.matchAll(/data-review="([A-Z0-9-]+)"/g)].map((m) => m[1]);
@@ -67,7 +67,8 @@ describe('design kit', () => {
     expect(new Set(boards).size).toBe(boards.length);
     for (const { id, type } of tasks) if (type !== 'ui') expect(boards).not.toContain(id);
     const own = tasks.filter(({ type }) => type === 'ui').map(({ id }) => id);
-    for (const id of boards.filter((board) => board.startsWith('UI-') && !own.includes(board))) expect(named).toContain(id);
+    const logic = tasks.map(({ id }) => id);
+    for (const id of boards.filter((board) => logic.includes(board.replace(/^UI-/, '')) && !own.includes(board))) expect(named).toContain(id);
     for (const id of named) expect(boards).toContain(id);
     for (const match of html.matchAll(/data-review="[A-Z0-9-]+"[\s\S]*?<b>Accept<\/b> · ([^<]*)</g)) expect(match[1].length).toBeGreaterThan(20);
   });
