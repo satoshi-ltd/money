@@ -69,7 +69,7 @@ Môney keeps one person's money on one person's phone and reads it back to them 
 ### Exclusions and limits
 
 - No multi-user, no shared ledgers, no bank connections, no receipts or attachments.
-- No budgets, goals or split transactions yet (ROADMAP proposes them).
+- No savings goals and no split transactions: out by the creator's decision.
 - No web or desktop target; `design/` has no desktop page.
 - The rates feed is daily: intraday prices are not represented, and a closed month is one number per currency.
 

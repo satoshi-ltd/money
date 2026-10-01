@@ -92,19 +92,26 @@ _None._
   swaps only), so the sheet can disagree with the bar it opened from and a share can pass 100%. Decide whether the
   sheet, its count and the filtered panel follow the bar (`!isMovement`) or keep listing hidden entries, marked; the
   agent task follows the decision.
+
 ## Proposed
 
-### Ledger and rates
+### Interface
 
-- **A11Y-BUDGET-ROW** — A budget passed is said, not only coloured
-  `feature · agent · low`
-  accept: a category row of the Analytics list names its share and, when its budget is passed, says so to a screen reader; a test on the label.
-- **NEW-ACCOUNT-COPY** — The new-account title in the language's own shape
-  `chore · agent · low`
-  accept: a `NEW_ACCOUNT` key in the five dictionaries replaces `${NEW} ${ACCOUNT}`, which reads "Nuevo Cuenta", "Novo Conta" and "Neu Konto"; a test per language.
 - **MASTHEAD-LONG-TITLE** — A long name on a pushed screen keeps the back button
   `bug · agent · low`
   accept: the pushed-screen title (an account's name on Transactions) shrinks before it pushes the actions off the bar, at the largest text size; a test on the style.
+- **NEW-ACCOUNT-COPY** — The new-account title in the language's own shape
+  `chore · agent · low`
+  accept: a `NEW_ACCOUNT` key in the five dictionaries replaces `${NEW} ${ACCOUNT}`, which reads "Nuevo Cuenta", "Novo Conta" and "Neu Konto"; a test per language.
+- **A11Y-BUDGET-ROW** — A budget passed is said, not only coloured
+  `feature · agent · low`
+  accept: a category row of the Analytics list names its share and, when its budget is passed, says so to a screen reader; a test on the label.
+- **KIT-STATES** — The states the kit does not draw
+  `chore · agent · low`
+  accept: `design/mobile.html` draws the empty Accounts and Scheduled screens, a paused schedule and the Later section, the Settings backup row that was never run, and the new-account sheet, each from the app's real copy, so no screen state of the code is missing from the views.
+
+### Ledger and rates
+
 - **FX-ONE-RULE** — One rule for historical conversion
   `chore · agent · normal`
   accept: charts, month summaries and insights convert past entries with the same month table, stated in SPEC 5 and
@@ -113,6 +120,7 @@ _None._
   `bug · agent · low`
   accept: `RatesService` keys months in UTC while `exchange()` reads the entry's local month, so in UTC+7 the first
   hours of a month read the previous table; one calendar for both, with a test at the boundary.
+
 ### Recommender
 
 - **REC-CATALOGS-DERIVED** — Word catalogs as memory
@@ -123,33 +131,28 @@ _None._
 - **REC-AMOUNT-DROP** — Retire the amount fill
   `chore · agent · normal · depends: DEC-AMOUNT-FILL`
   accept: `suggestAmount` and `autoAmount` are gone; the proposal rows keep the title's latest amount as the hint.
+
 ### Insights and notifications
 
 - **INS-PACE-SCHEDULED** — Pace with scheduled transactions
   `feature · agent · normal`
   accept: the month lead accounts for what is still scheduled this month, with tests for a low-activity month, a
   fixed-cost month, mixed currencies, a month with no spend, day 1 and conversion dates across a month boundary.
+
 ### Engineering
 
 - **A11Y-ANNOUNCE** — Notifications announce themselves to a screen reader
   `feature · agent · low`
   accept: a notification band arriving is announced (`accessibilityLiveRegion="polite"` on Android,
   `AccessibilityInfo.announceForAccessibility` on iOS) before it auto-dismisses; a test on the announcement call.
-- **PERF-INDEX** — Index the ledger once
-  `chore · agent · normal`
-  accept: transactions indexed by account and by month once per change and reused by Overview, Transactions and
-  Analytics; a benchmark test on 10,000 entries shows no repeated sorts.
-- **LINT-HOOKS** — Remaining hooks warnings
-  `chore · agent · low`
-  accept: `yarn lint` prints no `react-hooks` warning (Modal animations, `useMotion`, `FormTransfer` deps).
 - **SETTINGS-LEGACY** — Retire the lead-capture fields
   `chore · agent · low`
   accept: `userProfile` and `marketingLead` leave `DEFAULTS` through a migration that drops them from stored settings;
   a backup carrying them still imports.
 - **JEST-SHIMS** — Drop the Jest module shims
   `chore · agent · low`
-  accept: the `moduleNameMapper` entries in `package.json` go when the Expo preset no longer needs them, with the
-  suite green.
+  accept: the `moduleNameMapper` block of `package.json` and the five files of `src/test/mocks` go; the suite is green
+  without them (measured 2026-10-01 with the block removed: 134 suites, 942 tests).
 
 ## Discarded — don't relitigate
 
@@ -171,3 +174,6 @@ _None._
 | A weekly or monthly digest notification | Out by the creator's decision, 2026-10-01. |
 | No re-animation on a range switch | Out by the creator's decision, 2026-10-01. |
 | One definition of a word for the tokenizer and the title memory | Out by the creator's decision, 2026-10-01. |
+| Two panes (list and detail) on the Fold | Out by the creator's decision, 2026-10-01: the rail only. |
+| Folding `positive` into the accent, `surfaceSoft` into `surface` | The accent cannot be read as text on paper (income and gain use `positive`), and a disabled button needs a ground other than the sheet, which is `surface`. |
+| Indexing the ledger once (PERF-INDEX) | Nothing measured says it is slow: the title memory takes 4 ms for 7,000 entries. Reopen with a measurement from a device. |
