@@ -416,6 +416,49 @@ describe('screens/Transaction/FormTransaction', () => {
       expect(lastForm(onChange).category).toBe(3);
     });
 
+    // "sal" on Expense offered nothing because Salary only exists as an income.
+    test('a title known only under the other type is offered marked with that type, and one tap flips the type', () => {
+      mockTxs = [{ account: 'a1', category: 3, timestamp: 30, title: 'Salary', type: 1, value: 3000 }];
+      const onChange = jest.fn();
+      const onProposalType = jest.fn();
+      const root = renderControlled({ form: { title: 'sal' }, onChange, onProposalType });
+      const rows = proposalRows(root);
+      const chip = rows[0].findAllByProps({ testID: 'suggestion-chip' }).find((node) => typeof node.type === 'function');
+      const price = rows[0].findAllByProps({ testID: 'price' }).find((node) => typeof node.type === 'function');
+
+      expect(rows).toHaveLength(1);
+      expect(chip.props.accessibilityLabel).toBe(L10N.INCOME);
+      expect(price.props).toMatchObject({ operator: true, value: 3000 });
+      act(() => rows[0].props.onPress());
+
+      expect(onProposalType).toHaveBeenCalledWith(1);
+      expect(lastForm(onChange)).toMatchObject({ category: 3, title: 'Salary', value: 3000 });
+    });
+
+    test('the type is flipped after the account is chosen, because choosing an account unsettles the type', () => {
+      mockTxs = [{ account: 'a2', category: 3, timestamp: 30, title: 'Salary', type: 1, value: 3000 }];
+      const onProposalType = jest.fn();
+      const onSelectAccount = jest.fn();
+      const root = renderControlled({ form: { title: 'sal' }, onChange: () => {}, onProposalType, onSelectAccount });
+
+      act(() => proposalRows(root)[0].props.onPress());
+
+      expect(onSelectAccount).toHaveBeenCalled();
+      expect(onSelectAccount.mock.invocationCallOrder[0]).toBeLessThan(onProposalType.mock.invocationCallOrder[0]);
+    });
+
+    test('the other type is never offered when the current type has a proposal of its own', () => {
+      mockTxs = [
+        { account: 'a1', category: 3, timestamp: 30, title: 'Salary', type: 1, value: 3000 },
+        { account: 'a1', category: 2, timestamp: 31, title: 'Salad', type: 0, value: 90 },
+      ];
+      const rows = proposalRows(renderControlled({ form: { title: 'sal' }, onChange: () => {} }));
+      const marks = rows.flatMap((row) => row.findAllByProps({ testID: 'suggestion-chip' }).filter((node) => typeof node.type === 'function'));
+
+      expect(rows).toHaveLength(1);
+      expect(marks).toHaveLength(0);
+    });
+
     test('one tap on a proposal writes the whole entry and withdraws the offers', () => {
       const onChange = jest.fn();
       const onManualAmountChange = jest.fn();

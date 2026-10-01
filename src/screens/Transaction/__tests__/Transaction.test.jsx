@@ -74,6 +74,29 @@ describe('screens/Transaction default category', () => {
     setLanguage('en');
   });
 
+  test('a proposal from the other type flips the type even when the type was already settled, and settles it', () => {
+    render();
+    act(() => mockForm.onAutoSelectType(0));
+    expect(mockForm.typeAutoLocked).toBe(true);
+
+    act(() => mockForm.onProposalType(1));
+
+    expect(mockForm.type).toBe(1);
+    expect(mockForm.typeAutoLocked).toBe(true);
+  });
+
+  test('a proposal that also moves the account still leaves the type settled', () => {
+    render();
+
+    act(() => {
+      mockForm.onSelectAccount(A2);
+      mockForm.onProposalType(1);
+    });
+
+    expect(mockForm.type).toBe(1);
+    expect(mockForm.typeAutoLocked).toBe(true);
+  });
+
   // German puts the verb last.
   test('the save button is one phrase in the language\'s own shape', async () => {
     await setLanguage('de');

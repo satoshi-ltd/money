@@ -76,6 +76,11 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
     setTypeAutoLocked(true);
   };
 
+  const handleProposalType = (nextType) => {
+    setTxType(nextType);
+    setTypeAutoLocked(true);
+  };
+
   const handleManualTypeChange = (nextType) => {
     if (nextType === txType) return;
     setTxType(nextType);
@@ -147,6 +152,7 @@ const Transaction = ({ route: { params: { type, ...params } = {} } = {}, navigat
                 onAutoSelectType: handleAutoSelectType,
                 onManualCategorySelect: handleManualCategorySelect,
                 onManualAmountChange: handleManualAmountChange,
+                onProposalType: handleProposalType,
                 onTypeChange: handleManualTypeChange,
                 accountTouched,
                 categoryTouched,

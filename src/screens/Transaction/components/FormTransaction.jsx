@@ -42,6 +42,7 @@ const FormTransaction = ({
   onAutoSelectType,
   onManualAmountChange,
   onManualCategorySelect,
+  onProposalType,
   onSelectAccount,
   showAccount = false,
   showCategory = true,
@@ -228,6 +229,14 @@ const FormTransaction = ({
         : [],
     [accepted, autoSuggest, memory, safeForm.title, safeType],
   );
+  const crossType = safeType === EXPENSE ? INCOME : EXPENSE;
+  const crossProposals = useMemo(
+    () =>
+      autoSuggest && safeForm.title !== accepted && !proposals.length
+        ? recallTitles(memory, { prefix: safeForm.title || '', type: crossType }).map((proposal) => ({ ...proposal, type: crossType }))
+        : [],
+    [accepted, autoSuggest, crossType, memory, proposals.length, safeForm.title],
+  );
   const accountOf = (proposal) => accountsList.find(({ hash }) => hash === proposal.account);
 
   // One tap writes the whole entry: the concept, what it cost, where from and under what.
@@ -235,6 +244,7 @@ const FormTransaction = ({
     const proposalAccount = accountOf(proposal);
     setAccepted(proposal.title);
     if (proposalAccount && proposalAccount.hash !== account?.hash) onSelectAccount?.(proposalAccount);
+    if (proposal.type !== undefined) onProposalType?.(proposal.type);
     onManualCategorySelect?.();
     onManualAmountChange?.();
     setSuggestion(undefined);
@@ -275,9 +285,9 @@ const FormTransaction = ({
           />
         </FieldRow>
 
-        {proposals.map((proposal) => {
+        {(proposals.length ? proposals : crossProposals).map((proposal) => {
           const proposalAccount = accountOf(proposal);
-          const where = [proposalAccount?.title, L10N.CATEGORIES[safeType]?.[proposal.category]].filter(Boolean);
+          const where = [proposalAccount?.title, L10N.CATEGORIES[proposal.type ?? safeType]?.[proposal.category]].filter(Boolean);
 
           return (
             <Pressable
@@ -296,12 +306,16 @@ const FormTransaction = ({
                   </Text>
                 ) : null}
               </View>
+              {proposal.type !== undefined ? (
+                <Chip label={proposal.type === INCOME ? L10N.INCOME : L10N.EXPENSE} variant="outline" />
+              ) : null}
               <PriceFriendly
                 currency={proposalAccount?.currency || account.currency}
+                operator={proposal.type !== undefined}
                 showSymbol
                 size="md"
                 tone="accent"
-                value={proposal.value}
+                value={proposal.type === EXPENSE ? -proposal.value : proposal.value}
               />
             </Pressable>
           );
@@ -428,6 +442,7 @@ FormTransaction.propTypes = {
   onAutoSelectType: PropTypes.func,
   onManualAmountChange: PropTypes.func,
   onManualCategorySelect: PropTypes.func,
+  onProposalType: PropTypes.func,
   onSelectAccount: PropTypes.func,
   showAccount: PropTypes.bool,
 };

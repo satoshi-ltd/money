@@ -1,8 +1,8 @@
 import {
   ACCOUNTS, BASE, ICON, L, NET, accountRow,
   chip, esc, eyebrow, fieldRow, fig,
-  heading, icon, input, kebab, masthead, monthRow,
-  monthSummary, price, rightValue, seg, setting, switchEl, text, 
+  heading, icon, kebab, masthead, monthRow,
+  monthSummary, price, rightValue, setting, switchEl, text, 
 } from './draw.mjs';
 
 const frame = (body, { sheet, width = 350 } = {}) => `<div class="m" style="width:${width}px;padding:12px 0;background:var(--color-${sheet ? 'surface' : 'background'})">${body}</div>`;
@@ -42,18 +42,12 @@ const categoryHero = (budget) =>
   `<div><div style="display:flex;align-items:center;gap:8px">${dot('accent')}${text('Personal', { size: 'l', bold: true, style: 'flex:1' })}${eyebrow(`September · ${BASE}`)}</div><div style="display:flex;align-items:baseline;gap:8px;margin-top:8px">${price(226, { size: 'xl', bold: true })}${fig(`41% ${L.OF_SPEND}`, { size: 'sm', tone: 'muted' })}</div>${budget ? `<div class="m-bar" style="margin:12px 0 4px"><div class="fill" style="width:65.5%"></div></div>${fieldRow('Budget', `${price(345, { tone: undefined })}${text('300 + 45 carried over', { size: 'xxs', tone: 'muted' })}`, { chevron: true })}${monthRow('Left', price(119, { size: 'md' }), text('of 345', { size: 'xs', tone: 'muted' }))}` : ''}</div>`;
 
 
-const amountRow = (value) => fieldRow(L.AMOUNT, `${input(value, { right: true, figure: true })}${fig('$', { size: 'sm', tone: 'muted' })}`, { divider: true });
-const accountField = () => fieldRow(L.ACCOUNT, `${text('Chase ·', { size: 's', medium: true })}${price(12480.55)}`, { divider: true, chevron: true });
 
 const SETTINGS_PREFS = (extra = '', hour = '08:00') =>
   `<div><div class="m-group">${eyebrow(L.PREFERENCES, { style: 'display:block' })}${setting(L.SCHEDULED, { right: rightValue('4') })}${setting(L.MASK_AMOUNTS, { divider: true, subtitle: L.MASK_AMOUNTS_CAPTION, right: switchEl(false) })}${setting(L.REMINDER_BACKUP, { divider: true, subtitle: `${L.SCHEDULED_PATTERN_WEEKLY} · Sun ${hour}`, right: switchEl(true) })}${extra}</div></div>`;
 const hourRows = (hours, chosen) =>
   hours.map((hour, index) => `<div style="display:flex;align-items:center;gap:12px;height:44px${index ? ';border-top:var(--hairline) solid var(--color-border)' : ''}">${fig(hour, { size: 'md', bold: hour === chosen, style: 'flex:1' })}${hour === chosen ? icon(ICON.CHECK, { tone: 'accent' }) : ''}</div>`).join('');
 
-const proposalFrom = ({ title, where, value, mark }) =>
-  `<div style="display:flex;align-items:center;gap:8px;min-height:44px;border-top:var(--hairline) solid var(--color-border)"><span style="flex:1;display:flex;flex-direction:column"><span style="display:flex;align-items:center;gap:8px">${text(title, { size: 's', medium: true })}${mark ? chip(mark, { variant: 'outline' }) : ''}</span>${text(where, { size: 'xxs', tone: 'muted' })}</span>${price(value, { tone: 'accent', operator: true })}</div>`;
-const conceptForm = (rows) =>
-  frame(`<div><div>${seg([L.EXPENSE, L.INCOME, L.SWAP], L.EXPENSE)}</div><div style="margin-top:16px">${fieldRow(L.CONCEPT, input('sal', { right: true }))}${rows}${amountRow('')}${accountField()}${fieldRow(L.CATEGORY, text('Food & Drinks', { size: 's', medium: true }), { divider: true, chevron: true })}</div></div>`, { sheet: true });
 
 
 
@@ -89,13 +83,6 @@ export const REVIEW = [
       frame(SETTINGS_PREFS(setting('Reminder time', { divider: true, subtitle: 'Scheduled transactions the day before, backup on Sundays', right: rightValue('09:00', { figure: true }) }), '09:00')),
       frame(`<div>${masthead({ section: 'Reminder time', sheet: true })}<div style="margin-top:8px">${hourRows(['06:00', '07:00', '08:00', '09:00', '10:00', '11:00'], '09:00')}</div></div>`, { sheet: true }),
     ),
-  },
-  {
-    id: 'UI-REC-CROSS-TYPE', area: 'Transaction form', title: 'A title known only under the other type',
-    why: 'Typing "sal" on Expense offers nothing today because Salary only exists as an income. Recommended: when the current type has no proposal, the row for the other type\'s title appears with an outline chip naming that type and the amount signed; a tap writes the title, amount, account and category and flips the type, as the exact-title flip already does. Alternative: no chip and a type-coloured amount, which reads as a bug rather than an offer.',
-    accept: 'With no proposal under the current type, the row for the other type appears marked with that type\'s name; it never appears when the current type has a proposal; the chip names the type in the five languages.',
-    now: conceptForm(''),
-    proposed: conceptForm(proposalFrom({ title: 'Salary', where: 'Chase · Salary', value: 3000, mark: L.INCOME })),
   },
 ];
 

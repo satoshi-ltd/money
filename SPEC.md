@@ -239,7 +239,8 @@ button, "See all N" with a chevron, that opens Scheduled.
   exact title exists there and not here. A dismissible chip names what was filled.
 - **Proposals.** Two full-width rows under the concept field, each the title with its account and category under it
   and its amount in the accent; a tap writes title, amount, account and category and withdraws the rows until the
-  title changes.
+  title changes. When the current type has none, the titles of the other type are offered marked with that type's name
+  and a signed amount, and a tap flips the type.
 - **Completeness.** `isTransactionComplete`: a title, a positive amount and, where the form shows one, a category. The
   Transaction and Clone screens derive Save from it at render; nothing stores a validity flag.
 - **Defaults.** A new transaction opens on the account's most frequent category for its type; choosing another account

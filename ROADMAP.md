@@ -40,10 +40,6 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 
 ## Queue
 
-- **REC-CROSS-TYPE** — Proposals from the other type
-  `feature · agent · normal`
-  accept: typing a title known only under the other type offers it, marked, when the current type has nothing;
-  the interface follows board UI-REC-CROSS-TYPE.
 - **NOTIF-TIME** — A reminder time of the reader's own
   `feature · agent · normal`
   accept: Settings offers the hour of the scheduled and backup reminders (today fixed at 08:00 the day before); the

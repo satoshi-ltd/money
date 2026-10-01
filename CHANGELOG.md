@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.80 — 2026-10-01
+
+- A title you only ever filed as the other type is offered too. Typing "sal" on Expense used to offer nothing because Salary only exists as an income; it now appears marked with "Income" and its signed amount when the current type has no proposal, and a tap fills the entry and switches the type.
+
 ## 3.0.79 — 2026-10-01
 
 - The "Hide from Analytics" checkbox says what it does: "Hide from Analytics and the month", and the same in the other four languages, because it also keeps the entry out of the Overview month. The label wraps beside its box at large text instead of pushing it off.
