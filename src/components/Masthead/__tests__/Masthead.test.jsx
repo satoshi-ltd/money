@@ -47,6 +47,16 @@ describe('components/Masthead', () => {
     expect(bar[0].findAll((node) => StyleSheet.flatten(node.props.style)?.backgroundColor === '#RULE00').length).toBeGreaterThan(0);
   });
 
+  test('a long name beside the wordmark shrinks, and so does the slot that holds it, so the close button stays on the bar', () => {
+    const name = render({ section: 'A savings account with a very long name' }).findAll(
+      (node) => typeof node.type === 'string' && node.props.numberOfLines === 1,
+    )[0];
+    const slot = name.parent.parent.parent.parent;
+
+    expect(StyleSheet.flatten(name.props.style).flexShrink).toBe(1);
+    expect(StyleSheet.flatten(slot.props.style).flexShrink).toBe(1);
+  });
+
   test('the wordmark is always there, on every screen that uses it', () => {
     expect(render({}).findAll((node) => node.type?.name === 'Logo').length).toBeGreaterThan(0);
     expect(render({ section: undefined }).findAll((node) => node.type?.name === 'Logo').length).toBeGreaterThan(0);

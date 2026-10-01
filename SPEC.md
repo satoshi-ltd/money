@@ -301,8 +301,9 @@ button, "See all N" with a chevron, that opens Scheduled.
   by merchant with bars and counts, and the latest entries; "See all N" opens Transactions filtered to that category
   and month. An expense category carries its Budget: a field for the monthly limit, saved when it loses focus or the sheet closes
   (empty removes it); the sheet opens tall enough for it and raises with the keyboard, what was carried in, and what is left.
-- **Account** (sheet) — currency, opening balance with its base equivalent (below zero for a card or a loan), name; Delete, Cancel, Save. The first account
-  hides Cancel and Delete.
+- **Account** (sheet) — currency, opening balance with its base equivalent (below zero for a card or a loan), name; Delete and Save, the close button
+  being the way out. The masthead slot names the account (New account when creating, First account at onboarding), no
+  heading repeats it, and a creating or first account has Save alone.
 - **Settings** — a backup nudge when the last export is over a week old; Data (Update rates with its last run, Export,
   Import, Export CSV); Appearance (theme, text size); Preferences (language, currency, Scheduled with its count, mask
   amounts switch, backup reminder switch, reminder time); Unlock (the biometric switch named after the reader); About (terms, privacy, security); Account &

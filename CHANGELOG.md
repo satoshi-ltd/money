@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.87 — 2026-10-01
+
+- The account sheet dresses like the others: its title is the account's name (a long one gives way to the close button), the "Details" heading and the Cancel button are gone, and the close button leaves the sheet.
+
 ## 3.0.86 — 2026-10-01
 
 - One calendar, drawn by Môney on iOS and Android. The Date row of a transaction, a clone and a scheduled transaction opens a month in the sheet: hairlines, mono figures, the accent on the chosen day, today outlined, days past the limit dimmed and not tappable, the month in your language and the week opening on Monday (Sunday in English). Pick a day, then Accept; Cancel leaves the date as it was.

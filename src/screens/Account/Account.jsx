@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { getStyles } from './Account.style';
-import { Button, Heading, InputAmount, InputCurrency, InputField, Panel, Text, View } from '../../components';
+import { Button, InputAmount, InputCurrency, InputField, Panel, Text, View } from '../../components';
 import { useApp, useStore } from '../../contexts';
 import { C, eventEmitter, L10N } from '../../modules';
 import { rebaseRates, ServiceRates } from '../../services';
@@ -80,7 +80,7 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
     setBusy(false);
   };
 
-  const headerTitle = firstAccount ? L10N.FIRST_ACCOUNT : editMode ? L10N.SETTINGS : `${L10N.NEW} ${L10N.ACCOUNT}`;
+  const headerTitle = firstAccount ? L10N.FIRST_ACCOUNT : hash ? params.title?.trim() || L10N.ACCOUNT : `${L10N.NEW} ${L10N.ACCOUNT}`;
 
   return (
     <Panel offset sheet title={headerTitle} onBack={firstAccount ? undefined : goBack}>
@@ -89,8 +89,6 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
           {L10N.FIRST_ACCOUNT_CAPTION}
         </Text>
       ) : null}
-
-      <Heading value={L10N.DETAILS} />
 
       <View style={style.group}>
         <View row style={style.row}>
@@ -131,11 +129,6 @@ const Account = ({ route: { params = {} } = {}, navigation: { goBack, navigate }
         {hash ? (
           <Button disabled={busy} grow variant="dangerSoft" onPress={handleDelete}>
             {L10N.DELETE}
-          </Button>
-        ) : null}
-        {!firstAccount ? (
-          <Button disabled={busy} grow variant="outlined" onPress={goBack}>
-            {L10N.CANCEL}
           </Button>
         ) : null}
         <Button disabled={busy || !form.currency || !form.title || form.balance === '-'} grow onPress={handleSubmit}>

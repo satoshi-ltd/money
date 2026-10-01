@@ -270,13 +270,13 @@ export const NET = 61648.74;
 export const CARD = { title: 'Visa', currency: 'USD', balance: -1284.3, base: -1284.3 };
 export const netEyebrow = () => `${L.NET_WORTH} · ${ACCOUNTS.length} ${L.ACCOUNTS_CAPTION(ACCOUNTS.length)} · ${BASE}`;
 
-const BUDGET_ROWS = [
+export const BUDGET_ROWS = [
   { name: 'Personal', limit: 300, spent: 226, color: 'accent' },
   { name: 'Transit', limit: 100, spent: 121, color: 'text' },
   { name: 'Food & Drinks', limit: 120, spent: 105, color: 'textSecondary' },
   { name: 'Leisure', spent: 61, pct: 11, color: 'textMuted' },
 ];
-const budgetState = ({ limit, spent }) => (!limit ? 'none' : spent > limit ? 'over' : spent / limit >= 0.8 ? 'near' : 'within');
+export const budgetState = ({ limit, spent }) => (!limit ? 'none' : spent > limit ? 'over' : spent / limit >= 0.8 ? 'near' : 'within');
 
 export const budgetCategories = () =>
   BUDGET_ROWS.map((row) => {

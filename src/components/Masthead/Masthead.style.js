@@ -27,7 +27,11 @@ export const getStyles = (colors) =>
     },
     right: {
       alignItems: 'center',
+      flexShrink: 1,
       gap: theme.spacing.sm,
+    },
+    eyebrow: {
+      flexShrink: 1,
     },
     field: {
       alignItems: 'center',

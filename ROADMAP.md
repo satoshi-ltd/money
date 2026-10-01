@@ -1,6 +1,6 @@
 # Môney roadmap
 
-Updated 2026-10-01 · 3.0.86, build 62.
+Updated 2026-10-01 · 3.0.87, build 63.
 
 This is the task pool. [SPEC.md](SPEC.md) owns current state, contracts, operations and the design system;
 [CHANGELOG.md](CHANGELOG.md) records what each version shipped; [AGENTS.md](AGENTS.md) defines the autonomous workflow
@@ -39,6 +39,16 @@ depends on it. Every agent task also meets these, on top of its `accept`: a regr
 `yarn validate` green; no new runtime dependency or persisted field unless the task names it.
 
 ## Queue
+
+- **CATEGORY-FIGURES** — One figure beside every category
+  `ui · agent · normal`
+  accept: the board.
+- **CALENDAR-TARGET** — Days a thumb can hit
+  `ui · agent · normal`
+  accept: the board.
+- **COLOUR-ROLES** — Thirteen colours instead of twenty
+  `ui · agent · normal`
+  accept: the board.
 
 ## In progress
 
@@ -91,6 +101,12 @@ _None._
 
 ### Ledger and rates
 
+- **NEW-ACCOUNT-COPY** — The new-account title in the language's own shape
+  `chore · agent · low`
+  accept: a `NEW_ACCOUNT` key in the five dictionaries replaces `${NEW} ${ACCOUNT}`, which reads "Nuevo Cuenta", "Novo Conta" and "Neu Konto"; a test per language.
+- **MASTHEAD-LONG-TITLE** — A long name on a pushed screen keeps the back button
+  `bug · agent · low`
+  accept: the pushed-screen title (an account's name on Transactions) shrinks before it pushes the actions off the bar, at the largest text size; a test on the style.
 - **FX-ONE-RULE** — One rule for historical conversion
   `chore · agent · normal`
   accept: charts, month summaries and insights convert past entries with the same month table, stated in SPEC 5 and

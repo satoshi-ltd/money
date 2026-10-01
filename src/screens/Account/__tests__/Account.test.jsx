@@ -24,8 +24,8 @@ jest.mock('../../../components', () => {
     InputAmount: stub('input-amount'),
     InputCurrency: stub('input-currency'),
     InputField: stub('input-field'),
-    Panel: ({ children, footerElement }) =>
-      MockReact.createElement(ReactNative.View, null, children, footerElement),
+    Panel: ({ children, footerElement, title }) =>
+      MockReact.createElement(ReactNative.View, { testID: 'panel', title }, children, footerElement),
     Text: (props) => MockReact.createElement(ReactNative.Text, { testID: 'text', ...props }),
     View: ({ flex, row, ...props }) => MockReact.createElement(ReactNative.View, props),
   };
@@ -82,18 +82,29 @@ describe('screens/Account', () => {
     expect(componentsBy(root, 'input-field')[0].props.label).toBeUndefined();
   });
 
-  test('editing offers delete, cancel and save, each growing', () => {
+  test('editing offers delete and save, each growing, and leaves the leaving to the close button', () => {
     const buttons = componentsBy(render({ hash: 'a1', currency: 'EUR', title: 'N26' }), 'button');
 
-    expect(buttons.map((node) => node.props.children)).toEqual([L10N.DELETE, L10N.CANCEL, L10N.SAVE]);
-    expect(buttons.map((node) => node.props.variant)).toEqual(['dangerSoft', 'outlined', undefined]);
+    expect(buttons.map((node) => node.props.children)).toEqual([L10N.DELETE, L10N.SAVE]);
+    expect(buttons.map((node) => node.props.variant)).toEqual(['dangerSoft', undefined]);
     expect(buttons.every((node) => node.props.grow)).toBe(true);
   });
 
-  test('creating drops the delete button', () => {
+  test('creating offers save alone', () => {
     const buttons = componentsBy(render(), 'button');
 
-    expect(buttons.map((node) => node.props.children)).toEqual([L10N.CANCEL, L10N.SAVE]);
+    expect(buttons.map((node) => node.props.children)).toEqual([L10N.SAVE]);
+  });
+
+  test('the sheet opens on the thing it is about, with no heading of its own', () => {
+    const title = (params) => componentsBy(render(params), 'panel')[0].props.title;
+
+    expect(title({ hash: 'a1', currency: 'EUR', title: 'N26' })).toBe('N26');
+    expect(title({ hash: 'a1', currency: 'EUR' })).toBe(L10N.ACCOUNT);
+    expect(title({ hash: 'a1', currency: 'EUR', title: '  ' })).toBe(L10N.ACCOUNT);
+    expect(title({})).toBe(`${L10N.NEW} ${L10N.ACCOUNT}`);
+    expect(title({ firstAccount: true })).toBe(L10N.FIRST_ACCOUNT);
+    expect(componentsBy(render({ hash: 'a1', title: 'N26' }), 'heading')).toHaveLength(0);
   });
 
   test('the first-account flow leaves only save, disabled until it is named', () => {
