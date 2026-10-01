@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.98 — 2026-10-01
+
+- Typing a title no longer fills the amount for you. The word rule that did it answered 5.5% of repeated titles and was right a quarter of the time; the amount comes from tapping a proposal, which carries the title's latest one. The catalog behind it is removed from your settings on the next start.
+
 ## 3.0.97 — 2026-10-01
 
 - A screen reader hears each category row of Analytics as a button with its name, its share of the month and its amount, and "over budget" when its budget is passed, which was only a colour; with amounts masked it leaves the amount out, as the screen does. The folded "Others" row and "Show less" are buttons too.

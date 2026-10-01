@@ -5,7 +5,6 @@ import {
   getOccurrencesBetween,
   L10N,
   learnAutoAccount,
-  learnAutoAmount,
   learnAutoCategory,
 } from '../../modules';
 import { NotificationsService } from '../../services';
@@ -92,18 +91,11 @@ export const runScheduledSync = async ({ migrated, store, syncNotifications = tr
         ? accountTxs.reduce((catalog, tx) => learnAutoAccount(catalog, tx), migrated.settings.autoAccount)
         : undefined;
 
-    const amountTxs = newTxs.filter((tx) => !!tx?.account && Number.isFinite(tx?.value) && tx.value > 0);
-    const nextAutoAmount =
-      amountTxs.length > 0
-        ? amountTxs.reduce((catalog, tx) => learnAutoAmount(catalog, tx), migrated.settings.autoAmount)
-        : undefined;
-
-    if (nextAutoCategory || nextAutoAccount || nextAutoAmount) {
+    if (nextAutoCategory || nextAutoAccount) {
       nextSettings = {
         ...migrated.settings,
         ...(nextAutoCategory ? { autoCategory: nextAutoCategory } : null),
         ...(nextAutoAccount ? { autoAccount: nextAutoAccount } : null),
-        ...(nextAutoAmount ? { autoAmount: nextAutoAmount } : null),
       };
       await store.get('settings').save(nextSettings);
     }

@@ -112,7 +112,7 @@ the insights. Screens query it; nothing recomputes per row.
 
 | Store | Shape |
 | --- | --- |
-| `settings` | `schemaVersion`, `baseCurrency`, `ratesBaseCurrency`, `lastRatesUpdate`, `theme` (`light`, `dark`, `system`), `textSize`, `language`, `onboarded`, `pin`, `biometricUnlockEnabled`, `fingerprint`, `maskAmount`, `reminders`, `reminderHour`, `budgets`, `backupAt`, `statsRangeMonths`, `autoCategory`, `autoAccount`, `autoAmount`, and the legacy `userProfile` and `marketingLead` |
+| `settings` | `schemaVersion`, `baseCurrency`, `ratesBaseCurrency`, `lastRatesUpdate`, `theme` (`light`, `dark`, `system`), `textSize`, `language`, `onboarded`, `pin`, `biometricUnlockEnabled`, `fingerprint`, `maskAmount`, `reminders`, `reminderHour`, `budgets`, `backupAt`, `statsRangeMonths`, `autoCategory`, `autoAccount`, and the legacy `userProfile` and `marketingLead` |
 | `accounts` | `{ hash, title, currency, balance, timestamp }` — `balance` is the opening balance; the current one is computed |
 | `txs` | `{ hash, account, category, type, value, timestamp, title, meta? }` — `value` is positive; `type` is 0 expense, 1 income, 2 transfer; `meta` may carry `{ kind: 'scheduled', scheduledId, occurrenceAt }` and `moved: true` |
 | `scheduledTxs` | `{ id, account, category, type, value, title, startAt, pattern: { kind: 'weekly', byWeekday[] } \| { kind: 'monthly', byMonthDay }, updatedAt }` |
@@ -138,7 +138,8 @@ merge, because the merged object always looks current.
 ### Backups
 
 An export is `{ schemaVersion, accounts, scheduledTxs, settings, txs }` as `money-<ISO date>.json`, shared through the
-system sheet. `settings` leaves out `pin`, `biometricUnlockEnabled`, `backupAt` and the three catalogs. CSV export
+system sheet. `settings` leaves out `pin`, `biometricUnlockEnabled`, `backupAt` and the two catalogs. A retired setting (`autoAmount`) is removed from the disk at boot by
+`retireSettings`, since a save only adds keys, and is never exported. CSV export
 writes `date, type, amount, currency, category, title, account`, one transaction per row.
 
 Import picks a file, validates it (`backupValidation`: top-level keys, arrays, finite numbers, no foreign keys), asks
@@ -174,8 +175,8 @@ successful export and drives the weekly backup nudge in Settings.
   scheduled) and `backup-reminder` (weekly, Sunday at the reminder hour, when the reminder is on). The reminder hour is one
   setting, `reminderHour`, chosen in Settings between 06:00 and 22:00; a stored value outside that range resets to 08:00. Turning a feature off cancels
   only its own kind. Notifications are unavailable in Expo Go on Android and quietly skipped there.
-- **Recommender learning.** Creating or editing a transaction feeds the three word catalogs (`learnAutoCategory`,
-  `learnAutoAccount`, `learnAutoAmount`); the title memory is not stored, it is built from `txs` when the form mounts.
+- **Recommender learning.** Creating or editing a transaction feeds the two word catalogs (`learnAutoCategory`,
+  `learnAutoAccount`); the title memory is not stored, it is built from `txs` when the form mounts.
 
 ## 5. Rates and conversion
 
@@ -252,7 +253,7 @@ button, "See all N" with a chevron, that opens Scheduled.
   `recallTitle(memory, { title, type })` answers the same for an exact title from a single sighting on.
 - **Filling.** On every keystroke the form takes back what the previous keystroke filled in and reads the whole title
   afresh: the title memory first, the word rules (`suggestCategory`, `suggestAccount`) only for a title never seen;
-  the amount comes from the stable word rule (`suggestAmount`, minimum three sightings at 90%). A category the screen
+  the amount is never filled by a rule, only by tapping a proposal. A category the screen
   defaulted counts as free; one the reader chose is never overruled. The type flips to the other one only when the
   exact title exists there and not here. A dismissible chip names what was filled.
 - **Proposals.** Two full-width rows under the concept field, each the title with its account and category under it

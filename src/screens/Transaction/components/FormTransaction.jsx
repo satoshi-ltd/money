@@ -13,7 +13,6 @@ import {
   recallTitle,
   recallTitles,
   suggestAccount,
-  suggestAmount,
   suggestCategory,
   verboseDate,
 } from '../../../modules';
@@ -75,7 +74,6 @@ const FormTransaction = ({
         next = {
           ...next,
           ...(standing.applied.category !== undefined ? { category: standing.previousCategory } : {}),
-          ...(standing.applied.value !== undefined ? { value: standing.previousValue } : {}),
         };
       }
       const base = next;
@@ -133,26 +131,12 @@ const FormTransaction = ({
       }
       if (effectiveAccount?.hash !== account?.hash) onAutoSelectAccount?.(effectiveAccount);
 
-      // Auto-fill amount only when stable and only if the user hasn't touched the amount field.
-      if (!amountTouched && amountEmpty && effectiveAccount?.hash) {
-        const suggested = suggestAmount(settings.autoAmount, {
-          title,
-          type: effectiveType,
-          account: effectiveAccount.hash,
-        });
-        if (suggested !== undefined) {
-          next = { ...next, value: suggested };
-          applied = { ...applied, value: suggested };
-        }
-      }
-
       if (applied) {
         setSuggestion({
           applied,
           previousAccount: baseAccount,
           previousCategory: base.category,
           previousType: baseType,
-          previousValue: base.value,
         });
       } else if (standing) {
         setSuggestion(undefined);
@@ -173,7 +157,7 @@ const FormTransaction = ({
   };
 
   const dismissSuggestion = () => {
-    const { applied, previousAccount, previousCategory, previousType, previousValue } = suggestion;
+    const { applied, previousAccount, previousCategory, previousType } = suggestion;
 
     if (applied.type !== undefined) onAutoSelectType?.(previousType);
     if (applied.account && previousAccount?.hash) onAutoSelectAccount?.(previousAccount);
@@ -181,7 +165,6 @@ const FormTransaction = ({
     const next = {
       ...safeForm,
       ...(applied.category !== undefined ? { category: previousCategory } : {}),
-      ...(applied.value !== undefined ? { value: previousValue } : {}),
     };
     setSuggestion(undefined);
     onChange({ form: next, valid: computeValid(next) });
@@ -193,7 +176,6 @@ const FormTransaction = ({
           ? L10N.CATEGORIES[suggestion.applied.type ?? safeType]?.[suggestion.applied.category]
           : undefined,
         suggestion.applied.account?.title,
-        suggestion.applied.value,
       ]
         .filter((part) => part !== undefined)
         .join(' · ')

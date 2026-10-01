@@ -1,5 +1,5 @@
 import { migrateState } from '../migrateState';
-import { RATES_SCHEMA } from '../../store.constants';
+import { DEFAULTS, RATES_SCHEMA } from '../../store.constants';
 
 const storedAccount = {
   hash: 'a1',
@@ -98,5 +98,15 @@ describe('contexts/modules/migrateState', () => {
 
   test('a stored step survives the migration untouched', () => {
     expect(migrateState({ settings: { textSize: 1.15 } }).settings.textSize).toBe(1.15);
+  });
+
+  test('the amount catalog is gone from the defaults and dropped from a stored settings object, whatever it held', () => {
+    const stored = { autoAmount: { rules: { coffee: { a1: 40 } }, stats: {}, updatedAt: 1 }, baseCurrency: 'EUR' };
+    const { settings } = migrateState({ accounts: [], settings: stored, txs: [] });
+
+    expect(DEFAULTS.settings.autoAmount).toBeUndefined();
+    expect(settings.autoAmount).toBeUndefined();
+    expect(settings.baseCurrency).toBe('EUR');
+    expect(settings.autoCategory).toBeDefined();
   });
 });

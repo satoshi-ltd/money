@@ -1,6 +1,6 @@
 # Môney roadmap
 
-Updated 2026-10-01 · 3.0.97, build 73.
+Updated 2026-10-01 · 3.0.98, build 74.
 
 This is the task pool. [SPEC.md](SPEC.md) owns current state, contracts, operations and the design system;
 [CHANGELOG.md](CHANGELOG.md) records what each version shipped; [AGENTS.md](AGENTS.md) defines the autonomous workflow
@@ -76,14 +76,9 @@ _None._
 
 ### Decisions
 
-- **DEC-AMOUNT-FILL** — Drop the word-rule amount fill
-  `decision · creator · normal`
-  accept: on the creator's ledger the stable amount rule answered 5.5% of repeated titles and was right 25.6% of the
-  time; when it disagreed with the title's own latest amount it was right 3.2%. Decide whether `suggestAmount` and the
-  persisted `autoAmount` catalog go (REC-AMOUNT-DROP).
 - **DEC-CATALOGS** — Derive the word catalogs at boot
   `decision · creator · normal`
-  accept: the `autoCategory`, `autoAccount` and `autoAmount` catalogs are persisted in settings, rebuilt only when
+  accept: the `autoCategory` and `autoAccount` catalogs are persisted in settings, rebuilt only when
   empty and learned incrementally, so a tokenizer change never reaches an installed catalog; backups already omit
   them. Decide whether they become memory built from `txs` at boot (REC-CATALOGS-DERIVED).
 - **DEC-CATEGORY-HIDDEN** — Do hidden entries belong to a category's sheet?
@@ -113,12 +108,9 @@ _None._
 
 - **REC-CATALOGS-DERIVED** — Word catalogs as memory
   `feature · agent · normal · depends: DEC-CATALOGS`
-  accept: the three catalogs are built from `txs` at boot (the title memory takes 4 ms for 7,000 entries) and no
+  accept: the two catalogs are built from `txs` at boot (the title memory takes 4 ms for 7,000 entries) and no
   longer persisted; `store.constants.js`, `migrateState.js` and the reducers stop carrying them; a backup with them
   still imports.
-- **REC-AMOUNT-DROP** — Retire the amount fill
-  `chore · agent · normal · depends: DEC-AMOUNT-FILL`
-  accept: `suggestAmount` and `autoAmount` are gone; the proposal rows keep the title's latest amount as the hint.
 
 ### Insights and notifications
 
@@ -131,6 +123,11 @@ _None._
 
 ### Engineering
 
+- **AMOUNT-TOUCHED-CLEANUP** — Plumbing left from the amount fill
+  `chore · agent · low`
+  accept: `amountTouched` and `onManualAmountChange` (FormTransaction, Transaction) only dismiss the suggestion chip on the first
+  amount keystroke now that no rule fills the amount; either the chip stays until you dismiss it and the props go, or the
+  dismissal is kept on purpose and the plumbing is renamed for it; a test either way.
 - **SETTINGS-LEGACY** — Retire the lead-capture fields
   `chore · agent · low`
   accept: `userProfile` and `marketingLead` leave `DEFAULTS` through a migration that drops them from stored settings;

@@ -3,12 +3,12 @@ import React, { createContext, useContext, useEffect, useLayoutEffect, useMemo, 
 import { AppState } from 'react-native';
 
 import { consolidate, isRatesSyncDue, migrateState, RATES_SYNC_INTERVAL } from './modules';
+import { retireSettings } from './modules/retireSettings';
 import { runScheduledSync } from './modules/runScheduledSync';
 import { useToday } from '../hooks';
 import { detectDeviceLanguage, setLanguage } from '../i18n';
 import {
   buildAutoAccountCatalog,
-  buildAutoAmountCatalog,
   buildAutoCategoryCatalog,
 } from '../modules';
 import {
@@ -72,6 +72,7 @@ const StoreProvider = ({ children }) => {
       ]);
       const rawState = { accounts, rates: storedRates, scheduledTxs, settings, txs };
       let migrated = migrateState(rawState);
+      await retireSettings({ migrated, stored: settings, store });
 
       const resolvedLanguage = migrated.settings.language || detectDeviceLanguage();
       if (resolvedLanguage !== migrated.settings.language) {
@@ -83,12 +84,10 @@ const StoreProvider = ({ children }) => {
 
       const autoCategory = migrated.settings?.autoCategory || {};
       const autoAccount = migrated.settings?.autoAccount || {};
-      const autoAmount = migrated.settings?.autoAmount || {};
 
       const hasCategoryRules = Object.keys(autoCategory.rules || {}).length > 0;
       const hasAccountRules = Object.keys(autoAccount.rules || {}).length > 0;
-      const hasAmountRules = Object.keys(autoAmount.rules || {}).length > 0;
-      if ((!hasCategoryRules || !hasAccountRules || !hasAmountRules) && (migrated.txs || []).length > 0) {
+      if ((!hasCategoryRules || !hasAccountRules) && (migrated.txs || []).length > 0) {
         const nextSettings = { ...migrated.settings };
 
         if (!hasCategoryRules) {
@@ -99,11 +98,6 @@ const StoreProvider = ({ children }) => {
         if (!hasAccountRules) {
           const catalog = buildAutoAccountCatalog(migrated.txs);
           nextSettings.autoAccount = { ...autoAccount, ...catalog };
-        }
-
-        if (!hasAmountRules) {
-          const catalog = buildAutoAmountCatalog(migrated.txs);
-          nextSettings.autoAmount = { ...autoAmount, ...catalog };
         }
 
         await store.get('settings').save(nextSettings);

@@ -9,17 +9,17 @@ import { rowHeight } from '../../../../theme/layout';
 
 
 let mockTxs = [];
+let mockSettings = {};
 
 jest.mock('../../../../contexts', () => ({
   useApp: () => ({ colors: { accent: '#accent', border: '#border', surface: '#surface', text: '#text' } }),
-  useStore: () => ({ rates: {}, session: {}, settings: {}, txs: mockTxs }),
+  useStore: () => ({ rates: {}, session: {}, settings: mockSettings, txs: mockTxs }),
 }));
 
 jest.mock('../../../../modules', () => ({
   ...jest.requireActual('../../../../modules'),
   suggestCategory: jest.fn(() => 1),
   suggestAccount: jest.fn(() => undefined),
-  suggestAmount: jest.fn(() => undefined),
 }));
 
 
@@ -288,6 +288,20 @@ describe('screens/Transaction/FormTransaction', () => {
       const root = render({ autoSuggest: true, form: { title: 'Coffee' }, onChange: () => {} });
 
       expect(offered(root)).toContain('Coffee');
+    });
+
+    test('typing a title never fills the amount, however stable the amounts under it are: only a proposal you tap does', () => {
+      mockTxs = [10, 20, 30, 40].map((timestamp) => ({ account: 'a1', category: 2, timestamp, title: 'Coffee', type: 0, value: 40 }));
+      mockSettings = { autoAmount: { rules: { 0: { a1: { coffee: '40' } } }, stats: { 0: { a1: { coffee: { amounts: { 40: 4 }, total: 4 } } } } } };
+      const onChange = jest.fn();
+      const root = render({ autoSuggest: true, onChange });
+
+      typeConcept(root, 'Coffee');
+
+      const { form } = onChange.mock.calls[onChange.mock.calls.length - 1][0];
+      expect(form.value).toBeUndefined();
+      expect(form.title).toBe('Coffee');
+      mockSettings = {};
     });
 
     test('with nothing to repeat there is no extra row', () => {

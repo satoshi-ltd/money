@@ -1,5 +1,4 @@
 export * from './autoAccount';
-export * from './autoAmount';
 export * from './autoCategory';
 export * from './autoTokens';
 export * from './backupAge';

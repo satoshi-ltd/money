@@ -1,5 +1,5 @@
 import { parseTx, saveSettings } from './modules';
-import { learnAutoAccount, learnAutoAmount, learnAutoCategory } from '../../modules';
+import { learnAutoAccount, learnAutoCategory } from '../../modules';
 
 export const updateTx = async ({ hash, ...data } = {}, [state, setState]) => {
   const { store, settings = {} } = state;
@@ -14,15 +14,11 @@ export const updateTx = async ({ hash, ...data } = {}, [state, setState]) => {
 
   const nextAutoCategory = nextTx?.category !== undefined ? learnAutoCategory(settings.autoCategory, nextTx) : undefined;
   const nextAutoAccount = nextTx?.account ? learnAutoAccount(settings.autoAccount, nextTx) : undefined;
-  const nextAutoAmount =
-    nextTx?.account && Number.isFinite(nextTx?.value) && nextTx.value > 0 ? learnAutoAmount(settings.autoAmount, nextTx) : undefined;
-
-  if (nextAutoCategory || nextAutoAccount || nextAutoAmount) {
+  if (nextAutoCategory || nextAutoAccount) {
     const nextSettings = {
       ...settings,
       ...(nextAutoCategory ? { autoCategory: nextAutoCategory } : null),
       ...(nextAutoAccount ? { autoAccount: nextAutoAccount } : null),
-      ...(nextAutoAmount ? { autoAmount: nextAutoAmount } : null),
     };
     const settings = await saveSettings(store, nextSettings);
     setState((prev) => ({ ...prev, txs, settings }));

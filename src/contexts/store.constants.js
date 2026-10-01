@@ -43,11 +43,6 @@ const DEFAULTS = {
       stats: {},
       updatedAt: undefined,
     },
-    autoAmount: {
-      rules: {},
-      stats: {},
-      updatedAt: undefined,
-    },
     schemaVersion: SCHEMA_VERSION,
     statsRangeMonths: 12,
     textSize: DEFAULT_TEXT_SCALE,
