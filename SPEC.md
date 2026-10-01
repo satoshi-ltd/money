@@ -183,9 +183,11 @@ successful export and drives the weekly backup nudge in Settings.
 day (`…/currency-api@YYYY-MM-DD/v1/currencies/<base>.json`) with a 10 s timeout per request. Only the currencies the
 app knows are kept. Metals come per troy ounce.
 
-**Month tables.** The cache is one table per month since 2024-03. A closed month is read at its closing day (day 0 of
-the next month) and never again, except the month a download was last made in, which is provisional and re-read at its
-close. The current month is read from the file dated today, falling back to yesterday and the day before, and only
+**Month tables.** The cache is one table per month since 2024-03, keyed by the device's calendar month, the same one
+the ledger and `exchange()` read an entry's month in. The dated files are UTC days, so the local month can turn first:
+a table counts as final only if it was downloaded after its closing day, and until then it is read again. A closed month is read at its closing day (day 0 of
+the next month) and never again, except a month whose closing day had not passed when it was last downloaded, which is
+provisional and re-read at its close. The current month is read from the file dated today, falling back to yesterday and the day before, and only
 then from the `latest` alias, because the CDN in front of the feed has held that alias a week behind with a clean 200.
 The current month is requested first and alone: without it the download did not happen — `get()` throws, the caller
 keeps its cache, `lastRatesUpdate` stays put and Settings says so instead of "updated". The remaining missing months

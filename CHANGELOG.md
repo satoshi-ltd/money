@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.92 — 2026-10-01
+
+- Rates are filed under the month on your clock, the one your entries are read in. Away from UTC an entry made in the first or last hours of a month could be priced from the neighbouring month's table, a day off; now the table of today is the table of that month wherever you are.
+
 ## 3.0.91 — 2026-10-01
 
 - On the open Fold the tab bar and the seal give way to a side rail: the wordmark, the four tabs as words and New at the foot, with the screen filling the width beside it instead of a centred column of 480 points. A phone, or the folded Fold, keeps its bar; the layout follows the window as the device folds and unfolds. Pushed screens and sheets keep their column.

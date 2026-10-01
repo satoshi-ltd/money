@@ -1,4 +1,5 @@
 import { ratesOrSeed, rebaseRates, seedRates, ServiceRates } from '../RatesService';
+import { exchange } from '../../modules/exchange';
 import SEED from '../../modules/ratesSeed.json';
 
 const table = { AUD: 1.5, BTC: 0.000013, EUR: 0.86, THB: 32.6, USD: 1, XAU: 0.00022 };
@@ -14,10 +15,10 @@ const SEED_LAST = Object.keys(SEED.rates).sort().pop();
 const afterSeed = (day) => {
   const at = new Date(`${SEED_LAST}-01T00:00:00Z`);
   at.setUTCMonth(at.getUTCMonth() + 1);
-  return new Date(`${at.toISOString().slice(0, 7)}-${day}T09:00:00Z`);
+  return new Date(`${at.toISOString().slice(0, 7)}-${day}T12:00:00Z`);
 };
 
-const CURRENT = afterSeed('15').toISOString().slice(0, 7);
+const CURRENT = `${afterSeed('15').getFullYear()}-${`${afterSeed('15').getMonth() + 1}`.padStart(2, '0')}`;
 
 // A download already made inside the current month: nothing older is still provisional.
 const SYNCED = afterSeed('15').toISOString();
@@ -270,5 +271,109 @@ describe('services/RatesService fetch', () => {
     global.fetch = jest.fn(async () => ({ ok: false }));
 
     await expect(ServiceRates.get({ baseCurrency: 'USD', known: FULL, lastRatesUpdate: SYNCED })).rejects.toThrow();
+  });
+});
+
+describe('services/RatesService month calendar', () => {
+  const clockAt = (offsetHours) => {
+    const shifted = (date) => new Date(date.getTime() + offsetHours * 3600000);
+
+    jest.spyOn(Date.prototype, 'getFullYear').mockImplementation(function year() {
+      return shifted(this).getUTCFullYear();
+    });
+    jest.spyOn(Date.prototype, 'getMonth').mockImplementation(function month() {
+      return shifted(this).getUTCMonth();
+    });
+  };
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+    jest.useRealTimers();
+    global.fetch = undefined;
+  });
+
+  const syncAt = async (offsetHours, instant) => {
+    jest.useFakeTimers().setSystemTime(new Date(instant));
+    clockAt(offsetHours);
+    let calls = 0;
+    global.fetch = jest.fn(async () => {
+      calls += 1;
+      return answer({ usd: 1, thb: calls === 1 ? 101 : 5 });
+    });
+
+    return ServiceRates.get({ baseCurrency: 'USD' });
+  };
+
+  test("east of UTC, in the first hours of a month, today's table is that month's, not the month before's", async () => {
+    const rates = await syncAt(7, '2026-08-31T20:00:00Z');
+
+    expect(rates['2026-09'].THB).toBe(101);
+    expect(rates['2026-08'].THB).toBe(5);
+  });
+
+  test("west of UTC, in the last hours of a month, today's table is still that month's", async () => {
+    const rates = await syncAt(-5, '2026-09-01T02:00:00Z');
+
+    expect(rates['2026-08'].THB).toBe(101);
+    expect(rates['2026-09']).toBeUndefined();
+  });
+
+  test('an entry made at that instant is priced from the table the service just wrote, on either side of UTC', async () => {
+    const cases = [
+      [7, '2026-08-31T20:00:00Z'],
+      [-5, '2026-09-01T02:00:00Z'],
+      [13, '2026-12-31T12:00:00Z'],
+      [-10, '2027-01-01T05:00:00Z'],
+    ];
+
+    for (const [offset, instant] of cases) {
+      const { currency, ...rates } = await syncAt(offset, instant);
+
+      expect(exchange(1010, 'THB', 'USD', rates, new Date(instant).getTime())).toBeCloseTo(10, 6);
+      jest.restoreAllMocks();
+    }
+  });
+
+  test('every month from the start to now is requested once, the year turning included', async () => {
+    await syncAt(13, '2027-01-01T12:00:00Z');
+    const dates = global.fetch.mock.calls.map(([url]) => dateOf(url));
+    const count = (date) => dates.filter((each) => each === date).length;
+
+    expect(count('2026-12-31')).toBe(1);
+    expect(count('2026-11-30')).toBe(1);
+    expect(dates.filter((date) => date.startsWith('2027-01') && date !== '2026-12-31')).toHaveLength(1);
+    expect(dates).toContain('2024-03-31');
+  });
+
+  test('a month whose closing day is still running in UTC stays provisional after the local month turned, until it is read at its close', async () => {
+    jest.useFakeTimers().setSystemTime(new Date('2026-08-31T10:30:00Z'));
+    clockAt(14);
+    const known = { ...FULL, '2026-08': table };
+    global.fetch = jest
+      .fn()
+      .mockImplementationOnce(async () => answer({ usd: 1, thb: 101 }))
+      .mockImplementation(async () => ({ ok: false }));
+
+    const first = await ServiceRates.get({ baseCurrency: 'USD', known, lastRatesUpdate: '2026-08-20T09:00:00.000Z' });
+    const firstDates = global.fetch.mock.calls.map(([url]) => dateOf(url));
+
+    expect(firstDates).toEqual(['2026-08-31', '2026-08-31', '2026-08-31']);
+    expect(first['2026-08']).toBeUndefined();
+
+    global.fetch = jest.fn(async () => answer({ usd: 1, thb: 33 }));
+    const second = await ServiceRates.get({ baseCurrency: 'USD', known, lastRatesUpdate: '2026-08-31T10:30:00.000Z' });
+
+    expect(global.fetch).toHaveBeenCalledTimes(2);
+    expect(second['2026-08'].THB).toBe(33);
+  });
+
+  test('once the closing day is past in UTC a month is final and is not read again', async () => {
+    jest.useFakeTimers().setSystemTime(new Date('2026-09-02T10:30:00Z'));
+    clockAt(14);
+    global.fetch = jest.fn(async () => answer({ usd: 1, thb: 33 }));
+
+    await ServiceRates.get({ baseCurrency: 'USD', known: { ...FULL, '2026-08': table }, lastRatesUpdate: '2026-09-01T00:00:00.000Z' });
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 });

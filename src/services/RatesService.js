@@ -10,7 +10,13 @@ const ORIGINS = [
   (date, base) => `https://${date}.currency-api.pages.dev/v1/currencies/${base}.json`,
 ];
 
-const monthKey = (date = new Date()) => date.toISOString().slice(0, 7);
+const monthKey = (date = new Date()) => `${date.getFullYear()}-${`${date.getMonth() + 1}`.padStart(2, '0')}`;
+
+const nextKey = (key) => {
+  const month = Number(key.slice(5));
+
+  return month === 12 ? `${Number(key.slice(0, 4)) + 1}-01` : `${key.slice(0, 5)}${`${month + 1}`.padStart(2, '0')}`;
+};
 
 // Day 0 of the next month: a hardcoded -31 is a 404 on both origins for the short ones.
 const closingDay = (key) =>
@@ -18,15 +24,10 @@ const closingDay = (key) =>
 
 const monthsSince = (from = START) => {
   const out = [];
-  const at = new Date(`${from}-01T00:00:00Z`);
   const current = monthKey();
 
-  // Compare month keys, not instants: a cursor kept on a day-of-month lost the current month until that day came.
-  while (monthKey(at) <= current) {
-    const key = monthKey(at);
-    out.push({ date: closingDay(key), key });
-    at.setUTCMonth(at.getUTCMonth() + 1);
-  }
+  for (let key = from; key <= current; key = nextKey(key)) out.push({ date: closingDay(key), key });
+
   return out;
 };
 
@@ -38,11 +39,13 @@ const recentDays = (now = new Date()) =>
     return at.toISOString().slice(0, 10);
   });
 
-// A table written while its month was still running is provisional, and the last download is what dates it.
-const provisionalMonth = (lastRatesUpdate) => {
-  const at = new Date(lastRatesUpdate || SEED.date || 0);
+// A table is final only if it was downloaded after its closing day, a UTC date: the local month can turn first.
+const downloadDay = (lastRatesUpdate) => {
+  if (!lastRatesUpdate) return SEED.date ? SEED.date.slice(0, 10) : undefined;
 
-  return Number.isNaN(at.getTime()) ? undefined : monthKey(at);
+  const at = new Date(lastRatesUpdate);
+
+  return Number.isNaN(at.getTime()) ? undefined : at.toISOString().slice(0, 10);
 };
 
 const pick = (day = {}) =>
@@ -117,8 +120,10 @@ export const ServiceRates = {
   // `known` skips the months already held, except the two never final: the current one and the one that just closed.
   get: async ({ baseCurrency = CURRENCY, known = {}, lastRatesUpdate } = {}) => {
     const current = monthKey();
-    const provisional = provisionalMonth(lastRatesUpdate);
-    const missing = monthsSince().filter(({ key }) => key !== current && (!known[key] || key === provisional));
+    const day = downloadDay(lastRatesUpdate);
+    const missing = monthsSince().filter(
+      ({ date, key }) => key !== current && (!known[key] || (day !== undefined && day <= date)),
+    );
 
     // Today first and alone: every balance is read at it, and a download without it did not happen at all.
     const today = await readToday(baseCurrency);

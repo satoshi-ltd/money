@@ -1,6 +1,6 @@
 # Môney roadmap
 
-Updated 2026-10-01 · 3.0.91, build 67.
+Updated 2026-10-01 · 3.0.92, build 68.
 
 This is the task pool. [SPEC.md](SPEC.md) owns current state, contracts, operations and the design system;
 [CHANGELOG.md](CHANGELOG.md) records what each version shipped; [AGENTS.md](AGENTS.md) defines the autonomous workflow
@@ -116,10 +116,6 @@ _None._
   `chore · agent · normal`
   accept: charts, month summaries and insights convert past entries with the same month table, stated in SPEC 5 and
   proved by one shared test.
-- **RATES-MONTH-KEY** — Month keys agree between the service and the reader
-  `bug · agent · low`
-  accept: `RatesService` keys months in UTC while `exchange()` reads the entry's local month, so in UTC+7 the first
-  hours of a month read the previous table; one calendar for both, with a test at the boundary.
 
 ### Recommender
 
