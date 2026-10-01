@@ -130,10 +130,12 @@ _None._
 
 ### Insights and notifications
 
-- **INS-PACE-SCHEDULED** — Pace with scheduled transactions
-  `feature · agent · normal`
-  accept: the month lead accounts for what is still scheduled this month, with tests for a low-activity month, a
-  fixed-cost month, mixed currencies, a month with no spend, day 1 and conversion dates across a month boundary.
+- **INS-PACE-SCHEDULED** — Where the month ends, with what is still scheduled
+  `feature · agent · normal · depends: UI-INS-PACE-SCHEDULED`
+  accept: the interface follows board UI-INS-PACE-SCHEDULED; `buildInsights` emits the projection (spent so far plus
+  the expenses still scheduled this month, converted at the latest table, against the median full month of the last six)
+  only while an expense is pending and at least two earlier months with spend give a usual month; tests for a low-activity month, a fixed-cost
+  month, mixed currencies, a month with no spend, day 1 and occurrences across a month boundary.
 
 ### Engineering
 
@@ -145,6 +147,7 @@ _None._
   `chore · agent · low`
   accept: `userProfile` and `marketingLead` leave `DEFAULTS` through a migration that drops them from stored settings;
   a backup carrying them still imports.
+
 ## Discarded — don't relitigate
 
 | Decision | Reason |
