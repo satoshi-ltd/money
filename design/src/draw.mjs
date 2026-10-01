@@ -132,7 +132,8 @@ export const seal = (floating) => `<span class="m-seal${floating ? ' floating' :
 export const logo = () => `<span class="m-logo">MÔNEY</span>`;
 export const mark = (size = 44) => `<span class="m-mark" style="width:${size}px;height:${size}px;font-size:${Math.round(size * 0.42)}px">MÔ</span>`;
 
-export const proposalRow = (title, where, value) => `<div style="display:flex;align-items:center;gap:8px;min-height:44px;border-top:var(--hairline) solid var(--color-border)"><span style="flex:1;display:flex;flex-direction:column">${text(title, { size: 's', medium: true })}${text(where, { size: 'xxs', tone: 'muted' })}</span>${price(value, { currency: 'THB', tone: 'accent', symbol: true })}</div>`;
+export const proposalRow = (title, where, value, { currency = 'THB', mark } = {}) => `<div style="display:flex;align-items:center;gap:8px;min-height:44px;border-top:var(--hairline) solid var(--color-border)"><span style="flex:1;display:flex;flex-direction:column">${text(title, { size: 's', medium: true })}${text(where, { size: 'xxs', tone: 'muted' })}</span>${mark ? chip(mark, { variant: 'outline' }) : ''}${price(value, { currency, operator: !!mark, tone: 'accent', symbol: true })}</div>`;
+export const emptyState = (title, caption, action) => `<div class="m-empty"><span class="m-well">${icon(ICON.RECEIPT, { size: 'xl', tone: 'textMuted' })}</span><div style="height:16px"></div>${text(title, { size: 'l', bold: true })}<div style="height:8px"></div>${text(caption, { size: 's', tone: 'muted', center: true, style: 'max-width:250px' })}<div style="height:24px"></div>${btn(action, { variant: 'outlined' })}</div>`;
 export const fieldRow = (label, value, { divider, chevron } = {}) =>
   `<div class="m-fieldrow${divider ? ' divider' : ''}"><span class="label">${esc(label)}</span><span class="value">${value}</span>${chevron ? icon(ICON.DOWN, { size: 's', tone: 'textMuted' }) : ''}</div>`;
 export const input = (value, { placeholder = '...', right, figure } = {}) =>
@@ -160,7 +161,7 @@ export const footer = (active) =>
 export const statusBar = () => `<div class="m-status"><span class="figure">9:41</span><span class="figure">●●●</span></div>`;
 
 export const phone = (name, caption, body, { sheet, fold, tab } = {}) =>
-  `<div class="kit-board" data-screen="${name}"><div class="kit-caption">${esc(caption)}</div><div class="m kit-phone${sheet ? ' sheet' : ''}${fold ? ' fold' : ''}">${statusBar()}${body}${tab ? footer(tab) : ''}</div></div>`;
+  `<div class="kit-board" data-screen="${name}"><div class="kit-caption">${esc(caption)}</div><div class="m kit-phone${sheet ? ' sheet' : ''}${fold ? ' fold' : ''}">${statusBar()}${fold ? `<div style="max-width:480px;margin:0 auto">${body}</div>` : body}${tab ? footer(tab) : ''}</div></div>`;
 export const content = (body, style = '') => `<div class="m-content"${style ? ` style="${style}"` : ''}>${body}</div>`;
 
 export const linePoints = (series, { width, height, padding, min, max }) =>
