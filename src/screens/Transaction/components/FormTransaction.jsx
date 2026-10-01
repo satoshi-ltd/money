@@ -5,6 +5,8 @@ import { style } from './FormTransaction.style';
 import { Checkbox, Chip, DatePicker, Dropdown, FieldRow, Input, Pressable, PriceFriendly, Text, View } from '../../../components';
 import { useApp, useStore } from '../../../contexts';
 import {
+  buildAutoAccountCatalog,
+  buildAutoCategoryCatalog,
   buildTitleMemory,
   C,
   foreignSymbol,
@@ -51,6 +53,10 @@ const FormTransaction = ({
   const safeForm = form || {};
   const safeType = type ?? EXPENSE;
   const memory = useMemo(() => buildTitleMemory(txs), [txs]);
+  const wordCatalogs = useMemo(
+    () => (autoSuggest ? { account: buildAutoAccountCatalog(txs), category: buildAutoCategoryCatalog(txs) } : {}),
+    [autoSuggest, txs],
+  );
 
   const [suggestion, setSuggestion] = useState();
   const [showAccounts, setShowAccounts] = useState(false);
@@ -97,7 +103,7 @@ const FormTransaction = ({
       const known = recallTitle(memory, { title, type: baseType });
       const suggestedCurrent =
         showCategory && categoryFree
-          ? known?.category ?? suggestCategory(settings.autoCategory, { title, type: baseType })
+          ? known?.category ?? suggestCategory(wordCatalogs.category, { title, type: baseType })
           : undefined;
       // Exact titles only: on a real ledger shared words flipped the type wrongly 20 times where the title did once.
       const suggestedOther =
@@ -119,7 +125,7 @@ const FormTransaction = ({
 
       // Auto-select account only on screens that opt into it (Transaction create flow).
       if (!accountTouched && typeof onAutoSelectAccount === 'function' && accountsList.length) {
-        const suggestedHash = known?.account ?? suggestAccount(settings.autoAccount, { title, type: effectiveType });
+        const suggestedHash = known?.account ?? suggestAccount(wordCatalogs.account, { title, type: effectiveType });
         const nextAccount =
           suggestedHash && suggestedHash !== baseAccount?.hash
             ? accountsList.find((a) => a?.hash === suggestedHash)

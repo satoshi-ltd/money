@@ -4,8 +4,6 @@ import {
   eventEmitter,
   getOccurrencesBetween,
   L10N,
-  learnAutoAccount,
-  learnAutoCategory,
 } from '../../modules';
 import { NotificationsService } from '../../services';
 
@@ -78,29 +76,7 @@ export const runScheduledSync = async ({ migrated, store, syncNotifications = tr
     await collection.save(newTxs);
     const nextTxs = collection.value;
 
-    let nextSettings = migrated.settings;
-    const categoryTxs = newTxs.filter((tx) => tx?.category !== undefined);
-    const nextAutoCategory =
-      categoryTxs.length > 0
-        ? categoryTxs.reduce((catalog, tx) => learnAutoCategory(catalog, tx), migrated.settings.autoCategory)
-        : undefined;
-
-    const accountTxs = newTxs.filter((tx) => !!tx?.account);
-    const nextAutoAccount =
-      accountTxs.length > 0
-        ? accountTxs.reduce((catalog, tx) => learnAutoAccount(catalog, tx), migrated.settings.autoAccount)
-        : undefined;
-
-    if (nextAutoCategory || nextAutoAccount) {
-      nextSettings = {
-        ...migrated.settings,
-        ...(nextAutoCategory ? { autoCategory: nextAutoCategory } : null),
-        ...(nextAutoAccount ? { autoAccount: nextAutoAccount } : null),
-      };
-      await store.get('settings').save(nextSettings);
-    }
-
-    next = { ...migrated, txs: nextTxs, settings: nextSettings };
+    next = { ...migrated, txs: nextTxs };
   }
 
   if (syncNotifications) await NotificationsService.syncScheduled({ scheduledTxs, txs: next.txs });

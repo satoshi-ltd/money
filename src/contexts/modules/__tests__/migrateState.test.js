@@ -100,13 +100,14 @@ describe('contexts/modules/migrateState', () => {
     expect(migrateState({ settings: { textSize: 1.15 } }).settings.textSize).toBe(1.15);
   });
 
-  test('the amount catalog is gone from the defaults and dropped from a stored settings object, whatever it held', () => {
-    const stored = { autoAmount: { rules: { coffee: { a1: 40 } }, stats: {}, updatedAt: 1 }, baseCurrency: 'EUR' };
+  test('the word catalogs are gone from the defaults and dropped from a stored settings object, whatever they held', () => {
+    const catalog = { rules: { coffee: { a1: 40 } }, stats: {}, updatedAt: 1 };
+    const stored = { autoAccount: catalog, autoAmount: catalog, autoCategory: catalog, baseCurrency: 'EUR' };
     const { settings } = migrateState({ accounts: [], settings: stored, txs: [] });
+    const left = (object) => ['autoAccount', 'autoAmount', 'autoCategory'].filter((key) => key in object);
 
-    expect(DEFAULTS.settings.autoAmount).toBeUndefined();
-    expect(settings.autoAmount).toBeUndefined();
+    expect(left(DEFAULTS.settings)).toEqual([]);
+    expect(left(settings)).toEqual([]);
     expect(settings.baseCurrency).toBe('EUR');
-    expect(settings.autoCategory).toBeDefined();
   });
 });

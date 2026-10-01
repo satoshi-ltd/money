@@ -1,4 +1,4 @@
-import { buildAutoCategoryCatalog, learnAutoCategory, suggestCategory } from '../autoCategory';
+import { buildAutoCategoryCatalog, suggestCategory } from '../autoCategory';
 import { C } from '../constants';
 
 const { EXPENSE } = C.TX.TYPE;
@@ -8,19 +8,21 @@ const transferLeg = { title: 'Savings', type: EXPENSE, category: INTERNAL_TRANSF
 const groceries = { title: 'Market groceries', type: EXPENSE, category: 1 };
 
 describe('modules/autoCategory', () => {
-  test('learns from ordinary transactions', () => {
-    const catalog = [groceries, groceries, groceries].reduce((memo, tx) => learnAutoCategory(memo, tx), undefined);
+  test('builds a rule from ordinary transactions', () => {
+    const catalog = buildAutoCategoryCatalog([groceries, groceries, groceries]);
 
     expect(catalog.rules[EXPENSE].market).toBe(1);
   });
 
-  test('never learns a category from an internal transfer', () => {
-    const catalog = [transferLeg, transferLeg, transferLeg, transferLeg].reduce(
-      (memo, tx) => learnAutoCategory(memo, tx),
-      undefined,
-    );
+  test('a catalog built from nothing has no rules to suggest from', () => {
+    expect(suggestCategory(buildAutoCategoryCatalog([]), { title: 'Market groceries', type: EXPENSE })).toBeUndefined();
+  });
 
-    expect(catalog).toBeUndefined();
+  test('a deleted or edited entry leaves the rule with it, since the catalog is rebuilt from what is there', () => {
+    const history = [groceries, groceries, groceries];
+
+    expect(buildAutoCategoryCatalog(history).rules[EXPENSE].market).toBe(1);
+    expect(buildAutoCategoryCatalog(history.slice(1)).rules[EXPENSE].market).toBeUndefined();
   });
 
   test('leaves transfers out when the catalog is rebuilt from history', () => {

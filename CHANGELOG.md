@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.99 — 2026-10-01
+
+- The suggestions for a category and an account while you type a title are built from your entries when the form opens, instead of from a catalog stored in your settings. Deleting or correcting an entry stops it teaching the suggestion straight away, and the catalogs leave your settings on the next start.
+
 ## 3.0.98 — 2026-10-01
 
 - Typing a title no longer fills the amount for you. The word rule that did it answered 5.5% of repeated titles and was right a quarter of the time; the amount comes from tapping a proposal, which carries the title's latest one. The catalog behind it is removed from your settings on the next start.

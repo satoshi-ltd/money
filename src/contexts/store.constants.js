@@ -33,16 +33,6 @@ const DEFAULTS = {
       sentAt: undefined,
       remote: undefined,
     },
-    autoCategory: {
-      rules: {},
-      stats: {},
-      updatedAt: undefined,
-    },
-    autoAccount: {
-      rules: {},
-      stats: {},
-      updatedAt: undefined,
-    },
     schemaVersion: SCHEMA_VERSION,
     statsRangeMonths: 12,
     textSize: DEFAULT_TEXT_SCALE,

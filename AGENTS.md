@@ -106,7 +106,7 @@ Rules of the loop:
 - Mobile only: iOS 15.1+ and Android, phones and the Fold. A window under 600 points keeps the phone's layout (tab bar and seal, a 480-point column); from 600 the tabs move to a side rail and the content fills the width beside it. No web or desktop target: the creator decided against one.
 - One base currency the reader thinks in; everything converts to it at the day's public rate, and a closed month at its
   closing day. Metals are priced per troy ounce.
-- Backups are plain JSON the user owns, plus CSV export; the PIN, the biometric preference and the learned catalogs
+- Backups are plain JSON the user owns, plus CSV export; the PIN and the biometric preference
   never travel in one, and an invalid payload never overwrites the ledger.
 - A four-digit PIN asked on every open, optionally behind the phone's biometric reader; neither can be recovered.
 - A transaction hidden from Analytics (`meta.moved`) and a swap between own accounts leave every month figure and stay

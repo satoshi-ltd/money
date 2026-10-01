@@ -59,35 +59,6 @@ export const buildAutoAccountCatalog = (txs = [], options = {}) => {
   };
 };
 
-export const learnAutoAccount = (catalog, { title, type, account }, options = {}) => {
-  if (!account) return catalog;
-  if (!isMeaningfulTitle(title)) return catalog;
-
-  const stats = { ...(catalog?.stats || {}) };
-  const rules = { ...(catalog?.rules || {}) };
-
-  const words = tokenizeTitle(title);
-  if (!words.length) return catalog;
-
-  words.forEach((word) => {
-    const bucket = ensureStatsBucket(stats, type, word);
-    bucket.total += 1;
-    bucket.accounts[account] = (bucket.accounts[account] || 0) + 1;
-  });
-
-  if (!rules[type]) rules[type] = {};
-  words.forEach((word) => {
-    const rule = buildRuleForWord(stats[type][word], options);
-    if (rule !== undefined) rules[type][word] = rule;
-  });
-
-  return {
-    rules,
-    stats,
-    updatedAt: Date.now(),
-  };
-};
-
 export const suggestAccount = (catalog, { title, type }) => {
   const rules = catalog?.rules || {};
   const words = tokenizeTitle(title);

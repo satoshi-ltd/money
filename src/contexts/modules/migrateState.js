@@ -20,20 +20,12 @@ export const migrateState = ({ accounts, rates, scheduledTxs, schemaVersion, set
   const resolvedSettings = {
     ...DEFAULTS.settings,
     ...(settings || {}),
-    autoCategory: {
-      ...DEFAULTS.settings.autoCategory,
-      ...(settings?.autoCategory || {}),
-    },
-    autoAccount: {
-      ...DEFAULTS.settings.autoAccount,
-      ...(settings?.autoAccount || {}),
-    },
     // A backup can carry any number here, and an unbounded one renders the app unusable.
     textSize: clampTextScale(settings?.textSize),
     reminderHour: validReminderHour(settings?.reminderHour),
     budgets: validBudgets(settings?.budgets),
   };
-  delete resolvedSettings.autoAmount;
+  ['autoAccount', 'autoAmount', 'autoCategory'].forEach((key) => delete resolvedSettings[key]);
   // Read before DEFAULTS lends its own: merged settings always look current, and the gate needs what was stored.
   const storedSchema = Number.isFinite(settings?.schemaVersion) ? settings.schemaVersion : schemaVersion;
 

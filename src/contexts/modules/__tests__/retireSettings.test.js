@@ -3,7 +3,9 @@ import { retireSettings } from '../retireSettings';
 import { updateSettings } from '../../reducers/updateSettings';
 import { createTestStore } from '../../../test/createTestStore';
 
-const STORED = { autoAmount: { rules: { 0: { a1: { coffee: '40' } } }, stats: {} }, baseCurrency: 'EUR', theme: 'dark' };
+const CATALOG = { rules: { 0: { a1: { coffee: '40' } } }, stats: {} };
+const STORED = { autoAccount: CATALOG, autoAmount: CATALOG, autoCategory: CATALOG, baseCurrency: 'EUR', theme: 'dark' };
+const kept = (settings) => ['autoAccount', 'autoAmount', 'autoCategory'].filter((key) => key in settings);
 
 describe('contexts/modules/retireSettings', () => {
   test('a catalog the app no longer keeps leaves the disk, since a save can only add keys', async () => {
@@ -11,11 +13,11 @@ describe('contexts/modules/retireSettings', () => {
     const migrated = migrateState({ accounts: [], settings: store.get('settings').value, txs: [] });
 
     await store.get('settings').save(migrated.settings);
-    expect(store.get('settings').value.autoAmount).toBeDefined();
+    expect(kept(store.get('settings').value)).toEqual(['autoAccount', 'autoAmount', 'autoCategory']);
 
     await retireSettings({ migrated, stored: STORED, store });
 
-    expect(store.get('settings').value.autoAmount).toBeUndefined();
+    expect(kept(store.get('settings').value)).toEqual([]);
     expect(store.get('settings').value.baseCurrency).toBe('EUR');
     expect(store.get('settings').value.theme).toBe('dark');
   });
@@ -28,8 +30,8 @@ describe('contexts/modules/retireSettings', () => {
 
     await updateSettings({ theme: 'light' }, [{ settings: migrated.settings, store }, setState]);
 
-    expect(store.get('settings').value.autoAmount).toBeUndefined();
-    expect(setState.mock.calls[0][0]({ settings: {} }).settings.autoAmount).toBeUndefined();
+    expect(kept(store.get('settings').value)).toEqual([]);
+    expect(kept(setState.mock.calls[0][0]({ settings: {} }).settings)).toEqual([]);
   });
 
   test('a settings object that never held one is left alone: nothing is rewritten', async () => {
@@ -39,5 +41,14 @@ describe('contexts/modules/retireSettings', () => {
     await retireSettings({ migrated: { settings: { baseCurrency: 'EUR' } }, stored: { baseCurrency: 'EUR' }, store });
 
     expect(replace).not.toHaveBeenCalled();
+  });
+
+  test('a storage failure is the caller to handle: the rollback leaves the in-memory settings as they were', async () => {
+    const store = await createTestStore({ settings: STORED });
+    const migrated = migrateState({ accounts: [], settings: STORED, txs: [] });
+    store.replace = jest.fn(() => Promise.reject(new Error('disk full')));
+
+    await expect(retireSettings({ migrated, stored: STORED, store })).rejects.toThrow('disk full');
+    expect(kept(store.get('settings').value)).toEqual(['autoAccount', 'autoAmount', 'autoCategory']);
   });
 });

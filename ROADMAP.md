@@ -1,6 +1,6 @@
 # Môney roadmap
 
-Updated 2026-10-01 · 3.0.98, build 74.
+Updated 2026-10-01 · 3.0.99, build 75.
 
 This is the task pool. [SPEC.md](SPEC.md) owns current state, contracts, operations and the design system;
 [CHANGELOG.md](CHANGELOG.md) records what each version shipped; [AGENTS.md](AGENTS.md) defines the autonomous workflow
@@ -76,11 +76,6 @@ _None._
 
 ### Decisions
 
-- **DEC-CATALOGS** — Derive the word catalogs at boot
-  `decision · creator · normal`
-  accept: the `autoCategory` and `autoAccount` catalogs are persisted in settings, rebuilt only when
-  empty and learned incrementally, so a tokenizer change never reaches an installed catalog; backups already omit
-  them. Decide whether they become memory built from `txs` at boot (REC-CATALOGS-DERIVED).
 - **DEC-CATEGORY-HIDDEN** — Do hidden entries belong to a category's sheet?
   `decision · creator · normal`
   accept: an entry marked "Hide from Analytics" leaves the Analytics category bar (`queryMonth` skips `isMovement`)
@@ -103,14 +98,6 @@ _None._
   `feature · agent · low`
   accept: the closed-month line of the Overview month block shows the figure Analytics shows for that month; its
   comparison with the usual stays in constant currency; a test that both read the same number.
-
-### Recommender
-
-- **REC-CATALOGS-DERIVED** — Word catalogs as memory
-  `feature · agent · normal · depends: DEC-CATALOGS`
-  accept: the two catalogs are built from `txs` at boot (the title memory takes 4 ms for 7,000 entries) and no
-  longer persisted; `store.constants.js`, `migrateState.js` and the reducers stop carrying them; a backup with them
-  still imports.
 
 ### Insights and notifications
 

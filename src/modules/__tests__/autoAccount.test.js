@@ -1,4 +1,4 @@
-import { buildAutoAccountCatalog, learnAutoAccount, suggestAccount } from '../autoAccount';
+import { buildAutoAccountCatalog, suggestAccount } from '../autoAccount';
 
 describe('autoAccount', () => {
   test('buildAutoAccountCatalog creates rules only when thresholds are met', () => {
@@ -47,12 +47,10 @@ describe('autoAccount', () => {
     expect(suggestAccount(catalog, { title: 'mirai', type: 0 })).toBe('acc-income');
   });
 
-  test('learnAutoAccount updates catalog incrementally', () => {
-    const base = buildAutoAccountCatalog([]);
-    const next = learnAutoAccount(base, { title: 'coffee', type: 0, account: 'acc-a' });
-    const next2 = learnAutoAccount(next, { title: 'coffee', type: 0, account: 'acc-a' });
-    const next3 = learnAutoAccount(next2, { title: 'coffee', type: 0, account: 'acc-a' });
+  test('a rule needs three entries of its word in the history, and a catalog rebuilt from less no longer holds it', () => {
+    const coffee = { title: 'coffee', type: 0, account: 'acc-a' };
 
-    expect(suggestAccount(next3, { title: 'coffee', type: 0 })).toBe('acc-a');
+    expect(suggestAccount(buildAutoAccountCatalog([coffee, coffee, coffee]), { title: 'coffee', type: 0 })).toBe('acc-a');
+    expect(suggestAccount(buildAutoAccountCatalog([coffee, coffee]), { title: 'coffee', type: 0 })).toBeUndefined();
   });
 });

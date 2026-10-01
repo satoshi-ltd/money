@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import FormTransaction from '../FormTransaction';
-import { L10N, suggestCategory } from '../../../../modules';
+import { L10N, suggestAccount, suggestCategory } from '../../../../modules';
 import { theme } from '../../../../theme';
 import { rowHeight } from '../../../../theme/layout';
 
@@ -301,6 +301,23 @@ describe('screens/Transaction/FormTransaction', () => {
       const { form } = onChange.mock.calls[onChange.mock.calls.length - 1][0];
       expect(form.value).toBeUndefined();
       expect(form.title).toBe('Coffee');
+      mockSettings = {};
+    });
+
+    test('the word rules, asked for a title never seen, are read from the ledger itself and never from a catalog kept in settings', () => {
+      const gasolina = (timestamp, account) => ({ account, category: 5, timestamp, title: 'Gasolina diesel', type: 0, value: 30 });
+      mockTxs = [gasolina(1, 'a2'), gasolina(2, 'a2'), gasolina(3, 'a2')];
+      mockSettings = { autoCategory: { rules: { 0: { gasolina: 9 } }, stats: {} }, autoAccount: { rules: { 0: { gasolina: 'stale' } }, stats: {} } };
+      suggestCategory.mockClear();
+      suggestAccount.mockClear();
+
+      typeConcept(
+        render({ accountsList: [{ currency: 'EUR', hash: 'a1' }, { currency: 'EUR', hash: 'a2' }], autoSuggest: true, onAutoSelectAccount: () => {}, onChange: () => {} }),
+        'Gasolina',
+      );
+
+      expect(suggestCategory.mock.calls[0][0].rules[0].gasolina).toBe(5);
+      expect(suggestAccount.mock.calls[0][0]?.rules?.[0]?.gasolina).toBe('a2');
       mockSettings = {};
     });
 

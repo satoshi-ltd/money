@@ -8,10 +8,6 @@ import { runScheduledSync } from './modules/runScheduledSync';
 import { useToday } from '../hooks';
 import { detectDeviceLanguage, setLanguage } from '../i18n';
 import {
-  buildAutoAccountCatalog,
-  buildAutoCategoryCatalog,
-} from '../modules';
-import {
   // -- account
   createAccount,
   updateAccount,
@@ -72,7 +68,7 @@ const StoreProvider = ({ children }) => {
       ]);
       const rawState = { accounts, rates: storedRates, scheduledTxs, settings, txs };
       let migrated = migrateState(rawState);
-      await retireSettings({ migrated, stored: settings, store });
+      await retireSettings({ migrated, stored: settings, store }).catch(() => undefined);
 
       const resolvedLanguage = migrated.settings.language || detectDeviceLanguage();
       if (resolvedLanguage !== migrated.settings.language) {
@@ -81,28 +77,6 @@ const StoreProvider = ({ children }) => {
         migrated = { ...migrated, settings: nextSettings };
       }
       await setLanguage(migrated.settings.language);
-
-      const autoCategory = migrated.settings?.autoCategory || {};
-      const autoAccount = migrated.settings?.autoAccount || {};
-
-      const hasCategoryRules = Object.keys(autoCategory.rules || {}).length > 0;
-      const hasAccountRules = Object.keys(autoAccount.rules || {}).length > 0;
-      if ((!hasCategoryRules || !hasAccountRules) && (migrated.txs || []).length > 0) {
-        const nextSettings = { ...migrated.settings };
-
-        if (!hasCategoryRules) {
-          const catalog = buildAutoCategoryCatalog(migrated.txs);
-          nextSettings.autoCategory = { ...autoCategory, ...catalog };
-        }
-
-        if (!hasAccountRules) {
-          const catalog = buildAutoAccountCatalog(migrated.txs);
-          nextSettings.autoAccount = { ...autoAccount, ...catalog };
-        }
-
-        await store.get('settings').save(nextSettings);
-        migrated = { ...migrated, settings: nextSettings };
-      }
 
       migrated = await runScheduledSync({ migrated, store, syncNotifications: false });
 

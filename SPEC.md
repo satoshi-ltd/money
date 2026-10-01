@@ -94,9 +94,10 @@ App.js → src/App.jsx: fonts, GestureHandlerRootView, SafeAreaProvider, ErrorBo
 | `src/i18n` | The five dictionaries and language detection. |
 | `src/theme` | Tokens (`theme.js`) and the layout constants derived from them (`layout.js`). |
 
-**Boot.** `StoreProvider` reads `accounts`, `scheduledTxs`, `settings`, `rates` and `txs`, runs `migrateState`, drops a
-rates cache older than the rates schema, replaces an empty or pre-build cache with the bundled seed, rebuilds the word
-catalogs when they are empty, runs the scheduled sync, then renders. A rates sync runs at boot, every six hours and on
+**Boot.** `StoreProvider` reads `accounts`, `scheduledTxs`, `settings`, `rates` and `txs`, runs `migrateState`, removes
+the retired settings from the disk (`retireSettings`, which a storage failure only postpones to the next boot), drops a
+rates cache older than the rates schema, replaces an empty or pre-build cache with the bundled seed, runs the scheduled
+sync, then renders. A rates sync runs at boot, every six hours and on
 every return to the foreground when the last download is older than six hours.
 
 **State.** `consolidate` is a `useMemo` over accounts, transactions, rates, the base currency and today: it computes
@@ -112,7 +113,7 @@ the insights. Screens query it; nothing recomputes per row.
 
 | Store | Shape |
 | --- | --- |
-| `settings` | `schemaVersion`, `baseCurrency`, `ratesBaseCurrency`, `lastRatesUpdate`, `theme` (`light`, `dark`, `system`), `textSize`, `language`, `onboarded`, `pin`, `biometricUnlockEnabled`, `fingerprint`, `maskAmount`, `reminders`, `reminderHour`, `budgets`, `backupAt`, `statsRangeMonths`, `autoCategory`, `autoAccount`, and the legacy `userProfile` and `marketingLead` |
+| `settings` | `schemaVersion`, `baseCurrency`, `ratesBaseCurrency`, `lastRatesUpdate`, `theme` (`light`, `dark`, `system`), `textSize`, `language`, `onboarded`, `pin`, `biometricUnlockEnabled`, `fingerprint`, `maskAmount`, `reminders`, `reminderHour`, `budgets`, `backupAt`, `statsRangeMonths`, and the legacy `userProfile` and `marketingLead` |
 | `accounts` | `{ hash, title, currency, balance, timestamp }` — `balance` is the opening balance; the current one is computed |
 | `txs` | `{ hash, account, category, type, value, timestamp, title, meta? }` — `value` is positive; `type` is 0 expense, 1 income, 2 transfer; `meta` may carry `{ kind: 'scheduled', scheduledId, occurrenceAt }` and `moved: true` |
 | `scheduledTxs` | `{ id, account, category, type, value, title, startAt, pattern: { kind: 'weekly', byWeekday[] } \| { kind: 'monthly', byMonthDay }, updatedAt }` |
@@ -138,9 +139,9 @@ merge, because the merged object always looks current.
 ### Backups
 
 An export is `{ schemaVersion, accounts, scheduledTxs, settings, txs }` as `money-<ISO date>.json`, shared through the
-system sheet. `settings` leaves out `pin`, `biometricUnlockEnabled`, `backupAt` and the two catalogs. A retired setting (`autoAmount`) is removed from the disk at boot by
-`retireSettings`, since a save only adds keys, and is never exported. CSV export
-writes `date, type, amount, currency, category, title, account`, one transaction per row.
+system sheet. `settings` leaves out `pin`, `biometricUnlockEnabled` and `backupAt`; the retired word catalogs (`autoCategory`,
+`autoAccount`, `autoAmount`) are never exported, and one found in an old backup or on the disk is dropped on load and
+removed from the disk at boot by `retireSettings`, since a save only adds keys. CSV export writes `date, type, amount, currency, category, title, account`, one transaction per row.
 
 Import picks a file, validates it (`backupValidation`: top-level keys, arrays, finite numbers, no foreign keys), asks
 for confirmation with the file's counts, then replaces the ledger through `importBackup`: the current rates cache is
@@ -175,8 +176,9 @@ successful export and drives the weekly backup nudge in Settings.
   scheduled) and `backup-reminder` (weekly, Sunday at the reminder hour, when the reminder is on). The reminder hour is one
   setting, `reminderHour`, chosen in Settings between 06:00 and 22:00; a stored value outside that range resets to 08:00. Turning a feature off cancels
   only its own kind. Notifications are unavailable in Expo Go on Android and quietly skipped there.
-- **Recommender learning.** Creating or editing a transaction feeds the two word catalogs (`learnAutoCategory`,
-  `learnAutoAccount`); the title memory is not stored, it is built from `txs` when the form mounts.
+- **Recommender memory.** Nothing the recommender uses is stored: the title memory and the two word catalogs
+  (`buildAutoCategoryCatalog`, `buildAutoAccountCatalog`) are built from `txs` when the form mounts, so an entry that is
+  edited or deleted stops teaching at once and no settings field carries them.
 
 ## 5. Rates and conversion
 
@@ -479,7 +481,7 @@ src/contexts/modules/                           migrateState, consolidate, calcA
 src/contexts/reducers/                          createTx, updateTx, deleteTx, accounts, scheduled, importBackup, updateRates, updateSettings, resetAppData
 src/services/                                   StorageService, RatesService, BackupService, NotificationsService, BiometricAuthService
 src/services/modules/                           asyncStorage (chunks, queue), backupValidation, scheduledNotifications
-src/modules/                                    exchange, insights, recurrence, titleMemory, autoCategory/Account/Amount, autoTokens,
+src/modules/                                    exchange, insights, recurrence, titleMemory, autoCategory/Account, autoTokens,
                                                 isMovement, isInternalTransfer, median, monthFlow, dailyNet, monthlyImpact,
                                                 ledgerDate, verboseDate, figureText, currency*, constants, l10n, icon, ratesSeed.json
 src/i18n/                                       dictionaries (EN, ES, PT, FR, DE), detection, formatting

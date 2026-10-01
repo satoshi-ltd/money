@@ -57,34 +57,6 @@ export const buildAutoCategoryCatalog = (txs = [], options = {}) => {
   };
 };
 
-export const learnAutoCategory = (catalog, { title, type, category }, options = {}) => {
-  if (isInternalTransfer({ category })) return catalog;
-
-  const stats = { ...(catalog?.stats || {}) };
-  const rules = { ...(catalog?.rules || {}) };
-
-  const words = tokenizeTitle(title);
-  if (!words.length) return catalog;
-
-  words.forEach((word) => {
-    const bucket = ensureStatsBucket(stats, type, word);
-    bucket.total += 1;
-    bucket.categories[category] = (bucket.categories[category] || 0) + 1;
-  });
-
-  if (!rules[type]) rules[type] = {};
-  words.forEach((word) => {
-    const rule = buildRuleForWord(stats[type][word], options);
-    if (rule !== undefined) rules[type][word] = rule;
-  });
-
-  return {
-    rules,
-    stats,
-    updatedAt: Date.now(),
-  };
-};
-
 export const suggestCategory = (catalog, { title, type }) => {
   const rules = catalog?.rules || {};
   const words = tokenizeTitle(title);
