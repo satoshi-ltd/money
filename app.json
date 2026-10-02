@@ -4,7 +4,7 @@
     "slug": "satoshi-ltd-money",
     "owner": "satoshi-ltd",
     "scheme": "money",
-    "description": "Your private finance ledger running on your own blockchain",
+    "description": "A private, local-first ledger that keeps your money on your phone",
     "version": "3.0.99",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
