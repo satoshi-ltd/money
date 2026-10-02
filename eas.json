@@ -36,9 +36,13 @@
       "android": {
         "buildType": "apk"
       }
+    },
+    "store": {
+      "extends": "base"
     }
   },
   "submit": {
-    "production": {}
+    "production": {},
+    "store": {}
   }
 }

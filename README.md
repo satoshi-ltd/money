@@ -61,6 +61,14 @@ yarn build:prod                      # same signed APK built on EAS cloud and do
 yarn build:local:dev --install-only  # reinstall the dev APK already in release-assets/, no compile
 ```
 
+Google Play takes an app bundle, not an APK, so a store build uses its own profile, `store`, which builds an `.aab`
+from the same version; `production` stays the APK attached to the GitHub release:
+
+```
+eas build -p android --profile store
+eas submit -p android --profile store --latest
+```
+
 The dev client is a native shell; the JavaScript comes from Metro (`yarn start`). Rebuild it only when something
 native changes: a dependency with Android code, a plugin in `app.json`, the Expo SDK. For everything else keep the
 installed client and let Metro reload. `--install-only` covers the device losing the app (wiped data, a new AVD,

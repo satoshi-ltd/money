@@ -24,8 +24,8 @@ owns remaining work and [CHANGELOG.md](CHANGELOG.md) records what each version s
 ## Current state
 
 - **3.0.61.** One Expo app (React Native 0.83, React 19, new architecture) for iOS and Android, built by the creator
-  with EAS profiles `development` and `production`, locally or on EAS cloud, and installed by hand. There is no
-  pipeline and no store process documented here.
+  with EAS profiles `development`, `production` (the APK) and `store` (the Play bundle), locally or on EAS cloud,
+  and installed by hand. There is no pipeline and no store process documented here.
 - **What it does.** Accounts in any of 30 currencies, expenses, incomes and swaps between accounts, scheduled
   transactions with reminders, an Overview that reads the month against the reader's usual, Analytics with a balance
   chart, a cash-flow chart and categories, JSON backups and CSV export, a PIN with optional biometric unlock, five
