@@ -1,0 +1,67 @@
+name: publish-site
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+permissions:
+  contents: read
+concurrency:
+  group: money-site
+  cancel-in-progress: false
+jobs:
+  build:
+    if: >-
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'release' && !github.event.release.prerelease)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: yarn
+      - run: yarn install --frozen-lockfile --ignore-scripts
+      - run: yarn jest scripts/__tests__/site.test.js
+      - name: Read published GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: yarn site:release
+      - name: Build static page from published assets
+        env:
+          RELEASE_JSON: site/release.json
+          SITE_URL: https://money.satoshi-ltd.com
+          APP_STORE_URL: ${{ vars.APP_STORE_URL }}
+          PLAY_STORE_URL: ${{ vars.PLAY_STORE_URL }}
+        run: yarn site:build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site-dist
+          path: site/dist/
+          if-no-files-found: error
+          retention-days: 7
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_PAGES_PROJECT_NAME: ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME }}
+    steps:
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - uses: actions/download-artifact@v4
+        with:
+          name: site-dist
+          path: site-dist
+      - name: Verify deployment configuration
+        run: |
+          for key in CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_API_TOKEN CLOUDFLARE_PAGES_PROJECT_NAME; do
+            test -n "${!key}" || { echo "::error::Missing $key"; exit 1; }
+          done
+      - name: Deploy to Cloudflare Pages
+        run: npx --yes wrangler@4.146.0 pages deploy site-dist --project-name="$CLOUDFLARE_PAGES_PROJECT_NAME" --branch=main

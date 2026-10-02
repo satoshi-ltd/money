@@ -6,3 +6,5 @@ node_modules/
 release-assets/
 CLAUDE.md
 design/CLAUDE.md
+/site/dist/
+/site/release.json

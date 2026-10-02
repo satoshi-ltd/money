@@ -48,6 +48,8 @@ Môney keeps one person's money on one person's phone and reads it back to them 
   request: the public rates feed, which carries nothing about the user. There is no account, no sync, no analytics,
   no crash reporting, no identifier, no lead capture and no subscription; the last two were removed and their settings
   fields survive only for backup compatibility ([3](#3-data-and-storage)).
+- **Free.** Môney is given away: no subscription, no payment of any kind, in the app or outside it. The landing page says
+  so first, and its FAQ answers it.
 - **One base currency.** The reader chooses the currency they think in; every figure converts to it at the day's rate
   and a closed month at its closing day (the Overview month block's comparison with the usual is the one exception, [5](#5-rates-and-conversion)). The base can change at any time and the cached series converts in place
   without a request.
@@ -70,7 +72,8 @@ Môney keeps one person's money on one person's phone and reads it back to them 
 
 - No multi-user, no shared ledgers, no bank connections, no receipts or attachments.
 - No savings goals and no split transactions: out by the creator's decision.
-- No web or desktop target; `design/` has no desktop page.
+- No web or desktop target; `design/` has no desktop page. The landing page in `site/` is a document about the app,
+  not a web version of it.
 - The rates feed is daily: intraday prices are not represented, and a closed month is one number per currency.
 
 ## 2. Architecture
@@ -334,6 +337,8 @@ button, "See all N" with a chevron, that opens Scheduled.
 | `yarn check:release` | `package.json` and `app.json` agree on version and build, and `CHANGELOG.md` has the entry |
 | `yarn bump [minor\|major]` | Moves `version`, `ios.buildNumber` and `android.versionCode` together and opens the changelog entry |
 | `yarn design` | `node design/build.mjs`: regenerates the pages, `tokens.css` and `favicon.png` in `design/` from the tokens, the copy and the screens |
+| `yarn site:build` | `node site/scripts/build.mjs`: bakes `site/index.html` into `site/dist` from `site/release.json` or `RELEASE_JSON`; without metadata, the `package.json` version, the latest changelog entry and a disabled Android button |
+| `yarn site:release` | `node site/scripts/read-release.mjs`: writes `site/release.json` from the GitHub REST API (`GH_TOKEN`, `GITHUB_TOKEN` or the `gh` token): the highest published `vX.Y.Z` release that carries `money-<version>-android.apk`, or `null` |
 | `yarn rates:seed` | Rebuilds `src/modules/ratesSeed.json` from the feed |
 | `yarn build:local:dev` · `yarn build:local:prod` | `eas build --local`: the dev client installed on the device; the signed APK in `release-assets/` |
 | `yarn build:dev` · `yarn build:prod` | The same profiles on EAS cloud, downloaded (and installed for dev) |
@@ -347,6 +352,48 @@ first USB device, else a running emulator, else they boot `Pixel_9_Pro_Fold` (`A
 Installation is `adb install -r`: app data is kept and a signature mismatch stops the install; the EAS keystore is
 never replaced. The toolchain is the machine's (`ANDROID_HOME`, Android Studio's JBR); `postinstall` patches the
 Gradle plugin so RN 0.83 compiles under Gradle 9.
+
+### Site
+
+`site/` is Môney's public page, a single static page in the house style of Satoshi's other products (Instrument Sans,
+a mono for eyebrows, 22-point cards, hairlines) with Môney's own paper and gold from `src/theme`, light and dark. It
+leads with what the product is and what it costs: free, no subscription, no payment; then a private ledger on the
+phone, a month read against the reader's usual, thirty currencies, backups the reader owns, and the one network
+request. The brand is the app's own: the MÔ plate and the MÔNEY wordmark in text. It is not an app target: the app stays
+mobile only.
+
+- **Scripts.** Two own scripts and nothing else. `theme.js` follows the system theme until the reader picks light or
+  dark with the button, remembered as `money-theme`. `interactive.js` draws the month explorer and the Mask amounts
+  toggle. The explorer reads a sample ledger against a usual curve and starts on the 9th as the hero phone does. It
+  uses the app's words and its 5% band on the rounded percentage, and simplifies three things: the percentage is
+  unsigned, "as usual" stands inside the band where the app prints the percentage, and the early-month word is read
+  against the usual curve alone, not against every earlier month. Both scripts are progressive: without them the page is complete and the explorer stays hidden. There is
+  no inline style, no inline script and no third-party request (the `_headers` file carries a strict CSP). Its
+  stylesheet and scripts are addressed with a content hash so markup and styles never come from different builds.
+- **Stores.** The listings are `apps.apple.com/jo/app/m%C3%B4ney/id6738948243` and
+  `play.google.com/store/apps/details?id=com.satoshilimited.money`, defaults in `site/scripts/build.mjs`; the optional
+  `APP_STORE_URL` and `PLAY_STORE_URL` override them, and the build stops unless they are an `apps.apple.com` HTTPS URL
+  and a `play.google.com` details URL with an `id` and no credentials. The two store buttons lead, in the hero and in
+  two cards; the APK sits apart, under "Outside the store".
+- **Build.** `yarn site:build` needs Node 24 and no dependencies. It reads `site/release.json` or `RELEASE_JSON`; with a
+  published release the version, the notes (escaped) and the Android download come from it, and the APK button is a
+  link only when the asset `money-<version>-android.apk` has the exact GitHub download URL. Without metadata it uses the
+  `package.json` version, the newest `CHANGELOG.md` entry and a disabled APK button; a `null` release file means the
+  same. A draft, a malformed tag, a mismatched URL, or an explicit `RELEASE_JSON` that is missing stops the build, so
+  production never deploys the fallback. It empties `site/dist` only when `SITE_OUTPUT` is not set.
+- **Release metadata.** `yarn site:release` chooses the highest published `vX.Y.Z` release, prereleases and drafts
+  excluded, whose `money-<version>-android.apk` has content, among the newest hundred; none is a valid answer, because
+  the first deploy precedes the first release.
+- **Publication.** `publish-site.yml` has two jobs. `build` installs the lockfile without scripts, runs
+  `scripts/__tests__/site.test.js`, reads the release, builds with `RELEASE_JSON` and uploads `site/dist` as an
+  artifact; it never sees the Cloudflare credentials. `deploy` verifies its configuration and uploads the artifact to
+  Cloudflare Pages with a pinned Wrangler 4. It runs when a non-prerelease release is published, checking out that tag's
+  commit, or by manual dispatch from `main`; pushes and pull requests never deploy, so a site change goes live with the
+  next release or a manual run, and so does an APK attached after its release was published. Secrets
+  `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` (Pages Edit); variable `CLOUDFLARE_PAGES_PROJECT_NAME`; optional
+  variables `APP_STORE_URL` and `PLAY_STORE_URL`. The canonical origin is `https://money.satoshi-ltd.com`, its own Pages
+  project with Cloudflare's Git deploys off. The APK stays in GitHub Releases; anonymous downloads depend on the
+  repository being public.
 
 ### Release
 

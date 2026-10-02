@@ -3,7 +3,7 @@
 **3.0.61** · A private, local-first ledger for people who want their money to stay on their phone.
 
 Accounts in any currency, a month that explains itself against your own usual, nothing measured, everything
-exportable. iOS 15.1+ and Android.
+exportable. Free, with no subscription. iOS 15.1+ and Android.
 
 ## What you get
 
@@ -26,7 +26,21 @@ yarn install
 yarn start          # Metro for the development client; press a for Android
 yarn validate       # release check, lint, tests — before claiming anything done
 yarn design         # regenerate the design kit in design/ (node design/build.mjs)
+yarn site:build     # build the landing page into site/dist
 ```
+
+The landing page is one static page in `site/` (HTML, CSS and two small scripts), built by a zero-dependency script. Preview it
+over http, since browsers refuse its fonts and icons from `file://`:
+`yarn site:build && python3 -m http.server 4173 --directory site/dist`. Its APK link stays disabled until a
+published GitHub release holds `money-<version>-android.apk`: `yarn site:release` reads the releases through the GitHub
+API into `site/release.json` (git-ignored) and the build then takes version, notes and the download from it.
+
+The page is published at money.satoshi-ltd.com by `.github/workflows/publish-site.yml`: one job builds it from the
+published release (with `RELEASE_JSON`; a missing file stops the build), another uploads `site/dist` to Cloudflare Pages
+with Wrangler. It runs when a release is published or by hand from `main`; a push does not deploy. It needs the secrets
+`CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` (Pages Edit) and the variable `CLOUDFLARE_PAGES_PROJECT_NAME`, and
+optionally `APP_STORE_URL` and `PLAY_STORE_URL` for other listings. Cloudflare's own Git deploys stay off. The app has no
+other pipeline.
 
 The app runs in a development client, not Expo Go: build it once with `yarn build:local:dev` (below) and let Metro
 serve the JavaScript from then on. Tests sit beside the code in `__tests__` directories.

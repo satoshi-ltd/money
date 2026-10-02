@@ -43,8 +43,9 @@ Project wiring for those tools:
   commits do not bump. `yarn check:release` proves the manifests and the changelog agree.
 - **Validation:** `yarn validate` (`check:release`, `lint`, `test`) before claiming done. Report it apart from device
   evidence.
-- **CI:** none. There is no pipeline; builds are the creator's (README). A failing `yarn validate` on `main` is the
-  next task.
+- **CI:** the app has no pipeline; builds are the creator's (README). The only workflow is `publish-site.yml`, which
+  deploys the landing page (`gh run list --workflow publish-site.yml`); a red run is the next task, and so is a
+  failing `yarn validate` on `main`.
 - **Review checklist**, on top of the generic one: core flows stay offline (the only network calls are the rates feed);
   a `settings` shape change updates `store.constants.js`, `migrateState.js` and keeps old backups importable;
   notifications are cancelled only by their own metadata; `exchange()` answering `undefined` is never read as 0;

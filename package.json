@@ -16,6 +16,8 @@
     "bump": "node scripts/bump.mjs",
     "validate": "yarn check:release && yarn lint && yarn test",
     "design": "node design/build.mjs",
+    "site:build": "node site/scripts/build.mjs",
+    "site:release": "node site/scripts/read-release.mjs",
     "eas:login": "npx eas-cli login",
     "eas:whoami": "npx eas-cli whoami",
     "build:dev": "node scripts/android-build.mjs dev",

@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f6f4ee" />
+    <title>Môney — Your money. Your phone.</title>
+    <meta
+      name="description"
+      content="A free, private ledger that lives on your phone. Accounts in any currency, a month read against your own usual, backups you own. No subscription, no account, no cloud."
+    />
+    {{CANONICAL}}
+    <link rel="icon" href="assets/favicon.png" type="image/png" />
+    <link
+      rel="preload"
+      href="assets/instrument-sans.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="theme.js"></script>
+    <script src="interactive.js" defer></script>
+  </head>
+  <body>
+    <header class="masthead">
+      <div class="wrap masthead-row">
+      <a class="brand" href="#" aria-label="Môney home"
+        ><img src="assets/favicon.png" width="36" height="36" alt="" /><span>MÔNEY</span></a
+      >
+      <div class="masthead-end">
+        <span class="eyebrow release"><span class="dot"></span> v{{VERSION}}</span>
+        <a class="nav-cta eyebrow" href="#get">Download</a>
+      </div>
+      </div>
+    </header>
+    <main>
+      <section class="hero wrap">
+        <div class="hero-copy">
+          <p class="eyebrow">Free. Private. On your phone.</p>
+          <h1>Your money.<br /><em>Your phone.</em></h1>
+          <p class="intro">
+            A ledger for accounts in any currency that reads your month against
+            your own usual, not a budget. Free, with no subscription and no
+            account. Everything stays on your phone and everything is
+            exportable.
+          </p>
+          <div class="hero-download">
+            <div class="store-row">{{APP_STORE}}{{PLAY_STORE}}</div>
+            <a class="setup-link" href="#how"
+              >How it reads your month <span aria-hidden="true">→</span></a
+            >
+          </div>
+          <p class="fine">
+            Android · iOS 15.1+<br />Free. No subscription, no account, no analytics.
+          </p>
+        </div>
+        <div class="product-scene">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="scene-label eyebrow">Your ledger, in your pocket</div>
+          <div class="note note-private">
+            <span class="note-icon" aria-hidden="true">⌂</span>
+            <div>On your phone<small>No account needed</small></div>
+            <span class="dot"></span>
+          </div>
+          <div
+            class="phone"
+            role="img"
+            aria-label="A sample of the Môney Overview: a net worth of 61,648.74 dollars, up 3.2% this month, with 552.78 spent so far, 47% below the usual pace"
+          >
+            <div class="ph-status"><span>9:41</span><span>●●●</span></div>
+            <div class="ph-mast">
+              <span class="ph-logo">MÔNEY</span>
+              <span class="ph-eyebrow">Wed 9 Sep</span>
+            </div>
+            <div class="ph-rule"></div>
+            <div class="ph-body">
+              <div class="ph-hero">
+                <span class="ph-eyebrow">Net worth · 4 accounts · USD</span>
+                <span class="ph-fig ph-big">61,648<i>.74</i></span>
+                <span class="ph-chip"><b class="ph-fig">+3.2%</b> this month</span>
+              </div>
+              <div class="ph-heading">
+                <b>This month</b><span class="ph-eyebrow">September</span>
+              </div>
+              <div class="ph-line">
+                <span class="ph-label">Spent so far</span>
+                <span class="ph-fig">552<i>.78</i></span>
+                <span class="ph-note">47% below pace</span>
+              </div>
+              <div class="ph-bar"><span class="ph-fill"></span><span class="ph-tick"></span></div>
+              <p class="ph-usual">Usual by the 9th · <span class="ph-fig">1,042<i>.29</i></span></p>
+              <div class="ph-line">
+                <span class="ph-label">Swing</span>
+                <span class="ph-fig">−208<i>.11</i></span>
+                <span class="ph-note">Personal, less than usual</span>
+              </div>
+              <div class="ph-line">
+                <span class="ph-label">Scheduled</span>
+                <span class="ph-fig ph-gold">+1,325<i>.29</i></span>
+                <span class="ph-note">See all 4 ›</span>
+              </div>
+              <div class="ph-heading ph-heading-accounts">
+                <b>Accounts</b><span class="ph-eyebrow">See all 4</span>
+              </div>
+              <div class="ph-row">
+                <span>Chase<small>USD</small></span>
+                <span class="ph-fig ph-strong">12,480<i>.55</i></span>
+              </div>
+              <div class="ph-row">
+                <span>Wallet<small>THB</small></span>
+                <span class="ph-fig ph-strong">34,596 ฿<small class="ph-fig">1,052.61</small></span>
+              </div>
+              <div class="ph-row">
+                <span>N26<small>EUR</small></span>
+                <span class="ph-fig ph-strong">3,210<i>.00</i> €<small class="ph-fig">3,720.44</small></span>
+              </div>
+              <div class="ph-heading ph-heading-accounts">
+                <b>Transactions</b><span class="ph-eyebrow">See all</span>
+              </div>
+              <div class="ph-row">
+                <span>Gasoline<small>Transit</small></span>
+                <span class="ph-fig ph-strong">−1,000 ฿<small class="ph-fig">−30.43</small></span>
+              </div>
+            </div>
+            <div class="ph-tabs">
+              <span class="on">Overview</span><span>Accounts</span
+              ><span class="ph-seal">+</span><span>Analytics</span
+              ><span>Settings</span>
+            </div>
+          </div>
+          <div class="note note-backup">
+            <span class="note-icon note-file" aria-hidden="true"></span>
+            <div>backup.json<small>Yours to keep</small></div>
+            <span class="check" aria-hidden="true">✓</span>
+          </div>
+          <p class="scene-caption">
+            Sample ledger. The month, against your own usual.
+            <button class="mask-btn" type="button" aria-pressed="false" hidden>Mask amounts</button>
+          </p>
+        </div>
+      </section>
+      <div class="principles wrap">
+        <span>Free, no subscription</span><span>Stays on your phone</span
+        ><span>30 currencies, one base</span><span>Read against your usual</span>
+      </div>
+      <section class="section wrap">
+        <div class="section-heading">
+          <p class="eyebrow">01 / One person. One phone.</p>
+          <h2>A month that explains itself.<br />Nothing to configure.</h2>
+          <p>
+            Môney doesn’t ask for a budget or a goal. It takes what you spent
+            by today, sets it beside what you usually spend by the same day, and
+            says so in a line.
+          </p>
+        </div>
+        <div class="feature-grid">
+          <article>
+            <span class="feature-number">≈</span>
+            <h3>Read against your usual.</h3>
+            <p>
+              The yardstick is you: the median of your previous months, up to
+              six, to the same day. Budgets exist, per category, and never
+              block an entry.
+            </p>
+          </article>
+          <article>
+            <span class="feature-number">¤</span>
+            <h3>Any currency. One base.</h3>
+            <p>
+              Thirty currencies, crypto and two metals priced per troy ounce.
+              Everything converts to the one you think in at the day’s public
+              rate, and a closed month at its closing day.
+            </p>
+          </article>
+          <article>
+            <span class="feature-number">⇄</span>
+            <h3>Money moved isn’t money earned.</h3>
+            <p>
+              A swap between your own accounts, or an entry you hide from
+              Analytics, stays in every balance and out of every month figure.
+              Your savings don’t look like spending.
+            </p>
+          </article>
+        </div>
+        <div class="pace" id="pace" hidden>
+          <div class="pace-copy">
+            <p class="eyebrow">Try it</p>
+            <h3>Drag the day.</h3>
+            <p>
+              Môney sets what you have spent by a day beside what you usually
+              spend by the same day, and says so in a line. Sample ledger.
+            </p>
+            <dl class="pace-read">
+              <div>
+                <dt>Spent so far</dt>
+                <dd class="pace-fig" data-spent>552<i>.78</i></dd>
+              </div>
+              <div>
+                <dt data-usual-label>Usual by the 9th</dt>
+                <dd class="pace-fig pace-muted" data-usual>1,042<i>.29</i></dd>
+              </div>
+            </dl>
+            <svg class="pace-meter" viewBox="0 0 100 4" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+              <rect class="pace-meter-track" width="100" height="4" rx="2" />
+              <rect class="pace-meter-fill" data-fill width="53" height="4" rx="2" />
+              <rect class="pace-meter-tick" data-tick x="99.4" y="-1" width="1.2" height="6" />
+            </svg>
+            <p class="pace-verdict" data-verdict data-direction="under">47% below pace</p>
+            <label class="pace-day" for="pace-day">
+              <span class="eyebrow">Day of the month · <b data-day>9th</b></span>
+              <input id="pace-day" type="range" min="1" max="30" step="1" value="9" />
+            </label>
+          </div>
+          <figure class="pace-chart">
+            <svg class="pace-svg" viewBox="0 0 560 276" role="img" aria-label="Spending accumulated through a sample month against the usual curve, the median of the last six months"></svg>
+            <figcaption>
+              <span class="key key-spent">This month</span><span class="key key-usual">Your usual</span>
+            </figcaption>
+          </figure>
+        </div>
+        <div class="ownership">
+          <h3>Your phone. Nothing else.</h3>
+          <p>
+            The ledger is stored on the phone. The only request Môney makes is
+            for public exchange rates, and it carries no ledger data and no
+            identifier. There is no account, no cloud, no analytics, no crash
+            reports and no subscription.
+          </p>
+        </div>
+      </section>
+      <section class="how-section" id="how">
+        <div class="wrap how-layout">
+          <div>
+            <p class="eyebrow">02 / Four views, one ledger</p>
+            <h2>Write it down.<br />Read it back.</h2>
+            <p class="intro">
+              Overview, Accounts, Analytics and Settings. Add an entry in a few
+              taps, then look back a month at a time, in your base currency.
+            </p>
+            <figure class="analytics">
+              <div
+                class="an-card"
+                role="img"
+                aria-label="Sample Analytics: a cash-flow chart for six months with incomes above the baseline and expenses below, and the month's expenses by category"
+              >
+                <div class="an-top">
+                  <span class="eyebrow">Cash flow</span>
+                  <span class="an-range"><b>6M</b><span>1Y</span><span>All</span></span>
+                </div>
+                <svg class="an-chart" viewBox="0 0 440 214" aria-hidden="true" focusable="false">
+                  <line class="an-median" x1="0" x2="440" y1="30" y2="30" />
+                  <line class="an-median" x1="0" x2="440" y1="156" y2="156" />
+                  <text class="an-tag" x="0" y="22">median in</text>
+                  <text class="an-tag" x="0" y="168">median out</text>
+                  <g class="an-in">
+                    <rect x="20" y="44" width="34" height="66" rx="3" />
+                    <rect x="94" y="36" width="34" height="74" rx="3" />
+                    <rect x="168" y="26" width="34" height="84" rx="3" />
+                    <rect x="242" y="38" width="34" height="72" rx="3" />
+                    <rect x="316" y="40" width="34" height="70" rx="3" />
+                    <rect class="an-now" x="390" y="28" width="34" height="82" rx="3" />
+                  </g>
+                  <g class="an-out">
+                    <rect x="20" y="110" width="34" height="38" rx="3" />
+                    <rect x="94" y="110" width="34" height="58" rx="3" />
+                    <rect x="168" y="110" width="34" height="46" rx="3" />
+                    <rect x="242" y="110" width="34" height="64" rx="3" />
+                    <rect x="316" y="110" width="34" height="52" rx="3" />
+                    <rect class="an-now" x="390" y="110" width="34" height="44" rx="3" />
+                  </g>
+                  <line class="an-base" x1="0" x2="440" y1="110" y2="110" />
+                  <g class="an-months">
+                    <text x="37" y="200">Apr</text>
+                    <text x="111" y="200">May</text>
+                    <text x="185" y="200">Jun</text>
+                    <text x="259" y="200">Jul</text>
+                    <text x="333" y="200">Aug</text>
+                    <text class="an-sel" x="407" y="200">Sep</text>
+                  </g>
+                </svg>
+                <div class="an-kpis">
+                  <span>In<b>3,120.00</b></span>
+                  <span>Out<b>2,480.00</b></span>
+                  <span>Net<b class="an-pos">+640.00</b></span>
+                </div>
+                <div class="an-cats">
+                  <div class="an-cat">
+                    <span>Housing</span>
+                    <svg viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="an-track" width="100" height="6" /><rect class="an-bar" width="38" height="6" /></svg>
+                    <span class="an-share">38%</span>
+                    <b>942.00</b>
+                  </div>
+                  <div class="an-cat">
+                    <span>Food</span>
+                    <svg viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="an-track" width="100" height="6" /><rect class="an-bar" width="24" height="6" /></svg>
+                    <span class="an-share">24%</span>
+                    <b>595.20</b>
+                  </div>
+                  <div class="an-cat">
+                    <span>Transit</span>
+                    <svg viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect class="an-track" width="100" height="6" /><rect class="an-bar" width="11" height="6" /></svg>
+                    <span class="an-share">11%</span>
+                    <b>272.80</b>
+                  </div>
+                </div>
+              </div>
+              <figcaption>
+                Sample figures. Incomes above the line, expenses below.
+              </figcaption>
+            </figure>
+          </div>
+          <ol class="steps">
+            <li>
+              <span>01</span>
+              <div>
+                <h3>Add your accounts.</h3>
+                <p>
+                  Pick a base currency, then an account in any of thirty. Its
+                  opening balance stays on the account; a card or a loan can sit
+                  below zero and is shown as owed.
+                </p>
+              </div>
+            </li>
+            <li>
+              <span>02</span>
+              <div>
+                <h3>Write a title.</h3>
+                <p>
+                  Môney remembers the category and account you gave a title
+                  before, and offers its latest amount with a tap. It learns
+                  from your own entries and nowhere else.
+                </p>
+              </div>
+            </li>
+            <li>
+              <span>03</span>
+              <div>
+                <h3>Read the month.</h3>
+                <p>
+                  The Overview shows what you’ve spent so far against your
+                  usual, the category that moved most, and what you have
+                  scheduled. Tap the net worth to mask every amount.
+                </p>
+              </div>
+            </li>
+            <li>
+              <span>04</span>
+              <div>
+                <h3>Look back.</h3>
+                <p>
+                  Analytics draws your balance with its trend, cash flow with
+                  incomes above and expenses below, and where it went by
+                  category and merchant.
+                </p>
+              </div>
+            </li>
+            <li>
+              <span>05</span>
+              <div>
+                <h3>Keep a copy.</h3>
+                <p>
+                  Export the whole ledger as a JSON file, or the transactions as
+                  CSV. Import checks a file before it touches anything, and a
+                  bad one never overwrites your ledger.
+                </p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+      <section class="section wrap download-section" id="get">
+        <div class="section-heading">
+          <p class="eyebrow">03 / Start with the phone you carry</p>
+          <h2>Free on iPhone and Android.</h2>
+          <p>
+            Nothing to pay and no account to create. On the open Fold, from 600
+            points wide, the tabs move to a side rail.
+          </p>
+        </div>
+        <div class="download-grid">
+          <article class="download-card main-card">
+            <span class="eyebrow">iPhone &amp; iPad</span>
+            <h3>Môney for iOS</h3>
+            <p>iOS 15.1 or later, iPad included.</p>
+            <div class="store-row">{{APP_STORE}}</div>
+            <div class="download-alternatives">
+              <span class="eyebrow">Updating</span>
+              <small>The App Store keeps Môney current.</small>
+            </div>
+          </article>
+          <article class="download-card">
+            <span class="eyebrow">Android</span>
+            <h3>Môney for Android</h3>
+            <p>Phones and the Fold, from the Play Store.</p>
+            <div class="store-row">{{PLAY_STORE}}</div>
+            <div class="download-alternatives">
+              <span class="eyebrow">Outside the store</span>
+              <div class="download-alternatives-list">{{ANDROID_DOWNLOAD}}</div>
+              <small
+                >Install the APK directly, without Google Play or a store
+                account. Version {{VERSION}}.</small
+              >
+            </div>
+          </article>
+        </div>
+        <article class="source-download">
+          <div class="source-copy">
+            <span class="eyebrow">The source</span>
+            <h3><svg class="platform-icon" aria-hidden="true" focusable="false"><use href="assets/platforms.svg#github"></use></svg> Read how it works</h3>
+            <p>
+              Every ledger rule, the rates, the insights and each screen are
+              written down in SPEC.md, next to the code and a generated design
+              kit of the interface.
+            </p>
+          </div>
+          <div class="source-action">
+            <code>git clone https://github.com/satoshi-ltd/money.git</code
+            ><a class="button" href="https://github.com/satoshi-ltd/money"
+              ><svg class="platform-icon" aria-hidden="true" focusable="false"><use href="assets/platforms.svg#github"></use></svg><span>View on GitHub</span
+              ><span aria-hidden="true">↗</span></a
+            >
+          </div>
+        </article>
+        <details class="release-notes">
+          <summary>What’s new · v{{VERSION}}</summary>
+          <pre>{{RELEASE_NOTES}}</pre>
+        </details>
+        <p class="backup-note">
+          Môney keeps your ledger on the phone, so a lost or replaced phone takes
+          it along. Export a backup now and then from Settings; it takes one
+          tap.
+        </p>
+      </section>
+      <section class="section wrap questions">
+        <div>
+          <p class="eyebrow">Questions, answered</p>
+          <h2>Before you get started.</h2>
+        </div>
+        <div class="answers">
+          <details open>
+            <summary>Is it really free?</summary>
+            <p>
+              Yes. There is no subscription and no payment, in the app or
+              anywhere else. Môney makes nothing from your data, because it
+              never receives any.
+            </p>
+          </details>
+          <details>
+            <summary>Do I need an account?</summary>
+            <p>
+              No. There’s no sign-in, no sync service and no cloud. Môney opens
+              on your phone with a four-digit PIN, optionally behind your
+              fingerprint or face.
+            </p>
+          </details>
+          <details>
+            <summary>Where is my data?</summary>
+            <p>
+              On the phone, in the app’s own storage. Backups are plain JSON
+              files you own and keep wherever you like; the PIN and the
+              biometric preference never travel in one.
+            </p>
+          </details>
+          <details>
+            <summary>What does Môney send over the network?</summary>
+            <p>
+              One kind of request: the public exchange-rate feed, refreshed when
+              it’s more than six hours old. It carries no ledger data and no identifier, only a request for a
+              public file. Adding, reading and exporting
+              all work offline, and a bundled rate table covers the first
+              launch.
+            </p>
+          </details>
+          <details>
+            <summary>Which currencies can I use?</summary>
+            <p>
+              Thirty: major and regional currencies, five cryptocurrencies, and
+              gold and silver priced per troy ounce. Pick one as your base and
+              change it whenever you like.
+            </p>
+          </details>
+          <details>
+            <summary>Who is it not for?</summary>
+            <p>
+              If you want bank sync, shared budgets, receipts, savings goals or
+              split transactions, Môney is not it, on purpose. You write
+              entries yourself, and it stays one person’s ledger.
+            </p>
+          </details>
+          <details>
+            <summary>How does it judge my month?</summary>
+            <p>
+              It compares what you’ve spent by today with the median of what you
+              had spent by the same day in your previous months, up to six.
+              With enough of the month gone it gives a percentage; earlier it
+              gives a word, more, less or as usual; and with no earlier month to
+              compare, or only one early in the month, it shows the figure
+              alone.
+            </p>
+          </details>
+          <details>
+            <summary>What if I forget my PIN?</summary>
+            <p>
+              Neither the PIN nor the fingerprint or face preference can be
+              recovered, and neither is in a backup. Keep the PIN somewhere
+              safe.
+            </p>
+          </details>
+          <details>
+            <summary>Which languages and sizes?</summary>
+            <p>
+              English, Spanish, Portuguese, French and German, chosen from your
+              device or in Settings, in light or dark, with four text sizes.
+            </p>
+          </details>
+        </div>
+      </section>
+    </main>
+    <footer class="wrap">
+      <div class="footer-identity">
+        <a class="brand" href="#" aria-label="Môney home"
+        ><img src="assets/favicon.png" width="36" height="36" alt="" /><span>MÔNEY</span></a
+      >
+        <span class="eyebrow">v{{VERSION}}</span>
+      </div>
+      <span
+        >By <a href="https://www.satoshi-ltd.com">Satoshi Ltd.</a> · no
+        telemetry</span
+      >
+    </footer>
+    <button class="theme-btn" type="button" aria-label="Switch theme">
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" /></svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" /></svg>
+    </button>
+  </body>
+</html>

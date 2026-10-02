@@ -74,6 +74,17 @@ _None._
   accept: create, edit and delete of weekly and monthly schedules; the monthly day clamp; no duplicate occurrence after
   a timezone or date change and after days of downtime (the 90-day window and the 100-occurrence cap hold).
 
+### Site
+
+- **DEPLOY-SITE** — Publish the landing page at money.satoshi-ltd.com (handed to Mikel, Satoshi's devops)
+  `deploy · creator · normal`
+  accept: a Cloudflare Pages project exists for it with its production branch set to `main`, Git deploys off, and `money.satoshi-ltd.com` pointing at it; the
+  repository has secrets `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` (Pages Edit) and variable
+  `CLOUDFLARE_PAGES_PROJECT_NAME`; a manual run of `publish-site` from `main` goes green and serves the page with
+  the Android button disabled; after a GitHub Release `v<version>` carries `money-<version>-android.apk`, the next
+  run shows that version and turns the direct-APK link into the download; the two store buttons open the App Store and
+  Google Play listings.
+
 ### Decisions
 
 - **DEC-CATEGORY-HIDDEN** — Do hidden entries belong to a category's sheet?
