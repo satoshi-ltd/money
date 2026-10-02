@@ -48,7 +48,7 @@ Môney keeps one person's money on one person's phone and reads it back to them 
   request: the public rates feed, which carries nothing about the user. There is no account, no sync, no analytics,
   no crash reporting, no identifier, no lead capture and no subscription; the last two were removed and their settings
   fields survive only for backup compatibility ([3](#3-data-and-storage)).
-- **Free.** Môney is given away: no subscription, no payment of any kind, in the app or outside it. The landing page says
+- **Free.** Môney is given away: no subscription, no payment of any kind and no ads, in the app or outside it. The landing page says
   so first, and its FAQ answers it.
 - **One base currency.** The reader chooses the currency they think in; every figure converts to it at the day's rate
   and a closed month at its closing day (the Overview month block's comparison with the usual is the one exception, [5](#5-rates-and-conversion)). The base can change at any time and the cached series converts in place
@@ -370,7 +370,7 @@ mobile only.
   against the usual curve alone, not against every earlier month. Both scripts are progressive: without them the page is complete and the explorer stays hidden. There is
   no inline style, no inline script and no third-party request (the `_headers` file carries a strict CSP). Its
   stylesheet and scripts are addressed with a content hash so markup and styles never come from different builds.
-- **Stores.** The listings are `apps.apple.com/jo/app/m%C3%B4ney/id6738948243` and
+- **Stores.** The listings are `apps.apple.com/us/app/m%C3%B4ney/id6738948243` and
   `play.google.com/store/apps/details?id=com.satoshilimited.money`, defaults in `site/scripts/build.mjs`; the optional
   `APP_STORE_URL` and `PLAY_STORE_URL` override them, and the build stops unless they are an `apps.apple.com` HTTPS URL
   and a `play.google.com` details URL with an `id` and no credentials. The two store buttons lead, in the hero and in

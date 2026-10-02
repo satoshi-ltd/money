@@ -26,7 +26,7 @@ export function latestEntry(changelog) {
 }
 
 export const STORES = {
-  appStore: 'https://apps.apple.com/jo/app/m%C3%B4ney/id6738948243',
+  appStore: 'https://apps.apple.com/us/app/m%C3%B4ney/id6738948243',
   playStore: 'https://play.google.com/store/apps/details?id=com.satoshilimited.money',
 };
 

@@ -3,7 +3,7 @@
 **3.0.61** · A private, local-first ledger for people who want their money to stay on their phone.
 
 Accounts in any currency, a month that explains itself against your own usual, nothing measured, everything
-exportable. Free, with no subscription. iOS 15.1+ and Android.
+exportable. Free, with no subscription and no ads. iOS 15.1+ and Android.
 
 ## What you get
 

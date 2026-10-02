@@ -157,7 +157,7 @@ describe('landing site', () => {
 
   test('links the two store listings, apart from the APK', () => {
     const html = pending.html();
-    expect(html).toContain('href="https://apps.apple.com/jo/app/m%C3%B4ney/id6738948243"');
+    expect(html).toContain('href="https://apps.apple.com/us/app/m%C3%B4ney/id6738948243"');
     expect(html).toContain('href="https://play.google.com/store/apps/details?id=com.satoshilimited.money"');
     expect(html).not.toContain('Not on the App Store');
     expect((html.match(/class="store"/g) || []).length).toBe(4);
