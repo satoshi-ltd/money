@@ -45,8 +45,8 @@ const Clone = ({ route: { params = {} } = {}, navigation: { goBack } = {} }) => 
     const { hash, timestamp, ...tx } = dataSource;
     const accountHash = account?.hash || dataSource.account;
     const { moved, ...form } = state.form || {};
-    // Merged, not replaced: a generated occurrence carries its scheduled metadata in the same object.
-    const meta = { ...(tx.meta || {}), ...(moved ? { moved: true } : {}) };
+    // An edit merges: a generated occurrence keeps its scheduled metadata. A duplicate is a new entry and inherits none.
+    const meta = { ...(clone ? {} : tx.meta || {}), ...(moved ? { moved: true } : {}) };
     if (!moved) delete meta.moved;
     const payload = { ...tx, ...form, account: accountHash, meta: Object.keys(meta).length ? meta : undefined };
 

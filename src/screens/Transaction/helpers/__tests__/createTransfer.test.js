@@ -46,4 +46,20 @@ describe('screens/Transaction/createTransfer', () => {
     expect(createTx).toHaveBeenCalledTimes(1);
     expect(deleteTx).not.toHaveBeenCalled();
   });
+
+  test('stores a comma decimal as the number it spells on both legs', async () => {
+    const created = [];
+    const createTx = jest.fn(async (tx) => {
+      created.push(tx);
+      return { ...tx, hash: `h${created.length}` };
+    });
+
+    await createTransfer({
+      props: { account: ACCOUNT },
+      state: { form: { from: ACCOUNT, to: TO, value: '12,5', exchange: '11,25' } },
+      store: { createTx, deleteTx: jest.fn() },
+    });
+
+    expect(created.map(({ value }) => value)).toEqual([12.5, 11.25]);
+  });
 });

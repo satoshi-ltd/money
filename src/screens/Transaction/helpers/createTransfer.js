@@ -1,5 +1,5 @@
 import { UUID } from '../../../contexts/modules/UUID';
-import { C } from '../../../modules';
+import { C, parseAmount } from '../../../modules';
 
 const {
   INTERNAL_TRANSFER,
@@ -22,7 +22,7 @@ export const createTransfer = async ({
     category: INTERNAL_TRANSFER,
     title: to.title,
     type: EXPENSE,
-    value: parseFloat(value, 10),
+    value: parseAmount(value),
     meta: { kind: 'transfer', transferId, leg: 'from' },
   });
 
@@ -35,7 +35,7 @@ export const createTransfer = async ({
       category: INTERNAL_TRANSFER,
       title: from.title,
       type: INCOME,
-      value: parseFloat(exchange, 10),
+      value: parseAmount(exchange),
       meta: { kind: 'transfer', transferId, leg: 'to' },
     });
   } catch (error) {

@@ -78,7 +78,7 @@ describe('services/modules/asyncStorage', () => {
     await instance.write({ ...DEFAULTS, txs: [...ledger, { hash: 'new' }] }, 'txs');
 
     const written = AsyncStorage.multiSet.mock.calls.flatMap(([entries]) => entries.map(([key]) => key));
-    expect(written).toEqual(['money:txs:2']);
+    expect(written).toEqual(['money:txs:2', 'money:txs']);
   });
 
   test('removes the chunks that are no longer needed when the ledger shrinks', async () => {
@@ -133,12 +133,12 @@ describe('services/modules/asyncStorage', () => {
   // Unqueued, the slower write commits its index after the faster one and leaves a count the rows contradict.
   test('two writes of one collection never leave a count the rows contradict', async () => {
     const instance = await adapter();
-    let indexWrites = 0;
-    AsyncStorage.setItem.mockImplementation((key, value) => {
-      const delay = key === 'money:txs' && indexWrites++ === 0 ? 30 : 0;
+    let batches = 0;
+    AsyncStorage.multiSet.mockImplementation((entries) => {
+      const delay = batches++ === 0 ? 30 : 0;
       return new Promise((resolve) =>
         setTimeout(() => {
-          store[key] = value;
+          entries.forEach(([key, value]) => (store[key] = value));
           resolve();
         }, delay),
       );
@@ -161,9 +161,9 @@ describe('services/modules/asyncStorage', () => {
     await instance.write({ ...DEFAULTS, txs: txs(1200) });
 
     const order = [];
-    AsyncStorage.setItem.mockImplementation((key, value) => {
-      order.push(`index:${key}`);
-      store[key] = value;
+    AsyncStorage.multiSet.mockImplementation((entries) => {
+      order.push(`set:${entries.map(([key]) => key).join(',')}`);
+      entries.forEach(([key, value]) => (store[key] = value));
       return Promise.resolve();
     });
     AsyncStorage.multiRemove.mockImplementation((keys) => {
@@ -174,7 +174,67 @@ describe('services/modules/asyncStorage', () => {
 
     await instance.write({ ...DEFAULTS, txs: txs(200) }, 'txs');
 
-    expect(order).toEqual(['index:money:txs', 'remove:money:txs:1,money:txs:2']);
+    expect(order).toEqual(['set:money:txs:0,money:txs', 'remove:money:txs:1,money:txs:2']);
+  });
+
+  describe('a process killed between two writes', () => {
+    const crashAfter = (calls) => {
+      let seen = 0;
+      const gate = (apply) =>
+        (...args) => {
+          seen += 1;
+          return seen > calls ? Promise.reject(new Error('killed')) : apply(...args);
+        };
+      const { getItem, multiGet } = AsyncStorage;
+      const setItem = AsyncStorage.setItem.getMockImplementation();
+      const multiSet = AsyncStorage.multiSet.getMockImplementation();
+      const multiRemove = AsyncStorage.multiRemove.getMockImplementation();
+      AsyncStorage.setItem.mockImplementation(gate(setItem));
+      AsyncStorage.multiSet.mockImplementation(gate(multiSet));
+      AsyncStorage.multiRemove.mockImplementation(gate(multiRemove));
+      return { getItem, multiGet };
+    };
+
+    const reopen = async () => {
+      jest.clearAllMocks();
+      AsyncStorage.getItem.mockImplementation((key) => Promise.resolve(store[key] ?? null));
+      AsyncStorage.multiGet.mockImplementation((keys) => Promise.resolve(keys.map((key) => [key, store[key] ?? null])));
+      AsyncStorage.setItem.mockImplementation((key, value) => Promise.resolve((store[key] = value)));
+      return (await adapter()).read();
+    };
+
+    test.each([0, 1, 2])('deleting one of 1,200 entries and dying after %i writes still opens', async (calls) => {
+      const instance = await adapter();
+      await instance.write({ ...DEFAULTS, txs: txs(1200) });
+
+      crashAfter(calls);
+      await instance.write({ ...DEFAULTS, txs: txs(1199) }, 'txs').catch(() => undefined);
+
+      const { txs: rows } = await reopen();
+      expect([1199, 1200]).toContain(rows.length);
+    });
+
+    test.each([0, 1, 2])('shrinking to one chunk and dying after %i writes still opens', async (calls) => {
+      const instance = await adapter();
+      await instance.write({ ...DEFAULTS, txs: txs(1200) });
+
+      crashAfter(calls);
+      await instance.write({ ...DEFAULTS, txs: txs(200) }, 'txs').catch(() => undefined);
+
+      const { txs: rows } = await reopen();
+      expect([200, 1200]).toContain(rows.length);
+    });
+
+    test.each([0, 1, 2])('adding an entry and dying after %i writes still opens', async (calls) => {
+      const instance = await adapter();
+      await instance.write({ ...DEFAULTS, txs: txs(1200) });
+
+      crashAfter(calls);
+      await instance.write({ ...DEFAULTS, txs: txs(1201) }, 'txs').catch(() => undefined);
+
+      const { txs: rows } = await reopen();
+      expect([1200, 1201]).toContain(rows.length);
+    });
   });
 
   test('says what it could not read instead of a bare message', async () => {

@@ -1,4 +1,4 @@
-import { C, exchange, getMonthDiff } from '../../modules';
+import { C, exchange, getMonthDiff, roundToCurrency } from '../../modules';
 
 const { MS_IN_DAY, TX: { TYPE } = {} } = C;
 
@@ -60,13 +60,14 @@ export const calcAccount = ({
         : exchange(value, ...exchangeProps, new Date(genesisDate.getFullYear(), genesisDate.getMonth() + index, 1));
     return Number.isFinite(converted) ? converted : 0;
   });
-  const currentBalanceBase = exchange(currentBalance, ...exchangeProps);
+  const settledBalance = roundToCurrency(currentBalance, currency);
+  const currentBalanceBase = exchange(settledBalance, ...exchangeProps);
 
   return {
     ...account,
     balance: Number.isFinite(balance) ? balance : 0,
     chartBalance: chartBalanceExchanged,
-    currentBalance,
+    currentBalance: settledBalance,
     currentBalanceBase,
     currentMonth: {
       progression,

@@ -4,6 +4,7 @@ import TestRenderer, { act } from 'react-test-renderer';
 
 import { Onboarding } from '../Onboarding';
 import { L10N } from '../../../modules';
+import { ServiceRates } from '../../../services';
 
 const mockCreateAccount = jest.fn();
 const mockUpdateSettings = jest.fn();
@@ -168,6 +169,27 @@ describe('screens/Onboarding', () => {
     expect(mockUpdateRates).toHaveBeenCalledTimes(2);
   });
 
+  test('a download for a currency the reader already left is dropped', async () => {
+    let release;
+    ServiceRates.get.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          release = resolve;
+        }),
+    );
+    const root = render();
+    await advance(root, L10N.ONB_START);
+    await advance(root, 'THB');
+    await advance(root, 'USD');
+    const settled = mockUpdateRates.mock.calls.length;
+
+    await act(async () => {
+      release({ currency: 'THB', '2026-08': { EUR: 0.026, THB: 1 } });
+    });
+
+    expect(mockUpdateRates).toHaveBeenCalledTimes(settled);
+  });
+
   test('a named account is written on finish and the pin is stored', async () => {
     const root = render();
     await advance(root, L10N.ONB_START);
@@ -184,6 +206,34 @@ describe('screens/Onboarding', () => {
     );
     expect(mockCreateAccount).toHaveBeenCalledWith({ balance: 8412.9, currency: 'EUR', title: 'N26' });
     expect(mockReset).toHaveBeenCalledWith({ index: 0, routes: [{ name: 'main' }] });
+  });
+
+  test('an opening balance typed with a comma decimal is kept whole', async () => {
+    const root = render();
+    await advance(root, L10N.ONB_START);
+    await advance(root, L10N.CONTINUE);
+
+    type(root, '…', 'N26');
+    type(root, '0', '1200,50');
+
+    await advance(root, L10N.CONTINUE);
+    await punch(root, [1, 2, 3, 4, 1, 2, 3, 4]);
+
+    expect(mockCreateAccount).toHaveBeenCalledWith({ balance: 1200.5, currency: 'EUR', title: 'N26' });
+  });
+
+  test('an opening balance that is a debt keeps its minus', async () => {
+    const root = render();
+    await advance(root, L10N.ONB_START);
+    await advance(root, L10N.CONTINUE);
+
+    type(root, '…', 'Visa');
+    type(root, '0', '-1200,50');
+
+    await advance(root, L10N.CONTINUE);
+    await punch(root, [1, 2, 3, 4, 1, 2, 3, 4]);
+
+    expect(mockCreateAccount).toHaveBeenCalledWith({ balance: -1200.5, currency: 'EUR', title: 'Visa' });
   });
 
   // An effect that returns its async work hands React a promise where it wants a cleanup, and the

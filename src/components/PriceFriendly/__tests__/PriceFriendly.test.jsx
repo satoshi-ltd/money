@@ -98,3 +98,17 @@ describe('components/PriceFriendly', () => {
     expect(flatText(root)).not.toContain('1,234');
   });
 });
+
+describe('components/PriceFriendly zero', () => {
+  test.each([-2.7755575615628914e-17, -0.004])('%p reads 0.00 with no minus', (value) => {
+    expect(flatText(render({ value }))).not.toContain('−');
+  });
+
+  test('a plus sign is not drawn over a figure that rounds to zero', () => {
+    expect(flatText(render({ operator: true, value: 2.7755575615628914e-17 }))).not.toContain('+');
+  });
+
+  test('a small debt that still shows a digit keeps its minus', () => {
+    expect(flatText(render({ currency: 'BTC', value: -0.001 }))).toContain('−');
+  });
+});

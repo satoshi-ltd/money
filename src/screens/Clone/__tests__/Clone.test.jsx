@@ -80,4 +80,47 @@ describe('screens/Clone save button', () => {
     act(() => mockForm.onChange({ form: { ...mockForm.form, title: 'Coffee' }, valid: true }));
     expect(button(L10N.SAVE).props.disabled).toBe(false);
   });
+
+  describe('Duplicate', () => {
+    const SWAP_LEG = {
+      ...TX,
+      category: 99,
+      meta: { kind: 'transfer', leg: 'from', moved: true, transferId: 't1' },
+    };
+    const OCCURRENCE = { ...TX, meta: { kind: 'scheduled', occurrenceAt: 5, scheduledId: 's1' } };
+
+    const duplicate = async () => {
+      await act(async () => {
+        button(L10N.DUPLICATE).props.onPress();
+      });
+      return mockStore.createTx.mock.calls[0][0];
+    };
+
+    test('a copy of a swap leg is a plain entry, never a third leg of the pair', async () => {
+      render(SWAP_LEG);
+
+      const copy = await duplicate();
+
+      expect(copy.meta).toEqual({ moved: true });
+      expect(copy.category).toBe(99);
+    });
+
+    test('a copy of a generated occurrence does not claim the occurrence', async () => {
+      render(OCCURRENCE);
+
+      const copy = await duplicate();
+
+      expect(copy.meta).toBeUndefined();
+    });
+
+    test('saving an edit still keeps the metadata of the entry', async () => {
+      render(OCCURRENCE);
+
+      await act(async () => {
+        button(L10N.SAVE).props.onPress();
+      });
+
+      expect(mockStore.updateTx.mock.calls[0][0].meta).toEqual(OCCURRENCE.meta);
+    });
+  });
 });

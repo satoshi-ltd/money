@@ -5,6 +5,7 @@ import {
   getOccurrencesBetween,
   L10N,
 } from '../../modules';
+import { getScheduledOccurrenceKey, getScheduledOccurrenceKeyFromTx } from '../../modules/scheduledKey';
 import { NotificationsService } from '../../services';
 
 const { EVENT, MS_IN_DAY } = C;
@@ -28,10 +29,8 @@ export const runScheduledSync = async ({ migrated, store, syncNotifications = tr
   const windowAt = now - WINDOW_DAYS * MS_IN_DAY;
   const toAt = now;
   const existingIndex = txs.reduce((memo, tx) => {
-    const meta = tx?.meta;
-    if (meta?.kind !== 'scheduled') return memo;
-    if (!meta?.scheduledId || !Number.isFinite(meta?.occurrenceAt)) return memo;
-    memo[`${meta.scheduledId}:${meta.occurrenceAt}`] = true;
+    const key = getScheduledOccurrenceKeyFromTx(tx);
+    if (key) memo[key] = true;
     return memo;
   }, {});
 
@@ -49,7 +48,7 @@ export const runScheduledSync = async ({ migrated, store, syncNotifications = tr
         break;
       }
       const occurrenceAt = occurrences[j];
-      const key = `${scheduled.id}:${occurrenceAt}`;
+      const key = getScheduledOccurrenceKey({ scheduledId: scheduled.id, occurrenceAt });
       if (existingIndex[key]) continue;
       existingIndex[key] = true;
       newTxs.push(

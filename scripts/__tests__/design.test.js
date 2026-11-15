@@ -73,6 +73,22 @@ describe('design kit', () => {
     for (const match of html.matchAll(/data-review="[A-Z0-9-]+"[\s\S]*?<b>Accept<\/b> · ([^<]*)</g)) expect(match[1].length).toBeGreaterThan(20);
   });
 
+  test.each([
+    ['UI-FX-MISSING-VALUES', 'Accounts', 2],
+    ['SCHEDULED-EMPTY', 'Scheduled', 0],
+    ['SCHEDULED-WEEKDAYS', 'ScheduledForm', 0],
+  ])('%s compares the same complete screen with its navigation on both sides', (id, screen, tabBars) => {
+    const board = pages['proposals.html'].split(`data-review="${id}"`)[1]?.split('data-review=')[0];
+
+    expect(board).toBeDefined();
+    expect(board.match(/data-screen="[^"]+"/g)).toEqual([
+      `data-screen="${screen}"`,
+      `data-screen="${screen}"`,
+    ]);
+    expect(board.match(/class="m-footer"/g) || []).toHaveLength(tabBars);
+    expect(board.match(/class="m kit-phone(?: sheet)?"/g)).toHaveLength(2);
+  });
+
   test('every page carries the project icon as a favicon copied inside design/', () => {
     const names = Object.keys(pages).filter((name) => name.endsWith('.html'));
 
@@ -101,5 +117,16 @@ describe('design kit', () => {
       expect(html).not.toContain('Open work');
       expect(html).not.toContain('desktop.html');
     }
+  });
+
+  test('the kit draws a figure that rounds to zero without a sign, as PriceFriendly does', () => {
+    const script = "import('./design/src/draw.mjs').then(({ price }) => console.log(JSON.stringify([price(-0.004), price(0.004, { operator: true }), price(-5)])))";
+    const result = spawnSync(process.execPath, ['--input-type=commonjs', '-e', script], { cwd: ROOT, encoding: 'utf8' });
+    const [negativeZero, positiveZero, negative] = JSON.parse(result.stdout);
+
+    expect(negativeZero).not.toContain('−');
+    expect(positiveZero).not.toContain('+');
+    expect(positiveZero).not.toContain('positive');
+    expect(negative).toContain('−');
   });
 });

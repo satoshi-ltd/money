@@ -10,9 +10,9 @@ export const roundToCurrency = (value, currency) => {
 
   const precision = currencyPrecision(currency);
   const shifted = Number(`${amount}e${precision}`);
-  if (!Number.isFinite(shifted)) return Math.round(amount * 10 ** precision) / 10 ** precision;
+  if (!Number.isFinite(shifted)) return Math.round(amount * 10 ** precision) / 10 ** precision + 0;
 
   const rounded = Number(`${Math.round(shifted)}e-${precision}`);
 
-  return Number.isFinite(rounded) ? rounded : amount;
+  return Number.isFinite(rounded) ? rounded + 0 : amount;
 };

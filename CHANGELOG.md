@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.0.100 — 2026-11-15
+
+- Flying to another timezone no longer creates your scheduled transactions a second time, and a rates download that answers after you changed the base currency (in Settings or while setting up) is dropped instead of putting the old currency back.
+- A comma works as a decimal in swaps ("12,5") and in the opening balance of the first account ("1200,50"), where they were stored as 12 and 0; swaps convert at the newest month's rates.
+- An account whose entries cancel out reads 0.00, not "Owed" and −0.00, and duplicating one leg of a swap no longer ties the copy to the pair.
+- If the app is closed in the middle of saving a deletion, your ledger opens as it was before or after it, instead of refusing to open.
+- The System theme follows a dark iPhone, and a theme chosen in Settings now also sets the keyboard and system alerts.
+
+Needs: native build
+
 ## 3.0.99 — 2026-10-01
 
 - The suggestions for a category and an account while you type a title are built from your entries when the form opens, instead of from a catalog stored in your settings. Deleting or correcting an entry stops it teaching the suggestion straight away, and the catalogs leave your settings on the next start.

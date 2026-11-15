@@ -99,13 +99,14 @@ export const format = (value, places) => {
 
 // PriceFriendly: sign, whole, muted cents, and the symbol only for a foreign currency.
 export const price = (value, { currency = BASE, size = 'md', bold, tone, operator, symbol, masked, fixed } = {}) => {
-  const resolvedTone = tone !== undefined ? tone : operator && value > 0 ? 'positive' : undefined;
-  if (masked) return fig('••••', { size, bold, tone: resolvedTone });
   const formatted = format(value, fixed !== undefined ? fixed : decimals(value, currency));
+  const isZero = !/[1-9]/.test(formatted);
+  const resolvedTone = tone !== undefined ? tone : operator && value > 0 && !isZero ? 'positive' : undefined;
+  if (masked) return fig('••••', { size, bold, tone: resolvedTone });
   const dot = formatted.lastIndexOf('.');
   const whole = dot < 0 ? formatted : formatted.slice(0, dot);
   const cents = dot < 0 ? '' : formatted.slice(dot);
-  const sign = value < 0 ? '−' : operator && value > 0 ? '+' : '';
+  const sign = isZero ? '' : value < 0 ? '−' : operator && value > 0 ? '+' : '';
   const mark = symbol && currency !== BASE ? `<span class="symbol">${esc(C.SYMBOL[currency] || currency)}</span>` : '';
   return `<span class="m-price">${fig(`${sign}${whole}${cents ? `<span class="cents">${cents}</span>` : ''}${mark ? ` ${mark}` : ''}`, { size, bold, tone: resolvedTone })}</span>`;
 };

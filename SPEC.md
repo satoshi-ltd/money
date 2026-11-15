@@ -128,9 +128,10 @@ the insights. Screens query it; nothing recomputes per row.
 ### Storage
 
 `StorageService` writes each store through a chunked AsyncStorage adapter: arrays are split into chunks of 500 rows
-under an index `{ __chunks, __length }`; writes go through a queue so two saves never interleave; a read whose row count
-is under the index throws (the store refuses to open half a ledger) and one whose count is over repairs the index. The
-storage key is `com.satoshi-ltd.money`.
+under an index `{ __chunks, __length }`; writes go through a queue so two saves never interleave, and the changed chunks
+and the index commit in one batch, so a process killed mid-save reopens on the old ledger or the new one; a read whose
+row count is under the index throws (the store refuses to open half a ledger) and one whose count is over repairs the
+index. The storage key is `com.satoshi-ltd.money`.
 
 ### Migrations
 
@@ -166,12 +167,15 @@ successful export and drives the weekly backup nudge in Settings.
   Analytics. Balances count everything.
 - **Balances.** An account's current balance is its opening balance plus incomes minus expenses in its own currency;
   its base figure converts that balance with the current month's table. Net worth is the sum over accounts of the base
-  figures that could be converted; an account whose currency has no rate is left out rather than counted as 0. An
+  figures that could be converted; an account whose currency has no rate is left out rather than counted as 0. A balance
+  is rounded to its currency's precision once summed, so entries that cancel out leave exactly zero, never an "Owed"
+  account at −0.00, and a figure that rounds to zero is drawn without a sign. An
   account can hold a negative balance, a card or a loan: it counts in the net worth, the lists name it "Owed", the
   distribution bar leaves it out, and paying it down reads as a rise, by the size of what was owed.
 - **Scheduled transactions.** `runScheduledSync` runs at boot and on every return to the foreground: for each template
-  it generates the occurrences between 90 days ago and now, skipping any whose `${scheduledId}:${occurrenceAt}` already
-  exists in a transaction's `meta`, and creates at most 100 per run. Weekly patterns carry the weekdays; monthly
+  it generates the occurrences between 90 days ago and now, skipping any whose template and local calendar day already
+  match the `meta` of a transaction (`scheduledId`, `occurrenceAt`, so a phone that changes timezone does not repeat
+  them), and creates at most 100 per run. Weekly patterns carry the weekdays; monthly
   patterns carry the day, clamped to the month's length. The next occurrence is what Scheduled shows and what the
   monthly impact sums.
 - **Notifications.** Two kinds, each with its own `kind` metadata: `scheduled-tx` (the day before an occurrence at
@@ -204,7 +208,10 @@ are read in parallel afterwards.
 by the seed at boot; a seeded cache never dates itself as a download.
 
 **Base changes.** Cross rates are exact, so changing the base currency converts every cached table in place
-(`rebaseRates`) with no request; `ratesBaseCurrency` tags the cache and a mismatch drops it instead of merging.
+(`rebaseRates`) with no request; `ratesBaseCurrency` tags the cache and a mismatch drops it instead of merging. A
+download that answers after the base currency changed, in Settings or in Onboarding, is discarded and asked again
+for the new base. The latest table is
+the greatest `YYYY-MM` key, not the last one written.
 
 **Conversion.** `exchange(value, currency, base, rates, timestamp?)` divides by the rate of the month the timestamp
 falls in (local calendar), or of the latest month with that currency when no timestamp is given, or of the nearest
@@ -282,7 +289,7 @@ button, "See all N" with a chevron, that opens Scheduled.
 ## 7. Screens
 
 - **Onboarding** — four steps with a folio (01 / 04): cover (four claims), base currency (grouped picker, the seed
-  converts offline), first account (currency, opening balance kept on the account, name), then a four-digit PIN
+  converts offline), first account (currency, opening balance kept on the account, name; a comma or a dot is the decimal), then a four-digit PIN
   typed twice. Finishing marks `onboarded`, saves the PIN and creates the account.
 - **Session** — the lock screen: wordmark, four dots, a numeric keypad with letters, a biometric key when the reader is
   on (auto-prompted on arrival), the version at the foot. A wrong PIN shakes.
@@ -300,7 +307,9 @@ button, "See all N" with a chevron, that opens Scheduled.
 - **Transaction** (sheet) — expense, income or swap toggle; the form of [6](#6-insights-and-the-recommender) with
   concept, proposals, amount with the account's symbol, account, category, "Hide from Analytics and the month", date; Save. A swap
   shows from, send, destination, receive.
-- **Clone** (sheet) — the same form seeded from an entry, with Delete, Duplicate (only when unchanged) and Save.
+- **Clone** (sheet) — the same form seeded from an entry, with Delete, Duplicate (only when unchanged) and Save. A
+  duplicate is a new entry: it keeps `moved` and nothing else of the source's `meta`, so it never joins a swap's pair
+  or claims a scheduled occurrence.
 - **Scheduled** — a panel with the monthly impact, then the templates in three groups (next 7 days, this month, later)
   with the next date, the rule in words and the amount. Reached from Settings and from the Overview month block. Its
   bar adds a schedule with the same icon button Accounts uses; the seal adds a transaction and nothing else.
@@ -321,7 +330,7 @@ button, "See all N" with a chevron, that opens Scheduled.
   being the way out. The masthead slot names the account (New account when creating, First account at onboarding), no
   heading repeats it, and a creating or first account has Save alone.
 - **Settings** — a backup nudge when the last export is over a week old; Data (Update rates with its last run, Export,
-  Import, Export CSV); Appearance (theme, text size); Preferences (language, currency, Scheduled with its count, mask
+  Import, Export CSV); Appearance (theme: System follows the phone, light or dark overrides it and also sets the system chrome, the keyboard and alerts, to match; text size); Preferences (language, currency, Scheduled with its count, mask
   amounts switch, backup reminder switch, reminder time); Unlock (the biometric switch named after the reader); About (terms, privacy, security); Account &
   data (lock, reset); the colophon.
 
@@ -413,7 +422,7 @@ medium) from `assets/fonts`.
 Jest with `jest-expo`, tests beside the code in `__tests__`. Store tests mount `StoreProvider` with a mocked
 `services` module and unmount in `afterEach` (the provider keeps intervals alive). Screen and component tests use
 `react-test-renderer` with `contexts`, `components` and `modules` mocked as each test needs. Scripts have their own
-tests under `scripts/__tests__`, run against temporary copies.
+tests under `scripts/__tests__`, run against temporary copies. Jest runs with `TZ=Europe/Madrid` (`scripts/jest-timezone.cjs`), so date and DST tests are the same on every machine.
 
 ## 9. Design system and interactions
 

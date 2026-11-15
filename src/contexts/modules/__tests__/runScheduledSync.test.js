@@ -160,4 +160,27 @@ describe('contexts/modules/runScheduledSync', () => {
 
     expect(second.txs).toHaveLength(first.txs.length);
   });
+
+  test.each([
+    ['New York', 6],
+    ['Tokyo', -7],
+  ])('does not repeat occurrences that were stamped at midday in %s', async (zone, hours) => {
+    const template = scheduled('s1', 'a1');
+    const first = await runScheduledSync({
+      migrated: { accounts: [{ hash: 'a1' }], scheduledTxs: [template], settings: {}, txs: [] },
+      store: createStore({ settings: {}, txs: [] }),
+    });
+    expect(first.txs.length).toBeGreaterThan(0);
+
+    const elsewhere = first.txs.map((tx) => ({
+      ...tx,
+      meta: { ...tx.meta, occurrenceAt: tx.meta.occurrenceAt + hours * 60 * 60 * 1000 },
+    }));
+    const second = await runScheduledSync({
+      migrated: { accounts: [{ hash: 'a1' }], scheduledTxs: [template], settings: {}, txs: elsewhere },
+      store: createStore({ settings: {}, txs: [...elsewhere] }),
+    });
+
+    expect(second.txs).toHaveLength(elsewhere.length);
+  });
 });

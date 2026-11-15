@@ -44,6 +44,25 @@ Purely visual ideas that nobody has approved, each one a board drawn with the ki
 
 Work with no visual part lives in ROADMAP only and never gets a board.
 
+### Information architecture before composition
+
+- Read the complete screen, its entry points and its next action before drawing. Identify what the reader is trying
+  to learn or do, the primary figure or action, and which details belong in the next panel or sheet. Check the owning
+  screen and navigator as well as the kit: these static specimens are not a native render.
+- A screen-level board shows the complete screen on both sides at the same width, with the same data, state and
+  surrounding sections. A component crop may supplement it, never stand in for it. Include the entry/destination
+  context in `why`; when a change adds height, show what it pushes down. Do not shrink a phone to fit the board.
+- Preserve the established reading order: labels, amounts and context align across ledger rows; a screen-level
+  currency or date need not be repeated on every item; secondary copy stays subordinate to the figure or action.
+  More whitespace, more labels, a repeated wordmark or an extra line is not evidence of a better composition.
+- State the observable problem, the expected gain and the cost of the alternative. A hypothetical long translation
+  is a reason to test that state, not to rearrange every row. Show the actual failing width, language and text size
+  before proposing an adaptation for it; keep the default layout when it already works.
+- Compare System, Mobile, empty states and the Fold, then the affected flow through its panel and sheet. Review light
+  and dark, real-length copy, masking and unavailable values where relevant. Distinguish a reproduced defect from a
+  design hypothesis, and withdraw a board whose benefit the comparison does not establish. Do not manufacture visual
+  proposals to fill a review or describe an untested alternative as an improvement.
+
 ## Lifecycle
 
 1. **Idea** — a board and nothing else. It is not filed in ROADMAP.

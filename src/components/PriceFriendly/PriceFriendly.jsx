@@ -54,9 +54,11 @@ const PriceFriendly = React.memo(({
   const formatted = formatter(decimals).format(absolute);
   const [whole, cents] = split(formatted);
 
-  const isNegative = value < 0;
-  const sign = isNegative ? MINUS : operator && value > 0 ? '+' : '';
-  const resolvedTone = tone !== undefined ? tone : operator && value > 0 ? 'positive' : undefined;
+  const isZero = !/[1-9]/.test(formatted);
+  const isNegative = value < 0 && !isZero;
+  const isPositive = value > 0 && !isZero;
+  const sign = isNegative ? MINUS : operator && isPositive ? '+' : '';
+  const resolvedTone = tone !== undefined ? tone : operator && isPositive ? 'positive' : undefined;
   const colorStyle = color ? { color } : undefined;
 
   const textProps = { ...others, bold, figure: size, tone: resolvedTone, style: [others.style, colorStyle] };

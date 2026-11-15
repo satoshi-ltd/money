@@ -9,11 +9,16 @@ const normalizeOccurrenceAt = (value) => {
   return Number.isFinite(next) ? next : undefined;
 };
 
+const localDay = (at) => {
+  const date = new Date(at);
+  return `${date.getFullYear()}-${`${date.getMonth() + 1}`.padStart(2, '0')}-${`${date.getDate()}`.padStart(2, '0')}`;
+};
+
 export const getScheduledOccurrenceKey = ({ scheduledId, occurrenceAt } = {}) => {
   const id = normalizeScheduledId(scheduledId);
   const at = normalizeOccurrenceAt(occurrenceAt);
   if (!id || at === undefined) return undefined;
-  return `${id}:${at}`;
+  return `${id}:${localDay(at)}`;
 };
 
 export const getScheduledOccurrenceKeyFromTx = (tx = {}) => {

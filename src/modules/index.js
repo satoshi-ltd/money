@@ -33,6 +33,7 @@ export * from './monthFlow';
 export * from './monthGrid';
 export * from './monthIndex';
 export * from './monthlyImpact';
+export * from './parseAmount';
 export * from './rankInk';
 export * from './recurrence';
 export * from './sheetDetent';

@@ -1,6 +1,6 @@
 {
   "name": "money",
-  "version": "3.0.99",
+  "version": "3.0.100",
   "main": "index.js",
   "private": true,
   "scripts": {
@@ -67,6 +67,7 @@
   },
   "jest": {
     "preset": "jest-expo",
+    "globalSetup": "<rootDir>/scripts/jest-timezone.cjs",
     "transformIgnorePatterns": [
       "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg)"
     ],

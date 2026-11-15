@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Footer, Logo, Rail, Text } from './components';
 import { useApp, useStore } from './contexts';
-import { RailProvider, useRailFits } from './hooks';
+import { RailProvider, useNativeScheme, useRailFits } from './hooks';
 import { C, L10N, categorySheet, getNavigationTheme, sheetContentHeight, sheetDetents } from './modules';
 import {
   Account,
@@ -139,7 +139,8 @@ export const Tabs = ({ navigation = {} }) => {
 };
 
 export const Navigator = () => {
-  const { colors, theme: themeMode } = useApp();
+  const { colors, theme: themeMode, themePreference } = useApp();
+  useNativeScheme(themePreference);
   const { bottom, top } = useSafeAreaInsets();
   const { height: windowHeight } = useWindowDimensions();
   const { settings: { onboarded = true, pin } = {} } = useStore();

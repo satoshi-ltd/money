@@ -153,10 +153,8 @@ export class AsyncStorageAdapter {
     const shrinking = previous > chunks.length;
     const nextIndex = JSON.stringify({ __chunks: chunks.length, __length: value.length });
 
-    if (changed.length) await AsyncStorage.multiSet(changed);
+    await AsyncStorage.multiSet([...changed, [indexKey(key, collection), nextIndex]]);
     changed.forEach(([name, raw]) => (this.written[name] = raw));
-
-    await AsyncStorage.setItem(indexKey(key, collection), nextIndex);
     this.chunkCount[collection] = chunks.length;
 
     if (shrinking) {

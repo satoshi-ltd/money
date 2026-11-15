@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Account } from './Onboarding.Account';
@@ -9,7 +9,7 @@ import { Passcode } from './Onboarding.Passcode';
 import { getStyles } from './Onboarding.style';
 import { Button, Eyebrow, Masthead, ScrollView, Text, View } from '../../components';
 import { useApp, useStore } from '../../contexts';
-import { C, eventEmitter, L10N } from '../../modules';
+import { C, eventEmitter, L10N, parseAmount } from '../../modules';
 import { rebaseRates, ServiceRates } from '../../services';
 
 const { CURRENCY, EVENT } = C;
@@ -33,6 +33,7 @@ const Onboarding = ({ navigation: { reset } = {} }) => {
   const [pin, setPin] = useState('');
   const [confirm, setConfirm] = useState('');
   const [busy, setBusy] = useState(false);
+  const pickedRef = useRef(currency);
 
   useEffect(() => {
     if (confirm.length < 4) return;
@@ -53,12 +54,13 @@ const Onboarding = ({ navigation: { reset } = {} }) => {
     setBusy(true);
 
     await updateSettings({ baseCurrency: currency, onboarded: true, pin: passcode });
-    await createAccount({ balance: Number(balance) || 0, currency, title: title.trim() });
+    await createAccount({ balance: parseAmount(balance, { signed: true }) || 0, currency, title: title.trim() });
 
     reset({ index: 0, routes: [{ name: 'main' }] });
   };
 
   const handleCurrency = async (next) => {
+    pickedRef.current = next;
     setCurrency(next);
     if (next === settings.baseCurrency) return;
 
@@ -70,7 +72,7 @@ const Onboarding = ({ navigation: { reset } = {} }) => {
       known: rates,
       lastRatesUpdate: settings.lastRatesUpdate,
     })['catch'](() => undefined);
-    if (nextRates) await updateRates(nextRates);
+    if (nextRates && pickedRef.current === next) await updateRates(nextRates);
   };
 
   const isPasscode = step === STEP_PASSCODE;

@@ -123,6 +123,7 @@ const StoreProvider = ({ children }) => {
       if (!isRatesSyncDue({ force, lastRatesUpdate: current.settings?.lastRatesUpdate })) return;
 
       ratesSyncInFlightRef.current = true;
+      let stale = false;
       try {
         const rates = await ServiceRates.get({
           baseCurrency: current?.settings?.baseCurrency,
@@ -134,9 +135,14 @@ const StoreProvider = ({ children }) => {
 
         const latest = stateRef.current;
         if (!latest?.store) return;
+        if (latest.settings?.baseCurrency !== current.settings?.baseCurrency) {
+          stale = true;
+          return;
+        }
         await updateRates(rates, [latest, setState]);
       } finally {
         ratesSyncInFlightRef.current = false;
+        if (stale && !disposed) syncRates({ force: true });
       }
     };
 

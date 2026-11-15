@@ -2,8 +2,9 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { Dropdown, FieldRow, Input, PriceFriendly, Text, View } from '../../../components';
+import { getLastRates } from '../../../components/InputAmount/helpers';
 import { useStore } from '../../../contexts';
-import { foreignSymbol, L10N, roundToCurrency } from '../../../modules';
+import { amountText, foreignSymbol, L10N, parseAmount, roundToCurrency } from '../../../modules';
 import { computeTransferExchange, getAccount, queryAvailableAccounts } from '../helpers';
 import { style } from './FormTransaction.style';
 
@@ -28,13 +29,8 @@ const FormTransaction = ({ account = {}, accountsList = [], form = {}, onChange,
     }
   }, [account, fallback, form, onChange]);
 
-  const getLatestRates = () => {
-    const keys = Object.keys(rates || {});
-    return keys.length ? rates[keys[keys.length - 1]] : undefined;
-  };
-
   const computeExchangeAuto = ({ from, to, value }) =>
-    computeTransferExchange({ baseCurrency, from, latestRates: getLatestRates(), to, value });
+    computeTransferExchange({ baseCurrency, from, latestRates: getLastRates(rates), to, value });
 
   const handleField = (field, fieldValue) => {
     const prevEdited = lastEditedRef.current;
@@ -44,9 +40,9 @@ const FormTransaction = ({ account = {}, accountsList = [], form = {}, onChange,
     const next = { ...form, [field]: fieldValue };
     const from = getAccount(account.hash, resolvedAccounts);
     const to = getAccount(next.destination, resolvedAccounts);
-    const nextValue = typeof next.value === 'string' ? parseFloat(next.value) : next.value;
-    const prevValue = typeof form.value === 'string' ? parseFloat(form.value) : form.value;
-    const prevExchange = typeof form.exchange === 'string' ? parseFloat(form.exchange) : form.exchange;
+    const nextValue = parseAmount(next.value);
+    const prevValue = parseAmount(form.value);
+    const prevExchange = parseAmount(form.exchange);
 
     let exchange = next.exchange;
 
@@ -104,8 +100,8 @@ const FormTransaction = ({ account = {}, accountsList = [], form = {}, onChange,
         keyboardType="decimal-pad"
         placeholder="0"
         style={style.rowFigure}
-        value={value !== undefined ? `${value}` : undefined}
-        onChange={(next) => handleField(field, next)}
+        value={value !== undefined ? `${value}` : ''}
+        onChange={(next) => handleField(field, amountText(next))}
       />
       <Text figure="sm" tone="muted">
         {foreignSymbol(selected?.currency, baseCurrency)}
