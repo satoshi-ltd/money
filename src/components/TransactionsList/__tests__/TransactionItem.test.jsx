@@ -15,16 +15,10 @@ jest.mock('../../../contexts', () => ({
   useApp: () => ({ colors: {} }),
   useAmountSettings: () => ({ baseCurrency: 'EUR', maskAmount: false }),
 }));
-jest.mock('react-native-gesture-handler', () => {
-  const ReactNative = require('react-native');
-  const MockReact = require('react');
-  return {
-    Swipeable: MockReact.forwardRef(({ children, renderRightActions }, ref) => {
-      MockReact.useImperativeHandle(ref, () => ({ close: () => {} }));
-      return MockReact.createElement(ReactNative.View, null, children, renderRightActions?.());
-    }),
-  };
-});
+jest.mock('react-native-gesture-handler', () => ({
+  PanGestureHandler: ({ children }) => children,
+  State: { END: 5 },
+}));
 
 const TX = { category: 1, currency: 'EUR', hash: 'tx-1', timestamp: 1700000000000, title: 'Mercadona', type: 0, value: 23.8 };
 

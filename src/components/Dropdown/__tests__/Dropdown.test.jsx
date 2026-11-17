@@ -26,11 +26,21 @@ const OPTIONS = Array.from({ length: 18 }, (_item, index) => ({
   value: `c${index}`,
 }));
 
+const mounted = [];
+
+afterEach(async () => {
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    mounted.splice(0).forEach((renderer) => renderer.unmount());
+  });
+});
+
 const render = (props) => {
   let renderer;
   act(() => {
     renderer = TestRenderer.create(<Dropdown options={OPTIONS} visible onClose={() => {}} onSelect={() => {}} {...props} />);
   });
+  mounted.push(renderer);
   return renderer.root;
 };
 

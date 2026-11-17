@@ -1,9 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { useMemo, useRef } from 'react';
-import { Swipeable } from 'react-native-gesture-handler';
 
-import { getStyles } from './TransactionsList.style';
+import { SwipeRow } from './SwipeRow';
+import { getStyles, SWIPE_ACTIONS_WIDTH } from './TransactionsList.style';
 import { useApp } from '../../contexts';
 import { C, eventEmitter, exchange, L10N, verboseTime } from '../../modules';
 import { Pressable, Text, View } from '../../primitives';
@@ -56,7 +56,7 @@ const TransactionItem = React.memo(({
     });
   };
 
-  const renderRightActions = () => (
+  const actions = (
     <View style={style.swipeActions}>
       <Pressable
         testID="tx-swipe-edit"
@@ -80,7 +80,7 @@ const TransactionItem = React.memo(({
   );
 
   return (
-    <Swipeable ref={swipeableRef} friction={2} overshootRight={false} renderRightActions={renderRightActions}>
+    <SwipeRow ref={swipeableRef} actions={actions} actionsWidth={SWIPE_ACTIONS_WIDTH}>
       <Pressable onPress={handlePress}>
         <View row style={style.row}>
           <Text figure="xs" numberOfLines={1} style={style.time} tone="muted">
@@ -111,7 +111,7 @@ const TransactionItem = React.memo(({
           </View>
         </View>
       </Pressable>
-    </Swipeable>
+    </SwipeRow>
   );
 });
 

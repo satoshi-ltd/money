@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.0.101 — 2026-11-17
+
+- Môney is built on Expo SDK 58 (React Native 0.88, React 19.3), three SDKs ahead of the previous build.
+- Swiping a transaction row to edit or delete keeps working: the gesture library dropped its swipe component, so the row now has its own.
+
+Needs: native build
+
 ## 3.0.100 — 2026-11-15
 
 - Flying to another timezone no longer creates your scheduled transactions a second time, and a rates download that answers after you changed the base currency (in Settings or while setting up) is dropped instead of putting the old currency back.

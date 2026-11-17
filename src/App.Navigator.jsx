@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { Platform, useWindowDimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Footer, Logo, Rail, Text } from './components';
@@ -164,11 +164,7 @@ export const Navigator = () => {
 
   return (
     <NavigationContainer theme={getNavigationTheme(colors)}>
-      <StatusBar
-        style={themeMode === 'dark' ? 'light' : 'dark'}
-        translucent={true}
-        backgroundColor={Platform.OS === 'android' ? 'transparent' : undefined}
-      />
+      <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} />
 
       <Stack.Navigator
         initialRouteName={!onboarded ? 'onboarding' : pin && !C.IS_DEV ? 'session' : 'main'}

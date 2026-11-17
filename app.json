@@ -5,7 +5,7 @@
     "owner": "satoshi-ltd",
     "scheme": "money",
     "description": "A private, local-first ledger that keeps your money on your phone",
-    "version": "3.0.100",
+    "version": "3.0.101",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -15,7 +15,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.satoshi-limited.money",
-      "buildNumber": "76",
+      "buildNumber": "77",
       "usesIcloudStorage": true,
       "infoPlist": {
         "LSMinimumSystemVersion": "15.1",
@@ -29,7 +29,7 @@
         "backgroundColor": "#15140F"
       },
       "package": "com.satoshilimited.money",
-      "versionCode": 76,
+      "versionCode": 77,
       "softwareKeyboardLayoutMode": "resize"
     },
     "plugins": [

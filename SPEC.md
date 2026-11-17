@@ -1,6 +1,6 @@
 # Môney — specification
 
-**3.0.61 · build 37 · Expo SDK 55 · iOS 15.1+ and Android**
+**3.0.61 · build 37 · Expo SDK 58 · iOS 15.1+ and Android**
 
 This document owns how Môney works today: the product decisions, the data and its storage, the ledger rules, rates,
 insights and the recommender, every screen, the operations, and the design system that code must keep.
@@ -23,7 +23,7 @@ owns remaining work and [CHANGELOG.md](CHANGELOG.md) records what each version s
 
 ## Current state
 
-- **3.0.61.** One Expo app (React Native 0.83, React 19, new architecture) for iOS and Android, built by the creator
+- **3.0.61.** One Expo app (React Native 0.88, React 19, new architecture) for iOS and Android, built by the creator
   with EAS profiles `development`, `production` (the APK) and `store` (the Play bundle), locally or on EAS cloud,
   and installed by hand. There is no pipeline and no store process documented here.
 - **What it does.** Accounts in any of 30 currencies, expenses, incomes and swaps between accounts, scheduled
@@ -301,7 +301,7 @@ button, "See all N" with a chevron, that opens Scheduled.
   by currency of what you hold with its legend, a currency filter, every account with its balance and base figure, and, under a currency filter, the total of that filter (under All the net
   worth above is the total). A row opens Transactions for that account.
 - **Transactions** — a panel for one account: balance hero with the month delta, the month's incomes and expenses as
-  bars, the list by day, a floating add button, Edit in the masthead. Swipe a row to delete; tap to open Clone. Opened
+  bars, the list by day, a floating add button, Edit in the masthead. Swipe a row to edit or delete; tap to open Clone. Opened
   from a category it lists that category's entries of the month across accounts, titled after both, without the
   account hero or Edit.
 - **Transaction** (sheet) — expense, income or swap toggle; the form of [6](#6-insights-and-the-recommender) with
@@ -359,8 +359,7 @@ rebuilt only for native changes (a dependency with Android code, a plugin in `ap
 `yarn build:local:dev --install-only` reinstalls the APK already in `release-assets/`. Dev builds install on the
 first USB device, else a running emulator, else they boot `Pixel_9_Pro_Fold` (`ANDROID_AVD`, `ANDROID_SERIAL`).
 Installation is `adb install -r`: app data is kept and a signature mismatch stops the install; the EAS keystore is
-never replaced. The toolchain is the machine's (`ANDROID_HOME`, Android Studio's JBR); `postinstall` patches the
-Gradle plugin so RN 0.83 compiles under Gradle 9.
+never replaced. The toolchain is the machine's (`ANDROID_HOME`, Android Studio's JBR).
 
 ### Site
 
@@ -478,7 +477,7 @@ Checkbox, SegmentedToggle (flex, scrollable or compact; the selected segment inv
 label, value column, chevron), Setting and SettingSelect (row, subtitle, right value, switch, dropdown), Dropdown
 (floating list with symbol wells and a check), Field, InputField, InputAmount (base equivalent as suffix), InputCurrency
 (symbol well), Card, Chart (line, trend, pointer, axis, legend), FlowChart (bars, medians, break marks, month labels),
-MonthSummary, TransactionsList and TransactionItem (time, title, category, amount and base figure; swipe to delete),
+MonthSummary, TransactionsList, SwipeRow and TransactionItem (time, title, category, amount and base figure; swipe to edit or delete),
 EmptyState, Notification (a band from the top: accent, inverse or danger), Confirm (dialog with a danger well),
 DatePicker (a month in a sheet, drawn by Môney on both platforms), Modal (bottom sheet with a drag to close),
 Panel (screen with masthead, floating element, sheet mode), Screen (scroll with keyboard insets), IconButton,
@@ -544,7 +543,7 @@ src/i18n/                                       dictionaries (EN, ES, PT, FR, DE
 src/theme/                                      theme.js (tokens), layout.js (geometry)
 src/primitives/, src/components/                the design system
 src/screens/<Screen>/                           the screen, its style, modules/ or helpers/, components/
-scripts/                                        check-release, bump, android-build, rates-seed, prepare-native
+scripts/                                        check-release, bump, android-build, rates-seed
 design/                                         the design kit: AGENTS.md (its contract), build.mjs (generator),
                                                 src/ (draw, views, proposals), kit.css, kit.js, and the generated
                                                 index, mobile, proposals, tokens.css, favicon.png

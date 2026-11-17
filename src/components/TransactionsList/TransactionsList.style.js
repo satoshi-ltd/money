@@ -3,6 +3,10 @@ import { StyleSheet } from 'react-native';
 import { theme } from '../../theme';
 import { viewOffset } from '../../theme/layout';
 
+const SWIPE_ACTION_WIDTH = theme.spacing.xxl + theme.spacing.xl;
+
+export const SWIPE_ACTIONS_WIDTH = SWIPE_ACTION_WIDTH * 2;
+
 export const getStyles = (colors) =>
   StyleSheet.create({
     headerContainer: {
@@ -44,6 +48,6 @@ export const getStyles = (colors) =>
     swipeAction: {
       alignItems: 'center',
       justifyContent: 'center',
-      width: theme.spacing.xxl + theme.spacing.xl,
+      width: SWIPE_ACTION_WIDTH,
     },
   });

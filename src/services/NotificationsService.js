@@ -1,6 +1,7 @@
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
+import { foregroundNotification } from './modules/foregroundNotification';
 import { backupTrigger, buildDesiredNotifications, buildTxIndex, reconcileNotifications } from './modules/scheduledNotifications';
 import { C, L10N } from '../modules';
 
@@ -75,9 +76,7 @@ export const NotificationsService = {
         if (requestPermission.status !== GRANTED) return false;
       }
 
-      Notifications.setNotificationHandler({
-        handleNotification: async () => ({ shouldShowAlert: true, shouldPlaySound: true, shouldSetBadge: false }),
-      });
+      Notifications.setNotificationHandler({ handleNotification: foregroundNotification });
 
       return true;
     } catch {
