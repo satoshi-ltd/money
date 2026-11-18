@@ -162,8 +162,13 @@ const Settings = ({ navigation = {} }) => {
         onAction: async () => {
           const { settings: { theme } = {} } = backup || {};
 
+          try {
+            await importBackup(backup);
+          } catch (error) {
+            handleError(error);
+            return;
+          }
           if (theme) updateTheme(theme);
-          await importBackup(backup);
           navigation.navigate('dashboard');
           eventEmitter.emit(EVENT.NOTIFICATION, {
             title: L10N.CONFIRM_IMPORT_SUCCESS,

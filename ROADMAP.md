@@ -175,26 +175,6 @@ _None._
 
 ### High priority
 
-- **BACKUP-RECORD-VALIDATION** — Reject invalid records before replacing the ledger
-  `bug · agent · high`
-  accept: `validateBackupPayload` currently returns `ok: true` for a transaction with an unknown account,
-  a nonnumeric value, or even `null`, provided the top-level containers have the expected shape. Validate
-  records and references before `importBackup` calls `store.replace`; reject the whole invalid import instead
-  of silently dropping entries. Cover accounts, transactions and scheduled templates: identifiers and duplicate
-  IDs, supported currencies/types, finite amounts and valid dates, account references and recurrence shape.
-  Preserve supported legacy backups through explicit normalization and fixtures, including schema 3, string
-  opening balances accepted by `parseAccount`, absent schedules and retired settings. Regression tests through
-  BackupService and the reducer prove an invalid payload cannot call `store.replace`, update state or reschedule
-  notifications; a valid old backup still imports. Keep the existing error presentation and backup keys.
-
-- **CSV-QUOTED-ACCOUNTS** — Export account names without breaking the CSV
-  `bug · agent · high`
-  accept: in `BackupService.exportCsv`, a name such as `Travel "cash", EUR` round-trips through a CSV parser as
-  one account field, with all seven columns intact. The current code escapes title quotes but interpolates
-  account titles directly inside quotes. Use one escaping rule for textual fields; fixtures cover quotes,
-  commas, CR/LF, accents and empty strings in both account and transaction titles. Preserve column order,
-  numeric amounts and ISO dates; no runtime dependency is needed.
-
 - **ANDROID-PERMISSIONS** — Ship only the Android permissions the app uses
   `chore · agent · high`
   accept: the 3.0.99 APK declares 30 permissions, among them SYSTEM_ALERT_WINDOW, READ/WRITE_EXTERNAL_STORAGE,
@@ -216,7 +196,7 @@ _None._
   an invalid date as no download; tests for both.
 
 - **SETTINGS-IMPORT-VALIDATION** — Validate the settings of a backup, not only their container
-  `bug · agent · normal · depends: BACKUP-RECORD-VALIDATION`
+  `bug · agent · normal`
   accept: `migrateState.js:20-27` clamps `textSize`, `reminderHour` and `budgets`; `baseCurrency`, `reminders`
   (read as an array at `NotificationsService.js:88`), `statsRangeMonths`, `language` and `theme` pass through
   untouched. An unsupported value falls back to its default (or rejects the import where there is no safe default,
@@ -540,7 +520,7 @@ _None._
 | A desktop or web target | Out by the creator's decision, 2026-10-01: Môney stays mobile only. |
 | A forecast signal from scheduled incomes | Out by the creator's decision, 2026-10-01: no new card either way. |
 | Bounded rate downloads | Out by the creator's decision, 2026-10-01: only the first run downloads many months at once. |
-| A checksum in the backup | Keep import validation as the safeguard (BACKUP-RECORD-VALIDATION); a checksum does not validate record semantics. |
+| A checksum in the backup | Keep import validation as the safeguard (`backupValidation`); a checksum does not validate record semantics. |
 | A weekly or monthly digest notification | Out by the creator's decision, 2026-10-01. |
 | No re-animation on a range switch | Out by the creator's decision, 2026-10-01. |
 | One definition of a word for the tokenizer and the title memory | Out by the creator's decision, 2026-10-01. |

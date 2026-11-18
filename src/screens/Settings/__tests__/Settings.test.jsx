@@ -173,6 +173,25 @@ describe('screens/Settings', () => {
     expect(BackupService.export).toHaveBeenCalledTimes(1);
   });
 
+  test('an import the ledger refuses says so and never reports success', async () => {
+    const backup = { accounts: [{ hash: 'a1' }], settings: { baseCurrency: 'EUR', theme: 'dark' }, txs: [] };
+    BackupService.import.mockResolvedValueOnce(backup);
+    mockStore.importBackup = jest.fn(() => Promise.reject(new Error('invalid_backup')));
+    const emit = jest.spyOn(eventEmitter, 'emit');
+    const root = await render();
+    const row = componentsBy(root, 'setting').find((node) => node.props.title === L10N.IMPORT_DATA);
+
+    await act(async () => row.props.onPress());
+    const { onAction } = emit.mock.calls.find(([event]) => event === C.EVENT.CONFIRM)[1];
+    await act(async () => onAction());
+
+    expect(mockStore.importBackup).toHaveBeenCalledWith(backup);
+    expect(mockStore.updateTheme).not.toHaveBeenCalled();
+    expect(emit).toHaveBeenCalledWith(C.EVENT.NOTIFICATION, { error: true, text: L10N.ERROR_TRY_AGAIN });
+    expect(emit).not.toHaveBeenCalledWith(C.EVENT.NOTIFICATION, { title: L10N.CONFIRM_IMPORT_SUCCESS });
+    emit.mockRestore();
+  });
+
   test('groups are rows on paper: no surface card, no radius wrapper', async () => {
     const cards = flats(await render()).filter((flat) => flat.backgroundColor === SURFACE);
 

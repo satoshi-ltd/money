@@ -1,12 +1,16 @@
 import { migrateState } from '../modules';
 import { NotificationsService, ratesOrSeed } from '../../services';
+import { validateBackupPayload } from '../../services/modules/backupValidation';
 export const importBackup = async (
   { accounts = [], scheduledTxs = [], schemaVersion, settings = {}, txs = [] } = {},
   [state, setState],
 ) => {
   const { store } = state;
 
-  const migrated = migrateState({ accounts, scheduledTxs, schemaVersion, settings, txs });
+  const checked = validateBackupPayload({ accounts, scheduledTxs, schemaVersion, settings, txs });
+  if (!checked.ok) throw new Error('invalid_backup');
+
+  const migrated = migrateState({ accounts, scheduledTxs: checked.value.scheduledTxs, schemaVersion, settings, txs });
   const cachedBaseCurrency = state.settings?.ratesBaseCurrency || state.settings?.baseCurrency;
   const keepRates = cachedBaseCurrency === migrated.settings.baseCurrency;
   migrated.settings.ratesBaseCurrency = keepRates ? cachedBaseCurrency : undefined;

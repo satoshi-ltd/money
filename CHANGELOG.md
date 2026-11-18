@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.102 — 2026-11-18
+
+- A backup with a damaged record is refused whole, with the usual import error, instead of replacing your ledger with part of it: a transaction on an account that is not in the file, an amount that is not a number, a repeated id, an unknown currency or a schedule that cannot recur. Backups made by earlier versions still import.
+- The CSV export keeps account and transaction names with commas, quotes or line breaks in one column each.
+
 ## 3.0.101 — 2026-11-17
 
 - Môney is built on Expo SDK 58 (React Native 0.88, React 19.3), three SDKs ahead of the previous build.

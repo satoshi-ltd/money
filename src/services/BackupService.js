@@ -9,6 +9,8 @@ import { L10N } from '../modules';
 
 const OMITTED_SETTINGS = ['autoAccount', 'autoAmount', 'autoCategory', 'backupAt', 'biometricUnlockEnabled', 'pin'];
 
+const csvText = (value) => `"${`${value ?? ''}`.replace(/"/g, '""')}"`;
+
 const exportableSettings = (settings = {}) =>
   Object.fromEntries(Object.entries(settings).filter(([key]) => !OMITTED_SETTINGS.includes(key)));
 
@@ -53,10 +55,7 @@ export const BackupService = {
           const accountInfo = accountMap.get(account);
           const accountTitle = accountInfo?.title || account || '';
           const accountCurrency = accountInfo?.currency || settings.baseCurrency || '';
-          const safeTitle = `${title || ''}`.replace(/"/g, '""');
-          rows.push(
-            [date, type, value, accountCurrency, category ?? '', `"${safeTitle}"`, `"${accountTitle}"`].join(','),
-          );
+          rows.push([date, type, value, accountCurrency, category ?? '', csvText(title), csvText(accountTitle)].join(','));
         });
 
         const data = rows.join('\n');

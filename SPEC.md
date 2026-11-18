@@ -145,9 +145,13 @@ merge, because the merged object always looks current.
 An export is `{ schemaVersion, accounts, scheduledTxs, settings, txs }` as `money-<ISO date>.json`, shared through the
 system sheet. `settings` leaves out `pin`, `biometricUnlockEnabled` and `backupAt`; the retired word catalogs (`autoCategory`,
 `autoAccount`, `autoAmount`) are never exported, and one found in an old backup or on the disk is dropped on load and
-removed from the disk at boot by `retireSettings`, since a save only adds keys. CSV export writes `date, type, amount, currency, category, title, account`, one transaction per row.
+removed from the disk at boot by `retireSettings`, since a save only adds keys. CSV export writes `date, type, amount, currency, category, title, account`, one transaction per row; title and account are quoted with doubled quotes, so commas, quotes and line breaks stay inside their field.
 
-Import picks a file, validates it (`backupValidation`: top-level keys, arrays, finite numbers, no foreign keys), asks
+Import picks a file and validates it (`backupValidation`) before anything else: the top-level keys and arrays, then every
+record. An account needs its own hash, a currency code (retired ones such as RUB still import) and a numeric balance when it carries one; a transaction needs an account that is in the file, and a transaction or a schedule needs a type (0, 1 or 2) and a numeric amount, with finite dates and
+categories; a recurrence needs a known kind, an interval of 1 to 365, weekdays 0 to 6 and a month day 1 to 31; account
+hashes and schedule ids are unique. A schedule whose account is gone is dropped, not a reason to refuse the file. One bad record refuses the whole file, and `importBackup` checks the same rules before it touches
+the ledger, the state or the reminders, so Settings reports the failure instead of importing part of it. It asks
 for confirmation with the file's counts, then replaces the ledger through `importBackup`: the current rates cache is
 kept when the imported base currency matches the cached one, otherwise the seed is used and `lastRatesUpdate` is
 cleared, since the backup carries the exporting device's date but never its rates. `backupAt` is written on every

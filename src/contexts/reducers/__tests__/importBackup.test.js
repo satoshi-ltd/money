@@ -11,7 +11,7 @@ const backup = (baseCurrency, settings = {}) => ({
   accounts: [{ hash: 'a1', currency: baseCurrency }],
   scheduledTxs: [],
   settings: { baseCurrency, ...settings },
-  txs: [{ hash: 't1', account: 'a1', value: 10 }],
+  txs: [{ hash: 't1', account: 'a1', type: 0, value: 10 }],
 });
 
 const createState = async (settings = {}) => {
@@ -89,7 +89,7 @@ describe('contexts/reducers/importBackup', () => {
 
     await importBackup(backup('EUR'), [state, jest.fn()]);
 
-    expect(store.get('txs').value).toEqual([{ hash: 't1', account: 'a1', value: 10 }]);
+    expect(store.get('txs').value).toEqual([{ hash: 't1', account: 'a1', type: 0, value: 10 }]);
     expect(store.get('accounts').value).toHaveLength(1);
   });
 
@@ -123,5 +123,30 @@ describe('contexts/reducers/importBackup', () => {
     await importBackup(backup('EUR', { biometricUnlockEnabled: true }), [state, jest.fn()]);
 
     expect(store.get('settings').value.biometricUnlockEnabled).toBeFalsy();
+  });
+
+  test('a backup with a transaction on an unknown account is refused before it touches the ledger, the state or the reminders', async () => {
+    jest.clearAllMocks();
+    const { state, store } = await createState();
+    const replace = jest.spyOn(store, 'replace');
+    const setState = jest.fn();
+
+    await expect(
+      importBackup({ ...backup('EUR'), txs: [{ hash: 't1', account: 'ghost', type: 0, value: 10 }] }, [state, setState]),
+    ).rejects.toThrow('invalid_backup');
+
+    expect(replace).not.toHaveBeenCalled();
+    expect(setState).not.toHaveBeenCalled();
+    expect(NotificationsService.setHour).not.toHaveBeenCalled();
+    expect(NotificationsService.syncScheduled).not.toHaveBeenCalled();
+  });
+
+  test('a schedule on an account that no longer exists is left out of the ledger it lands in', async () => {
+    const { state, store } = await createState();
+    const live = { id: 's1', account: 'a1', type: 0, value: 5 };
+
+    await importBackup({ ...backup('EUR'), scheduledTxs: [live, { ...live, id: 's2', account: 'gone' }] }, [state, jest.fn()]);
+
+    expect(store.get('scheduledTxs').value.map(({ id }) => id)).toEqual(['s1']);
   });
 });
