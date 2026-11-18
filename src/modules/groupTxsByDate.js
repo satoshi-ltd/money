@@ -1,21 +1,23 @@
+const dayKey = (timestamp) => {
+  const date = new Date(timestamp);
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+};
+
 export const groupTxsByDate = (txs = []) => {
   const query = [];
-  const offset = new Date().getTimezoneOffset() * 60 * 1000;
-  let date;
-  let dateIndex = 0;
+  let key;
 
-  txs
+  [...txs]
     .sort((a, b) => b.timestamp - a.timestamp)
     .forEach((tx) => {
-      const txDate = new Date(new Date(tx.timestamp).getTime() - offset).toISOString().substr(0, 10);
+      const txKey = dayKey(tx.timestamp);
 
-      if (date !== txDate) {
-        date = txDate;
-        dateIndex = query.length;
+      if (key !== txKey) {
+        key = txKey;
         query.push({ title: tx.timestamp, data: [] });
       }
 
-      query[dateIndex].data.push(tx);
+      query[query.length - 1].data.push(tx);
     });
 
   return query;

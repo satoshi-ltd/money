@@ -236,13 +236,6 @@ _None._
   looks up within the wrong type. Changing the type clears the category and Save waits for one of that type;
   a render test covers both directions and an edit of an existing template.
 
-- **INSIGHTS-SHORT-MONTH** — On the last day of a short month, earlier months count whole
-  `bug · agent · normal`
-  accept: `insights.js:54,101` counts an earlier entry as "to date" when its day is at most today's: on 28 February,
-  rent paid on the 30th in December and January is left out of the usual, so the pace reads "+333% over" and the
-  swing "Home +1000". When today is the last day of its month, every day of an earlier month is to date; the
-  fixture reads flat with no swing, and 30 April against the 31st behaves the same.
-
 - **SCHEDULED-IMPACT-DUE-DAY** — A monthly schedule counts once in the 30-day figure
   `bug · agent · normal`
   accept: `monthlyImpact.js` counts occurrences in a 30-day window closed at both ends and starting now: rent of
@@ -250,13 +243,6 @@ _None._
   day after. `getNextOccurrenceAt` normalises `afterAt` to midday, so at 15:00 on the due day "next" is today's
   occurrence, already recorded. The window never holds a monthly template twice and "next" is after now or skips
   recorded occurrences; tests at 09:00 and 15:00 on the due day.
-
-- **DAY-GROUP-DST** — Entries group under their own local day
-  `bug · agent · normal`
-  accept: `groupTxsByDate.js` shifts every timestamp by today's UTC offset: read in November, an entry of 10 July at
-  00:30 falls under 9 July, and in summer a winter entry from 23:00 moves to the next day. It also sorts the
-  caller's array in place. Group by each entry's local calendar day without mutating the input; the suite gains a
-  DST timezone run (`TZ=Europe/Madrid`) covering this module and `recurrence`.
 
 - **OVERVIEW-SEE-ALL** — "See all" on Overview's transactions opens something
   `bug · agent · normal`

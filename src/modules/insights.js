@@ -52,6 +52,7 @@ export const buildInsights = ({
   const currentKey = monthKey(now);
   const daysInMonth = getDaysInMonth(now);
   const elapsedDay = Math.min(now.getDate(), daysInMonth);
+  const toDateLimit = elapsedDay >= daysInMonth ? Infinity : elapsedDay;
   const accountMap = new Map(accounts.map((account) => [account.hash, account]));
 
   const months = new Map();
@@ -98,7 +99,7 @@ export const buildInsights = ({
     const date = new Date(timestamp);
     const key = monthKey(date);
     const entry = monthEntry(key);
-    const toDate = date.getDate() <= Math.min(elapsedDay, getDaysInMonth(date));
+    const toDate = date.getDate() <= toDateLimit;
 
     if (!firstKey || key < firstKey) firstKey = key;
 

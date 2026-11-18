@@ -355,3 +355,23 @@ describe('modules/insights hygiene', () => {
     expect(find(build({ now, txs }), 'spending_trend').meta.spent).toBe(100);
   });
 });
+
+describe('modules/insights short month', () => {
+  const rent = (year, month, day) => expense(year, month, day, 1000, 7);
+
+  test('on the last day of February a rent paid on the 30th still counts in the usual', () => {
+    const now = new Date(2026, 1, 28, 12);
+    const txs = [rent(2025, 10, 30), rent(2025, 11, 30), rent(2026, 0, 30), rent(2026, 1, 15)];
+    const insights = build({ now, txs });
+
+    expect(find(insights, 'spending_trend').meta).toMatchObject({ baseline: 1000, spent: 1000 });
+    expect(find(insights, 'swing')).toBeUndefined();
+  });
+
+  test('on 30 April the 31st of earlier months is to date', () => {
+    const now = new Date(2026, 3, 30, 12);
+    const txs = [rent(2026, 0, 31), rent(2026, 1, 28), rent(2026, 2, 31), rent(2026, 3, 15)];
+
+    expect(find(build({ now, txs }), 'spending_trend').meta).toMatchObject({ baseline: 1000, spent: 1000 });
+  });
+});

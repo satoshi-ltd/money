@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.0.104 — 2026-11-18
+
+- Transactions in lists now stay under their own day all year: after a clock change, an entry from 00:30 or 23:00 no longer slides to the neighbouring day.
+- Weekly schedules stay on the right days across the spring clock change: the last day of a window is no longer dropped and an every-second-week schedule no longer flips to the other weeks.
+- On the last day of a short month, Insights reads the earlier months whole, so a rent paid on the 30th no longer makes February's pace read "+333%" or a category swing "+1000".
+
 ## 3.0.103 — 2026-11-18
 
 - With amounts hidden, the net-worth chart no longer shows its scale (the three gridline figures) and a category's budget no longer shows its total ("of 550"): both read •••• like the amounts beside them.

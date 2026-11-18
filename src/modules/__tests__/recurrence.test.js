@@ -86,4 +86,37 @@ describe('modules/recurrence', () => {
     const next = getNextOccurrenceAt({ scheduled, afterAt });
     expect(ymd(next)).toEqual('2026-01-05');
   });
+
+  test('weekly: Saturdays keep their local day across the clock change', () => {
+    const scheduled = {
+      id: 'r-dst',
+      startAt: new Date(2026, 2, 21, 12, 0, 0, 0).getTime(),
+      pattern: { kind: 'weekly', interval: 1, byWeekday: [6] },
+    };
+
+    const fromAt = new Date(2026, 2, 21, 0, 0, 0, 0).getTime();
+    const toAt = new Date(2026, 3, 11, 23, 59, 59, 999).getTime();
+    const out = getOccurrencesBetween({ scheduled, fromAt, toAt }).map(ymd);
+    expect(out).toEqual(['2026-03-21', '2026-03-28', '2026-04-04', '2026-04-11']);
+  });
+
+  test('every second week keeps its parity across the clock change', () => {
+    const scheduled = {
+      id: 'r-dst2',
+      startAt: new Date(2026, 2, 7, 12, 0, 0, 0).getTime(),
+      pattern: { kind: 'weekly', interval: 2, byWeekday: [6] },
+    };
+
+    const fromAt = new Date(2026, 2, 1, 0, 0, 0, 0).getTime();
+    const toAt = new Date(2026, 4, 31, 23, 59, 59, 999).getTime();
+    const out = getOccurrencesBetween({ scheduled, fromAt, toAt }).map(ymd);
+    expect(out).toEqual(['2026-03-07', '2026-03-21', '2026-04-04', '2026-04-18', '2026-05-02', '2026-05-16', '2026-05-30']);
+  });
+
+  test('a window with an unrepresentable end answers nothing instead of looping', () => {
+    const scheduled = { id: 'r-far', startAt: 1, pattern: { kind: 'weekly' } };
+
+    expect(getOccurrencesBetween({ scheduled, fromAt: 0, toAt: 1e16 })).toEqual([]);
+  });
 });
+

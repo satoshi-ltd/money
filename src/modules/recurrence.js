@@ -33,6 +33,7 @@ export const getOccurrencesBetween = ({ scheduled, fromAt, toAt }) => {
   const to = atMidday(new Date(toAt));
   const start = atMidday(new Date(startAt));
 
+  if (!Number.isFinite(from.getTime()) || !Number.isFinite(to.getTime()) || !Number.isFinite(start.getTime())) return [];
   if (to.getTime() < start.getTime()) return [];
 
   if (kind === 'weekly') {
@@ -42,12 +43,12 @@ export const getOccurrencesBetween = ({ scheduled, fromAt, toAt }) => {
     const baseWeek = startOfWeekSundayMidday(start);
     const out = [];
 
-    for (let t = from.getTime(); t <= to.getTime(); t += MS_IN_DAY) {
-      const d = new Date(t);
-      const candidate = atMidday(d);
+    for (let step = 0; ; step += 1) {
+      const candidate = atMiddayFromParts(from.getFullYear(), from.getMonth(), from.getDate() + step);
+      if (candidate.getTime() > to.getTime()) break;
       if (candidate.getTime() < start.getTime()) continue;
       if (!weekdaySet.has(candidate.getDay())) continue;
-      const weekDiff = Math.floor((startOfWeekSundayMidday(candidate).getTime() - baseWeek.getTime()) / MS_IN_WEEK);
+      const weekDiff = Math.round((startOfWeekSundayMidday(candidate).getTime() - baseWeek.getTime()) / MS_IN_WEEK);
       if (weekDiff < 0) continue;
       if (weekDiff % interval !== 0) continue;
       out.push(candidate.getTime());

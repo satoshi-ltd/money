@@ -236,7 +236,8 @@ one table, so a rate that moved between months cannot move the comparison.
 ### The month block
 
 `buildInsights` reads the current month against a baseline: the median, over the last six months, of what had been
-spent by the same day of each month (movements excluded). Six, not three, because two months that each carried an
+spent by the same day of each month (movements excluded); on the last day of its month, every day of an earlier month is
+to date. Six, not three, because two months that each carried an
 early one-off outvoted the ordinary one. It emits:
 
 - **trend** — `spent`, `baseline`, `day`, and a `direction` (`over`, `under`, `flat` within 5%); a percentage when the
