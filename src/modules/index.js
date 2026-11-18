@@ -18,6 +18,7 @@ export * from './frequentCategory';
 export * from './getLastMonths';
 export * from './getMonthDiff';
 export * from './getNavigationTheme';
+export * from './mask';
 export * from './getProgressionPercentage';
 export * from './groupTxsByDate';
 export * from './heroEyebrow';

@@ -3,11 +3,10 @@ import React from 'react';
 
 import { styles } from './PriceFriendly.style';
 import { useAmountSettings } from '../../contexts';
-import { currencyDecimals, currencySymbol, withThinSpace } from '../../modules';
+import { currencyDecimals, currencySymbol, MASK, withThinSpace } from '../../modules';
 import { Text, View } from '../../primitives';
 
 const MINUS = '−';
-const MASK = '••••';
 const FORMATTERS = new Map();
 
 const formatter = (decimals) => {

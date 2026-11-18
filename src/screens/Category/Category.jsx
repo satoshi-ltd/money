@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { getStyles } from './Category.style';
 import { AVERAGE_MONTHS, queryCategory } from './modules';
 import { Delta, Eyebrow, Heading, InputAmount, Panel, Pressable, PriceFriendly, Text, View } from '../../components';
-import { useApp, useStore } from '../../contexts';
+import { useAmountSettings, useApp, useStore } from '../../contexts';
 import {
   budgetOf,
   C,
@@ -12,6 +12,7 @@ import {
   compactFigure,
   isMovement,
   L10N,
+  MASK,
   percentText,
   verboseDate,
   withBudget,
@@ -24,6 +25,7 @@ const Category = ({ navigation: { goBack, navigate } = {}, route: { params = {} 
   const { category, color, month, monthTotal = 0, type, year } = params;
   const store = useStore();
   const { colors } = useApp();
+  const { maskAmount } = useAmountSettings();
   const style = useMemo(() => getStyles(colors), [colors]);
   const { accounts = [], rates = {}, settings: { baseCurrency, budgets } = {}, txs = [], updateSettings } = store;
   const categorySource = useMemo(
@@ -142,7 +144,7 @@ const Category = ({ navigation: { goBack, navigate } = {}, route: { params = {} 
                 </Text>
                 <PriceFriendly currency={baseCurrency} size="md" tone={budget.left < 0 ? 'danger' : undefined} value={budget.left} />
                 <Text size="xs" tone="muted">
-                  {L10N.BUDGET_OF(compactFigure(budget.total))}
+                  {L10N.BUDGET_OF(maskAmount ? MASK : compactFigure(budget.total))}
                 </Text>
               </View>
             </>

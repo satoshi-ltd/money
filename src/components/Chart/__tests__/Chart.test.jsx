@@ -4,14 +4,17 @@ import TestRenderer, { act } from 'react-test-renderer';
 
 import { Chart } from '../Chart';
 import { setLanguage } from '../../../i18n';
-import { L10N, percentText } from '../../../modules';
+import { L10N, MASK, percentText } from '../../../modules';
 import { columnWidth, viewOffset } from '../../../theme/layout';
 
 const ACCENT = '#ACCE07';
 const MUTED = '#MUTED0';
 const TEXT = '#TEXT00';
 
+let mockMaskAmount = false;
+
 jest.mock('../../../contexts', () => ({
+  useAmountSettings: () => ({ maskAmount: mockMaskAmount }),
   useApp: () => ({
     colors: { accent: '#ACCE07', background: '#8ACC60', border: '#B0RDE0', text: '#TEXT00', textMuted: '#MUTED0' },
   }),
@@ -55,6 +58,19 @@ const texts = (root) => root.findAllByType(RNText).map((node) => node.props.chil
 describe('components/Chart', () => {
   afterEach(() => {
     mockWindow = { height: 844, width: 390 };
+    mockMaskAmount = false;
+  });
+
+  test('the scale reads in figures, and with amounts hidden every gridline is masked like the amounts beside it', () => {
+    const scale = (root) => texts(root).filter((text) => typeof text === 'string');
+
+    expect(scale(render()).some((text) => /\d/.test(text))).toBe(true);
+
+    mockMaskAmount = true;
+    const masked = scale(render());
+
+    expect(masked.filter((text) => text === MASK)).toHaveLength(3);
+    expect(masked.some((text) => /\d/.test(text))).toBe(false);
   });
 
   // The ticks were the first three letters of the month name: French drew "jui" for juin and juillet.

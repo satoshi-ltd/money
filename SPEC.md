@@ -297,7 +297,7 @@ button, "See all N" with a chevron, that opens Scheduled.
   typed twice. Finishing marks `onboarded`, saves the PIN and creates the account.
 - **Session** — the lock screen: wordmark, four dots, a numeric keypad with letters, a biometric key when the reader is
   on (auto-prompted on arrival), the version at the foot. A wrong PIN shakes.
-- **Overview** (Dashboard) — masthead with the date and search; the net-worth hero (tap masks amounts, as the Settings switch does) with the
+- **Overview** (Dashboard) — masthead with the date and search; the net-worth hero (tap masks amounts, as the Settings switch does; the chart's three gridline figures read •••• too) with the
   month's delta; the month block ([6](#6-insights-and-the-recommender)); the three accounts with most activity in the last 30
   days with their balance, an "Owed" chip where one is below zero, and month delta; the latest transactions grouped by day, loading 32 at a time; search filters
   the list. Empty ledger: an empty state that leads to the first account.
@@ -329,7 +329,7 @@ button, "See all N" with a chevron, that opens Scheduled.
 - **Category** (sheet) — the category's month total and share of spend, the delta against its average, "Where it went"
   by merchant with bars and counts, and the latest entries; "See all N" opens Transactions filtered to that category
   and month. An expense category carries its Budget: a field for the monthly limit, saved when it loses focus or the sheet closes
-  (empty removes it); the sheet opens tall enough for it and raises with the keyboard, what was carried in, and what is left.
+  (empty removes it); the sheet opens tall enough for it and raises with the keyboard, what was carried in, and what is left of the total (the total reads •••• while amounts are masked).
 - **Account** (sheet) — currency, opening balance with its base equivalent (below zero for a card or a loan), name; Delete and Save, the close button
   being the way out. The masthead slot names the account (New account when creating, First account at onboarding), no
   heading repeats it, and a creating or first account has Save alone.

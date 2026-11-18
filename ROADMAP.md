@@ -111,6 +111,13 @@ _None._
   sheet, its count and the filtered panel follow the bar (`!isMovement`) or keep listing hidden entries, marked; the
   agent task follows the decision.
 
+- **DEC-MASK-INPUTS** — Do the editors show a saved amount while amounts are hidden?
+  `decision · creator · normal`
+  accept: with "Hide amounts" on, the Category budget field (`Category.jsx`), the Account opening balance
+  (`Account.jsx`) and the Amount field of Clone and the transaction form prefill the exact saved figure, while the
+  figures beside them read ••••. Choose: keep editors literal (a reader who taps a row has chosen to see it) and write
+  it into SPEC, or mask them until focused. The agent task follows the decision.
+
 - **DEC-RELOCK** — Should the ledger lock again when the app comes back from the background?
   `decision · creator · high`
   accept: SPEC says the PIN is "asked on every open", but Session is only the navigator's initial route
@@ -186,6 +193,18 @@ _None._
 
 ### Normal priority
 
+- **MASK-A11Y-LABEL** — A hidden amount is announced as hidden, not as four bullets
+  `bug · agent · normal`
+  accept: the masked branch of `PriceFriendly` and the masked gridlines of `Chart` and the "of ••••" caption of
+  Category carry an accessibility label from one new copy key ("Hidden amount") in the five dictionaries, or are
+  hidden from the reader; a render test per place asserts the label and that no digit is exposed.
+
+- **MASK-WALK-TEST** — One test that fails when any screen shows a figure while amounts are hidden
+  `chore · agent · normal`
+  accept: render each screen with `maskAmount` on and a ledger with known amounts, then assert that no Text, label
+  or accessibility string contains one of those digits, a digit followed by "k" or a currency figure; inputs the
+  reader types or edits follow DEC-MASK-INPUTS.
+
 - **IMPORT-RATES-TIMESTAMP** — An imported backup must not vouch for this phone's rates
   `bug · agent · normal`
   accept: `importBackup.js:17-23` drops the backup's `lastRatesUpdate` only when the cache was seeded; with a local
@@ -216,13 +235,6 @@ _None._
   only): the row shows "...", Save stays enabled and stores an income with an expense id, which every reader then
   looks up within the wrong type. Changing the type clears the category and Save waits for one of that type;
   a render test covers both directions and an edit of an existing template.
-
-- **MASK-LEAKS** — "Hide amounts" hides the chart scale and the budget total
-  `bug · agent · normal`
-  accept: with amounts masked, the gridline labels of the net-worth chart (`Chart.jsx:126`, `compactFigure` in a
-  plain Text) and "of 345" in the Category sheet (`Category.jsx:145`) still show figures. Both are masked like the
-  amounts beside them, to the eye and to a screen reader; a render test per place, and one that walks every screen
-  test's masked render for a digit followed by "k" or a currency figure.
 
 - **INSIGHTS-SHORT-MONTH** — On the last day of a short month, earlier months count whole
   `bug · agent · normal`

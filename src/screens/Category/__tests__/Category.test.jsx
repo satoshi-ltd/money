@@ -3,14 +3,17 @@ import { StyleSheet, Text as RNText } from 'react-native';
 import TestRenderer, { act } from 'react-test-renderer';
 
 import { Category } from '../Category';
-import { L10N, percentText } from '../../../modules';
+import { L10N, MASK, percentText } from '../../../modules';
 
 const navigate = jest.fn();
 const goBack = jest.fn();
 
 let mockStore;
 
+let mockMaskAmount = false;
+
 jest.mock('../../../contexts', () => ({
+  useAmountSettings: () => ({ maskAmount: mockMaskAmount }),
   useApp: () => ({ colors: { accent: '#ACCE07', danger: '#DANG00', border: '#B0RDE0', surface: '#5URFA0', text: '#TEXT00' } }),
   useStore: () => mockStore,
 }));
@@ -70,6 +73,7 @@ const allText = (root) => root.findAllByType(RNText).map((node) => collect(node.
 
 beforeEach(() => {
   jest.clearAllMocks();
+  mockMaskAmount = false;
   mockStore = {
     accounts: [{ currency: 'EUR', hash: 'a1', title: 'N26' }],
     rates: {},
@@ -130,6 +134,16 @@ describe('screens/Category budget', () => {
 
     expect(allText(root)).toEqual(expect.arrayContaining([L10N.BUDGET_CARRIED, L10N.BUDGET_LEFT, L10N.BUDGET_OF('550')]));
     expect(values).toEqual(expect.arrayContaining([50, 150]));
+  });
+
+  test('with amounts hidden the total beside what is left is masked too, to the eye and to a screen reader', () => {
+    expect(allText(withBudget(500))).toContain(L10N.BUDGET_OF('550'));
+
+    mockMaskAmount = true;
+    const masked = allText(withBudget(500));
+
+    expect(masked).toContain(L10N.BUDGET_OF(MASK));
+    expect(masked).not.toContain(L10N.BUDGET_OF('550'));
   });
 
   test('the budget bar is ink up to the limit, even close to it, and danger only past it', () => {

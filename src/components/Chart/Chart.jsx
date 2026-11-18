@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import Svg, { Circle, Line, Path } from 'react-native-svg';
 
 import { getStyles } from './Chart.style';
-import { useApp } from '../../contexts';
+import { useAmountSettings, useApp } from '../../contexts';
 import { useContentWidth } from '../../hooks';
 import {
   chartBounds,
@@ -11,6 +11,7 @@ import {
   getLastMonths,
   L10N,
   linePath,
+  MASK,
   pointAt,
 } from '../../modules';
 import { Pressable, Text, View } from '../../primitives';
@@ -37,6 +38,7 @@ const Chart = ({
   style: styleContainer,
 }) => {
   const { colors } = useApp();
+  const { maskAmount } = useAmountSettings();
   const width = useContentWidth();
   const style = useMemo(() => getStyles(colors, height), [colors, height]);
 
@@ -123,7 +125,7 @@ const Chart = ({
         <View pointerEvents="none" style={style.gridLabels}>
           {gridlines.map((value, index) => (
             <Text key={index} figure="xs" tone="muted">
-              {compactFigure(value)}
+              {maskAmount ? MASK : compactFigure(value)}
             </Text>
           ))}
         </View>

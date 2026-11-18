@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.103 — 2026-11-18
+
+- With amounts hidden, the net-worth chart no longer shows its scale (the three gridline figures) and a category's budget no longer shows its total ("of 550"): both read •••• like the amounts beside them.
+
 ## 3.0.102 — 2026-11-18
 
 - A backup with a damaged record is refused whole, with the usual import error, instead of replacing your ledger with part of it: a transaction on an account that is not in the file, an amount that is not a number, a repeated id, an unknown currency or a schedule that cannot recur. Backups made by earlier versions still import.
